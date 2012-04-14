@@ -1,2 +1,0 @@
-[getCurrentDate]
-SELECT NOW()
