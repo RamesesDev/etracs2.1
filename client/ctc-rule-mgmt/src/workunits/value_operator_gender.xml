@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker type="value_operator:gender" />
+    </invokers>
+    
+    <code>
+        <![CDATA[
+
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import rulemgmt.*;
+
+        public class GenderValueOperator implements ValueOperatorHandler 
+        {
+            public ValueOperator[] getOperators() {
+                return [  
+                    new ValueOperator( "==", "equals" )
+                ] as ValueOperator[];
+            }
+        }
+        ]]>
+    </code>
+    
+</workunit>

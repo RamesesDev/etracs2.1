@@ -1,0 +1,52 @@
+<workunit>
+    <invokers>
+        <invoker type="rptbilling_lookup.txntype" caption="Transaction Type Lookup" target="popup"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+class RPTBillingLookupTxnTypeController
+{
+    @Binding
+    def binding
+    
+    @Service('FAASService')
+    def faasSvc 
+    
+    def searchText
+    def selected
+    def onselect
+    
+    def ok() {
+        if( ! selected ) throw new Exception('Please select an item.')
+        if( onselect ) onselect( selected )
+        return '_close' 
+    }
+
+    def listHandler = [
+        getColumns: {
+            return [
+                new Column(name: "objid", caption: "ID"),
+                new Column(name: "name", caption: "Name"),
+            ]
+        },
+        fetchList: {
+            return faasSvc.getTxnTypes().collect {
+                [objid:it.txntype, name:it.caption]
+            }
+        }
+    ] as SubListModel
+    
+}
+
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.common.ListPage"/>
+    </pages>
+</workunit>

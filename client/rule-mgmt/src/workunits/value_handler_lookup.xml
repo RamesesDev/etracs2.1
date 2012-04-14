@@ -1,0 +1,68 @@
+<workunit>
+    <invokers>
+        <invoker type="value_handler:lookup" target="popup"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import rulemgmt.*;
+
+        public class ValueHandlerLookup {
+            
+            
+            @Binding
+            def binding
+
+            def searchText
+            def selectedItem
+            def selectedItems = [];
+            def selectHandler;
+            def handler;
+
+            def select() {
+                if( selectHandler ) selectHandler( selectedItems )
+                return '_close' 
+            }
+
+            def remove() {
+                if( selectedItem ) {
+                    selectedItems.remove( selectedItem )
+                }
+            }
+
+            def selectAcctHandler = { acct ->
+                if( ! selectedItems.find{ it.objid == handler.getItemObjid( acct ) } ) {
+                    def item = [  
+                        objid: handler.getItemObjid( acct ),
+                        name: handler.getItemName(acct) 
+                    ];
+                    selectedItems.add( item );
+                }
+                searchText = null
+                binding.refresh( 'searchText' )
+                binding.refresh('selectedItem')
+            }
+
+            def lookup() {
+                def lookupOpener = handler.getLookupOpenerName();
+                def handlerName = handler.getSelectHandlerName();
+                return InvokerUtil.lookupOpener(lookupOpener, 
+                    [searchText:searchText, 
+                    (handlerName):selectAcctHandler]
+                );
+            }
+        
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="rulemgmt.support.MultiValueLookupPage"/> 
+    </pages>
+    
+</workunit>

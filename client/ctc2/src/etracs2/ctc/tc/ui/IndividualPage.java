@@ -33,7 +33,7 @@ public class IndividualPage extends javax.swing.JPanel {
         xTextField7 = new com.rameses.rcp.control.XTextField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
+        xTextField10 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xTextField3 = new com.rameses.rcp.control.XTextField();
@@ -41,6 +41,7 @@ public class IndividualPage extends javax.swing.JPanel {
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
         xTextField8 = new com.rameses.rcp.control.XTextField();
         xTextField9 = new com.rameses.rcp.control.XTextField();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         jPanel9 = new javax.swing.JPanel();
         formPanel3 = new com.rameses.rcp.util.FormPanel();
         xNumberField4 = new com.rameses.rcp.control.XNumberField();
@@ -95,10 +96,10 @@ public class IndividualPage extends javax.swing.JPanel {
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel1.add(xTextField1);
 
-        xDateField1.setCaption("Birth Date");
-        xDateField1.setName("entity.info.payer.info.birthdate");
-        xDateField1.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel1.add(xDateField1);
+        xTextField10.setCaption("Birth Date");
+        xTextField10.setName("entity.info.payer.info.birthdate");
+        xTextField10.setPreferredSize(new java.awt.Dimension(165, 19));
+        formPanel1.add(xTextField10);
 
         xTextField2.setCaption("Place of Birth");
         xTextField2.setName("entity.info.payer.info.birthplace");
@@ -138,6 +139,12 @@ public class IndividualPage extends javax.swing.JPanel {
         xTextField9.setPreferredSize(new java.awt.Dimension(165, 19));
         formPanel1.add(xTextField9);
 
+        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox1.setCaption("Is Senior?");
+        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox1.setName("entity.info.payer.info.seniorcitizen");
+        formPanel1.add(xCheckBox1);
+
         org.jdesktop.layout.GroupLayout jPanel8Layout = new org.jdesktop.layout.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -150,7 +157,7 @@ public class IndividualPage extends javax.swing.JPanel {
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel8Layout.createSequentialGroup()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -286,7 +293,7 @@ public class IndividualPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel8, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel8, 0, 351, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(jPanel9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -304,11 +311,11 @@ public class IndividualPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
-    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XNumberField xNumberField10;
     private com.rameses.rcp.control.XNumberField xNumberField11;
     private com.rameses.rcp.control.XNumberField xNumberField4;
@@ -318,6 +325,7 @@ public class IndividualPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XNumberField xNumberField8;
     private com.rameses.rcp.control.XNumberField xNumberField9;
     private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XTextField xTextField10;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;

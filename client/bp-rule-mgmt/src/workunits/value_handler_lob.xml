@@ -11,21 +11,15 @@
         import com.rameses.osiris2.client.*
         import rulemgmt.*;
 
-        public class LobValueHandler extends ValueHandler {
+        public class LobValueHandler extends LookupValueHandler {
         
-            @Binding
-            def binding
-
-            def lookup() {
-                def h = { o->
-                    value = o;
-                    binding.refresh();
-                }
-                return InvokerUtil.lookupOpener( "value_handler:lob_lookup", [handler: h ] );
-            }
-            
-            public String getDisplaytext() {
-                return value ? value*.name.join(', ') : '';
+            public ValueHandlerLookupModel getHandler() {
+                return [
+                    getItemObjid: { it.objid },
+                    getItemName:  { it.name },
+                    getLookupOpenerName:  { 'lob.lookup' },
+                    getSelectHandlerName: { 'onselect' }
+                ] as ValueHandlerLookupModel
             }
         }
         ]]>

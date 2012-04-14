@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="value_handler:rputype" />
+        <invoker type="value_handler:civilstatus" />
     </invokers>
     
     <code>
@@ -11,13 +11,13 @@
         import com.rameses.osiris2.client.*
         import rulemgmt.*;
 
-        public class RPUTypeValueHandler extends LookupValueHandler {
+        public class CivilStatusValueHandler extends LookupValueHandler {
         
             public ValueHandlerLookupModel getHandler() {
                 return [
-                    getItemObjid: { it.objid },
-                    getItemName:  { it.name },
-                    getLookupOpenerName:  { 'rptbilling_lookup.rputype' },
+                    getItemObjid: { it },
+                    getItemName:  { it },
+                    getLookupOpenerName:  { 'civilstatus.lookup' },
                     getSelectHandlerName: { 'onselect' }
                 ] as ValueHandlerLookupModel
             }

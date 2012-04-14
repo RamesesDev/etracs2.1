@@ -1,0 +1,25 @@
+<workunit>
+    <invokers>
+        <invoker type="value_handler:gender" />
+    </invokers>
+    
+    <code>
+        <![CDATA[
+
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import rulemgmt.*;
+
+        public class GenderValueHandler extends ValueHandler 
+        {
+            def options = ['MALE', 'FEMALE']
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="rulemgmt.support.ComboValuePage"/> 
+    </pages>
+    
+</workunit>

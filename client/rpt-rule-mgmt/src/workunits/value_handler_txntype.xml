@@ -11,21 +11,15 @@
         import com.rameses.osiris2.client.*
         import rulemgmt.*;
 
-        public class TxnTypeValueHandler extends ValueHandler {
+        public class TxnTypeValueHandler extends LookupValueHandler {
         
-            @Binding
-            def binding
-
-            def lookup() {
-                def h = { o->
-                    value = o;
-                    binding.refresh();
-                }
-                return InvokerUtil.lookupOpener( "value_handler:txntype_lookup", [handler: h ] );
-            }
-            
-            public String getDisplaytext() {
-                return value ? value*.name.join(', ') : '';
+            public ValueHandlerLookupModel getHandler() {
+                return [
+                    getItemObjid: { it.objid },
+                    getItemName:  { it.name },
+                    getLookupOpenerName:  { 'rptbilling_lookup.txntype' },
+                    getSelectHandlerName: { 'onselect' }
+                ] as ValueHandlerLookupModel
             }
         }
         ]]>
