@@ -1,0 +1,178 @@
+<workunit>
+    <invokers>
+        <invoker type="bp.DRAFT" action="initView" caption="BP Application" target="window"/>
+        <invoker type="bp.create" action="init" caption="BP Application"/>
+        <invoker type="bp.createInWindow" action="init" caption="BP Application" target="window"/>
+        <invoker type="bp.view" action="initView" caption="BP Application" target="window"/>
+        <invoker type="bp.open" action="initView" caption="BP Application"/>
+
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" icon="images/cancel.png" immediate="true"  shortcut="ctrl C" />
+        <invoker type="formActions" action="edit"   caption="Edit"   mnemonic="e" icon="images/edit.png"   immediate="true"  shortcut="ctrl E" visibleWhen="#{mode == 'view'}" permission="bplicensing.edit"/>
+        <invoker type="formActions" action="save"   caption="Save"   mnemonic="s" icon="images/save.png"   shortcut="ctrl S"  visibleWhen="#{mode != 'view'}" permission="bplicensing.save"/>
+        <invoker type="formActions" action="delete" caption="Delete" mnemonic="d" icon="images/doc-delete.png" immediate="true" shortcut="ctrl D" visibleWhen="#{application.txnno != null and application.docstate != 'APPROVED' }" permission="bplicensing.delete"/>
+        
+        <invoker type="formActions" action="submit"   caption="Submit" mnemonic="s" shortcut="ctrl S"
+                 visibleWhen="#{application.docstate == 'DRAFT' and mode == 'view'}" icon="images/doc-submit.png" permission="bplicensing.submit"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+
+class BPApplication
+{
+    @Binding
+    def binding;
+
+    @Service('BPEnum')
+    def enumSvc;
+    
+    @Service('BPApplicationService')
+    def svc;
+
+    def mode = 'view';
+    def application;
+    def organizations;
+    def barangays;
+    def officetypes;
+    
+    void init(){
+        def res = enumSvc.getTypes(['organizations', 'officeTypes']);
+        organizations = res.organizations;
+        officetypes = res.officeTypes;
+        barangays = enumSvc.barangays;
+        
+        mode = 'new';
+    }
+    
+    void initView(){
+        def res = enumSvc.getTypes(['organizations', 'officeTypes']);
+        organizations = res.organizations;
+        officetypes = res.officeTypes;
+        barangays = enumSvc.barangays;
+        mode = 'view';
+    }
+    
+    def lob;
+    
+    def allowedDelete( def lob ){
+        if( mode != 'view' ){
+            if( lob.assessmenttype.matches('NEW|ADDLOB') ) return true;
+            if( lob.assessmenttype == 'RENEW' && application.txnmode == 'CAPTURE' && !application.txntype.equals('RETIRE') ) return true;
+            //if( application.txntype == 'RETIRE_LINE' ) return true;
+        }
+        return false;
+    }
+    
+    def getTypes = {
+        if( lob?.assessmenttype.equals('RETIRE') ) return ['RETIRELOB'] 
+        if( lob?.assessmenttype.equals('ADDLOB') ) return ['ADDLOB']; 
+        if( lob?.assessmenttype.equals('NEW') ) return ['NEW']; 
+        return ['NEW', 'RENEW', 'RETIRE', 'RETIRELOB']
+    }
+    
+    def allowEditAssessmentType = { lob -> 
+        if( mode.equals('view') ) return false
+        if( application.txntype.matches('NEW|ADDLOB|RETIRELOB|RETIRE') ) return false
+        if( lob?.assessmenttype.equals('ADDLOB') ) return false
+        if( lob?.assessmenttype.equals('NEW') ) return false
+        return true;
+    } as Map 
+    
+    def lobHandler = [
+        getRows    : { return 5; },
+        getColumns : {
+            return [
+                new Column(name:"retire", caption:"", type:'boolean', visible:application.txntype.matches('RETIRE|RETIRELOB'), width:25, resizable:false, editable:(application.txntype == 'RETIRELOB') ),
+                new Column(name:"name", caption:"Classification"),
+                new Column(name:"assessmenttype", caption:"Assessment Type", type:'combo', items:getTypes(),  editableWhen:'#{root.allowEditAssessmentType[item]}', required:true),
+                new Column(name:"iyear", caption:"Year", format:"####")
+            ];
+        },
+        
+        onRemoveItem : {
+            if( allowedDelete( it ) ) { 
+                application.lobs.remove( it );
+            }
+        },
+        
+        fetchList : { return application.lobs; },
+    ] as SubListModel;
+    
+    def onselect = { selected ->
+        if( selected ){
+            def o = application.lobs.find{ it.lobid == selected.objid };
+            if( o ) throw new Exception("LOB '$selected.name' is already in application list.");
+            def l = [lobid:selected.objid, name:selected.name, assessmenttype:'NEW', classificationid:selected.classificationid];
+            if( application.txntype.equals('RETIRELOB') ) l.assessmenttype = 'RETIRELOB';
+            else if( application.txntype.equals('ADDLOB') ) l.assessmenttype = 'ADDLOB';
+            else if( application.txnmode.equals('CAPTURE') && application.txntype.equals('RENEW') ) l.assessmenttype = 'RENEW';
+            else if( application.txnmode.equals('CAPTURE') && application.txntype.equals('NEW') ) l.assessmenttype = 'NEW';
+            else if( application.txnmode.equals('ONLINE') ) l.assessmenttype = 'NEW'
+            else l.assessmenttype = 'RENEW'
+            application.lobs << l;
+            lobHandler.load();
+            binding.refresh();
+            lobSearch = '';
+        }
+    }
+    
+    def lobSearch;
+    public def getLookupLob(){ return InvokerUtil.lookupOpener('lob.lookup', [onselect:onselect, searchText:lobSearch?.lobname]); }
+    
+    def cancel() {
+        if( mode != 'edit' ) return '_close';
+        application.putAll( old );
+        mode = 'view';
+        binding.refresh();
+        return '_default';
+    }
+
+    def old = [:];
+    
+    void edit(){
+        old.putAll( application );
+        mode = 'edit';
+        binding.refresh();
+    }
+    
+    void save(){
+        application = svc.save( application );
+        mode = 'view';
+        binding.refresh();
+    }
+    
+    def submit(){
+        if( MsgBox.confirm("Submit for assessment?") ){
+            application = svc.submitForAssessment( application.objid );
+            return InvokerUtil.lookupOpener('bp.assessment', [application: application]);
+        }
+        return "default";
+    }
+    
+    def delete(){
+        if( MsgBox.confirm("Delete ?") ){
+            svc.delete( application.objid );
+            return '_close';
+        }
+        return null;
+    }
+    
+    def previewApplication(){
+        return InvokerUtil.lookupOpener('bp.applicationreport', [applicationid:application.objid]);
+    }
+    
+    
+    def viewPermit(){
+        return InvokerUtil.lookupOpener('bp.bppermitreport', [applicationid:selectedItem.objid]);
+    }
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.bp.application.ApplicationMainPage"/>
+    </pages>
+</workunit>

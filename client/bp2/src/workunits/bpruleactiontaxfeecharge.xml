@@ -1,0 +1,218 @@
+<workunit>
+    <invokers>
+        <invoker type="ruleaction.type" action="create" caption="Tax, Fee or Charge" index="2" />        
+        <invoker type="ruleaction.taxfeecharge.open" action="open" caption="Tax, Fee or Charge Action" />        
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+class BPRuleActionTaxFeeChargeController
+{
+    @Binding
+    def binding
+    
+    @Service('BPApplicationService')
+    def svc 
+    
+    def action
+    def rule
+    def computationMode
+    def opener 
+    
+    void create() {
+        // applytype       -> PERLINE, MIN, MAX
+        // computationmode -> FORMULA, RANGE
+        action = [
+            opener       : 'ruleaction.taxfeecharge',
+            expr         : '',
+            acctid       : null,
+            accttitle    : null,
+            applytype    : null,
+            computationmode : null, 
+            conditions   : [],
+            ranges       : [],
+            variable     : null,
+        ]
+    }
+    
+    void open() {
+        setComputationMode( action.computationmode  )
+    }
+    
+        
+    //must be implemented by a handler
+    void accept() {
+        if( action.computationmode == 'FORMULA' ) {
+            processFormulaMode()
+        }
+        else {
+            processRangeMode()
+        }
+        rule.actiontype = 'RANGE'
+        action.displaytext = buildDisplayText()
+    }
+    
+    void processFormulaMode() {
+        if( opener && opener.handle ) {
+            action.expr = opener.handle.expr
+        }
+        required('Account', action.acctid )
+        required('Formula for computing tax, fee or charge', action.expr )
+        action.expr = action.expr.replace('\n', '') 
+        action.ranges.clear()
+    }
+    
+    void processRangeMode() {
+        required('Account', action.acctid )
+        required('Variable', action.variable )
+        required('At least one (1) range ', action.ranges )
+        action.ranges.each { range ->
+            range.expr = range.expr.replace('\n', '')
+        }
+    }
+    
+    def buildDisplayText() {
+        if( action.computationmode == 'FORMULA' ) 
+            return buildFormulaDisplayText()
+        return buildRangeDisplayText()
+    }
+    
+    def buildFormulaDisplayText() {
+        if( action.applytype.name == 'PERLINE' ) 
+            return 'Calculate ' + action.accttitle + ' per each Line of Business using the formula: ' + action.expr
+        else if( action.applytype.name == 'MAX' ) 
+            return 'Calculate ' + action.accttitle + ' based on maximum value using the formula: ' + action.expr
+        else if( action.applytype.name == 'MIN' ) 
+            return 'Calculate ' + action.accttitle + ' based on minimum value using the formula: ' + action.expr
+        else
+            throw new Exception('Invalid apply type : ' + action.applytype.name )
+    }
+    
+    def buildRangeDisplayText(){
+        def txt = 'Calculate ' + action.accttitle + ' based on Tax Table using ' + action.variable.name + '.\n'
+        
+        txt += '<table border="1">\n'
+        txt += '    <tr>'
+        txt += '    <th>Greater Than or Equal</th>\n'
+        txt += '    <th>Less Than</th>\n'
+        txt += '    <th>Expression</th>\n'
+        txt += '    </tr>\n'
+        
+        action.ranges.each{ range ->
+            txt += '<tr>\n'
+            txt += '<td>' + range.rangefrom + '</td>\n'
+            txt += '<td>' + range.rangeto + '</td>\n'
+            txt += '<td>' + range.expr + '</td>\n'
+            txt += '</tr>\n'
+        }
+        
+        txt += '</table>'
+        
+        return txt 
+    }
+    
+       
+    void setComputationMode( computationMode ) {
+        this.computationMode = ( computationMode ? computationMode : action.computationmode)
+        action.computationmode = computationMode 
+        opener = null
+        def formuladef = buildFormulaDef()
+        if( computationMode == 'FORMULA' ) 
+            opener = InvokerUtil.lookupOpener('formulaeditor', [expr:action.expr, formuladef:formuladef] )
+        else if( computationMode == 'RANGE' ) 
+            opener = InvokerUtil.lookupOpener('bprangeentry', [rule:rule, action:action] )
+    }
+    
+    def buildFormulaDef() {
+        def variables = buildVariables()
+        def parameters = buildParameters()
+        def functions = defineFunctions()
+        return [
+            expression : null,
+            fields     : [],
+            variables  : variables,
+            parameters : parameters,
+            functions  : functions,
+        ]
+    }
+    
+    def buildVariables() {
+        def vars = []
+        def inputVars = rule.conditions.findAll{ it.opener == 'rulecondition.variable' }
+        inputVars.each {
+            vars += [
+                objid   : it.variable.objsid,
+                name    : it.variable.name,
+                caption : it.variable.caption,
+                description : it.variable.description,
+            ]
+        }
+        return vars
+    }
+    
+    def defineFunctions() {
+        return [
+            defineFunction('IIF', '@IIF( expr, truevalue, falsevalue )', 'Ternary IF Condition', 'Performs immediate IF evaluation'),
+            defineFunction('FIXED', '@FIXED( numberexpr )', 'Fixed Function', 'Converts number to integer.' ),
+        ]
+    }
+    
+    def defineFunction(objid, name, caption, description) {
+        return [objid:objid, name:name, caption:caption, description:description ]
+    }
+    
+    def buildParameters() {
+        def vars = []
+        def inputVars = rule.conditions.findAll{ it.opener == 'rulecondition.summary' }
+        inputVars.each { opener ->
+            opener.summaries.each {
+                vars += [
+                    objid   : it.objid,
+                    name    : it.name,
+                    caption : it.name,
+                    description : it.name,
+                ]
+            }
+        }
+        return vars
+    }
+    
+    def getComputationModes() {
+        return ['FORMULA','RANGE']
+    }
+    
+    def getApplyTypes() {
+        return [
+            [name:'PERLINE', caption:'Apply per Line of Business'],
+            [name:'MAX', caption:'Apply once per establishment based on maximum value'],
+            [name:'MIN', caption:'Apply once per establishment based on minimum value'],
+        ]
+    }
+    
+    def selectAcctHandler = { acct ->
+        action.acctid = acct.objid 
+        action.accttitle = acct.accttitle
+        binding.refresh('action.accttitle')
+    }
+    
+    def lookupAccount() {
+        return InvokerUtil.lookupOpener('incomeacct:lookup', [searchText:action.accttitle, onselect:selectAcctHandler])
+    }
+    
+    void required(caption, value ) {
+        if( !value ) throw new Exception(caption + ' is required.')
+    }
+    
+    
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.bp.rule.action.AddTaxFeeActionPage" />
+    </pages>
+</workunit>

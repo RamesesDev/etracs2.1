@@ -1,0 +1,20 @@
+"entity.*|searchAttribute|attribute|classification" [mode == 'view'] {
+    enabled:false;
+}
+
+"entity.*|searchAttribute|attribute|classification" [mode != 'view'] {
+    enabled:true;
+}
+
+"entity.name" [ mode != 'view' && entity.docstate == 'APPROVED' ]{
+    enabled:false;
+}
+
+"selectedItem|searchText" [mode == 'view'] {
+    enabled:true;
+}
+
+"selectedItem|searchText" [mode != 'view'] {
+    enabled:false;
+}
+

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    
+    <invokers>
+        <invoker folderid="/menu/bp/txn" action="view" caption="Business Billing" permission="bpbilling.generate"/>
+        <invoker type="home.action" action="view" caption="Business Billing" index="70" target="window" icon="images/otherReports.png" permission="bpbilling.generate"/>
+
+        <invoker type="formActions" action="back" immediate="true" caption="Back" mnemonic="b" visibleWhen="#{mode == 'view'}" icon="images/back.png"/>
+        <invoker type="formActions" action="_close" immediate="true" caption="Close" mnemonic="c" visibleWhen="#{mode != 'view'}" icon="images/cancel.png"/>
+        <invoker type="formActions" action="viewReport" caption="Preview" mnemonic="P" visibleWhen="#{mode != 'view'}" icon="images/doc-view.png"/>
+    </invokers>
+    
+    <code lang="groovy">
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        
+        public class BPBillingController {
+
+            @Service('BPBillingService')
+            def svc;
+            
+            @Service("ReportParameterService")
+            def svcParams;
+            
+            @Caller
+            def caller;
+            
+            @Binding
+            def binding;
+            
+            def entity = [:];
+            
+            def mode = 'init';
+            
+            def report = [
+                getReportName : { return 'bp/billing' },
+                getReportData : { return svc.getBilling( entity ) }, 
+                getParameters : { 
+                    def params = svcParams.getStandardParameter( OsirisContext.env.USERNAME );
+                    return params;
+                }
+            ] as ServerReportModel;
+            
+            def view() {
+                mode = 'init';
+                entity = [
+                    info : [:]
+                ];
+                return 'init';
+            }
+            
+            def back(){
+                mode = 'init';
+                return mode;
+            }
+            
+            def viewReport() {
+                report.viewReport();
+                mode = 'view';
+                return 'report';
+            }
+            
+            def onselectTaxpayer = { st ->
+                if( st ) {
+                    entity.info.taxpayerid = st.payorid;
+                    entity.info.taxpayername = st.taxpayername;
+                    entity.info.tradename = st.tradename
+                    entity.info.businessaddress = st.businessaddress
+                    entity.info.taxpayeraddress = st.taxpayeraddress;
+                }else{
+                    entity.info.taxpayerid = null;
+                    entity.info.taxpayername = null;
+                    entity.info.tradename = null
+                    entity.info.businessaddress = null
+                    entity.info.taxpayeraddress = null
+                }
+                binding.refresh();
+            }
+            
+            def bp
+            def getLookupTaxpayer(){
+                return InvokerUtil.lookupOpener( 'bp.lookupbusiness', [:] );
+            }
+            
+            void setBp( bp ){
+                this.bp = bp
+                onselectTaxpayer( bp )
+            }
+
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page name="init" template="etracs2.bp.billing.BPBillingInitPage" />
+        <page name="report" template="etracs2.bp.PreviewPage" />
+    </pages>
+</workunit>

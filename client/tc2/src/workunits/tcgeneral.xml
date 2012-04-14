@@ -1,0 +1,204 @@
+<workunit>
+    <invokers>
+        <invoker type="collection" caption="General Collection" afid="51" appcode="general_collection"  />
+        <invoker type="collection" caption="General Collection" afid="0016" appcode="general_collection"  />
+        <invoker type="collection" caption="General Collection" afid="907" appcode="general_collection"  />
+        <invoker type="collection" caption="General Collection" afid="0017" appcode="general_collection"  />
+        <invoker type="tc:general_collection" action="init" caption="General Collection" afid="51"  permission="collection_general.create" />
+        <invoker type="tc:general_collection" action="init" caption="General Collection" afid="0016"  permission="collection_general.create" />
+        <invoker type="tc:general_collection" action="init" caption="General Collection" afid="907"  permission="collection_general.create" />
+        <invoker type="tc:general_collection" action="init" caption="General Collection" afid="0017"  permission="collection_general.create" />
+        <invoker type="inquiry:tc:general_collection" action="initInquiry" caption="Inquiry" permission="collection_general.inquire"/>
+        
+        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" permission="collection_general.create" icon="images/add.png"/>
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b"  immediate="true" visibleWhen="#{mode == 'create'}" icon="images/back.png"/>
+        <invoker type="formActions" action="create" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" icon="images/save.png"/>
+        <invoker type="formActions" action="update" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'edit'}" icon="images/save.png"/>
+        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" permission="collection_general.print"/>
+        <invoker type="formActions" action="doPrintDetail" caption="Print Detail" mnemonic="d" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" permission="collection_general.print"/>
+        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view' and entity.voided == 0}" permission="collection_general.void" icon="images/doc-void.png"/>
+
+        <invoker type="receipt.actions:tc:general_collection" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup" permission="collection_general.edit" icon="images/edit.png"/>
+        <invoker type="receipt.actions:tc:general_collection" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" permission="collection_general.print"/>
+        <invoker type="receipt.actions:tc:general_collection" action="doPrintDetail" caption="Print Detail" mnemonic="d" shortcut="ctrl P" permission="collection_general.print"/>
+        <invoker type="receipt.actions:tc:general_collection" action="doVoid" caption="Void" mnemonic="v" permission="collection_general.void" icon="images/doc-void.png"/>   
+    </invokers>
+    <code>
+<![CDATA[
+
+    import com.rameses.rcp.common.*
+    import com.rameses.rcp.annotations.*
+    import com.rameses.osiris2.client.*
+    import com.rameses.osiris2.reports.*
+    import etracs2.groovy.*
+    import etracs2.tc.groovy.*
+
+    class GeneralCollectionController extends AbstractCollectionController
+    {
+        @Service('ReceiptService')
+        def svc
+        
+        @Service('ReceiptHtmlService')
+        def htmlSvc
+        
+        @Service('ReportParameterService')
+        def svcParams;
+        
+        def listItem
+        def message = ''
+        def selectedItem
+        
+        def getParameters() { 
+            def params = svcParams.getStandardParameter( OsirisContext.env.USERNAME ); 
+            params.listSize = entity.items.size()
+            return params 
+        }
+        def getService() { return svc }
+        def getHtmlService() { return htmlSvc }
+        def getCollectionTitle() { return 'General Collection' }
+        
+        void init() {
+            super.init()
+            entity.doctype = 'MISC'
+        }
+        
+        void newRecord() {
+            init()
+            listHandler.load()
+            paymentSummary.handle.reload()
+        }
+        
+        def edit() {
+            super.edit()
+            rebuildItemAcctField()
+            return 'default'
+        }
+        
+        void rebuildItemAcctField() {
+            entity.items.each {
+                it.acct = [
+                    objid     : it.acctid,
+                    acctno    : it.acctno,
+                    accttitle : it.accttitle,
+                    fundid    : it.fundid,
+                    fundname  : it.fundname,
+                ]
+            }
+        }
+        
+        
+        /* ------------------------------------------------------------
+        * LIST SUPPORT
+        -------------------------------------------------------------- */
+        def allowAmountEdit = { item ->
+            if( item.acct?.amounttype == 'FIX' ) return false
+            if( item.acct?.amounttype == 'FIXUNIT' ) return false
+            return true
+        } as Map
+    
+        def incomeAcctLookup = InvokerUtil.lookupOpener( 'incomeacct:lookup', [:] )
+
+        def listHandler = [
+            getColumns : {
+                return [
+                    new Column( name:'acct', caption:'Account*', editable:true, type:'lookup', handler:incomeAcctLookup, expression: '#{accttitle}' ),
+                    new Column( name:'amount', caption:'Amount*', type:'decimal', editableWhen:'#{root.allowAmountEdit[item]}' ),
+                    new Column( name:'remarks', caption:'Remarks', editable:true ),
+                ]
+            },
+            fetchList  : { return entity.items },
+            createItem : { return [:] },
+            validate   : { 
+                try {
+                    message = ''
+                    validate(it?.item) 
+                }
+                catch ( e ) {
+                    message = e.message
+                    throw e
+                }
+            },
+            onAddItem  : { item -> 
+                //updateIncomeAcctInfo( item )
+                entity.items.add( item ) 
+                updateItemInfo()
+            },
+            onColumnUpdate : { item, colName ->
+                if( colName =='acct' )  {
+                    updateIncomeAcctInfo( item )
+                    if( item.acct?.amounttype == 'FIXUNIT') {
+                        def unitcount = MsgBox.prompt('Enter Quantity:')
+                        unitcount = parseInt( unitcount )
+                        item.amount = item.acct.defaultvalue * unitcount 
+                    }
+                }
+                else if( colName == 'amount' && listItem?.state != 0 ) {
+                    updateItemInfo()
+                }
+            },
+            onRemoveItem  : { item ->
+                if( MsgBox.confirm("Delete selected item?") ) {
+                    entity.items.remove( item )
+                    updateItemInfo()
+                    message = ''
+                    binding.refresh('message')
+                }
+            },
+        ] as SubListModel
+
+        void updateItemInfo() {
+            entity.info.amount = calculateAmountDue()
+            def payments = []
+            payments.addAll( entity.payments )
+            updatePaymentInfo( payments )
+            calculateChange()
+            binding.refresh('entity.info.*')       
+        }
+
+        void validate( item ) {
+            if( item ) {
+                required( 'Account', item.acct )
+                required( 'Amount', item.amount)
+                if( item.amount <= 0.0 ) {
+                    throw new Exception('Amount must be greater than zero.')
+                }
+            }
+            else {
+                throw new Exception( 'Account and amount are required.' )
+            }
+        }
+
+        void updateIncomeAcctInfo( item ) {
+            item.acctid = item.acct?.objid
+            item.acctno = item.acct?.acctno
+            item.accttitle = item.acct?.accttitle
+            item.fundid = item.acct?.fundid
+            item.fundname = item.acct?.fundname
+            item.amount = item.acct?.defaultvalue
+        }
+
+        void required( name, value ) {
+            if( ! value ) {
+                throw new Exception(name + ' is required.')
+            }
+        }
+        
+        int parseInt( value ) {
+            try {
+                return Integer.parseInt( value )
+            }
+            catch( e ) {
+                return 1 
+            }
+        }
+
+
+    }
+]]>        
+    </code>
+    <pages>
+        <page template="etracs2.tc.collection.GeneralCollectionPage"/>
+        <page name="view" template="etracs2.tc.collection.CollectionViewPage"/>
+        <page name="html" template="etracs2.tc.HtmlPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,62 @@
+import com.rameses.annotations.*
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+
+class FAASMessageInterceptor
+{
+	@PersistenceContext('main')
+	def em
+    
+	@Service('LogService')
+    def logSvc
+    
+    @Service('FAASService')
+    def faasSvc 
+	
+	@Service('MessengerService')
+	def msgSvc
+	
+	def SCHEMA_NAME = 'faas'
+    def SCHEMA_VERSION = '1.0'
+    def LISTSCHEMA_NAME = 'faas:faaslist'
+    
+	@After(pattern='MessengerService.onreceive') 
+	public void interceptOnReceive( evt ) {
+        def msg = evt.result 
+        if( msg.action == 'faas.approve') approveFaas( msg ) 
+        else if( msg.action == 'faas.disapprove') disapproveFaas( msg ) 
+	}
+    
+    void approveFaas( msg ) {
+        try {
+            println 'Processing message -> ' + msg.action 
+            faasSvc.onlineApprove( msg.attachment.faasid, msg.attachment  )
+            msgSvc.processedSuccessfully( msg )
+            logSvc.log('ONLINE-APPROVAL', 'FAAS', msg.attachment.faasid )
+        }
+        catch( e ) {
+            println '='*50
+            e.printStackTrace()
+            msgSvc.errorProcessing( msg, e.message )
+            throw e 
+        }
+    }
+    
+    void disapproveFaas( msg ) {
+        try {
+            println 'Processing message -> ' + msg.action 
+            faasSvc.onlineDisapprove( msg.attachment.faasid, msg.attachment  )
+            msgSvc.processedSuccessfully( msg )
+            logSvc.logA('ONLINE-APPROVAL', 'FAAS', msg.attachment.faasid, msg.attachment.message  )
+        }
+        catch( e ) {
+			println '='*50
+            println 'FAASMessageInterceptor: ' + e.message
+            msgSvc.errorProcessing( msg, e.message )
+            throw e 
+        }
+    }
+
+}
+
+

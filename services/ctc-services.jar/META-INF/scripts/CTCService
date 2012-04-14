@@ -1,0 +1,25 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import java.rmi.server.UID
+
+class CTCService 
+{
+
+	@ProxyMethod
+	public def calculate( entity ) {
+		return [
+			tax: [
+				business: 0.00,
+				basic:    5.00,
+				salary:   0.00,
+				interest: 0.00,
+				property: 0.00,
+			],
+			total: 5.00,
+			items: [
+				[acctid:"IA-4184fe6b:135efbfb375:-7cc8",acctno:null,accttitle:"PERMIT FEE (MATCHMAKER)",fundid:"GENERAL",fundname:"GENERAL",amount:5.00]
+			]
+		];
+	}
+	
+}

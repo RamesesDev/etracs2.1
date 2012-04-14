@@ -1,0 +1,69 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/report/tc" action="init" caption="Income Account Listing" permission="tcreport.incomeaccount"/>
+        
+        <invoker type="formActions" action="view" caption="View" mnemonic="v" shortcut="ctrl v" visibleWhen="#{mode == 'build'}" icon="images/doc-view.png"/>
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl b" visibleWhen="#{mode == 'view'}" icon="images/back.png"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class IncomeAcctListingController
+{   
+    @Service("ReportParameterService")
+    def svcParams
+
+    @Service("TCReportService")
+    def svc
+    
+    def data = []
+    def charttype
+    def mode 
+    
+    void init(){
+        charttype = 'NGAS' 
+        mode = 'build'
+    }
+    
+    def getChartTypeList(){
+        return [ 'NGAS', 'SRE' ];
+    }
+    
+    def view() {
+       data = svc.generateIncomeAccountListing( charttype )
+       if( !data ) throw new Exception("No results found.");
+       report.viewReport();
+       mode = 'view';
+       return "preview";
+    }
+    
+    def back(){
+        mode = 'build';
+        return "reportPage";
+    }
+        
+    def report =[
+        getReportName : { "incomeaccount" },
+        getReportData : { return data },
+        getParameters : { getStandardParameter() }
+    ] as ServerReportModel;
+    
+    
+    def getStandardParameter(){
+        return svcParams.getStandardParameter( OsirisContext.env.USERNAME ) 
+    }
+}
+
+]]>        
+        
+    </code>
+    <pages>
+        <page name="reportPage" template="etracs2.tc.report.IncomeAcctListingPage"/>
+        <page name="preview" template="etracs2.tc.PreviewPage" />
+    </pages>
+</workunit>

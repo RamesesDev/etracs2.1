@@ -1,0 +1,107 @@
+<workunit>
+    <invokers>
+        <invoker type="report:consolidatedreport" action="init" caption="CRAAF" /> 
+        <invoker type="afinventory.reports" action="init" caption="CRAAF" icon="images/doc-view.png" />
+        <invoker folderid="/report/tc" action="init" caption="CRAAF" permission="tcreport.craaf"/>
+        
+        <invoker type="formActions" action="_close" caption="Back" mnemonic="b" shortcut="ctrl b" visibleWhen="#{mode == 'build'}" icon="images/back.png"/>
+        <invoker type="formActions" action="view" caption="View" mnemonic="v" shortcut="ctrl v" visibleWhen="#{mode == 'build'}" icon="images/doc-view.png"/>
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl b" visibleWhen="#{mode == 'view'}" icon="images/back.png"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class CRAAFController
+{
+    @Service("ReportParameterService")
+    def svcParams;
+    
+    @Service('DateService')
+    def svcDate;
+    
+    @Service("ConsolidatedReportService")
+    def svc;
+    
+    @Service("ETRACSUserService")
+    def userSvc
+   
+    def mode = "build";
+    def entity = [];
+    def data = [];
+    
+    def months;
+    
+    void init(){
+       def cal = Calendar.getInstance(); 
+       entity = [
+            year : svcDate.getServerDate(),
+            day  : cal.get(Calendar.DATE)
+       ];
+    }
+    
+    void setMonths( months ){
+        entity.month = months.value;
+        entity.monthname = months.name;
+    }
+    
+    def back(){
+        mode = 'build';
+        return "reportPage";
+    }
+    
+    def view() {
+       data = svc.buildReport( entity );
+       if( !data ) throw new Exception("No results found.");
+       report.viewReport();
+       mode = 'view';
+       return "preview";
+    }
+    
+    def getMonthList(){
+        return [
+            [name:"JANUARY", value:1],
+            [name:"FEBRUARY", value:2],
+            [name:"MARCH", value:3],
+            [name:"APRIL", value:4],
+            [name:"MAY", value:5],
+            [name:"JUNE", value:6],
+            [name:"JULY", value:7],
+            [name:"AUGUST", value:8],
+            [name:"SEPTEMBER", value:9],
+            [name:"OCTOBER", value:10],
+            [name:"NOVEMBER", value:11],
+            [name:"DECEMBER", value:12]
+        ];
+    }
+    
+    def report =[
+        getReportName : { "craaf/craafreport" },
+        getReportData : { return data; },
+        getParameters : { getStandardReportParams(); }
+    ] as ServerReportModel;
+    
+    
+    def getStandardReportParams() {
+        return svcParams.getStandardParameter( OsirisContext.env.USERNAME ) + [
+            MONTH       : entity.monthname,
+            YEAR        : Integer.parseInt( entity.year ),
+            PREPAREDBY  : OsirisContext.env.USERFORMALNAME,
+            PREPAREDBYTITLE : userSvc.getUser( OsirisContext.env.USERID ).jobtitle 
+        ]; 
+    }
+    
+}
+
+]]>        
+        
+    </code>
+    <pages>
+        <page name="reportPage" template="etracs2.tc.report.CRAAFPage"/>
+        <page name="preview" template="etracs2.tc.PreviewPage" />
+    </pages>
+</workunit>

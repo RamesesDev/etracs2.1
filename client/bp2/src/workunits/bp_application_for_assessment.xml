@@ -1,0 +1,221 @@
+<workunit>
+    <invokers>
+        <invoker type="bp.assessment"  action="checkPageToLoad" caption="Business Application"/>
+        <invoker type="bp.FOR_ASSESSMENT" caption="Business Application" target="window"/>
+        <invoker type="bp.FOR_APPROVAL" action="init" caption="Business Application" target="window"/>
+        <invoker type="bp.FOR_REVIEW" action="init" caption="Business Application" target="window"/>
+        <invoker type="bp.APPROVED" action="init" caption="Business Application" target="window"/>
+        
+        <invoker type="formActions" action="cancelAssessment" caption="Cancel Assessment" visibleWhen="#{application.docstate != 'APPROVED' and application.docstate != 'RETIRED'}" mnemonic="c" shortcut="ctrl C" icon="images/cancel.png" permission="bplicensing.cancelassessment"/>
+        <invoker type="formActions" action="assess" caption="Assess" visibleWhen="#{application.docstate == 'FOR_ASSESSMENT'}" mnemonic="a" shortcut="ctrl A" icon="images/assess.png" permission="bplicensing.assess"/>
+        <invoker type="formActions" action="reassess" caption="Re-Assess" visibleWhen="#{application.docstate == 'FOR_REVIEW' or application.docstate == 'FOR_APPROVAL'}" mnemonic="r" shortcut="ctrl R" icon="images/assess.png" permission="bplicensing.reassess"/>
+        <invoker type="formActions" action="submit" caption="Submit For Approval" visibleWhen="#{application.docstate == 'FOR_REVIEW'}" mnemonic="s" shortcut="ctrl S" icon="images/doc-submit.png" permission="bplicensing.submitforreview"/>
+        <invoker type="formActions" action="disapprove" caption="Disapprove" visibleWhen="#{application.docstate == 'FOR_APPROVAL'}" mnemonic="d" shortcut="ctrl D" icon="images/doc-disapprove.png" permission="bplicensing.disapprove"/>
+        <invoker type="formActions" action="approve" caption="Approve" visibleWhen="#{application.docstate == 'FOR_APPROVAL'}" mnemonic="a" shortcut="ctrl A" icon="images/doc-approve.png" permission="bplicensing.approve"/>
+        
+        <invoker type="formActions" action="viewAssessment"     mnemonic="v" shortcut="ctrl V" caption="View Assessment" visibleWhen="#{application.docstate != 'FOR_ASSESSMENT'}" icon="images/doc-view.png" permission="bplicensing.viewassessment"/>
+        <invoker type="formActions" action="previewApplication" mnemonic="p" shortcut="ctrl P" caption="View Application" icon="images/doc-view.png" permission="bplicensing.viewapplication"/>
+    </invokers>
+    
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+
+class BusinessApplicationForAssessment
+{
+    @Service('BPApplicationService')
+    def svc;
+    
+    @Binding
+    def binding;
+    
+    def application;
+    
+    def applist = [];
+    def appdata = [:];
+    
+    def applistHandler = [
+        getRows : { return 2 },
+        getColumns : { return [
+            new Column( name:'txnno', caption:'App No.' ),
+            new Column( name:'txntype', caption:'Application Type' ),
+            new Column( name:'assessedvalue', caption:'Assessed Value' ),
+            new Column( name:'amountdue', caption:'Amount Due' ),
+            new Column( name:'iyear', caption:'Applicable Year', format:'####' )
+        ]},
+
+        fetchList : { 
+            if( !applist ) applist = svc.getApplicationList( application.objid ); 
+            return applist;
+        }
+    ] as SubListModel;
+    
+    def appinfoListHandler = [
+        getRows    : { return 3 },
+        getColumns : { return [
+            new Column(name:'lobname', caption:'Line of Business'),
+            new Column(name:'varcaption', caption:'Variable'),
+            new Column(name:'value', caption:'Value'),
+        ]},
+
+        fetchList : { 
+            return appdata?.infos;
+        }
+    ] as SubListModel
+    
+    def requirementHandler = [
+        getRows: { return 10; },
+        getColumns: {
+            return [
+                new Column(name:"complied", caption:"?", type:"boolean", editable:(application.docstate != 'APPROVED'), maxWidth:25),
+                new Column(name:"requirement", caption:"Requirement"),
+                new Column(name:"remarks", caption:"Remarks", editable:(application.docstate != 'APPROVED'))
+            ];
+        },
+        fetchList: { return application.info.requirements; }
+    ] as SubListModel;
+    
+    def taxfeeListHandler = [
+        getRows    : { return 10 },
+        getColumns : { return [
+            new Column(name:'lobname', caption:'Line of Business'),
+            new Column(name:'accttitle', caption:'Account'),
+            new Column(name:'assessedvalue', caption:'Assessed Value', type:'decimal'),
+            new Column(name:'amountdue', caption:'Amount Due', type:'decimal', editable:(application.txnmode == 'CAPTURE' && application.docstate != 'APPROVED')),
+        ]},
+        
+        onColumnUpdate : { obj, name ->
+            if( name == 'amountdue' ) binding.refresh();
+        },
+        
+        fetchList : { 
+            return appdata?.taxfees;
+        }
+    ] as SubListModel
+    
+    def cancelAssessment(){ 
+        def app = svc.cancelApplicationForAssessement( application.objid );
+        return InvokerUtil.lookupOpener('bp.open', [application:app] );
+    }
+    
+    void submit(){
+        if( MsgBox.confirm("Submit for approval?") ){
+            application = svc.submitForReview( application.objid, applist, application.info.requirements );
+        }
+    }
+    
+    def approve(){
+        if( MsgBox.confirm("Approve?") ){
+            application = svc.approveApplication( application.objid, applist, application.info.requirements );
+            return InvokerUtil.lookupOpener('bp.assessment', [application:application]);
+        }
+        return null;
+    }
+    
+    void disapprove(){
+        application = svc.disapproveApplication( application.objid );
+    }
+
+    def getTotalAssessment(){
+        def total = 0.0;
+        if( appdata ){ 
+            appdata.taxfees.each{ total += it.amountdue; } 
+            appdata.amountdue = total;
+        }
+        return total;
+    }
+    
+    def previewApplication(){
+        return InvokerUtil.lookupOpener('bp.applicationreport', [applicationid:application.objid]);
+    }
+    
+    def viewAssessment(){
+        return InvokerUtil.lookupOpener('bp.assessmentreport', [applicationid:application.objid]);
+    }
+    
+    def init(){ return "forassessment";}
+    
+    def checkPageToLoad(){ 
+        return (application.docstate == 'FOR_ASSESSMENT' ) ? "default"  : "forassessment";
+    }
+    
+    /* ------------------------------------------------------------------------
+    // Input Values Support
+    //------------------------------------------------------------------------ */
+    
+    /* ------------------------------------------------------------------------
+    * Checks if there are still infos required before printing. If present,
+    * execute rule again for re-evaluation. However infos that are not required
+    * before printing are preserved and not included in the re-evaluation to avoid 
+    * infinite loop in the rule. The preserved infos are added when all infos are gathered. 
+    *
+    * return true if there are still infos required before printing 
+    ------------------------------------------------------------------------*/
+    def additionalInfos = []
+    def inputtedValues = [];
+    
+    def inputHandler = { app, entitySetter ->
+        additionalInfos.clear()
+        additionalInfos = determineAdditionalInfos(app)
+        
+        boolean done = true 
+        
+        if( additionalInfos ) {
+            //preserve currently inputted values
+            inputtedValues.addAll( app.infos )
+            
+            //remove additional infos to avoid infinite loop
+            app.infos.clear()
+            app.infos.addAll( additionalInfos )
+            def newapp = svc.evaluateApplicationInfo( app )
+            app.clear()
+            app.putAll( newapp)
+            
+            //exclude previous infos from result 
+            removeAllInfos( app, additionalInfos )
+            removeAllInfos( app, inputtedValues ) 
+            entitySetter( app )
+            
+            done = false 
+            if( ! app.infos ) {
+                done = true 
+            }   
+        }
+        return done
+    }
+    
+    def removeAllInfos( app, list ) {
+        list.each { item ->
+            app.infos.removeAll( app.infos.findAll{ it.lobid == item.lobid && it.varid == item.varid } )
+        }
+    }
+    
+    List determineAdditionalInfos( app ) {
+        return app.infos.findAll { it.requiredbeforeprint == true }
+    }
+    
+    def acceptInputHandler = { app ->
+        app.infos.addAll( inputtedValues )
+        inputtedValues.clear();
+    }
+    def assess() { 
+        return InvokerUtil.lookupOpener('bp.assessmentinfo', [entitylist:applist, inputHandler:inputHandler, acceptInputHandler:acceptInputHandler, application:application, svc:svc] );
+    }
+    
+    def reassess(){
+        def list = (appdata) ? [appdata] : applist;
+        return InvokerUtil.lookupOpener('bp.assessmentinfo', [entitylist:list, inputHandler:inputHandler, acceptInputHandler:acceptInputHandler, application:application, svc:svc] );
+    }
+}
+
+]]>        
+        
+    </code>
+    <pages>
+        <page name="forassessment" template="etracs2.bp.application.AssessmentMainPage"/>
+        <page template="etracs2.bp.application.ApplicationForAssessmentPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,7 @@
+<folders>
+    <folder id="menu">
+        <folder id="domain" caption="Domain" mnemonic="d">
+        </folder>
+        <folder id="rule" caption="Rule" mnemonic="r"/>
+    </folder>    
+</folders>

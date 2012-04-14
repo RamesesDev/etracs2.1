@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+// author    : jzamora
+// copyright : Rameses Systems Inc
+// date      : 27 jul 2011
+-->
+<workunit>
+    <invokers>
+        <invoker folderid="menu/rpt/txn" action="init"  caption="RPT Billing"  permission="rptbilling.generate"/>
+        <invoker type="home.action"      action="init"  caption="RPT Billing"  target="window" index="551" icon="images/bill.png" permission="rptbilling.generate" />
+
+        <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W" mnemonic="c" icon="images/cancel.png" immediate="true" />
+        <invoker type="formActions" action="printBill" caption="Print" shortcut="ctrl P" mnemonic="p" permission="rptbilling.printbill"/>
+        <invoker type="formActions" action="previewBill" caption="Preview" shortcut="ctrl v" mnemonic="v" icon="images/doc-view.png" permission="rptbilling.previewbill"/>
+        
+        <invoker type="previewActions" action="backMain" caption="Back" mnemonic="b" icon="images/back.png"/>
+    </invokers>
+    
+    <code lang="groovy">
+        <![CDATA[
+        
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*
+import java.rmi.server.UID;
+
+
+public class RPTBillingController  {
+    @Binding
+    def binding
+    
+    @Service('DateService')
+    def dateSvc
+    
+    @Service("RPTBillingService")
+    def billingSvc;
+
+    @Service("ReportParameterService")
+    def reportSvc
+    
+    def parsedate
+    def bill
+    def taxpayer 
+    
+    void init() {
+        parsedate = dateSvc.parseCurrentDate()
+        bill = [
+            taxpayerid     : null,
+            taxpayername   : null,
+            taxpayeraddress: null,
+            ledgerids      : [],
+            advancepayment : false,
+            billdate       : parsedate.date,
+            billtoyear     : parsedate.year,
+            billtoqtr      : 4,
+            fullpayment    : true,
+            qtrlypaymentavailed : false, 
+            advancepayment : false,
+            items          : []
+        ]
+    }
+    
+    def backMain() {
+        return 'default' 
+    }
+    
+    def getLookupTaxpayer() {
+        return InvokerUtil.lookupOpener('entity.lookup', [:] )
+    }
+    
+    void setTaxpayer( entity ) {
+        this.taxpayer           = entity 
+        bill.taxpayerid         = entity?.objid
+        bill.taxpayername       = entity?.entityname
+        bill.taxpayeraddress    = entity?.entityaddress
+        binding.refresh('bill.taxpayer.*')
+    }
+    
+    void buildBillReportInfo(){
+        if( bill.billdate ) bill.billdate = dateSvc.parse( 'yyyy-MM-dd', bill.billdate )
+        if( bill.advancepayment && bill.billdate <= (parsedate.date - 1 ))  {
+            throw new Exception('Advance Billing Date must be greater than todays date.')
+        }
+        
+        bill = billingSvc.generateBill( bill )
+        report.viewReport()
+    }
+    
+    void printBill() {
+        buildBillReportInfo()
+        ReportUtil.print( report.report, true )
+    }
+    
+    def previewBill() {
+        buildBillReportInfo()
+        return 'preview'
+    }
+    
+    def report = [
+        getReportName : { return 'rptbilling/rptbilling' },
+        getReportData : { return bill },
+        getParameters : { return reportSvc.getStandardParameter( OsirisContext?.env?.USERNAME ) }
+    ] as ServerReportModel
+    
+    List getQuarters() {
+        return  [1,2,3,4]
+    }
+    
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.billing.RPTBillingPage" />
+        <page name="preview" template="etracs2.common.PreviewPage"/>
+    </pages>
+</workunit>

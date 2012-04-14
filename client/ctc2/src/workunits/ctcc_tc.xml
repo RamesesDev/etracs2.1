@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    
+    @description: CTC-Corporate TC Plugin
+    
+-->
+<workunit>
+    <invokers>
+        <invoker type="collection" caption="CTC-Corporate" afid="0017" appcode="ctc_corporate" permission="collection_ctc_corporate.create"/>
+        <invoker type="tc:ctc_corporate" action="init" caption="CTC-Corporate" afid="0016" permission="collection_ctc_corporate.create"/>
+        
+        <invoker type="initActions" action="back" caption="Back" mnemonic="b"  immediate="true" icon="images/back.png"/>
+        
+        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" permission="collection_ctc_corporate.create"  icon="images/doc-new.png"/>
+        <invoker type="formActions" action="_init" caption="Back" mnemonic="b"  immediate="true" visibleWhen="#{mode == 'create'}" icon="images/back.png"/>
+        <invoker type="formActions" action="create" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" icon="images/save.png"/>
+        <invoker type="formActions" action="update" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'edit'}"  icon="images/save.png"/>
+        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" permission="collection_ctc_corporate.print"/>
+        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view'}" permission="collection_ctc_corporate.void" icon="images/void.png"/>
+        
+        <invoker type="receipt.actions:tc:ctc_corporate" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup" permission="collection_ctc_corporate.edit" icon="images/edit.png"/>
+        <invoker type="receipt.actions:tc:ctc_corporate" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" permission="collection_ctc_corporate.print"/>
+        <invoker type="receipt.actions:tc:ctc_corporate" action="doVoid" caption="Void" mnemonic="v" permission="collection_ctc_corporate.void" icon="images/doc-void.png"/>
+        
+        <invoker type="inquiry:tc:ctc_corporate" action="initInquiry" caption="Inquiry" />
+    </invokers>
+    
+    <code lang="groovy">
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.reports.*
+        import etracs2.tc.groovy.*
+        
+        public class CTCCorporateReceiptController extends AbstractCollectionController
+        {
+            @Service("EntityService")
+            def entitySvc;
+            
+            @Service("CTCService")
+            def ctcSvc;
+            
+            @Service("ReceiptService")
+            def svc;
+        
+            def collectiontitle = 'COMMUNITY TAX CERTIFICATE (CORPORATE)'
+            def taxpayer
+            def taxpayerLookup = InvokerUtil.lookupOpener("entity.lookup", [:])
+            
+            def next() {
+                if(taxpayer && taxpayer.entitytype != 'juridical') {
+                    MsgBox.err('Selected taxpayer is not a JURIDICAL type.')
+                    return;
+                }
+                
+                if( !taxpayer ) {
+                    entity.info.payer = [
+                        entitytype : 'juridical',
+                        info:[:]
+                    ]
+                }
+                entity.doctype = 'CTCC'
+                entity.tax = [
+                    basic:    0.00,
+                    property: 0.00,
+                    business: 0.00,
+                    interest: 0.00,
+                ];
+                entity.realpropertyav = 0.00
+                entity.businessgross = 0.00
+                return 'new'
+            }
+            
+            void setTaxpayer( tp ) {
+                this.taxpayer = tp
+                if( !entity.info.payer ) entity.info.payer = [:]
+
+                if( !tp ) {
+                    entity.info.payer = [info:[:]]
+                }
+                else {
+                    tp = entitySvc.open( tp.objid, tp.entitytype );
+                    if( !tp ) throw new Exception("Taxpayer record cannot be opened.");
+                    
+                    entity.info.payer.clear();
+                    entity.info.payer.putAll( tp );
+                }
+            }
+            
+            void calculate() {
+                def result = ctcSvc.calculate( entity );
+                entity.tax = result.tax;
+                entity.info.amount = result.total;
+                entity.items = result.items;
+            }
+            
+            def getService() { return svc }
+            def getHtmlService() {}
+            def getCollectionTitle() { return collectiontitle }
+            def getParameters() {}
+            def getReportName() { return 'AF907' }
+        }
+        
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page name="init" template="etracs2.ctc.tc.ui.CTCInitPage"/>
+        <page name="new" template="etracs2.ctc.tc.ui.CorporatePage"/>
+        <page name="view" template="etracs2.tc.collection.CollectionViewPage"/>
+        <page name="html" template="etracs2.tc.HtmlPage"/>
+    </pages>
+</workunit>

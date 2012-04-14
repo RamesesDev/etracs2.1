@@ -1,0 +1,95 @@
+<workunit>
+    <invokers>
+        <invoker type="rulecondition.type" action="create" caption="Use Application Data" index="80" />        
+        <invoker type="rulecondition.variable.open" action="open" caption="Use Application Data Condition" />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+class BPRuleConditionVariableController 
+{
+    @Binding
+    def binding
+    
+    @Service('BPApplicationService')
+    def svc 
+    
+    @Service('VariableService')
+    def varSvc
+    
+    def condition
+    def variableOpener
+    def variable 
+    def variableList 
+    
+    void create() {
+        condition = [
+            opener   : 'rulecondition.variable',
+            variable : null,
+            value    : null, 
+            perline  : true,
+        ]
+    }
+    
+    void open() {
+        //setVariable( varSvc.open( condition.variable.objid ) )  
+        variable = variables.find{ it.objid == condition.variable.objid  }
+    }
+    
+    def selectHandler = { value ->
+        condition.value = value
+    }
+    
+    void setVariable( variable ) {
+        this.variable = variable 
+        condition.variable = variable
+        variableOpener = null
+        if( variable?.datatype == 'string_array' ) {
+            variableOpener = InvokerUtil.lookupOpener('variablevalue', [variable:variable, selectedValue:condition.value, selectHandler:selectHandler])
+        }
+    }
+    
+    
+    //must be implemented by a condition handler
+    void accept() {
+        if( ! condition.variable ) throw new Exception('Property is required.')
+        if( condition.variable.vartype == 'string_array' && condition.value == null ) throw new Exception('Value is required.')
+        condition.displaytext = buildDisplayText()
+    }
+    
+    def buildDisplayText() {
+        def txt = 'Use Application Data provided '
+        if( condition.perline == true ) {
+            txt += 'per line of business '
+        }
+        txt += ': ' + condition.variable.name
+        if( condition.variable.datatype == 'string_array' ) {
+            txt += ' = ' + condition.value
+        }
+        return txt 
+    }
+    
+    def getVariables() {
+        if( !variableList  ) {
+            variableList = varSvc.getList( null, null )
+            variableList.each {
+                if( it.datatype == 'string_array' ) {
+                    it.arrayvalues = GroovyObjectDeserializer.instance.deserialize( it.arrayvalues )
+                }
+            }
+        }
+        return variableList 
+    }
+    
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.bp.rule.condition.VariableConditionPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+// author    : jzamora
+// copyright : Rameses Systems Inc
+-->
+<workunit>
+    <invokers>
+        <invoker type="faas.create" action="initCapture" caption="New" mnemonic="n" shortcut="ctrl N" target="window" icon="images/doc-new.png" permission="faas.create" />
+        <invoker type="faas.open" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" target="window" icon="images/open.png" permission="faas.open" />
+       
+        <invoker type="faas.viewprevious" action="openPrevious" caption="View Previous" target="popup" icon="images/doc-view.png" />
+        
+        <!-- transactions -->
+   
+        <invoker type="rpttransaction" folderid="/menu/rpt/txn" action="initCapture"      caption="Data Capture"          mnemonic="c" target="window" permission="datacapture.create"/>
+        <invoker type="rpttransaction" folderid="/menu/rpt/txn" action="transfer"         caption="Transfer of Ownership" mnemonic="t" target="window" permission="transfer.create"/>
+        <invoker type="rpttransaction" folderid="/menu/rpt/txn" action="transferReassessment"         caption="Transfer with Reassessment" mnemonic="f" target="window" permission="transfer.create"/>
+        <invoker type="rpttransaction" folderid="/menu/rpt/txn" action="changeClassification"       caption="Change Classification"   mnemonic="c" target="window" permission="changeclassification.create"/>
+        <invoker type="rpttransaction" folderid="/menu/rpt/txn" action="changeTaxability"       caption="Change Taxability"   mnemonic="c" target="window" permission="changetaxability.create"/>
+        <invoker type="rpttransaction" folderid="/menu/rpt/txn" action="correction"       caption="Correction of Entry"   mnemonic="e" target="window" permission="correction.create"/>
+        <invoker type="rpttransaction" folderid="/menu/rpt/txn" action="newdiscovery"     caption="New Discovery"         mnemonic="d" target="window" permission="newdiscovery.create"/>
+        <invoker type="rpttransaction" folderid="/menu/rpt/txn" action="multipleclaim"    caption="Multiple Claim"        mnemonic="m" target="window" permission="multipleclaim.create"/>
+        <invoker type="rpttransaction" folderid="/menu/rpt/txn" action="reassessment"     caption="Re-Assessment"         mnemonic="r" target="window" permission="reassessment.create"/>
+        <invoker type="rpttransaction" folderid="/menu/rpt/txn" action="generalRevision"   caption="General Revision"      mnemonic="g" target="window" permission="generalrevision.create"/>
+        
+        <invoker type="rpttransaction.initCapture"   action="initCapture"      caption="Data Capture"          target="window" />
+        <invoker type="rpttransaction.transfer"      action="transfer"         caption="Transfer of Ownership" target="window" />
+        <invoker type="rpttransaction.transferReassessment"      action="transferReassessment"         caption="Transfer with Reassessment" target="window" />
+        <invoker type="rpttransaction.correction"    action="correction"       caption="Correction of Entry"   target="window" />
+        <invoker type="rpttransaction.changeClassification"  action="changeClassification"     caption="Change Classification"         target="window" />
+        <invoker type="rpttransaction.changeTaxability"  action="changeTaxability"     caption="Change Taxability"         target="window" />
+        <invoker type="rpttransaction.reassessment"  action="reassessment"     caption="Re-Assessment"         target="window" />
+        <invoker type="rpttransaction.newdiscovery"  action="newdiscovery"     caption="New Discovery"         target="window" />
+        <invoker type="rpttransaction.multipleclaim" action="multipleclaim"    caption="Multiple Claim"        target="window" />
+        <invoker type="rpttransaction.generalRevision"  action="generalRevision"     caption="General Revision"         target="window" />
+        
+        
+        <invoker type="formActions" action="_close"         caption="Close"                 shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
+        <invoker type="formActions" action="save"           caption="Save"                  shortcut="ctrl S"   mnemonic="s"  visibleWhen="#{showSaveAction == true}"  icon="images/save.png" />
+        <invoker type="formActions" action="submit"         caption="Submit For Approval"   shortcut="ctrl M"   mnemonic="m"  visibleWhen="#{faas.docstate == 'INTERIM' and mode != 'create'}"   icon="images/doc-submit.png" permission="faas.submit" />
+        <invoker type="formActions" action="remove"         caption="Delete"                shortcut="ctrl D"   mnemonic="d"  visibleWhen="#{showDelete == true }" immediate="true"   icon="images/doc-delete.png" permission="faas.delete" />
+        <invoker type="formActions" action="disapprove"     caption="Disapprove"            shortcut="ctrl e"   mnemonic="a"  visibleWhen="#{showDisapproveAction == true}"  icon="images/disapprove.png" permission="faas.disapprove" />
+        <invoker type="formActions" action="approve"        caption="Approve"               shortcut="ctrl A"                 visibleWhen="#{showApproveAction == true}"   icon="images/approve.png" permission="faas.approve" />
+        <invoker type="formActions" action="submitToProvince" caption="Submit To Province"  shortcut="ctrl M"   mnemonic="m"  visibleWhen="#{showSubmitToProvinceAction == true}"   icon="images/doc-submit.png" permission="faas.submittoprovince" />
+        <invoker type="formActions" action="disapproveByProvince" caption="Disapprove"      shortcut="ctrl D"                 visibleWhen="#{showDisapproveByProvinceAction == true}"  icon="images/disapprove.png" permission="faas.disapprove" />
+        <invoker type="formActions" action="approveByProvince" caption="Approve"            shortcut="ctrl A"   mnemonic="a"  visibleWhen="#{showApprovedByProvinceAction == true}"   icon="images/approve.png" permission="faas.approvebyprovince" />
+        
+        <invoker type="formActions" action="showAttachments"    caption="Attachments"   visibleWhen="#{mode != 'create'}"  mnemonic="m" />
+        <invoker type="formActions" action="viewPrevious"       caption="View Previous" visibleWhen="#{showViewPrevious == true}" icon="images/doc-view.png" />
+                
+        
+    </invokers>
+    <code lang="groovy">
+<![CDATA[
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.* 
+import java.text.DecimalFormat;
+
+public class FAASController 
+{
+    @Binding
+    def binding
+    
+    @Service('FAASService')
+    def svc
+    
+    
+    def faas 
+    def mode
+    
+    @FormTitle
+    public def getTitle() {
+        if( mode == 'create' ) 
+            return 'FAAS (New)'
+        return 'FAAS : ' + faas.info.tdno 
+    }
+    
+    @Close
+    public boolean closeForm() {
+        if( mode == 'create' && !MsgBox.confirm('Discard changes?')) {
+            return false
+        }
+        return true
+    }
+        
+    def invokerparam = [
+        getParams :  { return [faasid:faas?.objid] }
+    ] as InvokerParameter
+    
+    def getFormActions() {
+        return InvokerUtil.lookupActions('faasmgmt.action', invokerparam )
+    }
+    
+    
+    
+    /*-----------------------------------------------------------------------------
+    *
+    * MainPage Support 
+    *
+    -----------------------------------------------------------------------------*/
+    def initCapture() {
+        mode = 'create' 
+        faas = svc.createFaas( )
+        return 'new'
+    }
+    
+    void open() {
+        mode = 'view' 
+        faas = svc.open( faas.objid )
+        initFormFields( faas )
+    }
+    
+    void save() {
+        if( mode == 'create' )
+            faas = svc.create( faas )
+        else
+            faas = svc.update( faas )
+        mode = 'view'
+    }
+    
+    def remove() {
+        if( MsgBox.confirm('Delete FAAS?') ) {
+            svc.delete( faas.objid )
+            return '_close' 
+        }
+    }
+    
+    void submit() {
+        if( MsgBox.confirm('Submit FAAS?') ) {
+            save()
+            faas = svc.submit( faas.objid )
+        }
+    }
+    
+    void approve() {
+        if( MsgBox.confirm('Approve FAAS?') ) {
+            save()
+            faas = svc.approve( faas.objid )
+        }
+    }
+    
+    void disapprove() {
+        if( MsgBox.confirm('Disapprove FAAS?') ) {
+            save()
+            faas = svc.disapprove( faas.objid )
+        }
+    }
+    
+    void submitToProvince() {
+        if( MsgBox.confirm('Submit to Province?') ) {
+            save()
+            faas = svc.submitToProvince( faas.objid )
+        }
+    }
+    
+    void approveByProvince() {
+        if( MsgBox.confirm('Approve FAAS?') ) {
+            faas = svc.approveByProvince( faas.objid )
+        }
+    }    
+    
+    void disapproveByProvince() {
+        if( MsgBox.confirm('Disapprove FAAS?') ) {
+            save()
+            faas = svc.disapproveByProvince( faas.objid )
+        }
+    }
+    
+    def onupdateRpu = { rpu ->
+        binding.refresh('faas.rpu.*|totalmv|totalav')
+    }
+    
+    def viewAssessment() {
+        def openerType =  'rpu.' + faas.rpu.rputype 
+        return InvokerUtil.lookupOpener(openerType, [onupdate:onupdateRpu, faas:faas, rpu:faas.rpu])
+    }
+    
+    void initFormFields( faas ) {
+        appraiser       = [ name : faas.info.appraisedby ]
+        recommender     = [ name : faas.info.recommendedby ]
+        approver        = [ name : faas.info.approvedby ]
+        taxpayer        = [ entityname : faas.info.taxpayername ]
+        administrator   = [ entityname : faas.info.administratorname ]
+    }
+    
+    
+    /*-----------------------------------------------------------------------------
+    *
+    * MainPage:Lookup Support 
+    *
+    -----------------------------------------------------------------------------*/
+    def appraiser
+    def recommender
+    def approver
+    def taxpayer
+    def administrator
+    
+    def getLookupAppraiser() { 
+        return InvokerUtil.lookupOpener('rptofficers.lookup', [officerType:'APPRAISER'])
+    }
+
+    void setAppraiser( appraiser ){
+        this.appraiser              = appraiser 
+        faas.info.appraisedbyid     = appraiser?.objid
+        faas.info.appraisedby       = appraiser?.name
+        faas.info.appraisedbytitle  = appraiser?.title 
+    }
+    
+    def getLookupRecommender() {
+        return InvokerUtil.lookupOpener('rptofficers.lookup',[officerType:'RECOMMENDER'])
+    }
+    
+    void setRecommender( officer ) {
+        this.recommender             = officer 
+        faas.info.recommendedbyid    = officer?.objid
+        faas.info.recommendedby      = officer?.name
+        faas.info.recommendedbytitle = officer?.title 
+    }
+    
+    def getLookupApprover() {
+        return InvokerUtil.lookupOpener('rptofficers.lookup',[officerType:'APPROVER'])
+    }
+    
+    void setApprover( officer ) {
+        this.approver             = officer
+        faas.info.approvedbyid    = officer?.objid
+        faas.info.approvedby      = officer?.name
+        faas.info.approvedbytitle = officer?.title 
+    }
+    
+    def getLookupTaxpayer() {
+        return InvokerUtil.lookupOpener('entity.lookup',[:])
+    }
+    
+    void setTaxpayer( entity ) {
+        this.taxpayer               = entity
+        faas.info.taxpayerid        = entity?.objid
+        faas.info.taxpayerno        = entity?.entityno
+        faas.info.taxpayername      = entity?.entityname
+        faas.info.taxpayeraddress   = entity?.entityaddress
+        faas.info.ownername         = entity?.entityname
+        faas.info.owneraddress      = entity?.entityaddress
+        binding.refresh('faas.info.taxpayer.*|faas.info.owner.*')
+    }
+    
+    def getLookupAdministrator() {
+        return InvokerUtil.lookupOpener('entity.lookup',[:])
+    }
+    
+    void setAdministrator( entity ) {
+        this.administrator              = entity
+        faas.info.administratorid       = entity?.objid 
+        faas.info.administratorno       = entity?.entityno
+        faas.info.administratorname     = entity?.entityname
+        faas.info.administratoraddress  = entity?.entityaddress
+        binding.refresh('faas.info.administrator.*')
+    }
+    
+    
+    
+    
+    List getTitleTypes()   { return svc.getTitleTypeList() }
+    List getRestrictions() { return ['CARP','UNDER_LITIGATION','OTHER'] }
+    
+    
+    /*-----------------------------------------------------------------------------
+    *
+    * NewPage Support (Initial Screen)
+    *
+    -----------------------------------------------------------------------------*/
+    boolean iscondo = false 
+    def barangay
+    def section = 0
+    def parcel = 0
+    
+    def create() {
+        faas.rp.barangayid = barangay.objid
+        faas.rp.barangay = barangay.lguname
+        faas.rp.barangayindex = barangay.indexno 
+        faas.rp.munidistrictid = barangay.parentid 
+        setSectionInfo()
+        setParcelInfo()
+        faas = svc.validateCreate( faas )
+        return 'default'
+    } 
+    
+    
+    void setSectionInfo() {
+        String ssection = section+''
+        if( ! ssection ) throw new Exception('Section is required.')
+        def sectionlength = ( faas.rp.pintype == 'new' ? 3 : 2 )
+        if( ssection.length() > sectionlength ) throw new Exception('Section must be ' +  sectionlength +' digits long.')
+        faas.rp.section = ssection.padLeft( sectionlength, '0' )
+    }
+    
+    void setParcelInfo() {
+        String sparcel = parcel+''
+        if( ! sparcel ) throw new Exception('Parcel is required.')
+        def parcellength = ( faas.rp.pintype == 'new' ? 2 : 3 )
+        if( sparcel.length() > parcellength ) throw new Exception('Parcel must be ' +  sectionlength +' digits long.')
+        faas.rp.parcel = sparcel.padLeft( parcellength, '0' )
+    }
+    
+    String getTotalmv() {
+        return moneyFormat( faas.rpu.totalmv )
+    }
+    
+    String getTotalav() {
+        return moneyFormat( faas.rpu.totalav )
+    }
+    
+    String moneyFormat( value ) {
+        return new DecimalFormat('#,##0.00').format( value )
+    }
+    
+    List getTxnTypes() { return svc.getTxnTypes() }
+    List getPinTypes() { return ['new', 'old'] }
+    List getBarangays(){ return svc.getBarangays() }
+    List getQuarters() { return [1,2,3,4] }
+    
+    
+    boolean getShowSaveAction() {
+        if( faas.docstate == 'INTERIM' ) return true
+        if( faas.docstate == 'FORAPPROVAL' ) return true
+        return false 
+    }
+    
+    boolean getShowApproveAction() {
+        if( faas.lgutype?.toLowerCase() != 'city'  ) return false
+        if( faas.docstate != 'FORAPPROVAL' ) return false
+        return true
+    }
+    
+    boolean getShowDisapproveAction() {
+        if( faas.lgutype?.toLowerCase() != 'city'  ) return false
+        if( faas.docstate != 'FORAPPROVAL' ) return false
+        return true
+    }
+    
+    boolean getShowSubmitToProvinceAction() {
+        if( faas.lgutype?.toLowerCase() != 'municipality'  ) return false
+        if( faas.docstate != 'FORAPPROVAL' ) return false
+        return true 
+    }
+    
+    boolean getShowApprovedByProvinceAction() {
+        if( faas.lgutype?.toLowerCase() != 'municipality'  ) return false
+        if( faas.docstate != 'FORPROVAPPROVAL' ) return false
+        return true
+    }
+    
+    boolean getShowDisapproveByProvinceAction() {
+        if( faas.lgutype != 'municipality'  ) return false
+        if( faas.docstate != 'FORPROVAPPROVAL' ) return false
+        return true
+    }
+    
+    /*-----------------------------------------------------------------------------
+    *
+    * Transaction Support 
+    *
+    -----------------------------------------------------------------------------*/
+    def prevtdno
+    def prevtd
+    boolean autonumber = false
+    def txntitle
+    def txntype
+    def claimno = '-'
+    
+    def transfer()      { initTxn( 'TR', 'Transfer of Ownership Transaction' ) }
+    def transferReassessment()      { initTxn( 'TRE', 'Transfer With Reassessment Transaction' ) }
+    def reassessment()  { initTxn( 'RE', 'Re-Assessment Transaction' ) }
+    def changeClassification() { initTxn( 'CC', 'Change Classification Transaction' ) }
+    def changeTaxability() { initTxn( 'CT', 'Change Taxability Transaction' ) }
+    def correction()    { initTxn( 'CE', 'Correction of Entry Transaction' ) }
+    def multipleclaim() { initTxn( 'MC', 'Multiple Claim Transaction' ) }
+    
+    
+    def newrysetting
+    def generalRevision() {
+        initTxn( 'GR', 'General Revision Transaction' )
+        return 'grinit' 
+    }
+    
+    List getRylist() {
+        return svc.getRyList( prevtd?.rputype )
+    }
+    
+    def getLookupCurrentFaas() {
+        return InvokerUtil.lookupOpener( 'faas.lookup', [:] )
+    }
+    
+    void setPrevtd( prevtd ) {
+        if( prevtd ) {
+            if( prevtd.docstate != 'CURRENT' ) {
+                throw new Exception('FAAS state is ' + prevtd.docstate + '.\nOnly current record is allowed.')
+            }
+            prevtdno = prevtd.tdno 
+        }
+        this.prevtd = prevtd 
+    }
+    
+    def initTxn( txntype, txntitle ) { 
+        this.mode = 'create' 
+        this.txntype = txntype 
+        this.txntitle = txntitle 
+        return 'txninit' 
+    } 
+    
+    def initTransaction() {
+        faas = svc.initTransaction2( txntype, prevtdno, autonumber, claimno, newrysetting)
+        initFormFields( faas )
+        return 'default'
+    }
+    
+    boolean getAllowAutoNumber() {
+        println 'TODO: faas.xml:getAllowAutoNumber -> check domain code and value'
+        if( OsirisContext.env.DOMAIN == 'city' ) return true
+        return false 
+    }
+    
+    boolean getAllowEdit() {
+        if( faas.docstate == 'FORPROVAPPROVAL' ) return false
+        if( faas.docstate == 'CURRENT' ) return false
+        if( faas.docstate == 'CANCELLED' ) return false
+        return true
+    }
+    
+    boolean getAllowEditPinInfo() {
+        if( faas.rpu.rputype != 'land' ) return false
+        if( faas.info.datacapture == true ) return true 
+        if( 'CE/ND/MC'.indexOf( faas.info.txntype ) >= 0 ) return true 
+        return false
+    }
+    
+    boolean getAllowEditPrevInfo() {
+        if( faas.docstate == 'FORPROVAPPROVAL' ) return false
+        if( faas.docstate == 'CURRENT' ) return false
+        if( faas.docstate == 'CANCELLED' ) return false
+        if( faas.info.datacapture == false ) return false 
+        return true 
+    }
+    
+    boolean getShowDelete(){
+        if( mode == 'create' ) return false
+        if( faas.docstate == 'CURRENT' ) return false
+        if( faas.docstate == 'CANCELLED' ) return false
+        if( faas.docstate == 'FORPROVAPPROVAL' ) return false
+        return true
+    }
+    
+    
+    boolean getEnableTdno() {
+        if( faas.info.datacapture == true ) return true
+        if( faas.info.datacapture == 1 ) return true 
+        else if( faas.info.autonumber == false) return true
+        else if( faas.info.autonumber == 0 ) return true
+        return false
+    }
+    
+    /*-----------------------------------------------------------------------------
+    *
+    * FaasActions Support 
+    *
+    -----------------------------------------------------------------------------*/
+    boolean getShowViewPrevious() {
+        if( faas.previousfaases?.size() > 0 ) return true
+        return false
+    }
+    
+    def viewPrevious() {
+        if( faas.previousfaases.size() == 1 ) {
+            def prevfaas = [ objid:faas.previousfaases[0].faasid ]
+            return InvokerUtil.lookupOpener('faas.viewprevious', [faas:prevfaas])
+        }
+        else {
+            return InvokerUtil.lookupOpener('faaspreviouslist.open', [previousfaaslist:faas.previousfaases] )
+        }
+    }
+    
+    def openPrevious() {
+        mode = 'view' 
+        faas = svc.open( faas.objid )
+        initFormFields( faas )
+        return 'default'
+    }
+    
+    
+    /*-----------------------------------------------------------------------------
+    *
+    * NewDiscovery Support 
+    *
+    -----------------------------------------------------------------------------*/
+    def rputype = 'land'
+    
+    def newdiscovery()  { 
+        faas    = svc.createNewDiscovery()
+        mode    = 'create' 
+        txntype = faas.info.txntype
+        txntitle = 'New Discovery Transaction'
+        section  = 0
+        parcel   = 0
+        return 'ndinit' 
+    }
+        
+    void setRputype( rputype ) {
+        this.rputype = rputype
+        updateParcelNo()
+    }
+    
+    void setSection( section) {
+        this.section = section
+        updateParcelNo()
+    }
+    
+    void updateParcelNo() {
+        /*
+        if( rputype == 'land' ){
+            faas.rpu.suffix = 0
+            if( barangay ) {
+                parcel = svc.getNextParcelNo( barangay, section )
+            }
+        }
+        binding.refresh('faas.rpu.suffix|parcel')
+        */
+    }
+    
+    List getRputypeList() {
+        return ['land', 'improvement']
+    }
+    
+    
+    
+    def showAttachments() {
+        return InvokerUtil.lookupOpener('faasattachment.open', [faas:faas] )
+    }
+    
+        
+    boolean getShowActions() {
+        if( ! faas || faas.objid == null ) return false
+        if( mode == 'create' ) return false
+        return true
+    }
+    
+}
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.faas.FAASPage"/>
+        <page name="new" template="etracs2.rpt.faas.FAASNewPage"/>
+        <page name="ndinit" template="etracs2.rpt.faas.FAASNDInitPage"/>
+        <page name="grinit" template="etracs2.rpt.faas.FAASGRInitPage"/>
+        <page name="txninit" template="etracs2.rpt.faas.FAASTxnInitPage"/>
+    </pages>
+</workunit>
+
+

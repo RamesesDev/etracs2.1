@@ -1,0 +1,62 @@
+<workunit>
+    <invokers>
+        <invoker type="treasurymgmt.actions" action="init" caption="Unremitted Collection Monitoring" permission="treasurymgmt_remittance.view"/>
+    </invokers>
+    <code>
+        
+<![CDATA[
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import etracs2.groovy.*
+
+class RemittanceMonitoringController
+{
+    
+    @Service('TreasuryMgmtService')
+    def svc
+    
+    @Service('ETRACSUserService')
+    def userSvc
+    
+    def collector
+    def unremittedList
+    
+    void init() {
+        unremittedList = svc.getOpenUnremittedCollections( null  )
+    }
+    
+    def listHandler = [
+        getRows    : { return 50 },
+        getColumns : {
+            return [
+                new Column( name:'collectorname', caption:'Collector'),
+                new Column( name:'lastremittanceno', caption:'Last Remittance No.'),
+                new Column( name:'lastremittancedate', caption:'Last Remittance Date'),
+                new Column( name:'amount', caption:'Unremitted Collection', type:'decimal'),
+            ]
+        },
+        fetchList : { return unremittedList }
+    ] as SubListModel
+    
+    def getCollectorList() {
+        return userSvc.getCollectorList()
+    }
+    
+    def getTotal() {
+        def total = unremittedList.amount.sum()
+        if( ! total )
+            return 0.0
+        return total 
+    }
+}
+
+
+]]>
+
+    </code>
+    <pages>
+        <page template="etracs2.tc.treasury.RemittanceMonitoringPage"/>
+    </pages>
+</workunit>

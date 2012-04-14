@@ -1,0 +1,237 @@
+<workunit>
+    <invokers>
+        <invoker type="collection" caption="Business Tax" afid="51" appcode="business_tax" permission="collection_bp.create"/>
+        <invoker type="tc:business_tax" action="init" caption="Business Tax" afid="51" permission="collection_bp.create"/>
+        <invoker type="tc:01151" action="processBarcode" appcode="business_tax" caption="Business Tax" afid="51" permission="collection_bp.create"/>
+        <invoker type="inquiry:tc:business_tax" action="initInquiry" caption="Inquiry" />
+        
+        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" permission="collection_bp.create"  icon="images/doc-new.png"/>
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b"  immediate="true" visibleWhen="#{mode == 'create'}" icon="images/back.png"/>
+        <invoker type="formActions" action="create" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" icon="images/save.png"/>
+        <invoker type="formActions" action="update" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'edit'}"  icon="images/save.png"/>
+        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" permission="collection_bp.print"/>
+        <invoker type="formActions" action="doPrintDetail" caption="Print Detail" mnemonic="d" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" permission="collection_bp.print"/>
+        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view'}" permission="collection_bp.void" icon="images/void.png"/>
+        
+        <invoker type="receipt.actions:tc:business_tax" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup" permission="collection_bp.edit" icon="images/edit.png"/>
+        <invoker type="receipt.actions:tc:business_tax" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" permission="collection_bp.print"/>
+        <invoker type="receipt.actions:tc:business_tax" action="doPrintDetail" caption="Print Detail" mnemonic="d" shortcut="ctrl P" permission="collection_bp.print"/>
+        <invoker type="receipt.actions:tc:business_tax" action="doVoid" caption="Void" mnemonic="v" permission="collection_bp.void" icon="images/doc-void.png"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+    import com.rameses.rcp.common.*
+    import com.rameses.rcp.annotations.*
+    import com.rameses.osiris2.client.*
+    import com.rameses.osiris2.reports.*
+    import etracs2.groovy.*
+    import etracs2.tc.groovy.*
+
+    class BusinessTaxCollectionController extends AbstractCollectionController
+    {
+        @Binding
+        def binding
+        
+        @Service('BPCollectionService')
+        def bpcolSvc;
+        
+        @Service('ReceiptService')
+        def svc;
+        
+        @Service('BPApplicationService')
+        def appSvc 
+        
+        @Service('ReceiptHtmlService')
+        def htmlService
+        
+        @Service( 'ReportParameterService')
+        def paramSvc 
+        
+        def bp = [:];
+        def years = [];
+        
+        def year = 0;
+        def qtr = 4;
+        
+        def barcode 
+        
+        def onselect = {
+            year = 0
+            qtr = 4
+            if( it ){
+                entity.year = 0;
+                entity.qtr = 0;
+                
+                entity.applicationid = it.objid
+                entity.info.payorid = it.payorid
+                entity = bpcolSvc.getBill( entity, 0, 0 );
+                entity.items.collect{ it.iyear }.each{ y ->
+                    if( !years?.find{ it == y } ) years << y;
+                }
+                year = years[0];
+                listHandler.load();
+            }else{
+                entity.year = 0;
+                entity.qtr = 0;
+                entity.applicationid = it.objid;
+                entity.businessid = null;
+                entity.tradename = null;
+                entity.businessaddress = null;
+                entity.info.payorname = null;
+                entity.info.payoraddress = null;
+                years = [];
+                entity.items = [];
+                listHandler.load();
+            }
+            binding?.refresh();
+        }
+        
+        public void setBp( def val ){
+            this.bp = val;
+            if( !val ){
+                entity.year = 0;
+                entity.qtr = 0;
+                entity.applicationid = null;
+                entity.businessid = null;
+                entity.tradename = null;
+                entity.businessaddress = null;
+                entity.info.payorname = null;
+                entity.info.payoraddress = null;
+                years = [];
+                entity.items = [];
+                listHandler.load();
+            }
+        }
+
+        def getParameters() { 
+            def params = paramSvc.getStandardParameter( OsirisContext.env.USERNAME )
+            params.listSize = entity.items.size()
+            return params
+        }
+        def getService() { return svc; }
+        def getHtmlService() { return htmlService }
+        def getCollectionTitle() { return 'Business License Fee'; }
+        def getLookupBusiness(){ return InvokerUtil.lookupOpener( 'bp.lookupbusiness',[onselect:onselect] ); }
+        def getReportName() { return 'receipt/af51'; }
+        
+        def listHandler = [
+            getColumns : {
+                return [
+                    new Column( name:'iyear', caption:'Year', width:10, resizable:false, type:'integer', format:"0000"),
+                    new Column( name:'iqtr', caption:'Qtr', width:5, resizable:false, type:'integer'),
+                    new Column( name:'lobname', caption:'Line Of Business'),
+                    new Column( name:'accttitle', caption:'Account'),
+                    new Column( name:'taxamount', caption:'Amount', type:'decimal', format:"#,##0.00"),
+                    new Column( name:'surcharge', caption:'Surcharge', type:'decimal', format:"#,##0.00"),
+                    new Column( name:'interest', caption:'Interest', type:'decimal', format:"#,##0.00"),
+                    new Column( name:'discount', caption:'Discount', type:'decimal', format:"#,##0.00"),
+                    new Column( name:'amount', caption:'Total', type:'decimal', format:"#,##0.00"),
+                ];
+            },
+            fetchList  : { 
+                return entity._items;
+            }
+        ] as SubListModel
+        
+        
+        void setYear( year )  {
+            this.year = year 
+            if( this.year != 0 ) getBill()
+        }
+        
+        void setQtr( qtr ) {
+            this.qtr = qtr 
+            if( year != 0 ) getBill()
+        }
+        
+        public void updateChange(){
+            if( entity.info.totalpayment >= entity.info.amount )
+                entity.info.change = entity.info.totalpayment - entity.info.amount
+            else
+                entity.info.change = 0.00
+            binding?.refresh("entity.info.change")
+        }
+        
+        void getBill() {
+            if( entity.applicationid )
+                entity = bpcolSvc.getBill( entity, year, qtr );
+            
+            listHandler.load()
+            updateChange()
+        }
+        
+        void init() {
+            super.init();
+            entity.doctype = 'BUSINESS_TAX';
+        }
+        
+        void processBarcode() {
+            init()
+            def list = appSvc.lookupApproveApplication( barcode )
+            if( ! list ) {
+                throw new Exception( 'Associated assessment does not exists or is already fully paid.')
+            }
+            bp = list[0]
+            onselect( bp )
+        }
+        
+        def doNext(){ 
+            entity.year = 0;
+            entity.qtr = 0;
+            
+            entity.applicationid = bp.objid;
+            entity = bpcolSvc.getBill( entity, 0, 0 );
+            
+            entity.items.collect{ it.iyear }.each{ y ->
+                if( !years?.find{ it == y } ) years << y;
+            }
+
+            year = years[0];
+            return 'view';
+        }
+        
+        void calculateReceiptAmount() {
+        
+            entity.info.amount = entity.items.amount.sum()
+            binding?.refresh('entity.info.amount|entity.info.totalpayment|entity.info.change')
+        }
+        
+        public def onpartial = { partial ->
+            if( partial ){
+                entity.items = bpcolSvc.doComputePartial( entity, partial )
+            }
+            listHandler.load()
+            calculateReceiptAmount()
+        }
+        
+        public def doPartialPayment(){
+            return InvokerUtil.lookupOpener( 'bppartialpayment', [
+                amount    : entity.info.amount,
+                onpartial : onpartial
+                
+            ])
+        }
+        
+        def getQtrs(){
+            def list = [];
+            if( entity.items ){
+                entity.items.findAll{ it.iyear == year }.each{ i ->
+                    if( !list.find{ it == i.iqtr } ) list << i.iqtr;
+                }
+                qtr = list[ list.size()-1 ];
+            }
+            listHandler.load();
+            binding?.refresh("entity.*")
+            
+            return list;
+        }
+    }
+]]>        
+    </code>
+    <pages>
+        <page template="etracs2.bp.collection.GeneralCollectionPage"/>
+        <page name="view" template="etracs2.tc.collection.CollectionViewPage"/>
+        <page name="html" template="etracs2.tc.HtmlPage"/>
+    </pages>
+</workunit>

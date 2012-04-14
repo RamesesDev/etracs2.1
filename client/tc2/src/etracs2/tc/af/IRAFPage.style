@@ -1,0 +1,23 @@
+"add" [entity.rivid != null]{
+    visible:true;
+}
+
+"add" [mode == 'view'] {
+    visible:false;
+}
+
+"entity.*|riv" [mode == 'view'] {
+    readonly:true;
+}
+
+"entity.*|riv" [mode != 'view'] {
+    readonly:false;
+}
+
+"entity.txnno" [mode != 'view' && entity.info.rivtype != 'LGU'] {
+    readonly:true;
+}
+
+"selectedItem|searchText" [mode == 'view'] {
+    enabled:true;
+}

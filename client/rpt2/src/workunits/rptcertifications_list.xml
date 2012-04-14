@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="menu/rpt/txn" caption="Issued Certifications" mnemonic="C" permission="rptcertification_list.view" />
+        
+    </invokers>
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*;
+
+public class RPTCertificationListController 
+{
+    @Binding 
+    def binding
+    
+    @Service('RPTCertificationsService')
+    def svc 
+    
+    @Service('ReportParameterService')
+    def svcParams;
+    
+    def searchText
+    def selectedItem
+    def entity
+    def opener
+    List list
+    
+    void init(){
+        doPreview( selectedItem )
+    }
+    
+    void search() {
+        list = null
+        listHandler.load()
+        binding.refresh('html')
+    }
+    
+    def listHandler =[
+        getRows    : { return 25 },
+        getColumns : { return [
+            new Column( name:'title', caption:' Type ', maxWidth:300 ),
+            new Column( name:'taxpayername', caption:' Taxpayer ', maxWidth:600 ),
+            new Column( name:'taxpayeraddress', caption:'Address', maxWidth:1000 ),
+        ]},
+        fetchList  : {
+            if( ! list  ) {
+                list = svc.getList( searchText, it );
+            }
+            return list
+        }
+    ] as PageListModel
+    
+    def getHtml(){
+        svc.getHtml()
+    }
+    
+    def doPreview( o ){
+        entity = svc.getDataById( o );
+        if( entity )
+            opener = InvokerUtil.lookupOpener( entity.opener + '.view', [certification:entity]);
+        else
+            opener = new PopupOpener( outcome:'html' );
+         
+    }
+    
+    void setSelectedItem( o ){
+        doPreview( o )
+    }
+}
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.certification.CertificationListPage" />
+        <page name="html" template="etracs2.rpt.certification.HtmlPage" />
+    </pages>
+</workunit>

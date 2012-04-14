@@ -1,0 +1,76 @@
+<workunit>
+    <invokers>
+        <invoker type="home.action" category="Business" folderid="/menu/bp/txn" caption="Business Applications" permission="bplicensing.applicationlist" target="window" icon="images/folder.png"/>
+        <invoker type="formActions" category="Business" action="openApp" visibleWhen="#{selectedItem != null}" caption="Open" mnemonic="n" icon="images/open.png"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+
+class BusinessApplicationListController
+{
+    @Binding
+    def binding;
+    
+    @Service("BPApplicationService")
+    def svc;
+    
+    @Service("BPHtmlService")
+    def htmlSvc;
+    
+    def searchText;
+    
+    def selectedItem;
+    def listHandler = [
+        getRows : { return 20; },
+        fetchList : { param ->
+            return svc.getList( searchText, param );
+        },
+        
+        getColumns :{
+            return [
+                new Column(name:'txnno', caption:'Transaction No.'),
+                new Column(name:'tradename', caption:'Trade Name.'),
+                new Column(name:'businessaddress', caption:'Business Address No.'),
+                new Column(name:'docstate', caption:'State')
+            ];
+        }
+    ] as PageListModel;
+    
+    public def getHtml(){
+        def html = "";
+        if( selectedItem ) {
+            if( !selectedItem.html ){
+                try{ selectedItem.html = htmlSvc.getHtml( selectedItem.objid );
+                }catch(e){ e.printStackTrace(); }
+            }
+            html = selectedItem.html;
+        }
+        
+        if( html ) return html;
+        return 'No selected item';
+    }
+    
+    def newApp(){
+        return InvokerUtil.lookupOpener('bp.new',[:]);
+    }
+    
+    def openApp(){ 
+        def application = svc.open( selectedItem.objid );
+        return InvokerUtil.lookupOpener( 'bp.'+application.docstate, [application: application]);
+    }
+   
+    void search(){ listHandler.load(); }
+    
+}
+
+]]>        
+    </code>
+    
+    <pages>
+        <page template="etracs2.bp.application.ApplicationListPage"/>
+    </pages>
+</workunit>

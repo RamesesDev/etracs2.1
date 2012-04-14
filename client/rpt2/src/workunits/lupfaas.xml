@@ -1,0 +1,76 @@
+<!--
+// author    : jzamora
+// copyright : Rameses Systems Inc
+// date      : 17 july 2011
+-->
+<workunit>
+    <invokers>
+        <invoker type="faas.lookup" action="init" caption="FAAS Lookup" target="popup" />
+        <invoker type="faascurrent.lookup" action="initCurrent" caption="FAAS Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+
+class FaasLookupController extends LookupModel 
+{
+    @Service("FAASService")
+    def svc
+    
+    def onselect
+    def searchText
+    def selected
+    def docstate
+    
+    void init(){
+    }
+    
+    void initCurrent() {
+        docstate = 'CURRENT' 
+    }
+    
+    
+    def ok() {
+        search = null
+        if( onselect ) onselect( selected )
+        return select()
+    }
+    
+    def getListHandler() {
+        return this
+    }
+    
+    int getRows() { return 25 }
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"fullpin", caption:"PIN"),
+            new Column(name:"tdno", caption:"TD No."),
+            new Column(name:"taxpayername", caption:"Taxpayer"),
+            new Column(name:"docstate", caption:"State", maxWidth:150),
+
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        def s = search
+        if( !s ) s = searchText 
+        def list = svc.getList2( s, docstate, params)
+        if( list ) return list
+        throw new Exception("Record not found.")
+    }
+}  
+
+
+]]>
+
+    </code>
+    
+    <pages>
+        <page template="etracs2.common.LookupPage"/>
+    </pages>
+</workunit>

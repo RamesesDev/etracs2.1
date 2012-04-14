@@ -1,0 +1,250 @@
+<workunit>
+    <invokers>
+        <invoker type="rule.copy" action="copy" caption="New Rule" target="popup" />
+        <invoker type="rule.create" action="create" caption="New Rule" target="popup" />
+        <invoker type="rule.open" action="open" caption="Rule Information" target="popup" />
+        
+        <invoker type="formActions" action="create" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' }" icon="images/doc-new.png"/>
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" shortcut="ctrl C" visibleWhen="#{mode == 'edit' }" icon="images/cancel.png"/>
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" visibleWhen="#{mode == 'view' and rule.docstate != 'DEPLOYED'}" icon="images/edit.png"/>
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode != 'view' }" icon="images/save.png"/>
+        <invoker type="formActions" action="deploy" caption="Deploy" mnemonic="d" shortcut="ctrl D" visibleWhen="#{mode == 'view'  and rule.docstate != 'DEPLOYED'}" icon="images/deploy.png"/>
+        <invoker type="formActions" action="undeploy" caption="Undeploy" mnemonic="u" shortcut="ctrl U" visibleWhen="#{mode == 'view'  and rule.docstate == 'DEPLOYED'}" icon="images/undeploy.png"/>
+        <!--
+        <invoker type="formActions" action="debug" caption="Debug" mnemonic="g" shortcut="ctrl G" icon="images/debug.png"/>
+        -->
+        <invoker type="formActions" action="remove" caption="Delete" mnemonic="d" shortcut="ctrl D" visibleWhen="#{rule.docstate == 'DRAFT'}" icon="images/doc-delete.png"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+class RuleController 
+{
+    @Binding
+    def binding
+    
+    @Service('RuleService')
+    def svc 
+    
+    def mode
+    def rule = [conditions:[], actions:[]]
+    def selectedCondition
+    def selectedAction
+    def agendagroup
+    def agendalist 
+    int actionIndex
+    int conditionIndex
+    def ruleset
+    
+    def updateHandler 
+    
+    void init() {
+        mode = 'view' 
+        createEntity()
+    }
+    
+    void create() {
+        createEntity()
+        agendagroup = null
+        mode = 'create' 
+        binding?.focus('rule.rulename')
+    }
+    
+    void copy() {
+        mode = 'create' 
+        agendagroup = findAgendaGroup()
+        binding?.focus('rule.rulename')
+    }
+    
+    void edit() {
+        mode = 'edit' 
+    }
+    
+    void cancel() {
+        rule = svc.open( rule.objid )
+        mode = 'view' 
+    }
+    
+    void open() {
+        agendagroup = findAgendaGroup()
+        mode = 'view'
+    }
+    
+    void save() {
+        if( mode == 'create' ) 
+            rule = svc.create( rule )
+        else 
+            rule = svc.update( rule )
+        mode = 'view'
+    }
+    
+    void deploy() {
+        if( MsgBox.confirm('Deploy rule?') ) {
+            rule = svc.deploy( rule.objid )
+        }
+    }
+    
+    void undeploy() {
+        if( MsgBox.confirm('Undeploy rule?') ) {
+            rule = svc.undeploy( rule.objid )
+        }
+    }
+    
+    def remove() {
+        if( MsgBox.confirm('Delete rule?') ) {
+            svc.remove( rule.objid )
+            return '_close' 
+        }
+    }
+    
+    def debug() {
+        return InvokerUtil.lookupOpener('rule.debug',[rule:rule] )
+    }
+    
+    def addConditionHandler = { condition ->
+        rule.conditions.add( condition )
+        conditionListHandler.load()
+    }
+    
+    def addCondition() {
+        fixRuleName()
+        return InvokerUtil.lookupOpener('rulecondition.create',[addConditionHandler:addConditionHandler])
+    }
+
+    def updateConditionHandler = { condition ->
+        //binding.refresh('selectedCondition') 
+        conditionListHandler.load()
+    }
+    
+    def openCondition() {
+        conditionIndex = rule.conditions.indexOf( selectedCondition )
+        if( conditionIndex < 0 ) conditionIndex = 0
+        def conditionOpener = selectedCondition.opener + '.open'
+        def opener = InvokerUtil.lookupOpener(conditionOpener, [condition:selectedCondition])
+        return InvokerUtil.lookupOpener('rulecondition.open',[opener:opener, condition:selectedCondition, updateConditionHandler:updateConditionHandler])        
+    }
+    
+    void removeCondition() {
+        if( ! selectedCondition ) return 
+        rule.conditions.remove( selectedCondition )
+    }
+    
+    
+    
+    /* -----------------------------------------------------------
+    * Action Support
+    * ----------------------------------------------------------- */
+    
+    def addActionHandler = { action ->
+        rule.actions.add( action )
+        actionListHandler.load()
+    }
+    
+    def addAction() {
+        fixRuleName()
+        return InvokerUtil.lookupOpener('ruleaction.create',[rule:rule, addHandler:addActionHandler])
+    }
+    
+    
+    
+    def updateActionHandler = { action -> 
+        //binding.refresh('selectedAction') 
+        actionListHandler.load()
+    }
+    
+    def openAction() {
+        actionIndex = rule.actions.indexOf( selectedAction )
+        if( actionIndex < 0 ) actionIndex = 0
+        def actionOpener = selectedAction.opener + '.open'
+        def opener = InvokerUtil.lookupOpener(actionOpener, [rule:rule, action:selectedAction])
+        return InvokerUtil.lookupOpener('ruleaction.open', [rule:rule, opener:opener, action:selectedAction, updateHandler:updateActionHandler])        
+    }
+    
+    void removeAction() {
+        if( ! selectedAction ) return 
+        rule.actions.remove( selectedAction )
+    }
+    
+    void createEntity() {
+        rule = [
+            salience   : 50000,
+            version    : '1.0',
+            author     : getAuthor(),
+            opener     : 'rule',
+            ruleset    : ruleset, 
+            conditions : [],
+            actions    : [],
+        ]
+    }
+    
+    void setAgendagroup( agendagroup )  {
+        this.agendagroup = agendagroup
+        rule.agendagroupid = agendagroup?.objid 
+        rule.agendagroup = agendagroup?.name
+    }
+    
+    def getAuthor() {
+        def author = OsirisContext?.env?.USERNAME
+        return (author ? author : 'SYSTEM')
+    }
+    
+    def getAgendaGroups() {
+        if( ! agendalist  )
+            agendalist = svc.getAgendaGroups()
+        return agendalist
+    }
+    
+    def findAgendaGroup() {
+        return agendaGroups.find{ it.objid == rule.agendagroupid }
+    }
+    
+    
+    def conditionListHandler = [
+        getRows     : { return 50 },
+        getColumns  : { 
+            return [ new Column(name:'displaytext', caption:'') ]
+        },
+        fetchList   : { return rule.conditions },
+        onOpenItem  : { item, colname ->  openCondition() },
+    ] as SubListModel
+    
+    def actionListHandler = [
+        getRows     : { return 50 },
+        getColumns  : { 
+            return [ new Column(name:'displaytext', caption:'') ]
+        },
+        fetchList   : { return rule.actions },
+        onOpenItem  : { item, colname ->  openAction() },
+        
+    ] as SubListModel
+    
+    void invokeUpdateHandler() {
+        if( updateHandler ) updateHandler( rule )
+    }
+    
+    def fixRuleName( ) {
+        rule.rulename = rule.rulename.replaceAll('\\W', '_')
+        binding.refresh('rule.rulename')
+    }
+    
+    def refreshHandler;
+    
+    @Close
+    void onClose() {
+        if( refreshHandler ) 
+            refreshHandler()
+        else
+            invokeUpdateHandler()
+    }
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.rule.RulePage" />
+    </pages>
+</workunit>

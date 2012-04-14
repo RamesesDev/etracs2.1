@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+// author    : jzamora
+// copyright : Rameses Systems Inc
+-->
+<workunit>
+    <invokers>
+        <invoker type="rptledger.open" action="open" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" />
+        
+        <invoker type="formActions" action="close" caption="Back" mnemonic="b" icon="images/back.png" immediate="true" />
+        <invoker type="formActions" action="approve" caption="Approve" shortcut="ctrl A" visibleWhen="#{ledger.docstate == 'PENDING'}" mnemonic="a" icon="images/approve.png" permission="rptledger.approve" />
+        <invoker type="formActions" action="capturePayment" caption="Capture Payment" shortcut="ctrl m" visibleWhen="#{ledger.docstate == 'APPROVED'}" mnemonic="M" icon="images/capturePayment.png" permission="rptledger.capturepayment"/>        
+        <invoker type="formActions" action="previewBill" caption="Preview" visibleWhen="#{ledger.docstate == 'APPROVED'}" mnemonic="v" icon="images/doc-view.png" permission="rptledger.previewbill" />        
+        <invoker type="formActions" action="printBill" caption="Print" visibleWhen="#{ledger.docstate == 'APPROVED'}" mnemonic="p" permission="rptledger.printbill"/>        
+        
+        <invoker type="previewActions" action="backMain" caption="Back" mnemonic="b" icon="images/back.png"/>
+    </invokers>
+    
+    <code lang="groovy">
+        <![CDATA[
+        
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*
+import java.rmi.server.UID;
+
+
+
+public class RPTLedgerController  {
+    @Binding
+    def binding
+    
+    @Caller
+    def caller
+    
+    @Service("RPTLedgerService")
+    def svc;
+    
+    @Service("RPTBillingService")
+    def billingSvc;
+
+    @Service("ReportParameterService")
+    def reportSvc
+    
+    
+    def ledger 
+    def selectedItem
+    def ledgerItems
+    def payments = []
+    
+    void open() {
+        ledger = svc.open( ledger.objid )
+        ledgerItems = ledger.ledgerItems 
+        ledger.remove('ledgerItems')
+        payments = svc.getPaymentsWithLguInfo( ledger.objid )
+    }
+    
+    void approve() {
+        if( MsgBox.confirm('Approve ledger?') ) {
+            ledger = svc.approve( ledger.objid )
+        }
+    }
+    
+    def capturePayment() {
+        return InvokerUtil.lookupOpener('rptledgercapturepmt.create',[
+            ledger  : ledger,
+            onadd   : { pmt ->
+                pmt.putAll( svc.createCapturePayment( ledger.objid, pmt ) )
+                payments.add( pmt ) 
+                ledger.lastyearpaid = pmt.toyear
+                ledger.lastqtrpaid  = pmt.toqtr 
+                paymentListHandler.load()
+                binding.refresh('ledger.lastyearpaid|ledger.lastqtrpaid')
+            }
+        ])
+    }
+    
+    def close(){
+        caller.search()
+        return '_close'
+    }
+    
+    
+    /*------------------------------------------------------------------------------------------------
+    *
+    * Preview and Print Bill Support 
+    *
+    -------------------------------------------------------------------------------------------------*/
+    def bill
+    
+    def backMain() {
+        return 'default'
+    }
+    
+    void buildBillReportInfo(){
+        bill = createBillInfo()
+        bill = billingSvc.generateBill( bill )
+        report.viewReport()
+    }
+    
+    void printBill() {
+        buildBillReportInfo()
+        ReportUtil.print( report.report, true )
+    }
+    
+    def previewBill() {
+        buildBillReportInfo()
+        return 'preview'
+    }
+    
+    def report = [
+        getReportName : { return 'rptbilling/rptbilling' },
+        getReportData : { return bill },
+        getParameters : { return reportSvc.getStandardParameter( OsirisContext.env.USERNAME ) }
+    ] as ServerReportModel
+    
+    
+    Map createBillInfo() {
+        return [
+            taxpayerid     : ledger.taxpayerid,
+            taxpayername   : ledger.taxpayername,
+            taxpayeraddress: ledger.taxpayeraddress, 
+            ledgerids      : [ledger.objid],
+            advancepayment : false,
+            billdate       : null,
+            billtoyear     : null,
+            billtoqtr      : 4,
+            fullpayment    : true,
+            qtrlypaymentavailed : false, 
+            advancepayment : false,
+            items          : []
+        ]
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    /*----------------------------------------------------------------------
+    *
+    *  FAAS History Support 
+    *
+    ----------------------------------------------------------------------*/
+    def onaddHandler = { item ->
+        svc.insertLedgerItem( item )
+        ledgerItems.add( item )
+        listHandler.load() 
+    }
+    
+    def addFaas() {
+        def toyear = ledgerItems.fromyear.min() - 1
+        return InvokerUtil.lookupOpener('rptledgeritem.create',[onaddHandler:onaddHandler, ledger:ledger, ledgeritem:selectedItem, toyear:toyear] )
+    }
+    
+    def onupdateHandler = { item ->
+        svc.updateLedgerItem( item )
+        binding.refresh('selectedItem')
+    }
+    
+    def editFaas() {
+        if( ! selectedItem ) return 
+        if( selectedItem.systemcreated == 1 || selectedItem.systemcreated ) {
+            throw new Exception('System posted item is not editable.')
+        }
+        return InvokerUtil.lookupOpener('rptledgeritem.open',[onupdateHandler:onupdateHandler, ledger:ledger, ledgeritem:selectedItem])
+    }
+    
+    void removeFaas() {
+        if( ! selectedItem ) return 
+        if( selectedItem.systemcreated == true ) {
+            throw new Exception( 'Cannot delete a system created entry.' )
+        }
+        if( MsgBox.confirm( 'Remove item?' )) {
+            svc.removeLedgerItem( selectedItem )
+            ledgerItems.remove( selectedItem )
+            listHandler.load()
+        }
+    }
+    
+    def listHandler = [
+        getRows     : { return 25 },
+        getColumns  : { return [
+            new Column(name:'tdno', caption:'TD No.'),
+            new Column(name:'txntype', caption:'Txn Type', minWidth:100),
+            new Column(name:'classcode', caption:'Class', minWidth:50),
+            new Column(name:'taxable', caption:'Tax?', type:'boolean', minWidth:80),
+            new Column(name:'backtax', caption:'Backtax?', type:'boolean', minWidth:80),
+            new Column(name:'fromyear', caption:'From Year', type:'integer', format:'0000'),
+            new Column(name:'toyear', caption:'To Year', type:'integer', format:'0000'),
+            new Column(name:'assessedvalue', caption:'Assessed Value', type:'decimal'),
+        ]},
+        fetchList   : { return ledgerItems }
+    ] as SubListModel
+    
+    
+    def getPartialpayment() {
+        return ledger.partialbasic + ledger.partialsef
+    }
+    
+    
+    
+    def paymentListHandler = [
+        getRows     : { return 25 },
+        getColumns  : { return [
+            new Column(name:'collectingagency', caption:'Collecting LGU'),
+            new Column(name:'mode', caption:'Mode'),
+            new Column(name:'receiptno', caption:'Receipt No.'),
+            new Column(name:'receiptdate', caption:'Receipt Date'),
+            new Column(name:'collectorname', caption:'Collector'),
+            new Column(name:'period', caption:'Paid Period'),
+            
+            new Column(name:'basic', caption:'Basic', type:'decimal'),
+            new Column(name:'basicdisc', caption:'Discount', type:'decimal'),
+            new Column(name:'basicint', caption:'Penalty', type:'decimal'),
+            new Column(name:'basicnet', caption:'Basic Net', type:'decimal'),
+            
+            new Column(name:'sef', caption:'SEF', type:'decimal'),
+            new Column(name:'sefdisc', caption:'Discount', type:'decimal'),
+            new Column(name:'sefint', caption:'Penalty', type:'decimal'),
+            new Column(name:'sefnet', caption:'SEF Net', type:'decimal'),
+            new Column(name:'total', caption:'Total', type:'decimal'),
+        ]},
+        fetchList   : { return payments }
+    ] as SubListModel
+    
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.ledger.RPTLedgerPage" />
+        <page name="preview" template="etracs2.common.PreviewPage"/>
+    </pages>
+</workunit>

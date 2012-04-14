@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="2"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,19,0,0,3,-18"/>
+  </AuxValues>
+
+  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+  <SubComponents>
+    <Container class="javax.swing.JPanel" name="jPanel7">
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+          <BorderConstraints direction="Center"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="jTabbedPane1" alignment="0" pref="986" max="32767" attributes="0"/>
+                      <Component id="xLabel1" alignment="0" pref="986" max="32767" attributes="0"/>
+                      <Component id="formPanel1" alignment="0" pref="986" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="formPanel1" min="-2" pref="29" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jTabbedPane1" pref="423" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="xLabel1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Container class="javax.swing.JTabbedPane" name="jTabbedPane1">
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
+          <SubComponents>
+            <Container class="javax.swing.JPanel" name="jPanel1">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="Assessment Levels">
+                    <Property name="tabTitle" type="java.lang.String" value="Assessment Levels"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="xDataTable1" min="-2" pref="439" max="-2" attributes="1"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="xDataTable2" pref="516" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="xDataTable2" alignment="0" pref="373" max="32767" attributes="0"/>
+                              <Component id="xDataTable1" alignment="0" pref="373" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="com.rameses.rcp.control.XDataTable" name="xDataTable1">
+                  <Properties>
+                    <Property name="dynamic" type="boolean" value="true"/>
+                    <Property name="handler" type="java.lang.String" value="assessLevelListHandler"/>
+                    <Property name="immediate" type="boolean" value="true"/>
+                    <Property name="name" type="java.lang.String" value="selectedAssessLevel"/>
+                    <Property name="showRowHeader" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XDataTable" name="xDataTable2">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
+                        <Property name="title" type="java.lang.String" value="Non-Fixed Rate Assessment Levels"/>
+                      </PropertyBean>
+                    </Property>
+                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                      <StringArray count="1">
+                        <StringItem index="0" value="selectedAssessLevel"/>
+                      </StringArray>
+                    </Property>
+                    <Property name="dynamic" type="boolean" value="true"/>
+                    <Property name="handler" type="java.lang.String" value="rangeLevelListHandler"/>
+                    <Property name="name" type="java.lang.String" value="selectedRangeLevel"/>
+                    <Property name="showRowHeader" type="boolean" value="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jPanel2">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="Building Types">
+                    <Property name="tabTitle" type="java.lang.String" value="Building Types"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+              <SubComponents>
+                <Container class="javax.swing.JPanel" name="jPanel5">
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                      <BorderConstraints direction="Center"/>
+                    </Constraint>
+                  </Constraints>
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+                  <SubComponents>
+                    <Container class="javax.swing.JPanel" name="jPanel9">
+                      <Constraints>
+                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                          <BorderConstraints direction="Center"/>
+                        </Constraint>
+                      </Constraints>
+
+                      <Layout>
+                        <DimensionLayout dim="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Component id="jTabbedPane2" alignment="0" pref="961" max="32767" attributes="0"/>
+                                      <Component id="xDataTable3" alignment="0" pref="961" max="32767" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                        </DimensionLayout>
+                        <DimensionLayout dim="1">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <Component id="xDataTable3" min="-2" pref="163" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jTabbedPane2" pref="204" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                        </DimensionLayout>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="com.rameses.rcp.control.XDataTable" name="xDataTable3">
+                          <Properties>
+                            <Property name="dynamic" type="boolean" value="true"/>
+                            <Property name="handler" type="java.lang.String" value="bldgTypeListHandler"/>
+                            <Property name="immediate" type="boolean" value="true"/>
+                            <Property name="name" type="java.lang.String" value="selectedBldgType"/>
+                            <Property name="showRowHeader" type="boolean" value="true"/>
+                          </Properties>
+                        </Component>
+                        <Container class="javax.swing.JTabbedPane" name="jTabbedPane2">
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
+                          <SubComponents>
+                            <Container class="javax.swing.JPanel" name="jPanel4">
+                              <Constraints>
+                                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                                  <JTabbedPaneConstraints tabName="Kind of Buildings and Unit Value">
+                                    <Property name="tabTitle" type="java.lang.String" value="Kind of Buildings and Unit Value"/>
+                                  </JTabbedPaneConstraints>
+                                </Constraint>
+                              </Constraints>
+
+                              <Layout>
+                                <DimensionLayout dim="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="xSubFormPanel1" alignment="0" pref="936" max="32767" attributes="0"/>
+                                              <Component id="formPanel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                </DimensionLayout>
+                                <DimensionLayout dim="1">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="formPanel2" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="xSubFormPanel1" pref="116" max="32767" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                </DimensionLayout>
+                              </Layout>
+                              <SubComponents>
+                                <Container class="com.rameses.rcp.util.FormPanel" name="formPanel2">
+                                  <SubComponents>
+                                    <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
+                                      <Properties>
+                                        <Property name="allowNull" type="boolean" value="false"/>
+                                        <Property name="caption" type="java.lang.String" value="Base Value Type"/>
+                                        <Property name="captionWidth" type="int" value="110"/>
+                                        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                                          <StringArray count="1">
+                                            <StringItem index="0" value="selectedBldgType"/>
+                                          </StringArray>
+                                        </Property>
+                                        <Property name="dynamic" type="boolean" value="true"/>
+                                        <Property name="immediate" type="boolean" value="true"/>
+                                        <Property name="items" type="java.lang.String" value="baseValueTypes"/>
+                                        <Property name="name" type="java.lang.String" value="baseValueType"/>
+                                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                          <Dimension value="[150, 22]"/>
+                                        </Property>
+                                        <Property name="required" type="boolean" value="true"/>
+                                      </Properties>
+                                    </Component>
+                                  </SubComponents>
+                                </Container>
+                                <Container class="com.rameses.rcp.control.XSubFormPanel" name="xSubFormPanel1">
+                                  <Properties>
+                                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                                      <StringArray count="2">
+                                        <StringItem index="0" value="selectedBldgType"/>
+                                        <StringItem index="1" value="baseValueType"/>
+                                      </StringArray>
+                                    </Property>
+                                    <Property name="dynamic" type="boolean" value="true"/>
+                                    <Property name="focusable" type="boolean" value="false"/>
+                                    <Property name="handler" type="java.lang.String" value="baseValueHandler"/>
+                                    <Property name="name" type="java.lang.String" value="baseValueSubform"/>
+                                  </Properties>
+
+                                  <Layout>
+                                    <DimensionLayout dim="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <EmptySpace min="0" pref="936" max="32767" attributes="0"/>
+                                      </Group>
+                                    </DimensionLayout>
+                                    <DimensionLayout dim="1">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <EmptySpace min="0" pref="116" max="32767" attributes="0"/>
+                                      </Group>
+                                    </DimensionLayout>
+                                  </Layout>
+                                </Container>
+                              </SubComponents>
+                            </Container>
+                            <Container class="javax.swing.JPanel" name="jPanel6">
+                              <Constraints>
+                                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                                  <JTabbedPaneConstraints tabName="Multi-Storey Adjustment">
+                                    <Property name="tabTitle" type="java.lang.String" value="Multi-Storey Adjustment"/>
+                                  </JTabbedPaneConstraints>
+                                </Constraint>
+                              </Constraints>
+
+                              <Layout>
+                                <DimensionLayout dim="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="xDataTable4" min="-2" pref="303" max="-2" attributes="0"/>
+                                          <EmptySpace pref="643" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                </DimensionLayout>
+                                <DimensionLayout dim="1">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="xDataTable4" pref="154" max="32767" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                </DimensionLayout>
+                              </Layout>
+                              <SubComponents>
+                                <Component class="com.rameses.rcp.control.XDataTable" name="xDataTable4">
+                                  <Properties>
+                                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                                      <StringArray count="1">
+                                        <StringItem index="0" value="selectedBldgType"/>
+                                      </StringArray>
+                                    </Property>
+                                    <Property name="dynamic" type="boolean" value="true"/>
+                                    <Property name="handler" type="java.lang.String" value="multiStoreyListHandler"/>
+                                    <Property name="showRowHeader" type="boolean" value="true"/>
+                                  </Properties>
+                                </Component>
+                              </SubComponents>
+                            </Container>
+                            <Container class="javax.swing.JPanel" name="jPanel8">
+                              <Constraints>
+                                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                                  <JTabbedPaneConstraints tabName="Depreciation Schedule">
+                                    <Property name="tabTitle" type="java.lang.String" value="Depreciation Schedule"/>
+                                  </JTabbedPaneConstraints>
+                                </Constraint>
+                              </Constraints>
+
+                              <Layout>
+                                <DimensionLayout dim="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="xDataTable5" alignment="0" min="-2" pref="384" max="-2" attributes="0"/>
+                                              <Component id="formPanel3" alignment="0" min="-2" pref="300" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace pref="562" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                </DimensionLayout>
+                                <DimensionLayout dim="1">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="formPanel3" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="xDataTable5" pref="119" max="32767" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                </DimensionLayout>
+                              </Layout>
+                              <SubComponents>
+                                <Container class="com.rameses.rcp.util.FormPanel" name="formPanel3">
+                                  <SubComponents>
+                                    <Component class="com.rameses.rcp.control.XNumberField" name="xNumberField2">
+                                      <Properties>
+                                        <Property name="caption" type="java.lang.String" value="Residual Rate (%)"/>
+                                        <Property name="captionWidth" type="int" value="120"/>
+                                        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                                          <StringArray count="1">
+                                            <StringItem index="0" value="selectedBldgType"/>
+                                          </StringArray>
+                                        </Property>
+                                        <Property name="name" type="java.lang.String" value="selectedBldgType.residualrate"/>
+                                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                          <Dimension value="[50, 19]"/>
+                                        </Property>
+                                        <Property name="required" type="boolean" value="true"/>
+                                      </Properties>
+                                    </Component>
+                                  </SubComponents>
+                                </Container>
+                                <Component class="com.rameses.rcp.control.XDataTable" name="xDataTable5">
+                                  <Properties>
+                                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                                      <StringArray count="1">
+                                        <StringItem index="0" value="selectedBldgType"/>
+                                      </StringArray>
+                                    </Property>
+                                    <Property name="dynamic" type="boolean" value="true"/>
+                                    <Property name="handler" type="java.lang.String" value="depreciationListHandler"/>
+                                    <Property name="showRowHeader" type="boolean" value="true"/>
+                                  </Properties>
+                                </Component>
+                              </SubComponents>
+                            </Container>
+                          </SubComponents>
+                        </Container>
+                      </SubComponents>
+                    </Container>
+                  </SubComponents>
+                </Container>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jPanel3">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="Building Adjustments">
+                    <Property name="tabTitle" type="java.lang.String" value="Building Adjustments"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="xDataTable6" alignment="0" pref="961" max="32767" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="xButton2" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="xButton3" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="xButton4" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="xButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="xButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="xButton4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="xDataTable6" pref="344" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="com.rameses.rcp.control.XButton" name="xButton2">
+                  <Properties>
+                    <Property name="mnemonic" type="int" value="110"/>
+                    <Property name="text" type="java.lang.String" value="New"/>
+                    <Property name="name" type="java.lang.String" value="createAdditionalItem"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XButton" name="xButton3">
+                  <Properties>
+                    <Property name="mnemonic" type="int" value="111"/>
+                    <Property name="text" type="java.lang.String" value="Open"/>
+                    <Property name="name" type="java.lang.String" value="openAdditionalItem"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XDataTable" name="xDataTable6">
+                  <Properties>
+                    <Property name="handler" type="java.lang.String" value="additionalItemListHandler"/>
+                    <Property name="name" type="java.lang.String" value="selectedAdditionalItem"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XButton" name="xButton4">
+                  <Properties>
+                    <Property name="mnemonic" type="int" value="114"/>
+                    <Property name="text" type="java.lang.String" value="Remove"/>
+                    <Property name="name" type="java.lang.String" value="removeAdditionalItem"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+        <Container class="com.rameses.rcp.util.FormPanel" name="formPanel1">
+          <Properties>
+            <Property name="cellpadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+              <Insets value="[0, 0, 0, 10]"/>
+            </Property>
+            <Property name="cellspacing" type="int" value="0"/>
+            <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
+          </Properties>
+          <SubComponents>
+            <Component class="com.rameses.rcp.control.XNumberField" name="xNumberField1">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+                <Property name="caption" type="java.lang.String" value="Revision Year"/>
+                <Property name="captionWidth" type="int" value="100"/>
+                <Property name="fieldType" type="java.lang.Class" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="Integer.class" type="code"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="entity.ry"/>
+                <Property name="required" type="boolean" value="true"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox1">
+              <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                    <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                  </Border>
+                </Property>
+                <Property name="text" type="java.lang.String" value=" Pre-Dominant"/>
+                <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 0, 0, 0]"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="entity.predominant"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[90, 19]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox2">
+              <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                    <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                  </Border>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Depreciate Core and Additional Items Separately"/>
+                <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 0, 0, 0]"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="entity.depreciatecoreanditemseparately"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[250, 19]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox3">
+              <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                    <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                  </Border>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Auto-Depreciate"/>
+                <Property name="caption" type="java.lang.String" value="Auto-Depreciate"/>
+                <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 0, 0, 0]"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="entity.computedepreciationbasedonschedule"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[105, 19]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox4">
+              <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                    <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                  </Border>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Straight Depreciation"/>
+                <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 0, 0, 0]"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="entity.straightdepreciation"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[130, 19]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="com.rameses.rcp.control.XCheckBox" name="xCheckBox5">
+              <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                    <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                  </Border>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Calculate Age based on Date Occupied"/>
+                <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 0, 0, 0]"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="entity.calcbldgagebasedondtoccupied"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[300, 19]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
+          <Properties>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+                <EtchetBorder/>
+              </Border>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="99" type="rgb"/>
+            </Property>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Arial" size="12" style="1"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="errorMsg"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="com.rameses.rcp.control.XActionBar" name="xActionBar1">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+            <PropertyBean type="com.rameses.rcp.control.border.XUnderlineBorder"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="formActions"/>
+        <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[1, 1, 1, 1]"/>
+        </Property>
+      </Properties>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+          <BorderConstraints direction="North"/>
+        </Constraint>
+      </Constraints>
+    </Component>
+  </SubComponents>
+</Form>

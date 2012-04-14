@@ -1,0 +1,44 @@
+"entity.*|ngas|ngassubacct|sre|sresubacct" [mode == 'view'] {
+    readonly:true;
+}
+
+"entity.*|ngas|ngassubacct|sre|sresubacct" [mode != 'view'] {
+    readonly:false;
+}
+
+"selectedItem|searchText" [mode == 'view'] {
+    enabled:true;
+}
+
+"selectedItem|searchText" [mode != 'view'] {
+    enabled:false;
+}
+
+
+"entity.defaultvalue" [ entity.amounttype != null  ] {
+    enabled:true;
+}
+
+"entity.defaultvalue" [ entity.amounttype == null ] {
+    enabled:false;
+}
+
+"entity.accttitle" [entity.docstate == 'APPROVED'] {
+    readonly:true;
+}
+
+"ngassubacct" [entity.ngastitle == null] {
+    enabled:false;
+}
+
+"ngassubacct" [entity.ngastitle != null] {
+    enabled:true;
+}
+
+"sresubacct" [entity.sretitle == null] {
+    enabled:false;
+}
+
+"sresubacct" [entity.sretitle != null] {
+    enabled:true;
+}

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="etrac2-bp" default="all" basedir=".">
+    <target name="deploy-etracs2-bp">
+        <antcall target="deploy-services">
+            <param name="source.dir" value="D:/ETRACS2/etracs2-bp/bp2-services/services.jar"/>
+            <param name="target.dir" value="D:/Applications/jboss-4.0.5.GA/server/etracs2_maribojoc/apps/maribojoc.ear/services.jar"/>
+        </antcall>
+    </target>
+    <target name="deploy-etracs2-bp-to-harddisk">
+        <antcall target="deploy-services">
+            <param name="source.dir" value="G:/ETRACS/ETRACS2/etracs2-bp/bp2-services/services.jar"/>
+            <param name="target.dir" value="G:/ETRACS/server/jboss-4.0.5.GA/server/etracs2_maribojoc/apps/maribojoc.ear/services.jar"/>
+        </antcall>
+    </target>
+    <target name="deploy-etracs2-bp-module-to-harddisk">
+        <copy file="G:/ETRACS/ETRACS2/etracs2-bp/bp2/dist/bp2.jar"  todir="G:/ETRACS/server/jboss-4.0.5.GA/server/etracs2_bohol/apps/maribojoc.ear/downloads.war/modules">
+        </copy>
+    </target>
+    <target name="deploy-services">
+        <copy todir="${target.dir}">
+            <fileset dir="${source.dir}">
+                <modified update="false"/>
+            </fileset>
+        </copy>
+    </target>
+</project>

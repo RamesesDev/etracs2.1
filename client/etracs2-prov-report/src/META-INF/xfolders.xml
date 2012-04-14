@@ -1,0 +1,8 @@
+<folders>
+    <folder id="menu">
+        <folder id="file" caption="File"/>
+    </folder>    
+    <folder id="report">
+        <folder id="rpt" caption="Real Property"/>
+    </folder>
+</folders>

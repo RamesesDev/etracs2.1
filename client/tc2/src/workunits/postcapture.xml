@@ -1,0 +1,160 @@
+<workunit>
+    <invokers>
+        <invoker folderid="menu/tc/txn" action="init" caption="Post Captured Receipt" permission="postcapturereceipt.create" />
+        <invoker type="home.action" action="init" caption="Post Captured Receipt" permission="postcapturereceipt.create" index="112" icon="images/folder.png" target="window" />
+        <invoker type="postcapture.create" action="init" caption="Post Captured Receipt" permission="postcapturereceipt.create" index="112" icon="images/doc-new.png" target="window" />
+        <invoker type="initActions" action="doNext" caption="Next" mnemonic="n" icon="images/next.png"/>
+        <invoker type="mainActions" action="post" caption="Post" mnemonic="p" permission="postcapturereceipt.post" icon="images/doc-submit.png"/>
+    </invokers>
+    <code>
+<![CDATA[        
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import etracs2.groovy.*
+
+class PostCaptureController
+{
+    @Binding
+    def binding
+    
+    @Service('ETRACSUserService')
+    def userSvc
+    
+    @Service('PostCaptureService')
+    def svc
+    
+    def DRAFT_STATE = 'DRAFT'
+    def APPROVED_STATE = 'APPROVED'
+    def entity
+    def collector
+    def mode
+    def caption
+    def opener
+    
+    def selectedSummary
+    def selectedDetail
+    def detailActions
+    def txnmode = 'CAPTURE'
+    
+    void init() {
+        mode = 'create' 
+    }
+    
+    def doNext() {
+        loadEntity()
+        return 'main'
+    }
+    
+    def post() {
+        if( MsgBox.confirm('Post captured receipts?') ) {
+            entity = svc.post( entity, OsirisContext.env.USERID ) 
+            return 'view'
+        }
+    }
+    
+    void setSelectedSummary( selectedSummary ) {
+        this.selectedSummary = selectedSummary
+        if( selectedSummary && ! selectedSummary.details ) {
+            selectedSummary.details = svc.getCapturedReceipts( entity.collectorid, OsirisContext.env.USERID, selectedSummary?.afid )
+            selectedSummary.detailSize = selectedSummary.details.size()
+        }
+        detailHandler.load()
+    }
+    
+    def updateDetailHandler = { rct ->
+        updateDetailAmount(rct)
+    }
+    
+    def deleteDetailHandler = { rct ->
+        selectedSummary.details.remove( selectedDetail )
+        if( ! selectedSummary.details ) {
+            entity.summaries.remove( selectedSummary )
+            calculateTotals()
+            summaryHandler.load()
+        }
+        else {
+            calculateTotals()
+            detailHandler.load()
+        }
+    }
+    
+    void updateDetailAmount( rct ) {
+        selectedDetail.amount = rct.info.amount
+        if( rct.voided == 1 ) {
+            selectedDetail.amount = 0.0
+            selectedDetail.voidreason = rct.voidreason
+        }
+        calculateTotals()
+    }
+    
+    void calculateTotals() {
+        selectedSummary.amount = CommonUtil.sum( selectedSummary.details, {it.amount} )
+        entity.amount = CommonUtil.sum( entity.summaries, {it.amount} )
+        binding.refresh('selectedSummary|selectedDetail|entity.amount')
+    }
+    
+    void loadEntity() {
+        entity = svc.create( collector, OsirisContext.env.USERID  )
+        initPostedByInfo()
+        caption = 'Collector: ' + entity.collectorname
+    }
+    void setSelectedDetail( selectedDetail ) {
+        this.selectedDetail = selectedDetail 
+        opener = null
+        if( selectedDetail ) {
+            opener = InvokerUtil.lookupOpener('inquiry:' + selectedDetail.opener, [entity:selectedDetail])
+            def params = [
+                entity        : selectedDetail, 
+                updateHandler : updateDetailHandler,
+                deleteHandler : deleteDetailHandler,
+            ]
+            detailActions = InvokerUtil.lookupActions('receipt.actions:' + selectedDetail.opener, params)
+        }
+    }
+    
+    def summaryHandler = [
+        getRows    : { return 50 },
+        getColumns : { return [
+            new Column( name:'afid', caption:'AF No.', maxWidth:80 ),
+            new Column( name:'amount', caption:'Total Collection', type:'decimal' ),
+        ]},
+        fetchList  : { return entity.summaries },
+    ] as SubListModel
+    
+    def detailHandler = [
+        getRows    : { return 50 },
+        getColumns : { return [
+            new Column( name:'afid', caption:'AF No.'),
+            new Column( name:'stubno', caption:'Stub No.'),
+            new Column( name:'serialno', caption:'Serial No.'),
+            new Column( name:'collectiontype', caption:'Collection Type'),
+            new Column( name:'payorname', caption:'Payor Name'),
+            new Column( name:'amount', caption:'Amount', type:'decimal'),
+            new Column( name:'voidreason', caption:'Void' ),
+            
+        ]},
+        fetchList  : { return selectedSummary?.details },
+    ] as SubListModel
+        
+    void initPostedByInfo() {
+        
+        entity.postedbyid = OsirisContext.env.USERID
+        entity.postedbyname = OsirisContext.env.USERNAME
+        entity.postedbytitle = OsirisContext.env.JOBTITLE
+    }
+    
+    List getCollectorList() {
+        return userSvc.getCollectorList()
+    }
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.tc.collection.PostCaptureInitPage"/>
+        <page name="main" template="etracs2.tc.collection.PostCapturePage" />
+        <page name="view" template="etracs2.tc.collection.PostCaptureViewPage" />
+    </pages>
+</workunit>

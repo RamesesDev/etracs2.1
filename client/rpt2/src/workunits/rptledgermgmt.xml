@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+// author    : jzamora
+// copyright : Rameses Systems Inc
+-->
+<workunit>
+    <invokers>
+        
+        <invoker folderid="menu/rpt/txn" caption="RPT Ledgers " mnemonic="f" permission="rptledger.view"/>
+        <invoker type="home.action" caption="RPT Ledgers" index="552" target="window" icon="images/folder.png" permission="rptledger.view" />
+        
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="rptledger.open"/>
+    </invokers>
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+public class LedgerMgmtController 
+{
+    @Binding 
+    def binding
+    
+    @Service('RPTLedgerService')
+    def svc 
+    
+    @Service('RPTLedgerHtmlService')
+    def htmlSvc 
+    
+    def actionList 
+    String searchText
+    
+    def docstate 
+    def selectedItem
+    List list
+    
+    
+    def getFormActions() {
+        if( !actionList ) {
+            actionList = InvokerUtil.lookupActions('rptledgermgmt.actions',[faasid:selectedItem?.objid])
+        }
+        return actionList 
+    }
+    
+    def open() {
+        return InvokerUtil.lookupOpener('rptledger.open', [ledger:selectedItem])
+    }
+    
+    
+    void search() {
+        list = null
+        listHandler.load()
+        binding.refresh('html')
+    }
+    
+    def listHandler =[
+        getRows    : { return 25 },
+        getColumns : { return [
+            new Column( name:'docstate', caption:'State'),
+            new Column( name:'tdno', caption:'TD No.'),
+            new Column( name:'prevtdno', caption:'Prev. TD No.'),
+            new Column( name:'taxpayername', caption:'Taxpayer' ),
+            new Column( name:'fullpin', caption:'PIN'),
+            new Column( name:'cadastrallotno', caption:'Cadastral Lot No.'),
+            new Column( name:'blockno', caption:'Block No.'),
+            new Column( name:'barangay', caption:'Barangay'),
+            new Column( name:'classcode', caption:'Class'),
+            new Column( name:'assessedvalue', caption:'Assessed Value', type:'decimal', format:'#,##0.00'),
+            new Column( name:'lastyearpaid', caption:'Last Year Paid', format:'0000'),
+            new Column( name:'lastqtrpaid', caption:'Last Qtr Paid'),
+        ]},
+        onOpenItem: { item, colname -> open() },
+        fetchList  : {
+            if( ! list  ) {
+                list = svc.getList( docstate, searchText, it )
+            }
+            return list 
+        }
+    ] as PageListModel
+    
+    
+    String getHtml() {
+        return htmlSvc.getHtml( selectedItem?.objid ) 
+    }
+    
+    List states 
+    List getStates(){
+        if( ! states ) {
+            states = svc.getStates()
+        }
+        return states 
+    }   
+    
+    void setDocstate( docstate ) {
+        this.docstate = docstate
+        search()
+    }
+    
+}
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.ledger.RPTLedgerMgmtPage"/>
+    </pages>
+</workunit>

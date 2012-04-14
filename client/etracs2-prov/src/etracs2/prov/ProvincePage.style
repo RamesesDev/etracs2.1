@@ -1,0 +1,8 @@
+"selectedBarangay" [selectedMunicipality == null || selectedMunicipality.indexno == null] {
+    enabled:false;
+}
+
+"selectedBarangay" [selectedMunicipality != null && selectedMunicipality.indexno != null] {
+    enabled:true;
+}
+

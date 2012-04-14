@@ -1,0 +1,160 @@
+<workunit>
+    <invokers>
+        <invoker type="bp.new" action="init" caption="Business Application" target="window"/>
+        <invoker type="bptransaction" folderid="/menu/bp/txn" action="initNew" caption="New Business Application" permission="bplicensing.newtransaction" index="101"  target="window" />
+        <invoker type="bptransaction" folderid="/menu/bp/txn" action="initRenew" caption="Renew Business Application" permission="bplicensing.renewtransaction" index="102"  target="window" />
+        <invoker type="bptransaction" folderid="/menu/bp/txn" action="initAddline" caption="Add Line Of Business" permission="bplicensing.addlobtransaction" index="103"  target="window" />
+        <invoker type="bptransaction" folderid="/menu/bp/txn" action="initRetire" caption="Retire Business" permission="bplicensing.retiretransaction" index="104"  target="window" />
+        <invoker type="bptransaction" folderid="/menu/bp/txn" action="initRetireLine" caption="Retire Line Of Business" permission="bplicensing.retiretransaction" index="105"  target="window" />
+        <invoker type="bptransaction" folderid="/menu/bp/txn" action="initCaptureNew"   caption="New Business (Capture)" permission="bplicensing.capturenewtransaction" index="106"  target="window" />
+        <invoker type="bptransaction" folderid="/menu/bp/txn" action="initCaptureRenew" caption="Renew Business (Capture)" permission="bplicensing.capturerenewtransaction" index="107"  target="window" />
+        
+        <invoker type="quick_launcher" code="BP01" folderid="/menu/bp/txn" action="initNew" caption="New Business Application" permission="bplicensing.newtransaction" index="101"  target="window" />
+        <invoker type="quick_launcher" code="BP02" folderid="/menu/bp/txn" action="initRenew" caption="Renew Business Application" permission="bplicensing.renewtransaction" index="102"  target="window" />
+        
+        <invoker type="bptransaction.initNew"           action="initNew"            caption="New Business Application"      target="window" />
+        <invoker type="bptransaction.initRenew"         action="initRenew"          caption="Renew Business Application"    target="window" />
+        <invoker type="bptransaction.initAddline"       action="initAddline"        caption="Add Line Of Business"          target="window" />
+        <invoker type="bptransaction.initRetire"        action="initRetire"         caption="Retire Business"               target="window" />
+        <invoker type="bptransaction.initRetireLine"    action="initRetireLine"     caption="Retire Line Of Business"       target="window" />
+        <invoker type="bptransaction.initCaptureNew"    action="initCaptureNew"     caption="New Business (Capture)"        target="window" />
+        <invoker type="bptransaction.initCaptureRenew"  action="initCaptureRenew"   caption="Renew Business (Capture)"      target="window" />
+        
+        <invoker type="formActions" action="next" caption="Next" mnemonic="n" icon="images/next.png"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+
+class BusinessApplication
+{
+    @Binding
+    def binding;
+    
+    @Service('BPEnum')
+    def enumSvc;
+    
+    @Service("BPApplicationService")
+    def svc;
+    
+    def app = [:];
+    def application = [
+        docstate:'DRAFT',
+        info:[taxpayername:'',taxpayeraddress:''],
+        lobs: []
+    ];
+    
+    def typeList;
+    def modeList;
+
+    def initAddline(){
+        init();
+        application.txnmode = 'ONLINE';
+        application.txntype = 'ADDLOB';
+        return 'pageB';
+    }
+    
+    def initRetire(){
+        init();
+        application.txnmode = 'ONLINE';
+        application.txntype = 'RETIRE';
+        application.txndate = new Date();
+        return 'pageB';
+    }
+    
+    def initRetireLine(){
+        init();
+        application.txnmode = 'ONLINE';
+        application.txntype = 'RETIRELOB';
+        application.txndate = new Date();
+        return 'pageB';
+    }
+    
+    def initCaptureNew(){
+        init();
+        application.txnmode = 'CAPTURE';
+        application.txntype = 'NEW';   
+        return 'default';
+    }
+    
+    def initCaptureRenew(){
+        init();
+        application.txnmode = 'CAPTURE';
+        application.txntype = 'RENEW';
+        return 'default';
+    }
+    
+    def initNew(){
+        init();
+        application.txnmode = 'ONLINE';
+        application.txntype = 'NEW';
+        application.txndate = new Date();
+        return 'default';
+    }
+    
+    def initRenew(){
+        init();
+        application.txnmode = 'ONLINE';
+        application.txntype = 'RENEW';
+        application.txndate = new Date();
+        return 'pageB';
+    }
+    
+    void init(){
+        def res = enumSvc.getTypes(['applicationTypes','applicationModes']);
+        typeList = res.applicationTypes;
+        modeList = res.applicationModes;
+    }
+    
+    def onselect = { entity ->
+        if( entity ){
+            application.info.taxpayername = entity.entityname;
+            application.info.taxpayeraddress = entity.entityaddress;
+            application.info.contactno = entity.contactno
+            application.info.taxpayerid = entity.objid;
+            application.taxpayerid = entity.objid;
+            
+        }else{
+            application.info.taxpayername = null;
+            application.info.taxpayeraddress = null;
+            application.info.taxpayerid = null;
+            application.taxpayerid = null;
+        }
+        binding.refresh();
+    }
+    
+    def next(){
+        application.parentid = app.objid;
+        application.businessid = app.businessid;
+        application.lobs = [];
+        application = svc.evaluateTxnType( application );
+        return InvokerUtil.lookupOpener('bp.create', [application:application]);
+    }
+    
+    public def getLookupBusiness(){
+        return InvokerUtil.lookupOpener( 'bp.lookupbusiness', [searchText:app.appno, txntype:application.txntype] );
+    }
+    
+    def taxpayer    
+    def getLookupTaxpayer(){ 
+        return InvokerUtil.lookupOpener( 'entity:lookup1', [:] )
+    }
+    
+    void setTaxpayer( taxpayer ) {
+        this.taxpayer = taxpayer
+        onselect( taxpayer )
+    }
+    
+}
+
+]]>        
+        
+    </code>
+    <pages>
+        <page template="etracs2.bp.application.ApplicationInitialPageA"/>
+        <page template="etracs2.bp.application.ApplicationInitialPageB" name='pageB'/>
+    </pages>
+</workunit>

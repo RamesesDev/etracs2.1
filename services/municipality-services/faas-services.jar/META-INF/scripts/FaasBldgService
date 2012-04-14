@@ -1,0 +1,174 @@
+import com.rameses.annotations.*
+import com.rameses.eserver.*;
+
+public class FaasBldgService
+{
+
+	@PersistenceContext("etracs")
+	def em;
+	
+	@ProxyMethod
+	public def build( faas, rpu ) {
+		def bldg = em.sqlContext.createNamedQuery( "faas:getBldgRpuById" )
+					.setParameter( "objid", rpu.objid ).singleResult;
+		faas.rpu.rpuType = "rpubldg:bldg";
+		def rpuInfo = faas.rpu.info;
+		
+		buildBldgInfo( rpuInfo, bldg );
+
+		rpuInfo.bldgUses = buidBldgUses( bldg );
+		
+		rpuInfo.bldgStructures = buildBldgStructure( bldg );
+		
+		return faas;
+	}
+	
+	private def buildBldgInfo( rpuInfo, bldg ) {
+		rpuInfo.psic             	= bldg.psic;
+		rpuInfo.permitNo         	= bldg.permitNo;
+		rpuInfo.permitDate       	= bldg.permitDate;
+		rpuInfo.permitIssuedBy   	= bldg.permitIssuedBy;
+		rpuInfo.title            	= bldg.title;
+		rpuInfo.dtBldgCompleted  	= bldg.dtBldgCompleted;
+		rpuInfo.dtBldgOccupied   	= bldg.dtBldgOccupied;
+		rpuInfo.constructionCost 	= bldg.constructionCost;
+		rpuInfo.totalArea        	= bldg.totalArea;
+		rpuInfo.depreciation     	= bldg.depreciation;
+		rpuInfo.totalAdjustment  	= bldg.totalAdjustment;
+		rpuInfo.swornStatement   	= bldg.swornStatement as boolean;
+		rpuInfo.swornAmount      	= bldg.swornAmount;
+		rpuInfo.additionalInfo   	= bldg.additionalInfo;
+		rpuInfo.predominant      	= bldg.predominant as boolean;
+		rpuInfo.firstFloorBaseValue	= bldg.firstFloorBaseValue;
+		rpuInfo.bldgAge          	= bldg.bldgAge;
+		rpuInfo.bldgTypeId       	= bldg.bldgTypeId;
+		rpuInfo.bldgTypeCode     	= bldg.bldgTypeCode;
+		rpuInfo.bldgTypeTitle    	= bldg.bldgTypeTitle;
+		rpuInfo.bldgTypeClassificationId = bldg.bldgTypeClassificationId;
+		rpuInfo.bldgKindId       	= bldg.bldgKindId;
+		rpuInfo.baseValue        	= bldg.baseValue;
+		rpuInfo.bldgKindCode     	= bldg.bldgKindCode;
+		rpuInfo.bldgKindTitle    	= bldg.bldgKindTitle;
+		rpuInfo.bldgBaseValueType  	= bldg.bldgBaseValueType.toString();
+		rpuInfo.bldgAssessLevelId  	= bldg.bldgAssessLevelId;
+		rpuInfo.assessLevel      	= bldg.assessLevel; 
+		rpuInfo.specialLevel     	= bldg.specialLevel as boolean;
+		rpuInfo.condominium      	= bldg.condominium;
+		rpuInfo.bldgRpuId        	= bldg.bldgRpuId;
+		rpuInfo.autoComputeBldgDepreciation = bldg.autoComputeBldgDepreciation as boolean;
+		rpuInfo.bldgClass        	= bldg.bldgClass;
+	}
+	
+	private def buidBldgUses( bldg ) {
+		def bldgUses = em.sqlContext.createNamedQuery( "faas:getBldgUseByRpuId" )
+						.setParameter( "rpuId", bldg.objid ).resultList;
+		def uses = [];
+		bldgUses.each { use ->
+			uses += [
+				objid          		: use.objid,
+				area           		: use.area,
+				baseValue      		: use.baseValue,
+				adjustment     		: use.adjustment,
+				marketValue    		: use.marketValue,
+				adjMarketValue 		: use.adjMarketValue,
+				assessLevel    		: use.assessLevel,
+				assessedValue  		: use.assessedValue,
+				bldgAssessLevelId	: use.bldgAssessLevelId,
+				specialLevel   		: use.specialLevel as boolean,
+				actualUseId    		: use.actualUseId,
+				actualUseCode  		: use.actualUseCode,
+				actualUseTitle 		: use.actualUseTitle,
+				bldgFloors			: buildBldgFloors( use )
+			]
+		}
+		
+		return uses;
+	}
+	
+	private def buildBldgFloors( use ) {
+		def bldgFloors = em.sqlContext.createNamedQuery( "faas:getBldgFloorByUseId" )
+							.setParameter( "useId", use.objid ).resultList;
+		
+		def floors = [];
+		bldgFloors.each { floor ->
+			floors += [
+				objid       	: floor.objid,
+				floorNo     	: floor.floorNo,
+				adjustment  	: floor.adjustment,
+				area        	: floor.area,
+				storeyRate  	: floor.storeyRate,
+				baseValue   	: floor.baseValue,
+				unitValue   	: floor.unitValue,
+				marketValue 	: floor.marketValue,
+				adjMarketValue 	: floor.adjMarketValue,
+				assessedValue  	: floor.assessedValue,
+				assessLevel    	: floor.assessLevel,
+				depreciateCoreAndItemsSeparately : floor.depreciateCoreAndItemsSeparately as boolean,
+				adjustments 	: buildBldgFloorAdjustments( floor )
+			];
+		}
+		
+		return floors;
+	}
+	
+	private def buildBldgFloorAdjustments( floor ) {
+		def floorAdditionals = em.sqlContext.createNamedQuery( "faas:getBldgFloorAdditionalByFloorId" )
+								.setParameter( "floorId", floor.objid ).resultList;
+		
+		def additionals = [];
+		floorAdditionals.each { additional ->
+			additionals += [
+				objid 	: additional.objid,
+				unit	: additional.unit,
+				amount	: additional.amount,
+				bldgAdditionalItemId	: additional.bldgAdditionalItemId,
+				bldgAdditionalItemCode	: additional.bldgAdditionalItemCode,
+				bldgAdditionalItemTitle : additional.bldgAdditionalItemTitle,
+				bldgAdditionalItemExpression	: additional.bldgAdditionalItemExpression,
+				params	: buildAdditionalParams( additional )
+			];
+		}
+		
+		return additionals;
+	}
+	
+	private def buildAdditionalParams( additional ) {
+		def paramLinks = em.sqlContext.createNamedQuery( "faas:getBldgAdditionalParamsByAdditionalId" )
+							.setParameter( "additionalId", additional.objid ).resultList;
+		def params = [];
+		paramLinks.each { paramLink ->
+			def paramValue = em.sqlContext.createNamedQuery( "faas:findRPTParameterValue" )
+								.setParameter( "objid", paramLink.parameters_objid ).singleResult;
+			def param = em.sqlContext.createNamedQuery( "faas:findRPTParameter" )
+							.setParameter( "objid", paramValue.parameterId ).singleResult;
+			params += [
+				paramId		: param.objid,
+				paramCode	: param.name,
+				paramName	: param.caption,
+				paramValue	: ( ( paramValue.doubleValue ) ? paramValue.doubleValue : paramValue.intValue )
+			];
+		}
+		
+		return params;
+	}
+	
+	private def buildBldgStructure( bldg ) {
+		def bldgStructures = em.sqlContext.createNamedQuery( "faas:getBldgStructureByRpuId" )
+								.setParameter( "rpuId", bldg.objid ).resultList;
+		
+		def structures = [];
+		bldgStructures.each { structure ->
+			structures += [
+				objid			: structure.objid,
+				structureCode	: structure.structureCode,
+				structureTitle	: structure.structureTitle,
+				materialCode	: structure.materialCode,
+				materialTitle	: structure.materialTitle
+			];
+		}
+		
+		return structures;
+	}
+	
+}	
+

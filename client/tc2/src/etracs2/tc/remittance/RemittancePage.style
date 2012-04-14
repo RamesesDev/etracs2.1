@@ -1,0 +1,18 @@
+
+"entity.*" [true == true ] {
+    enabled:false;
+}
+
+"entity.info.txno" {
+    readonly:true;
+}
+
+"entity.info.collectorname" {
+    readonly:true;
+}
+
+"entity.info.txndate" {
+    readonly:true;
+}
+
+

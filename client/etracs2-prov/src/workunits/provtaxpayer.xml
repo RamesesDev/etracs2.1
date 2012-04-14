@@ -1,0 +1,145 @@
+<workunit>
+    <invokers>
+        <invoker type="provtaxpayerinfo" />
+        
+        <invoker type="formActions" action="initNew" permission="provincetaxpayer.create" tooltip="New" visibleWhen="#{mode == 'view'}" icon="images/new24.png" shortcut="ctrl N" mnemonic="n"  />
+        <invoker type="formActions" action="initEdit" permission="provincetaxpayer.edit" tooltip="Edit" visibleWhen="#{mode == 'view' and taxpayerId != null}" icon="images/edit24.png"  mnemonic="e" />
+        <invoker type="formActions" action="cancelEdit" tooltip="Cancel" immediate="true" visibleWhen="#{mode == 'create' or mode == 'edit'}" icon="images/remove24.png"  mnemonic="c" />
+        <invoker type="formActions" action="save" permission="provincetaxpayer.save" tooltip="Save" visibleWhen="#{mode == 'create' or mode == 'edit'}" icon="images/save24.png"  shortcut="ctrl S" mnemonic="s" />
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+
+class ProvinceTaxpayerInfoController 
+{
+    @Binding
+    def binding;
+    
+    @Service("TaxpayerService")
+    def svc;
+    
+    @Service("TaxpayerHtmlService")
+    def htmlService;
+            
+    @ChangeLog(prefix=["taxpayer"])
+    def changeLog;
+    
+    def listViewHandler;
+    
+    def taxpayerId;
+    def taxpayer;
+    def textSearch;
+    def mode = "view";
+    
+    def initNew() {
+        taxpayer = createTaxpayer();
+        doInit("create");
+    }
+    
+    def initEdit() {
+        taxpayer = svc.open( taxpayerId );
+        doInit( "edit" );
+    }
+    
+    def save() {
+        if( mode == "create" ) {
+            taxpayer = svc.createProvinceTaxpayer( taxpayer );
+        }
+        else {
+            def saveOption = [diff: changeLog.difference];
+            taxpayer = svc.updateProvinceTaxpayer( taxpayer, saveOption );
+        }
+        taxpayerId = taxpayer.objid;
+        changeLog.clear();
+        return resetToDefault();
+    }
+    
+    def cancelEdit() {
+        if( changeLog.hasChanges() ) {
+            if( ! MsgBox.confirm("Discard changes?") ) {
+                return "info";
+            }
+        }
+        taxpayer = createTaxpayer();
+        return resetToDefault();
+    }
+    
+    void removeItem( item ) {
+        if( MsgBox.confirm("Remove item?")) {
+            taxpayer.mappings.remove( item );
+            listHandler.load();
+        }
+    }
+    
+    def lookupTaxpayer() {
+        return InvokerUtil.lookupOpener("municipaltaxpayer.lookup", [textSearch:textSearch, onselect:selectHandler]);
+    }
+    
+    def selectHandler = { tp ->
+        if( tp.provTaxpayerId ) {
+            throw new Exception("Taxpayer has already been mapped to $tp.provTaxpayerNo - $tp.provTaxpayerName");
+        } 
+        taxpayer.mappings.add( tp );
+        listHandler.load();
+        textSearch = null;
+        binding.refresh("textSearch");
+    }
+    
+    def listHandler = [
+        getRows    : { return 50; },
+        getColumns : {
+            return [
+                new Column(name:"item.lgu", caption:"LGU", width:120),
+                new Column(name:"item.name", caption:"Name", width:350),
+                new Column(name:"item.address", caption:"Address", width:200),
+            ]
+        },
+        onRemoveItem : { item -> removeItem( item ) },
+        fetchList    : { return taxpayer.mappings; },
+    ] as PageListModel;
+   
+    def getHtml() { 
+        if( taxpayerId ) {
+            return htmlService.getHtml( taxpayerId );
+        }
+        return "No item selected...";
+    }
+    
+    def createTaxpayer() {
+        return [lgu:OsirisContext.getEnv().get("ORG")?.name, mappings:[]];
+    }
+    
+    def resetToDefault() {
+        mode = "view";
+        fireViewHandler("view");
+        return "default";
+    }
+    
+    def doInit( action ) {
+        mode = action;
+        fireViewHandler( mode );
+        return "info";
+    }
+    
+    void fireViewHandler( mode ) {
+        if(listViewHandler) listViewHandler(mode);
+    }
+    
+    
+}  
+
+]]>
+
+    </code>
+    
+    <pages>
+        <page template="etracs2.prov.taxpayer.ProvinceTaxpayerViewPage"/>
+        <page name="info" template="etracs2.prov.taxpayer.ProvinceTaxpayerPage"/>
+    </pages>
+</workunit>

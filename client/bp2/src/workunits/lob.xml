@@ -1,0 +1,127 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/bp/master" action="init" caption="Line Of Business" permission="bpadmin.lob"/>
+        <invoker type="bp.master" action="init" caption="Line of Businesses" permission="bpadmin.lob" index="52" target="window" icon="images/folder.png"/>
+        
+        <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" />
+        <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity != null}" immediate="true" caption="Edit" mnemonic="e" icon="images/edit.png" />
+        <invoker type="formActions" action="save" shortcut="ctrl S" visibleWhen="#{mode != 'view'}" caption="Save" mnemonic="s" icon="images/save.png"/>
+        <invoker type="formActions" action="cancel" visibleWhen="#{mode != 'view'}"  immediate="true" caption="Cancel" mnemonic="c" icon="images/cancel.png"/>
+        <invoker type="formActions" action="delete" shortcut="ctrl D" visibleWhen="#{mode == 'view' or entity.docstate == 'APPROVED'}" immediate="true" caption="Delete" mnemonic="d" icon="images/doc-delete.png"/>
+        <invoker type="formActions" action="approve" shortcut="ctrl A" visibleWhen="#{mode == 'view' and entity.docstate == 'DRAFT'}" immediate="true" caption="Approve" mnemonic="a" icon="images/approve.png"/>
+        
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+
+class LobController extends etracs2.groovy.CRUDController 
+{
+    @Binding
+    def binding
+    
+    @Service("LOBService")
+    def svc;
+    
+    def classification
+    def searchAttribute
+    def attribute
+    
+    void approve() {
+        if( MsgBox.confirm('Approve?') ) {
+            entity = svc.approve( entity.objid );
+            super.save()
+        }
+    }
+   
+    void setClassification( classification ) { 
+        this.classification = classification
+        entity.classificationid = classification?.objid
+        entity.classification = classification?.name
+    }
+    
+    
+    def getLookupClassification() {
+        return InvokerUtil.lookupOpener('lobclassification.lookup', [:])
+    }
+    
+    def onselectAttribute = { attr ->
+        if( !entity.attributes ) entity.attributes = [];
+        if( !entity.attributes.find{ it.objid == attr.objid } ){
+            entity.attributes << attr;
+            attributeListHandler.load()
+        }
+        searchAttribute = null
+        binding.refresh('searchAttribute')
+    }
+    
+    def lookupAttribute() {
+        return InvokerUtil.lookupOpener('lobattribute.lookup', [searchText:searchAttribute, onselect:onselectAttribute])
+    }
+    
+    def attributeListHandler = [
+        getColumns : {
+            return [
+                new Column(name:'name', caption:'Attribute'),
+            ]
+        },
+        onRemoveItem : { removeAttribute( it ) },
+        fetchList    : { return entity?.attributes },
+    ] as SubListModel
+        
+    void removeAttribute( item ) {
+        if( MsgBox.confirm('Remove selected attribute?') ) {
+            entity.attributes.remove( item )
+        }
+    }
+    
+    void create() {
+        super.create()
+        classification = null
+        attributeListHandler.load()
+    }
+    
+    void setSelectedItem( item ) {
+        super.setSelectedItem( item )
+        this.classification = [objid:entity.classificationid, name:entity.classification ]
+        attributeListHandler.load()
+    }
+    
+    
+    
+    
+    def getService() { return svc; }
+    def getCreateFocusComponent() { return "entity.name"; }
+    def getEditFocusComponent() { return "entity.name"; }
+    def getListHandler() { return listHandler; }
+    
+    def createEntity() {
+        return [ 
+            attributes       : [] 
+        ]
+    }
+    
+    def listHandler = [
+        getRows    : { return 20; },
+        getColumns : {
+            return [
+                new Column(name:"name", caption:"Line of Business"),
+                new Column(name:"classification", caption:"Classification"),
+                new Column(name:"docstate", caption:"State"),
+            ];
+        },
+        fetchList : { return list; },
+    ] as SubListModel;
+    
+}
+
+]]>        
+        
+    </code>
+    <pages>
+        <page template="etracs2.bp.master.LobPage"/>
+    </pages>
+</workunit>

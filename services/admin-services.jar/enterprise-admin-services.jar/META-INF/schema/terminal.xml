@@ -1,0 +1,16 @@
+<schema>
+
+    <element name="terminal" tablename="terminal" >
+		<field name="terminalid" primary="true"/>
+		<field name="macaddress"/>
+		<field name="dtregistered"  />
+		<field name="registeredby" />
+		<field name="info"/>
+		<field name="state" default="0"/>
+    </element>
+
+    <element name="blocked" tablename="blocked_terminal" >
+		<field name="terminalid" primary="true"/>
+		<field name="userid" primary="true" />
+	</element>	
+</schema>

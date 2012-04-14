@@ -1,0 +1,70 @@
+<workunit>
+    <invokers>
+        <invoker type="account:lookup.subngas" action="initSubNgas" caption="NGAS Sub Account Lookup" target="popup" />
+        <invoker type="account:lookup.subsre" action="initSubSre" caption="SRE Sub Account Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+
+class LookupAccountController extends LookupModel 
+{
+    @Service("AccountService")
+    def svc;
+    
+    def onselect;
+    def searchText;
+    def selected;
+    def chartType;
+    def parentid;
+    
+    void initSubNgas() {
+        chartType = 'NGAS';
+    }
+    
+    void initSubSre() {
+        chartType = 'SRE';
+    }
+    
+    def ok() {
+        search = null
+        if( onselect ) {
+            onselect( selected )
+        }
+        return select()
+    }
+    
+    def getListHandler() {
+        return this
+    }
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"acctcode", caption:"Code", width:70),
+            new Column(name:"accttitle", caption:"Title", width:250),
+        ]
+    }
+   
+    List fetchList( Map params ) {
+        def s = search
+        if( !s ) s = searchText 
+        def list = svc.getSubAccountList(s, chartType, parentid, params);
+        if( list ) return list;
+        throw new Exception("Record not found.");
+    }
+    
+}  
+
+
+]]>
+
+    </code>
+    
+    <pages>
+        <page template="etracs2.tc.LookupPage"/>
+    </pages>
+</workunit>

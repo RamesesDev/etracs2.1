@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+// author    : jzamora
+// copyright : Rameses Systems Inc
+// date      : 18 Jul 2011
+-->
+<workunit>
+    <invokers>
+        <invoker type="subdivisionland.create" action="create" caption="New Subdivision Land" mnemonic="n" shortcut="ctrl N" target="window" icon="images/doc-new.png"/>
+        <invoker type="subdivisionland.open" action="open" caption="Edit Subdivision Land" mnemonic="o" shortcut="ctrl O" target="window" icon="images/edit.png"/>
+        
+        <invoker type="realpropertyActions" action="validateRealProperty" caption="Next" mnemonic="n" icon="images/next.png"/>
+        <invoker type="mainActions" action="addLand" caption="Add" mnemonic="a" visibleWhen="#{onadd != null}" icon="images/doc-add.png"/>
+        <invoker type="mainActions" action="updateLand" caption="Update" mnemonic="u" visibleWhen="#{onupdate != null}" icon="images/save.png"/>
+    </invokers>
+    <code lang="groovy">
+        
+<![CDATA[
+import com.rameses.rcp.annotations.* 
+import com.rameses.rcp.common.* 
+import com.rameses.osiris2.client.* 
+
+public class SubdivisionLandController 
+{
+    @Binding
+    def binding
+    
+    @Service('SubdivisionService')
+    def svc
+    
+    def onadd       //handler
+    def onupdate    //handler
+    
+    def subdivision
+    def subdividedland 
+    def rp
+    def rpu 
+    def section = 0
+    def parcel  = 0
+    
+    def create() {
+        subdividedland =  svc.initSubdividedLand( subdivision )
+        rp = subdividedland.rp 
+        rpu = subdividedland.rpu
+        return 'rp'
+    }
+    
+    def open() {
+        section = parseInt( subdividedland.rp.section )
+        parcel  = parseInt( subdividedland.rp.parcel )
+        rp = subdividedland.rp
+        rpu = subdividedland.rpu 
+        return 'rp'
+    }
+
+    def validateRealProperty() {
+        rp.putAll( svc.validateRealProperty( rp, section, parcel ) )
+        rpu.fullpin = rp.pin 
+        return 'default' 
+    }
+        
+    def addLand() {
+        subdividedland.newpin  = rpu.fullpin 
+        subdividedland.areasqm = rpu.totalareasqm
+        subdividedland.areaha  = rpu.totalareaha
+        subdividedland.taxpayerid       = subdivision.taxpayerid 
+        subdividedland.taxpayerno       = subdivision.taxpayerno
+        subdividedland.taxpayername     = subdivision.taxpayername 
+        subdividedland.taxpayeraddress  = subdivision.taxpayeraddress
+        if( onadd ) {
+            onadd( subdividedland)
+        }
+        return '_close'
+    }
+    
+    def updateLand() {
+        if( onupdate) {
+            subdividedland.newpin  = rpu.fullpin 
+            subdividedland.areasqm = rpu.totalareasqm
+            subdividedland.areaha  = rpu.totalareaha
+            svc.updateSubdividedLand( subdividedland )
+            onupdate( subdividedland )
+        }
+        return '_close' 
+    }
+    
+    def getOpener() {
+        def faas = [docstate:subdivision.docstate, info:[txntype:subdivision.txntype]]
+        return InvokerUtil.lookupOpener('rpu.land', [faas:faas, rpu:rpu ] )
+    }
+    
+    def parseInt( value ) {
+        try {
+            return Integer.parseInt( value+'' ) 
+        }
+        catch( e ) {
+            return 0
+        }
+    }
+    
+}
+
+]]>
+    </code>
+    
+    <pages>
+        <page name="rp" template="etracs2.rpt.rp.RealPropertyPage" />
+        <page template="etracs2.rpt.txn.subdivision.SubdivisionLandMainPage" />
+    </pages>
+</workunit>
+

@@ -1,0 +1,68 @@
+<workunit>
+    <invokers>
+        <invoker type="home.action" permission="transmittal.view" caption="Transmittal (List)" target="window" icon="images/folder.png"/>
+        <invoker folderid="/menu/file" permission="transmittal.view" caption="Transmittal (List)" />
+        <invoker type="formActions" permission="transmittal.view" tooltip="Open" mnemonic="o" action="open" visibleWhen="#{selectedItem.item != null}" icon="images/open24.png"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        public class TransmittalListController 
+        {
+            @Service("TransmittalService")
+            def svc;
+            
+            @Binding
+            def binding;
+            
+            def title = "Transmittal List";
+            
+            public def getFormHandler(){
+                if( selectedItem?.item != null )
+                    return InvokerUtil.lookupOpener( "transmittal_municipality:quickView", [bean:selectedItem.item] );
+                return null;
+            }
+            
+            def selectedItem;
+            def search = [:];
+            
+            public void doSearch() {
+                listHandler.load();
+            }
+            
+            def listHandler = [
+                getRows    : { return 25; },
+                getColumns : {
+                    return [
+                        new Column( name:"item.state", caption:"State"),
+                        new Column( name:"item.docNo", caption:"Doc No."),
+                    ]
+                },
+                
+                fetchList  : { return svc.getList( search, it ); },
+                onOpenItem : { item, colname -> return doOpen( item ); }
+                
+            ] as PageListModel;
+            
+            def open(){
+                return doOpen( selectedItem.item );
+            }
+            
+            def doOpen( def item ){
+                return InvokerUtil.lookupOpener( "transmittal_municipality:open", [bean:item] );
+            }
+        }
+        
+        ]]>
+        
+    </code>
+    
+    <pages>
+        <page template="etracs2.municipality.transmittal.TransmittalListPage"/>
+    </pages>
+</workunit>

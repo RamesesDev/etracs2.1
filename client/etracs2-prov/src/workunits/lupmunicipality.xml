@@ -1,0 +1,52 @@
+<workunit>
+    <invokers>
+        <invoker type="municipality.lookup" caption="Lookup Municipality" target="popup" />
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+
+class LookupMunicipalityController 
+{
+    @Service('ProvinceLGUService')
+    def svc;
+    
+    def onselect;
+    def searchText;
+    def selectedItem;
+    
+    def ok() {
+        if( onselect ) {
+            onselect( selectedItem);
+        }
+        return "_close";
+    }
+    
+    def listHandler = [
+        getRows    : { return 100; },
+        getColumns : {
+            return [
+                new Column(name:"pin", caption:"Index No.", width:120),
+                new Column(name:"name", caption:"LGU Name", width:350),
+            ]
+        },
+        fetchList : { 
+                def list = svc.lookupMunicipality(searchText);
+                if( list ) return list;
+                throw new Exception("Records not found.");
+	},
+    ] as PageListModel;
+}  
+
+]]>
+
+    </code>
+    
+    <pages>
+        <page template="etracs2.prov.LookupPage"/>
+    </pages>
+</workunit>

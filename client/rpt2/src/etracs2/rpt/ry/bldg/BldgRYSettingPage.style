@@ -1,0 +1,7 @@
+"baseValueType|baseValueSubform" [ selectedBldgType == null || selectedBldgType.code] {
+    enabled:false;
+}
+
+"baseValueType|baseValueSubform" [ selectedBldgType != null && selectedBldgType.code] {
+    enabled:true;
+}

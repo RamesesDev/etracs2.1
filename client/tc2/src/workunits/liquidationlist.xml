@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    
+    <invokers>
+        <invoker type="home.action" folderid="/menu/tc/txn" caption="Liquidations" permission="liquidation.viewlist" index="122" icon="images/folder.png" target="window"/>
+        <!-- <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="liquidation.create"/> -->
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="liquidation.create"/>
+    </invokers>
+    
+    <code lang="groovy">
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        
+        public class LiquidationListController {
+        
+            @Service("LiquidationService")
+            def svc;
+            
+            def entity;
+            
+            def searchText;
+            
+            def list;
+            
+            def selectedItem;
+            
+            @Binding
+            def binding;
+
+            def listHandler = [
+
+                getRows    : { return 50; },
+
+                getColumns : {
+                    return [
+                        new Column( name:"txnno", caption:"Liq. No.", minWidth:60 ),
+                        new Column( name:"liquidatingofficername", caption:"Liquidating Officer", width:350 ),
+                        new Column( name:"txndate", caption:"Date", format: "yyyy-MM-dd", width:100 ),
+                        new Column( name:"amount", caption:"Amount", format: "#,##0.00", width:140 )
+                    ];
+                },
+
+                fetchList : { 
+                    return svc.getList( searchText, OsirisContext.env );
+                }
+
+            ] as PageListModel;
+            
+            void search() {
+                listHandler.load();
+            }
+
+            def create() {
+                return new WindowOpener( name:"tc2:liquidation", caption:"New Liquidation", action:"create" );
+            }
+            
+            def open() {
+                // return new WindowOpener( name:"tc2:liquidation", caption:selectedItem.txnno, action:"open", params:[entity:selectedItem] );
+                def opener = 'liquidation.' + selectedItem.opener 
+                println '='*50
+                println 'liquidation opener -> ' + opener 
+                return InvokerUtil.lookupOpener( opener , [entity:selectedItem] )
+            }
+            
+            def getHtml() {
+                return svc.getHtml( svc.open(selectedItem?.objid) );
+            }
+
+        }
+        
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.tc.liquidation.LiquidationListMgmtPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,43 @@
+<workunit>
+    <invokers>
+        <invoker type="loader" index="10000" />
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import java.net.URL;
+        
+        public class HomeController 
+        {
+            @Binding
+            def binding
+            
+            @Service("Var")
+            def var;
+            
+            def formActions = InvokerUtil.lookupActions("home.action");
+            
+            def getImageUrl() {
+                try {
+                    return new URL( var.url_logo_lgu );
+                }
+                catch( e ) {    
+                    //MsgBox.alert('LGU Logo url not defined.')
+                    return null
+                }
+            }
+        }
+        
+        
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.admin.HomePage"/>
+    </pages>
+</workunit>

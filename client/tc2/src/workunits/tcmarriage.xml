@@ -1,0 +1,122 @@
+<workunit>
+    <invokers>
+        <invoker type="collection" caption="Marriage License Fee" afid="54" appcode="marriage_license" />
+        <invoker type="tc:marriage_license" action="init" caption="Marriage License Fee" afid="54"  permission="collection_marriage.create"/>
+        <invoker type="inquiry:tc:marriage_license" action="initInquiry" caption="Inquiry" permission="collection_marriage.inquiry"/>
+        
+        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" permission="collection_marriage.create" icon="images/add.png"/>
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b"  immediate="true" visibleWhen="#{mode == 'create'}" icon="images/back.png"/>
+        <invoker type="formActions" action="create" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" icon="images/save.png"/>
+        <invoker type="formActions" action="update" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'edit'}" icon="images/save.png"/>
+        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" permission="collection_marriage.print"/>
+        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view'}" permission="collection_marriage.void" icon="images/doc-void.png"/>
+        
+        <invoker type="receipt.actions:tc:marriage_license" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup" permission="collection_marriage.edit" icon="images/edit.png"/>
+        <invoker type="receipt.actions:tc:marriage_license" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" permission="collection_marriage.print"/>
+        <invoker type="receipt.actions:tc:marriage_license" action="doVoid" caption="Void" mnemonic="v" permission="collection_marriage.void" icon="images/doc-void.png"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+    import com.rameses.rcp.common.*
+    import com.rameses.rcp.annotations.*
+    import com.rameses.osiris2.client.*
+    import com.rameses.osiris2.reports.*
+    import etracs2.groovy.*
+    import etracs2.tc.groovy.*
+
+    class MarriageLicenseCollectionController extends AbstractCollectionController
+    {
+        @Binding
+        def binding
+        
+        @Service('ReceiptService')
+        def svc
+        
+        @Service('IncomeAcctService')
+        def acctSvc
+        
+        @Service('CollectionSettingService')
+        def collSvc
+        
+        @Service('MarriageHtmlService')
+        def htmlSvc
+        
+        @Service('ReportParameterService')
+        def svcParams
+        
+        @Service('DateService')
+        def dateSvc
+        
+        def getService() { return svc }
+        def getHtmlService() { return htmlSvc }
+        def getCollectionTitle() { return 'Marriage License and Fee' }
+        
+        void init() {
+            super.init()
+            entity.doctype = 'MARRIAGE'
+            addReceiptItem()
+            addDefaultCashPayment()
+        }
+        
+        def create() {
+            validateMonths()
+            return super.create()
+        }
+        
+        def getReportName() {
+            return 'receipt/af54'
+        }
+        
+        def getParameters(){
+            return svcParams.getStandardParameter( OsirisContext.env.USERNAME ) + [TXNDATE: dateSvc.parse("yyyy-MM-dd", entity.info.txndate)];
+        }
+
+        void addReceiptItem() {
+            def cs = collSvc.open()
+            def ia = acctSvc.open( cs.info.marriageacctid )
+            if( ! ia ) throw new Exception('Marriage License and Fee account is not set in collection setting.')
+            def item = [
+                acctid    : ia.objid,
+                acctno    : ia.acctno,
+                accttitle : ia.accttitle,
+                fundid    : ia.fundid,
+                fundname  : ia.fundname,
+                amount    : cs.info.marriageamount,
+            ]
+            entity.items.add( item )
+            entity.info.amount = item.amount
+        }
+        
+        void addDefaultCashPayment() {
+            entity.payments.add( [
+                paytype     : 'CASH',
+                particulars : 'CASH',
+                amount      : entity.info.amount,
+            ])
+            entity.info.totalpayment = entity.info.amount
+            entity.info.cash = entity.info.amount
+            reinitializePaymentSummary()
+        }
+        
+        void validateMonths() {
+            validateMonth( 'entity.groomagemonth', 'Groom', entity.groomagemonth )
+            validateMonth( 'entity.brideagemonth', 'Bride', entity.brideagemonth )
+        }
+        
+        void validateMonth( field, caption, mon ) {
+            if( ! mon ) return 
+            if( mon < 0 || mon >= 12 ) {
+                binding.focus( field )
+                throw new Exception(caption + ' Month must be between 1 and 11.')
+            }
+        }
+    }
+]]>        
+    </code>
+    <pages>
+        <page template="etracs2.tc.collection.MarriageLicenseCollectionPage"/>
+        <page name="view" template="etracs2.tc.collection.CollectionViewPage"/>
+        <page name="html" template="etracs2.tc.HtmlPage"/>
+    </pages>
+</workunit>

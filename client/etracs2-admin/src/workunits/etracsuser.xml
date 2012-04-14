@@ -1,0 +1,111 @@
+<workunit>
+    <invokers>
+        <invoker type="etracsmgmt.action" caption="Users" target="window" icon="images/users.png"/>
+        
+        <invoker type="formActions" action="edit" caption="Edit" permission="etracsuser.edit" tooltip="Edit" immediate="false" mnemonic="e" visibleWhen="#{mode=='read' and user.uid!=null}" icon="images/edit.png" />
+        <invoker type="formActions" action="cancel" caption="Cancel" tooltip="Cancel" immediate="false" mnemonic="c" visibleWhen="#{mode!='read'}" icon="images/cancel.png"/>
+        <invoker type="formActions" action="save" caption="Save" tooltip="Save" immediate="true" shortcut="ctrl s" mnemonic="s" visibleWhen="#{mode!='read'}" icon="images/save.png"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.* 
+        
+        public class ETRACSUserController
+        {
+            @Binding
+            def binding;
+            
+            @Service("ETRACSUserService")
+            def svc;
+            
+            def title = "Manage ETRACS Users";
+            def selectedItem;
+            def user = [:];
+            def searchText;
+            def mode = "read";
+            def lqofficername 
+            
+            void edit() {
+                mode = "edit";
+                binding.refresh();
+            }
+            
+            void cancel() {
+                mode = "read";
+                binding.refresh();
+            }
+            
+            void save() {
+                svc.save( user );
+                mode = "read";
+                binding.refresh();
+            }
+            
+            def onselectLiquidatingOfficer = { lqofficer ->
+                user.lqofficerid = lqofficer.objid 
+                user.lqofficername = lqofficer.name
+                user.lqofficertitle = lqofficer.jobtitle 
+                lqofficername = user.lqofficername
+                binding.refresh('user.*|lqofficername')
+            }
+            
+            def lookupLiquidatingOfficer() {
+                return InvokerUtil.lookupOpener('etracsuser:lookup.liquidating', [searchText:lqofficername, onselect:onselectLiquidatingOfficer])
+            }
+            
+            
+            void setSelectedItem( selectedItem ) {
+                this.selectedItem = selectedItem
+                if( selectedItem?.item ) {
+                    user = selectedItem.item
+                    user.roles = svc.loadUserRoles( user.objid )
+                }
+                else {
+                    user = [:]
+                }
+                lqofficername = user.lqofficername
+            }
+            
+            
+            void setLqofficername( lqofficername ) {
+                this.lqofficername = lqofficername
+                if( ! lqofficername ) resetLiquidatingInfo()
+            }
+            
+            void resetLiquidatingInfo() {
+                user.lqofficerid = null
+                user.lqofficername = null
+                user.lqofficertitle = null
+            }
+            
+            def listHandler = [
+                getRows    : { return 25; },
+                getColumns : { 
+                    return [
+                        new Column(name:"item.uid", caption:"UID"),
+                        new Column(name:"item.lastname", caption:"Last Name"),
+                        new Column(name:"item.firstname", caption:"First Name"),
+                        new Column(name:"item.jobtitle", caption:"Job Title"),
+                    ];
+                },
+                fetchList : { 
+                    svc.getList( searchText, it );
+                },
+            ] as PageListModel;
+            
+            void search() {
+                listHandler.load();
+            }
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.admin.ETRACSUserPage"/>
+    </pages>
+</workunit>

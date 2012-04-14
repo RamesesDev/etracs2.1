@@ -1,0 +1,79 @@
+<workunit>
+    <invokers>
+        <invoker type="faasinquiry:action" action="init" caption="Ledger" target="window" icon="images/ledger.png" visibleWhen="#{faas != null}"/>        
+        <invoker type="reportActions" action="_close" caption="Close" icon="images/close24.png"/>
+        <invoker type="reportActions" action="sendRequest" caption="Send Request" visibleWhen="#{sending == false}"/>
+    </invokers>
+    
+    <code>
+        
+        <![CDATA[
+
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.common.*;
+        import com.rameses.annotations.*;
+        
+        public class LedgerController
+        {
+            @Caller
+            def caller;
+            
+            @Binding
+            def binding;
+            
+            @Service("RemoteLandTaxService")
+            def remoteSvc;
+            
+            @Service("Var")
+            def var;
+            
+            def html;
+            def sending = false;
+            
+            void init() {
+                doSendRequest();
+            }
+            
+            def handler = { o->
+                html = o.value;
+                binding.refresh("html");
+            } as AsyncHandler;
+            
+            public void sendRequest(){
+                doSendRequest();
+                binding.refresh("html");
+            }
+            
+            void doSendRequest() {
+                remoteSvc.getLedger( caller.faas.municipalityIndex, caller.faas.objid, handler );
+                sending = true;
+                html = """
+                    <html>
+                    <body>
+                        <br>
+                        <br>
+                        <br>
+                        <table width="100%" >
+                            <tr>
+                                <td align="center"><img src="$var.url_progress_gif"></td>
+                            </tr>
+                            <tr>
+                                <td align="center">Sending request to $caller.faas.municipality Server. Please wait...</td>
+                            </tr>
+                        </table>
+                    </body>
+                    </html>
+                """;
+            }
+            
+        }
+
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.prov.HtmlPage"/>
+    </pages>
+</workunit>

@@ -1,0 +1,121 @@
+<workunit>
+    <invokers>
+        <!-- invoker folderid="menu/bp/master" action="init" caption="Rule Management" -->
+        <invoker type="formActions" action="create" caption="New" mnemonic="n" shortcut="ctrl N" permission="bpadmin.newrule" icon="images/doc-new.png"/>
+        <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" visibleWhen="#{selectedItem != null}" permission="bpadmin.openrule" icon="images/open.png"/>
+        <invoker type="formActions" action="remove" caption="Delete" mnemonic="d" shortcut="ctrl D" visibleWhen="#{selectedItem != null and selectedItem.docstate == 'DRAFT'}" permission="bpadmin.deleterule" icon="images/doc-delete.png"/>
+        <invoker type="formActions" action="viewAnalyzer" caption="Rule Analyzer" mnemonic="a" shortcut="ctrl A" permission="bpadmin.bpruleanalyzer"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+class RuleMgmtController 
+{
+    @Binding
+    def binding
+    
+    @Service('RuleService')
+    def svc 
+    
+    
+    def searchText
+    def selectedItem 
+    def list = []
+    
+    def selectedRuleset
+    def ruleset
+    
+    void init() {
+        search()
+    }
+    
+    def create() {
+        if( ! selectedRuleset ) return null 
+        def opener = selectedRuleset?.properties?.opener + '.create'
+        return InvokerUtil.lookupOpener(opener, [ruleset:ruleset])
+    }
+    
+    def updateHandler = {
+        binding.refresh('html')
+    }
+    
+    def open() {
+        def entity = svc.open( selectedItem.objid )
+        def opener = entity.opener + '.open' 
+        return InvokerUtil.lookupOpener(opener, [entity:entity, updateHandler:updateHandler])
+    }
+    
+    void remove() {
+        if( MsgBox.confirm('Delete rule?') ) {
+            svc.remove( selectedItem.objid )
+            list.remove( selectedItem )
+            listHandler.load()
+        }
+    }
+    
+    void search() {
+        list = svc.getList( ruleset, searchText, null )
+        listHandler.load()
+    }
+    
+    def viewAnalyzer() {
+        return InvokerUtil.lookupOpener('bprule:analyzer',[:]);
+    }
+    
+    def listHandler = [
+        getColumns   : {
+            return [
+                new Column(name:'agendagroup', caption:'Group', maxWidth:120),
+                new Column(name:'docstate', caption:'State', maxWidth:80 ),
+                new Column(name:'rulename', caption:'Rule Name'),
+                new Column(name:'author', caption:'Author', maxWidth:120),
+                new Column(name:'salience', caption:'Salience', maxWidth:80 ),
+            ]
+        },
+        fetchList : { return list },
+        onOpenItem : {item, colname -> open() }
+    ] as PageListModel
+    
+    def getHtml() {
+        svc.getHtml( selectedItem?.objid )
+    }
+    
+    /*------------------------------------------------------------------
+    * Opener Handlers
+    ------------------------------------------------------------------*/
+    def addHandler = { rule ->
+        int index = list.indexOf( selectedItem )
+        if( index >= 0 ) {
+            list.insert( index, rule )
+        }
+        else {
+            list.add( rule )
+        }
+        binding.refresh('selectedItem')
+    }
+    
+    
+    /*------------------------------------------------------------------
+    * RuleSet Handlers
+    ------------------------------------------------------------------*/
+    void setSelectedRuleset( selectedRuleset ) {
+        this.selectedRuleset = selectedRuleset
+        ruleset = selectedRuleset?.properties.ruleset
+        search()
+    }
+    
+    def getRulesets() {
+        return InvokerUtil.lookupOpeners('ruleset', null)
+    }
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.rule.RuleMgmtMainPage" />
+    </pages>
+</workunit>

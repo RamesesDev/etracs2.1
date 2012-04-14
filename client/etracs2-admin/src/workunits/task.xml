@@ -1,0 +1,122 @@
+
+<workunit>
+    <invokers>
+        <invoker type="etracsmgmt.action" caption="Manage Task" permission="etracstask.manage" target="window" icon="images/task.png"/>
+        
+        <invoker type="formActions" action="create" permission="etracstask.create" caption="New" tooltip="New" immediate="true" mnemonic="n" icon="images/doc-add.png" visibleWhen="#{mode=='read'}"/>
+        <!--
+        <invoker type="formActions" action="delete" permission="etracstask.delete" caption="Delete" tooltip="Delete" immediate="true" mnemonic="d" visibleWhen="#{mode=='read' and task.taskid!=null}" icon="images/delete24.png" />
+        -->
+        <invoker type="formActions" action="cancel" tooltip="Cancel" immediate="true" caption="Cancel" mnemonic="c" visibleWhen="#{mode!='read'}" icon="images/remove.png"/>
+        <invoker type="formActions" action="save" tooltip="Save" shortcut="ctrl s" caption="Save" mnemonic="s" visibleWhen="#{mode!='read'}" icon="images/save.png"/>
+
+        <invoker type="formActions" action="start" permission="etracstask.start" caption="Start" immediate="true" visibleWhen="#{mode=='read' and task.taskid!=null and task.status=='inactive'}" />
+        <invoker type="formActions" action="suspend" permission="etracstask.suspend" caption="Suspend" immediate="true" visibleWhen="#{mode=='read' and task.taskid!=null and task.status=='queue'}" />
+        <invoker type="formActions" action="resume" permission="etracstask.resume" caption="Resume" immediate="true" visibleWhen="#{mode=='read' and task.taskid!=null and task.status=='suspended'}" />
+        <invoker type="formActions" action="recover" caption="Recover" tooltip="Recover" immediate="true" mnemonic="r" visibleWhen="#{mode=='read' and task.taskid!=null and task.status=='error'}" icon="images/delete24.png" />
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        
+        public class TaskMgmtController
+        {
+            @Binding
+            def binding;
+            
+            @Service("TaskSchedulerService")
+            def svc;
+            
+            def title = "Manage Task";
+            def selectedItem;
+            def task = [:];
+            def mode = "read";
+            
+            void start() {
+                svc.start( task );
+                task.status = 'PROCESSING';
+                binding.refresh("task.*");
+            }
+            
+            void suspend() {
+                task.status = svc.suspend( task );
+                task.status = 'SUSPENDED';
+                binding.refresh("task.*");
+            }
+            
+            void recover() {
+                task.status = svc.recover( task );
+                task.status = 'PROCESSING';
+                binding.refresh("task.*");
+            }
+            
+            void resume() {
+                task.status = svc.resume( task );
+                task.status = 'PROCESSING';
+                binding.refresh("task.*");
+            }
+            
+            void create() {
+                mode = "create";
+                task = [:];
+                binding.refresh("task.*");
+            }
+            
+            void delete() {
+                if( MsgBox.confirm("Delete Task?") ) {
+                    svc.delete( task.taskid );
+                    mode = "read";
+                    binding.refresh();
+                    listHandler.load();
+                }
+            }
+            
+            void cancel() {
+                mode = "read";
+                binding.refresh();
+            }
+            
+            void save() {
+                task = svc.create( task );
+                mode = "read";
+                binding.refresh();
+            }
+            
+            void setSelectedItem( selected ) {
+                selectedItem = selected;
+                if( selected?.item ) 
+                    task = selectedItem.item;
+                else
+                    task = [:];
+            }
+            
+            def listHandler = [
+                getRows    : { return 50; },
+                getColumns : { 
+                    return [
+                        new Column(name:"item.taskid", caption:"Task ID"),
+                        new Column(name:"item.status", caption:"Status"),
+                        new Column(name:"item.scriptname", caption:"Script Name"),
+                        new Column(name:"item.method", caption:"Method"),
+                    ];
+                },
+                fetchList : { 
+                    svc.getList( it );
+                },
+            ] as PageListModel;
+            
+            void refresh() {
+                listHandler.load()
+            }
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.admin.task.TaskMgmtPage"/>
+    </pages>
+</workunit>

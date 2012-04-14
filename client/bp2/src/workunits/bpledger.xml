@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    
+    <invokers>
+        <invoker folderid="/menu/bp/txn" caption="Business Ledger" permission="bpadmin.ledger"/>
+        <invoker type="home.action"  caption="Business Ledger" permission="bpadmin.ledger" index="60" target="window" icon="images/folder.png"/>/>
+        
+        <invoker type="formActions" action="_close" immediate="true" caption="Close" icon="images/cancel.png"/>
+    </invokers>
+    
+    <code lang="groovy">
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        
+        public class BPLedgerController {
+
+            @Service('BPLedgerService')
+            def svc;
+            
+            @Caller
+            def caller;
+            
+            @Binding
+            def binding;
+            
+            def mode = 'init';
+            
+            def filter;
+            
+            def entity = [:];
+            def application;
+            def receivable;
+            def payment;
+            def business;
+            
+            public void setBusiness( def val ){
+                this.business = val;
+                if( val ){
+                    entity = svc.openLedger( entity );
+                }else{
+                    entity = [:];
+                    application = null;
+                    payment = null;
+                    receivable = null;
+                    binding.refresh();
+                }
+            }
+            
+            def onselectBusiness = { sb ->
+                filter = "";
+                entity.businessid = sb.objid;
+                entity.business = [ 
+                    tradename       : sb.tradename,
+                    businessaddress : sb.businessaddress,
+                    taxpayerid      : sb.taxpayerid,
+                    taxpayername    : sb.taxpayername,
+                    taxpayeraddress : sb.taxpayeraddress,
+                    adminid         : sb.adminid,
+                    adminname       : sb.adminname,
+                    adminaddress    : sb.adminaddress,
+                    lastyrpaid      : sb.lastyrpaid,
+                    lastqtrpaid     : sb.lastqtrpaid
+                ];
+                binding.refresh();
+            }
+            
+            def getLookupBusiness() {
+                return InvokerUtil.lookupOpener( 'business.lookupforledger', [onselect:onselectBusiness, searchText:filter] );
+            }
+            
+            def appHandler = [
+                getRows    : { return 50; },
+                getColumns : {
+                    return [
+                        new Column( name:"iyear", caption:"Year", format:"#0", maxWidth:60, resizable:false),
+                        new Column( name:"txnno", caption:"App. No."),
+                        new Column( name:"txntype", caption:"Type"),
+                        new Column( name:"txnmode", caption:"Type"),
+                        new Column( name:"amount", caption:"Amount"), 
+                        new Column( name:"amtpaid", caption:"Amount Paid" ),
+                        new Column( name:"surcharge_paid", caption:"Surcharge Paid"), 
+                        new Column( name:"interest_paid", caption:"Interest Paid" ),
+                        new Column( name:"docstate", caption:"Status")
+                    ];
+                },
+                fetchList : {  
+                    if( entity.businessid ) return svc.getApplicationByBusiness( entity.businessid );
+                    return [];
+                }
+            ] as SubListModel;
+            
+            def receivableHandler = [
+                getRows    : { return 50; },
+                getColumns : {
+                    return [
+                        new Column( name:"iyear", caption:"Year", format:"#0", maxWidth:60, resizable:false),
+                        new Column( name:"iqtr", caption:"Qtr", maxWidth:35, resizable:false),
+                        new Column( name:"lobname", caption:"Line of Business"),
+                        new Column( name:"accttitle", caption:"Account"),
+                        new Column( name:"amount", caption:"Amount"), 
+                        new Column( name:"amtpaid", caption:"Amount Paid" )
+                    ];
+                },
+                fetchList : {  return application?.receivables; }
+            ] as SubListModel;
+            
+            def paymentHandler = [
+                getRows : { return 25 },
+                getColumns: { 
+                    return [
+                        new Column( name:"reftype", caption:"Type"),
+                        new Column( name:"refdate", caption:"Date Posted"),
+                        new Column( name:"refno", caption:"Ref. No."),
+                        new Column( name:"amount", caption:"Amount")
+                    ];
+                },
+                fetchList : { return application?.payments; }
+            ] as SubListModel;
+            
+            def creditHandler = [
+                getRows    : { return 50; },
+                getColumns : {
+                    return [
+                        new Column( name:"reftype", caption:"Type"),
+                        new Column( name:"refno", caption:"Ref. No."),
+                        new Column( name:"amount", caption:"Amount"), 
+                        new Column( name:"surcharge", caption:"Surcharge"), 
+                        new Column( name:"interest", caption:"Interest"), 
+                        new Column( name:"discount", caption:"Discount")
+                    ];
+                },
+                fetchList : {
+                    def credits = [];
+                    if( receivable ){
+                        credits = application?.credits?.findAll{ it.bpreceivableid == receivable.objid }
+                                      .sort{ a, b ->
+                                            def sA = a.year+'-'+a.qtr+'-'+a.lobname;
+                                            def bA = b.year+'-'+b.qtr+'-'+b.lobname;
+                                            return sA <=> bA;
+                                      };
+                   }
+                   return credits;
+                }
+
+            ] as SubListModel;
+            
+            def capturePayment() {
+                if( application ){
+                    def paymentInfo = [
+                        businessid  : entity.businessid,
+                        business    : entity.business,
+                        applicationid: application.objid,
+                        amtpaid     : 0.0,
+                        total       : 0.0
+                    ];
+                    return new PopupOpener( name:"bp2:bpledgercapturepayment", caption:"Capture Payment", action:"init", params:[entity:paymentInfo] );
+                }
+            }
+            
+            void deletePayment(){
+                if( application ){
+                    payment.applicationid = application.objid;
+                    svc.deleteCapturePayment( payment );
+                }
+            }
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.bp.ledger.BPLedgerPage" />
+    </pages>
+</workunit>

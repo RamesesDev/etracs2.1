@@ -1,0 +1,140 @@
+<workunit>
+    <invokers>
+        <invoker type="collection" caption="Burial Permit" afid="58" appcode="burial_permit"  />
+        <invoker type="tc:burial_permit" action="init" caption="Burial Permit" afid="58"  permission="collection_burial.create"/>
+        <invoker type="inquiry:tc:burial_permit" action="initInquiry" caption="Inquiry" permission="collection_burial.inquire"/>
+        
+        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" permission="collection_burial.create" icon="images/add.png"/>
+        <invoker type="formActions" action="back" caption="Back" mnemonic="b"  immediate="true" visibleWhen="#{mode == 'create'}" icon="images/back.png"/>
+        <invoker type="formActions" action="create" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" icon="images/save.png"/>
+        <invoker type="formActions" action="update" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'edit'}" icon="images/save.png"/>
+        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" permission="collection_burial.print"/>
+        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view'}" permission="collection_burial.void" icon="images/doc-void.png"/>
+
+        <invoker type="receipt.actions:tc:burial_permit" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup" permission="collection_burial.edit" icon="images/edit.png"/>
+        <invoker type="receipt.actions:tc:burial_permit" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" permission="collection_burial.print"/>
+        <invoker type="receipt.actions:tc:burial_permit" action="doVoid" caption="Void" mnemonic="v"  permission="collection_burial.void" icon="images/doc-void.png"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+    import com.rameses.rcp.common.*
+    import com.rameses.rcp.annotations.*
+    import com.rameses.osiris2.client.*
+    import com.rameses.osiris2.reports.*
+    import etracs2.groovy.*
+    import etracs2.tc.groovy.*
+
+    class BurialCollectionController extends AbstractCollectionController
+    {
+        @Binding
+        def binding
+        
+        @Service('ReceiptService')
+        def svc
+        
+        @Service('IncomeAcctService')
+        def acctSvc
+        
+        @Service('DateService')
+        def dateSvc
+        
+        @Service('BurialHtmlService')
+        def htmlSvc
+        
+        @Service('CollectionSettingService')
+        def collSvc
+        
+        @Service('ReportParameterService')
+        def svcParams;
+        
+        def getService() { return svc }
+        def getHtmlService() { return htmlSvc }
+        def getCollectionTitle() { return 'Burial Permit and Fee Collection' }
+        
+        
+        void init() {
+            super.init()
+            entity.doctype = 'BURIAL_PERMIT'
+            entity.nationality = 'FILIPINO'
+            entity.sex = 'MALE'
+            addReceiptItem()
+            addDefaultCashPayment()
+        }
+        
+        def create() {
+            validateDateOfDeath()
+            return super.create()
+        }
+        
+        def update() {
+            validateDateOfDeath()
+            return super.update()
+        }
+        
+        void validateDateOfDeath() {
+            /*
+            if( entity.dtdeath ) {
+                Date dt = java.sql.Date.valueOf(entity.dtdeath)
+                if( dt > dateSvc.serverDate ) {
+                    throw new Exception('Date of Death must be less than or equal to today.')
+                }
+            }
+            if( entity.age > 300 ) {
+                throw new Exception('Age must not exceed 300.')
+            }
+            */
+        }
+        
+        def getReportName() {
+            return 'receipt/af58'
+        }
+        
+        def getParameters(){
+            return svcParams.getStandardParameter( OsirisContext.env.USERNAME );
+        }
+        
+        void addReceiptItem() {
+            def cs = collSvc.open()
+            def ia = acctSvc.open( cs.info.burialacctid )
+            if( ! ia ) throw new Exception('Burial Permit Fee account is not set in collection setting.')
+            def item = [
+                acctid    : ia.objid,
+                acctno    : ia.acctno,
+                accttitle : ia.accttitle,
+                fundid    : ia.fundid,
+                fundname  : ia.fundname,
+                amount    : cs.info.burialamount,
+            ]
+            entity.items.add( item )
+            entity.info.amount = item.amount
+        }
+        
+        void addDefaultCashPayment() {
+            entity.payments.add( [
+                paytype     : 'CASH',
+                particulars : 'CASH',
+                amount      : entity.info.amount,
+            ])
+            entity.info.totalpayment = entity.info.amount
+            entity.info.cash = entity.info.amount
+            reinitializePaymentSummary()
+        }
+        
+        List getPermissionTypeList() {
+            return ['INTER','DISENTER', 'REMOVE']
+        }
+        
+        List getSexList() {
+            return ['MALE','FEMALE']
+        }
+        
+    }
+]]>        
+    </code>
+    <pages>
+        <page template="etracs2.tc.collection.BurialPermitCollectionPage"/>
+        <page name="view" template="etracs2.tc.collection.CollectionViewPage"/>
+        <page name="html" template="etracs2.tc.HtmlPage"/>
+    </pages>
+</workunit>

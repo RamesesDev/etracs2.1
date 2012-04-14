@@ -1,0 +1,50 @@
+<workunit>
+    <invokers>
+        <invoker type="bpbilling:ruleaction" caption="Discount Computation"  action="init" index="3" />        
+    </invokers>
+    <code>
+        <![CDATA[
+
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import rulemgmt.*
+
+        class BPBillingRuleActionDiscountController extends RuleActionHandler
+        {
+            @Binding
+            def binding
+            
+            public String getActiontype() {
+                return "calcDiscount"
+            }
+            
+            def opener;
+            
+            public void init() {
+                opener = InvokerUtil.lookupOpener( 'rule:formula_editor', [ handler:formulaModel ]);
+            }
+
+            public void accept() {
+                action.displaytext = "Calculate Discount using formula: ${action.expr}".toString();
+            }
+
+            def formulaModel = [
+                getFields : { return [] },
+                getVariables : { 
+                    return RuleUtil.getConstraintVars( rule );
+                },
+                getParameters : { return [] },
+                getFunctions : { return [ [name:"IIF", info: "IIF Function"] ] },
+                getExpr : { return action.expr },
+                setExpr : { s-> action.expr = s; }
+            ] as FormulaEditorModel;
+            
+        }
+
+        ]]>
+    </code>
+    <pages>
+        <page template="bpbilling.rule.action.CalculateDiscountPage" />
+    </pages>
+</workunit>

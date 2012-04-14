@@ -1,0 +1,7 @@
+"selectedItem|search.textSearch" [mode == 'view'] {
+    enabled:true;
+}
+
+"selectedItem|search.textSearch" [mode != 'view'] {
+    enabled:false;
+}

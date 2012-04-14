@@ -1,0 +1,78 @@
+<workunit>
+    <invokers>
+        <invoker type="rptbillingrule_action.type" action="create" caption="Calculate Basic Prior Interest" index="7" />        
+        <invoker type="rptbillingrule_action_basicpriorint.open" action="open" caption="Calculate Basic Prior Interest" />        
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+class RPTBillingActionBasicPriorIntController
+{
+    @Binding
+    def binding
+    
+    @Service('RPTBillingRuleService')
+    def svc 
+    
+    def action
+    def varlist 
+    def selectedVariable
+    def title = 'Calculate Basic Prior Interest'
+    def account
+    def rule
+    
+    void create() {
+        action = [
+            opener    : 'rptbillingrule_action_basicpriorint',
+            acctid    : null,
+            accttitle : null, 
+            expr      : null,
+        ]
+    }
+    
+    void open() {
+       account = [ accttitle: action?.accttitle ]
+    }
+    
+    //must be implemented by a handler
+    void accept() {
+        action.expr = editor.handle.formula
+        if( ! action.acctid ) throw new Exception('Account is required.')
+        if( ! action.expr ) throw new Exception('Tax Computation Expression is required.')
+        action.expr = action.expr.replace('\n', '')
+        action.displaytext = buildDisplayText()
+        action.actiontype = 'calcBasicPriorInt' 
+    }
+    
+    def buildDisplayText() {
+        return 'Calculate ' + action.accttitle + ' using the formula: ' + action.expr 
+    }
+    
+    void setAccount( account ) {
+        this.account        = account 
+        action.acctid       = account?.objid 
+        action.accttitle    = account?.accttitle
+    }
+    
+    def getLookupAccount() {
+        return InvokerUtil.lookupOpener('rptincomeacct_basicpriorint.lookup', [:])
+    }
+    
+    def editor 
+    def getFormulaEditor(){
+        editor = InvokerUtil.lookupOpener('formula_editor2', [formula:action.expr, variableList:varlist, showToolbar:false]);
+        return editor
+    }
+    
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.common.rule.AccountActionPage" />
+    </pages>
+</workunit>

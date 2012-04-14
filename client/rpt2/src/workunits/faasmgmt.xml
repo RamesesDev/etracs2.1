@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+// author    : jzamora
+// copyright : Rameses Systems Inc
+-->
+<workunit>
+    <invokers>
+        <invoker folderid="menu/rpt/txn" caption="FAAS Management" mnemonic="f" permission="faasmgt.view" />
+        
+        <invoker type="home.action" caption="FAAS Management" mnemonic="f"  icon="images/faas.png" permission="faasmgt.view" target="window" index="2" />
+        
+        <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="faasmgt.create" />
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission='faasmgt.view'/>
+    </invokers>
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+public class FAASMgmtController 
+{
+    @Binding 
+    def binding
+    
+    @Service('FAASService')
+    def svc 
+    
+    @Service('FAASHtmlService')
+    def htmlSvc 
+    
+    String searchText
+    def selectedItem
+    List list
+    List filterlist
+    
+    def docstate 
+    def filter 
+    def searchtype = 'SEARCH'   //valid values : SEARCH, FILTER 
+    
+    def invokerparam = [
+        getParams :  { return [faasid:selectedItem?.objid] }
+    ] as InvokerParameter
+    
+    def getFormActions() {
+        return InvokerUtil.lookupActions('faasmgmt.action', invokerparam )
+    }
+    
+    
+    def create() {
+        return InvokerUtil.lookupOpener('faas.create', [faas:selectedItem])
+    }
+    
+    def open() {
+        if( selectedItem ) {
+            return InvokerUtil.lookupOpener('faas.open', [faas:selectedItem])
+        }
+    }
+    
+    void search() {
+        searchtype = 'SEARCH' 
+        filter = null
+        list = null
+        listHandler.load()
+        binding.refresh('html|filter')
+    }
+    
+    void setDocstate( docstate ) {
+        this.docstate = docstate
+        search()
+    }
+    
+    void setFilter( filter ) {
+        searchtype = 'FILTER' 
+        this.filter = filter
+        list = null
+        listHandler.load()
+    }
+    
+    def createFilter() {
+        return InvokerUtil.lookupOpener('faasfilter.create', [
+            filterlist : filterlist,
+            onadd      : { filter -> 
+                filterlist.add( filter ) 
+                binding.refresh('filter|filterlist')
+            },
+            onremove   : { filter ->
+                filterlist.remove( filter)
+                binding.refresh('filter|filterlist')
+            }
+        ])
+    }
+    
+    def listHandler =[
+        getRows    : { return 25 },
+        getColumns : { return [
+            new Column( name:'ry', caption:'RY', maxWidth:60, format:'0000'),
+            new Column( name:'docstate', caption:'State', maxWidth:120),
+            new Column( name:'txntype', caption:'Txn', maxWidth:40),
+            new Column( name:'rputype', caption:'Type', maxWidth:40),
+            new Column( name:'classcode', caption:'Class', maxWidth:40 ),
+            new Column( name:'barangay', caption:'Barangay' ),
+            new Column( name:'tdno', caption:'tdno' ),
+            new Column( name:'fullpin', caption:'PIN', minWidth:150 ),
+            new Column( name:'taxpayername', caption:'Taxpayer'),
+            new Column( name:'ownername', caption:'Owner Name'),
+            new Column( name:'cadastrallotno', caption:'Cadastral'),
+            new Column( name:'totalareasqm', caption:'Area (sqm)', type:'decimal', format:'#,##0.00' ),
+            new Column( name:'totalmv', caption:'Market Value', type:'decimal' ),
+            new Column( name:'totalav', caption:'Assessed Value', type:'decimal'),
+        ]},
+        fetchList  : {
+            if( searchtype == 'SEARCH' ) {
+                list = svc.getList2( searchText, docstate, it )
+            }
+            else {
+                list = svc.getListByFilter( searchText, filter, it )
+            }
+            return list 
+        },
+        onOpenItem : { item, colname -> open() },
+    ] as PageListModel
+    
+    
+    String getHtml() {
+        return htmlSvc.getHtml( selectedItem?.objid ) 
+    }
+    
+    boolean getShowActions() {
+        if( ! selectedItem || selectedItem.objid == null ) 
+            return false
+        return true
+    }
+
+    List getStatelist() {
+        return ['INTERIM', 'FORAPPROVAL', 'FORPROVAPPROVAL', 'CURRENT', 'CANCELLED']
+    }
+    
+    List getFilterlist() {
+        if( ! filterlist ) {
+            filterlist = svc.getFilterList()
+        }
+        return filterlist 
+    }
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.faas.FAASMgmtPage"/>
+    </pages>
+</workunit>

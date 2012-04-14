@@ -1,0 +1,284 @@
+<workunit>
+    <invokers>
+        <invoker folderid="menu/tc" action="initOnline" caption="Online Collection" permission="collection.create_online"/>
+        <invoker folderid="menu/tc" action="initOffline" caption="Offline Collection" permission="collection.create_offline"/>
+        <invoker folderid="menu/tc" action="initCapture" caption="Capture Collection" permission="collection.create_capture"/>
+        
+        <invoker type="quick_launcher" code="RCT01" action="initOnline" caption="Online Collection" permission="collection.create_online"/>
+        <invoker type="quick_launcher" code="RCT02" action="initOffline" caption="Offline Collection" permission="collection.create_offline"/>
+        <invoker type="quick_launcher" code="RCT03" action="initCapture" caption="Capture Collection" permission="collection.create_capture"/>
+        
+        <invoker type="home.action" action="initOnline" caption="Online Collection" permission="collection.create_online" index="101" icon="images/folder.png" target="window"/>
+        <invoker type="home.action" action="initOffline" caption="Offline Collection" permission="collection.create_offline" index="102" icon="images/folder.png" target="window"/>
+        <invoker type="home.action" action="initCapture" caption="Capture Collection" permission="collection.create_capture" index="103" icon="images/folder.png" target="window"/>
+    </invokers>
+    <code>
+    <![CDATA[
+    
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import etracs2.groovy.*;
+
+class CollectionController
+{
+    @Binding
+    def binding
+
+    @Service('DateService')
+    def dateService
+    
+    @Service('AFService')
+    def afService
+    
+    @Service('AFControlService')
+    def afcontrolService
+        
+    @Service('CollectionTypeService')
+    def collTypeService
+    
+    @Service('CollectionSettingService')
+    def csSvc
+    
+    @Service('ETRACSUserService')
+    def userService
+    
+    def ONLINE_MODE = 'ONLINE'
+    def OFFLINE_MONE = 'OFFLINE'
+    def CAPTURE_MODE = 'CAPTURE'
+    
+    def txnmode
+    def collector
+    def txndate
+    def af 
+    def collectiontype
+    def opener
+    def entity 
+    def afcontrol
+	
+    
+    void initOnline()  { init( ONLINE_MODE  ) }
+    void initOffline()  { init( OFFLINE_MONE ) }
+    
+    def initCapture()  { 
+        this.txnmode = CAPTURE_MODE 
+        preservedTxnDate()
+        return 'capture' 
+    }
+	
+    void init( txnmode ) {
+        this.txnmode = txnmode
+        collector = getCollector()
+        preservedTxnDate()
+    }
+	
+    def doNext() {
+        if( ! afcontrol ) {
+            getAFControlInfo()
+            if( ! afcontrol ) {
+                return 
+            }
+        }
+        def vals = 'cattle_ownership|cattle_transfer|marriage_license|burial_permit';
+        if( collectiontype.appcode.matches(vals) ){
+            def cs = csSvc.getCS();
+            if( !cs ) throw new Exception('Accounts: Collection Setting not yet set. ');
+        }
+        
+        CommonUtil.required('AF Control', afcontrol)
+        
+        try {
+            lookupOpener()
+            return 'main'
+        }
+        catch( e ) {
+            // an exception is thrown if no registered opener found which is mostly
+            // caused by lack of permission
+            e.printStackTrace()
+            throw new Exception('You do not have sufficient permissions for this collection type.\nPlease contact your administrator for assistance.')
+        }
+    }
+    
+    void setCollectiontype( colltype ) {
+        collectiontype = colltype
+        if( collectiontype ) {
+            getAFControlInfo()
+        }
+    }
+    
+    void getAFControlInfo( ) {
+        afcontrol = afcontrolService.getActiveAFControl( collector.objid, af.objid, txnmode ) 
+        if( !afcontrol ) {
+            def afcontrolList = afcontrolService.getInactiveList( collector.objid, af.objid, txnmode )
+            if( afcontrolList ) {
+                selectStubToUse( af, afcontrolList )
+            }
+            else {
+                throw new Exception('No assigned Accountable Form for this collector.')
+            }
+        }
+    }
+    
+    void setCollector( collector ) {
+        this.collector = collector 
+        afcontrol = null 
+    }
+    
+    def onselectStubHandler = { afc ->
+        afcontrol = afc
+    }
+    
+    void selectStubToUse( af, afcontrolList ) {
+        def params = [
+            afid : af.objid,
+            mode : txnmode,
+            collector: collector,
+            onselectHandler : onselectStubHandler,
+            list : afcontrolList,
+        ]
+        def o = InvokerUtil.lookupOpener('afcontrol:activate', params)
+        binding.refresh('af')
+        binding.fireNavigation( o )   
+    }
+    
+    
+    def backHandler = {
+        if( txnmode == CAPTURE_MODE )
+            binding.fireNavigation('capture')
+        else 
+            binding.fireNavigation('default')
+    }
+    
+    def newHandler = { 
+        getAFControlInfo( ) 
+        if( txnmode == CAPTURE_MODE )
+            binding.fireNavigation('capture')
+        else 
+            binding.fireNavigation('default')
+    }
+	
+    void lookupOpener() {
+        String openerType = 'tc:' + collectiontype.appcode
+        def params = [
+            af             : af,
+            afcontrol      : afcontrol,
+            openerType     : openerType,
+            collectiontype : collectiontype,
+            collector      : collector,
+            txnmode        : txnmode,
+            txndate        : txndate,
+            backHandler    : backHandler, 
+            newHandler     : newHandler,
+        ]
+        opener = InvokerUtil.lookupOpener( openerType, params )
+    }
+    
+    void preservedTxnDate() {
+        if( txnmode == ONLINE_MODE ) {
+            txndate = null
+        }
+        else if( ! txndate ) {
+            txndate = dateService.serverDate
+        }
+    }
+	
+    List getAfList() {
+        return afService.getList( null, null )
+    }
+
+    List getCollectionTypeList() {
+        
+        return collTypeService.getListByAfId( af.objid )
+    }    
+    
+    def getCollector(){
+        if( txnmode != CAPTURE_MODE )
+            return userService.getCollector( OsirisContext.env.USERID  )
+        return collector 
+        
+    }
+    
+    def getCollectorlist() {
+        return userService.getCollectorList()
+    }
+    
+    /* ------------------------------------------------------------------------------------------------
+    *
+    * BARCODE SUPPORT 
+    *
+    ------------------------------------------------------------------------------------------------ */
+    
+    def minBarcodeLength = 5
+    
+    def readBarcode() {
+        def barcode = MsgBox.prompt('Enter or scan barcode.')
+        if ( ! barcode ) return 
+        if ( barcode.trim().length() < minBarcodeLength ) throw new Exception('Invalid barcode.')
+        return loadBarcodeOpener( barcode ) 
+    }
+    
+    def loadBarcodeOpener(   barcode ) {
+        def openercode  = barcode.substring(0, minBarcodeLength)
+        def afid        = openercode.substring(3)
+        def data        = barcode.substring( minBarcodeLength)
+        
+        String openerType = 'tc:' + openercode
+        
+        try {
+            opener = InvokerUtil.lookupOpener( openerType, [:] )
+        }
+        catch( e ) {
+            //
+        }
+        if( ! opener ) throw new Exception( 'Invalid barcode.'  )
+        
+        def appcode = opener.properties.appcode 
+        
+        //init critical informations
+        af = getAfList().find{ it.objid == afid }
+        if ( ! af ) throw new Exception('Cannot load associated accountable form reference with no. ' + afid )
+        
+        collectiontype = getCollectionTypeList().find{ it.appcode == appcode }
+        if( ! collectiontype ) throw new Exception('Collection type for application code ' + appcode + ' is not defined.' )
+        
+        if( ! afcontrol ) {
+            getAFControlInfo()
+            if( ! afcontrol ) {
+                return 
+            }
+        }
+        
+        def params = [
+            af             : af,
+            afcontrol      : afcontrol,
+            openerType     : openerType,
+            collectiontype : collectiontype,
+            collector      : collector,
+            txnmode        : txnmode,
+            txndate        : txndate,
+            backHandler    : backHandler, 
+            newHandler     : newHandler,
+            barcode        : barcode, 
+        ]
+        
+        opener = InvokerUtil.lookupOpener( openerType, params )
+        try {
+            InvokerUtil.invokeOpener( opener )
+            return 'main' 
+        }
+        catch( e ) {
+            MsgBox.err( e )
+            return null
+        }
+    }
+}
+        
+    ]]>
+    </code>
+    <pages>
+        <page template="etracs2.tc.collection.CollectionInitPage"/>
+        <page name="capture" template="etracs2.tc.collection.CollectionCaptureInitPage"/>
+        <page name="main" template="etracs2.tc.collection.CollectionMainPage"/>
+        <page name="view" template="etracs2.tc.collection.CollectionViewPage"/>
+    </pages>
+</workunit>

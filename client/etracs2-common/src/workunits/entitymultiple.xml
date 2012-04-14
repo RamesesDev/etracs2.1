@@ -1,0 +1,230 @@
+<workunit>
+    <invokers>
+        <invoker type="entity.multiple"     action="open"   caption="Entity (Multiple)" />        
+        <invoker type="entity.type"         action="init"   caption="Multiple"              target="popup" permission="multiple.create" />        
+
+        <invoker type="quick_launcher" code="TP03" action="init" caption="Multiple Ownership" target="popup" permission="multiple.create" />
+
+        <invoker type="formActions" action="_close" caption="Close"  shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png" visibleWhen="${mode=='view' and showClose}"/>
+        <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" target="popup" permission="multiple.create"/>
+        <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Edit" mnemonic="e" icon="images/doc-edit.png" permission="multiple.edit"/>
+        <invoker type="formActions" action="save" shortcut="ctrl S" visibleWhen="#{mode != 'view'}" caption="Save" mnemonic="s" icon="images/doc-save.png"/>
+        <invoker type="formActions" action="cancel" visibleWhen="#{mode != 'view'}"  immediate="true" caption="Cancel" mnemonic="c" icon="images/doc-cancel.png"/>
+        <invoker type="formActions" action="delete" shortcut="ctrl D" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Delete" mnemonic="d" icon="images/doc-delete.png" permission="multiple.delete"/>
+
+        <invoker type="formActions" action="showMapping" shortcut="ctrl M" visibleWhen="#{mode == 'view' and entity.objid != null and allowMapping == true}" immediate="true" caption="Mapping" mnemonic="m" permission="entity.mapping" />
+        
+        <invoker type="mappingActions" action="_default" caption="Back" mnemonic="b" icon="images/back.png" immediate="true" />
+        <invoker type="mappingActions" action="broadcastRequest" caption="Broadcast Mapping Request" immediate="true" />
+    </invokers>
+    <code>
+        <![CDATA[        
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import java.rmi.server.UID;
+
+class EntityMultipleController extends etracs2.groovy.AbstractEntityController 
+{
+    @Service("EntityService")
+    def svc
+    
+    @Service('Var')
+    def var 
+    
+    
+    boolean showClose = true
+    
+    def selectedMember
+    def members
+    def errorMsg 
+    
+    void init() {
+        members = []
+        super.create()
+    }
+    
+    void open() {
+        members = svc.getMemberList( entity.objid )
+        members.each {
+            it.entity = [ 
+                objid           : it.taxpayerid,
+                entityname      : it.taxpayername ,
+                entityaddress   : it.taxpayeraddress,
+            ]
+        }
+    }
+    
+    void cancel(){
+        members = []
+        membersListHandler.load()
+        mode = 'view'
+    }
+    
+    void save() {
+        updateFullName()
+        if( mode == 'create') {
+            entity._members = members 
+        }
+        super.save()        
+    }
+    
+    def getService() { return svc }
+    def getCreateFocusComponent() { return "entity.name"; }
+    def getEditFocusComponent() { return "entity.name"; }
+    
+    def createEntity() { 
+        return [
+            entitytype : 'multiple',
+            info       : [
+                fullname : ''
+            ],
+        ]
+    } 
+    
+    
+    def lookupEntity = InvokerUtil.lookupOpener("entity.lookup",[:]);
+
+    def membersListHandler = [
+        getRows    : { return 15; },
+        getColumns : {
+            return [
+                new Column(name:"itemno", caption:"Item No.", maxWidth:70),
+                new Column(name:"prefix", caption:"Prefix", editable:true, maxWidth:100),
+                new Column(name:"entity", caption:"Taxpayer Name", editable:true, type:"lookup", handler:lookupEntity, expression: '#{entityname}'),
+                new Column(name:"suffix", caption:"Suffix", editable:true, maxWidth:100)
+            ];
+        },
+        fetchList : { return members },
+        createItem : { return [ objid:'EM'+ new UID() ] },
+        onAddItem  : { item -> members.add( item ) },
+        validate     : { li -> doValidateEntity( li.item ) },
+        onRemoveItem : { item -> doRemoveEntity( item ) },
+    ] as SubListModel;
+    
+    void doValidateEntity( item ) {
+        try {
+            required(item.entity, 'Taxpayer Name');
+            checkDuplicate( item )
+
+            item.entityid       = entity.objid
+            item.itemno         = getItemNo();
+            item.taxpayerid     = item.entity?.objid;
+            item.taxpayername   = item.entity?.entityname;
+            item.taxpayeraddress = item.entity?.entityaddress
+            if( mode != 'create' ) {
+                svc.saveMember( item )
+            }
+            clearError()
+        }
+        catch( e ) {
+            e.printStackTrace()
+            errorMsg = e.message
+            binding.refresh( 'errorMsg' )
+            throw e 
+        }
+        
+    }
+    
+    void checkDuplicate( item ) {
+        def data = members.find{ it.objid != item.objid && it.taxpayerid == item.entity.objid }
+        if( data ) throw new Exception('Duplicate member is not allowed.')
+    }
+    
+    void doRemoveEntity( item ) {
+        if( MsgBox.confirm("Remove selected item?") ) {
+            svc.deleteMember( item ) 
+            members.remove( item );
+            updateFullName();
+        }
+    }
+    
+    void updateFullName() {
+        String fullname = ''
+        
+        members.each { 
+            String prefix = ( it.prefix ? it.prefix : '' )
+            String suffix = ( it.suffix ? it.suffix : '' )
+            fullname += prefix
+            if( prefix.length()  > 0 ) fullname += ' ' 
+            fullname += it.taxpayername 
+            if( suffix.length() > 0 ) fullname += ' '
+            fullname += suffix + ' '
+        }
+        entity.info.fullname = fullname 
+        binding.refresh('entity.info.fullname');
+    }
+    
+    void copyFullName() {
+        updateFullName()
+        entity.entityname = entity.info.fullname;
+        binding.refresh('entity.entityname');
+    }
+    
+    def getItemNo() {
+        def num;
+        
+        if( members.size() == 0 ) num = 1;
+        else {
+            def last = members.last();
+            num = last.itemno + 1;
+        }
+        
+        return num;
+    }
+    
+    void required( caption, value ) {
+        if( !value ) throw new Exception( caption + ' is required.')
+    }
+    
+    void clearError() {
+        errorMsg = null
+        binding.refresh( 'errorMsg' )
+    }
+    
+/* ----------------------------------------------------------------
+    *
+    * Mapping Support
+    *
+    ------------------------------------------------------------------*/
+    def showMapping() {
+        listHandler.load()
+        return 'mapping'
+    }
+    
+    def getEntityinfo() {
+        return 'Mapping information for ' + entity.entityname + ' (' + entity.entityno + ')'
+    }
+    
+    void broadcastRequest() {
+        if( MsgBox.confirm('Broadcast mapping request to all registered domain?') ) {
+            svc.broadcastMappingRequest( entity )
+        }
+    }
+    
+    def listHandler = [
+        getColumns : { return [
+            new Column(name:'domainid', caption:'LGU No.' ),
+            new Column(name:'domainname', caption:'LGU Name' ),
+            new Column(name:'entityno', caption:'ID No.' ),
+            new Column(name:'entityname', caption:'Name' ),
+            new Column(name:'entityaddress', caption:'Address' ),
+        ]},
+        fetchList : {
+            return svc.getMappingList( entity.objid )
+        }
+    ] as SubListModel
+    
+    boolean getAllowMapping() {
+        return true
+    }    
+}        
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.entity.MultiplePage"/>
+        <page name="mapping" template="etracs2.entity.EntityMappingPage"/>
+    </pages>
+</workunit>

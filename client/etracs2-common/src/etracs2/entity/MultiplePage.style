@@ -1,0 +1,7 @@
+".*|copyFullName|selectedMember" [ true == true ] {
+    enabled:true;
+}
+
+"entity.*|copyFullName|selectedMember" [ mode == 'view' ] {
+    enabled:false;
+}

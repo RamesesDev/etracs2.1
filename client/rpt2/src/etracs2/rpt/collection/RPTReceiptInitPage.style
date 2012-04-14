@@ -1,0 +1,23 @@
+"entity.info.txndate" [ entity.info.mode == 'ONLINE'] {
+    enabled:false;
+}
+
+"entity.info.txndate" [ entity.info.mode != 'ONLINE'] {
+    enabled:true;
+}
+
+"billtoyear" [ true == true]{
+    enabled:false;
+}
+
+"billtoyear" [ payoption == 'advance'] {
+    enabled:true;
+}
+
+"remotedomain" [ true == true]{
+    enabled:false;
+}
+
+"remotedomain" [ payoption == 'remote'] {
+    enabled:true;
+}

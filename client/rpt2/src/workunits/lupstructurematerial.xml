@@ -1,0 +1,62 @@
+<workunit>
+    <invokers>
+        <invoker type="structurematerial.lookup" action="init" caption="Struture Material Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+
+class LookupStructureMaterialController extends LookupModel 
+{
+    @Service("StructuresService")
+    def svc
+    
+    def onselect
+    def searchText
+    def selected
+    def structureid
+    def item 
+    
+    void init() {}
+    
+     def ok() {
+        search = null
+        if( onselect ) onselect( selected )
+        return select()
+    }
+    
+    def getListHandler() {
+        return this
+    }
+    
+    int getRows() { return 20 }
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"materialcode", caption:"Code", width:70),
+            new Column(name:"materialname", caption:"Material", width:250),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        def s = search
+        if( !s ) s = searchText 
+        def list = svc.lookupStructureMaterials( structureid,  s, params)
+        if( list ) return list
+        throw new Exception("Record not found.")
+    }
+}  
+
+
+]]>
+
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.LookupPage"/>
+    </pages>
+</workunit>

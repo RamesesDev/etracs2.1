@@ -1,0 +1,81 @@
+<workunit>
+    <invokers>
+        <invoker type="iraf:LGU" action="init" caption="Add Iraf Item" target="popup"/>
+        
+        <invoker type="formActions" action="addAndNew" caption="Save and New" mnemonic="n" icon="images/doc-save.png"/>
+        <invoker type="formActions" action="addItem" caption="Save" mnemonic="s" icon="images/save.png"/>
+    </invokers>
+    
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import java.rmi.server.UID;
+
+class IRAFAddItemController
+{  
+    @Binding
+    def binding;
+    
+    def svc;
+    
+    def refreshHandler;
+    def iraf;
+    def item = [prefix:'', suffix:''];
+    
+    def getAfList(){
+        return iraf.requesteditems.findAll{ it.qtyrequested > it.qtydelivered }.collect{ it.afid };
+    }
+    
+    void init(){
+        item = [ qtyreceived: 0, startseries: 0, qtyremaining:0 ];
+    }
+    
+    def addAndNew(){
+        addItem();
+        init();
+    }
+    
+    def addItem(){
+        item.remove('qtyremaining');
+        def retVal = svc.addItem( iraf, item );
+        iraf.clear();
+        iraf.putAll( retVal );
+        refreshHandler();
+        return '_close';
+    }
+
+    void setAfId(def afid){
+        this.item.afid = afid;
+        if( afid ){
+            def ri = iraf.requesteditems.find{ it.afid == afid };
+            item.aftype = ri.aftype;
+            if( ri.aftype == 'serial' ){
+                item.prefix = '';
+                item.suffix = '';
+                item.startseries = 0;
+                item.qtyremaining = ri.qtyrequested - ri.qtydelivered - ri.qtyreceived;
+            }else{
+                item.prefix = 'N/A';
+                item.suffix = 'N/A';
+                item.startseries = 0;
+            }
+            binding.refresh();
+        }else{
+            init();
+        }
+    }
+    
+    def getAfId(){
+        return this.item.afid;
+    }
+}
+]]>        
+        
+    </code>
+    <pages>
+        <page template="etracs2.tc.af.IRAFAddItemLGUPage"/>
+    </pages>
+</workunit>

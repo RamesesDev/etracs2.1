@@ -1,0 +1,62 @@
+<workunit>
+    <invokers>
+        <invoker type="bank:lookup.bank" caption="Bank Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+
+class BankLookupController extends LookupModel 
+{
+    @Service("BankiService")
+    def svc;
+    
+    def onselect;
+    def searchText;
+    def selected;
+    
+    void init(){
+    }
+    
+    
+    def ok() {
+        search = null
+        if( onselect ) onselect( selected )
+        return select();
+    }
+    
+    def getListHandler() {
+        return this;
+    }
+    
+    int getRows() { return 20; }
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"bankcode", caption:"Bank Code"),
+            new Column(name:"bankname", caption:"Bank Name"),
+            new Column(name:"branchname", caption:"Branch Name"),
+        ];
+    }
+    
+    List fetchList( Map params ) { 
+        def s = search
+        if( !s ) s = searchText 
+        def list = svc.getList(s, params);
+        if( list ) return list;
+        throw new Exception("Record not found.");
+    }
+}  
+
+]]>
+
+    </code>
+    
+    <pages>
+        <page template="etracs2.tc.LookupPage"/>
+    </pages>
+</workunit>

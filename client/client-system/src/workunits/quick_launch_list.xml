@@ -1,0 +1,63 @@
+<workunit>
+    
+    <invokers>
+        <invoker type="toolbar" caption="" tooltip="View all quick launcher keys" 
+                 target="popup" icon="system/images/list-icon16.png" index="-19"
+                 action="init"/> 
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.client.*;
+        import system.tools.ui.*;
+        
+        
+        public class QuickLaunchListController
+        {
+            def searchtext;
+            def list;
+            def selectedItem;
+            
+            void init() {
+                list = QuickLaunchHelper.instance.allLaunchers;
+            }
+            
+            def launch() {
+                if( !selectedItem ) 
+                    throw new Exception('No quick launch key selected.');
+                if( selectedItem.allowed == "NO" ) 
+                    throw new Exception("You don't have permission to launch this key.");
+                
+                QuickLaunchHelper.instance.launch( selectedItem.code );
+                return '_close';
+            }
+            
+            def listHandler = [
+                getColumns: {
+                    return [
+                        new Column(name:'code', caption:'Code'),
+                        new Column(name:'desc', caption:'Description'),
+                        new Column(name:'allowed', caption:'Allowed'),
+                    ]
+                },
+                fetchList: {
+                    if( searchtext ) {
+                        return list.findAll{ it.code.startsWith(searchtext) };
+                    }
+                    return list 
+                }
+            ] as SubListModel;
+
+            
+        }
+        
+        ]]>
+    </code>
+    <pages>
+        <page template="system.tools.ui.QuickLaunchListPage" />
+    </pages>
+</workunit>

@@ -1,0 +1,43 @@
+"application.*" [mode != 'view'] {
+    readonly:false;
+}
+
+"application.*" [mode == 'view' || application.txntype != 'NEW'] {
+    readonly:true;
+}
+
+"application.*" [mode != 'view' && application.txnmode == 'CAPTURE'] {
+    readonly:false;
+}
+
+"application.info.ctcno" [mode != 'view' && application.txntype == 'RENEW'] {readonly:false;}
+"application.info.ctcplaceissued" [mode != 'view' && application.txntype == 'RENEW'] {readonly:false;}
+"application.info.ctcdateissued" [mode != 'view' && application.txntype == 'RENEW'] {readonly:false;}
+"application.info.contactno" [mode != 'view' && application.txntype == 'RENEW'] {readonly:false;}
+
+"lobSearch" [mode == 'view']{
+    readonly:true;
+}
+
+"lobSearch" [mode != 'view' || application.txntype == 'RETIRE' || application.txntype == 'RETIRELOB']{
+    readonly:false;
+}
+
+"application.txndate" [application.txnmode == 'ONLINE' && mode != 'view']{
+    readonly:true;
+}
+
+"application.txndate" [application.txnmode == 'CAPTURE' && mode != 'view']{
+    readonly:false;
+}
+
+"lob" [mode != 'view'] {
+    enabled:true;
+}
+
+"lob" [mode == 'view'] {
+    enabled:false;
+}
+
+# /*"lobSearch" [application.txnno != null]  { enabled:false; }*/
+

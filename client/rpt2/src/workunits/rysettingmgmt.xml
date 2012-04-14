@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="menu/rpt/master" caption="Revision Year Setting Management" mnemonic="y" permission="rysetting.view" />
+        <!-- 
+        <invoker type="home.action" caption="Revision Year Setting Management" icon="images/debug.png" target="window" index="101"  permission="rysetting.view"/>
+        -->
+    </invokers>
+    
+    <code lang="groovy">
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+public class RYSettingMgmtController
+{
+    @Binding
+    def binding
+    
+    def opener
+    
+    List getOpeners() {
+        return InvokerUtil.lookupOpeners('rysettingmgmt.type', null)
+    }
+    
+}       
+        
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.ry.RYSettingMgmtPage"/>
+    </pages>
+</workunit>

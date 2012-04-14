@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    
+    <invokers>
+        <invoker type="bptransaction" folderid="/menu/bp" action="createBPAdmin" caption="Change Administrator" permission="bpadmin.changeadministrator" index="252"  target="window" />
+        <invoker type="bptransaction.createBPAdmin"              action="createBPAdmin" caption="Change Administrator" target="window" />
+        
+        <invoker type="formActions" action="close" immediate="true" caption="Close" icon="images/cancel.png"/>
+        <invoker type="formActions" action="createBPAdmin" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"/>
+        <invoker type="formActions" action="back" shortcut="ctrl B" visibleWhen="#{mode == 'edit' &amp;&amp; entity.docstate == null}" immediate="true" caption="Back" mnemonic="b" icon="images/back.png"/>
+        <invoker type="formActions" action="next" shortcut="ctrl N" visibleWhen="#{mode == 'init'}" immediate="true" caption="Next" mnemonic="n" icon="images/next.png"/>
+        <invoker type="formActions" action="save" shortcut="ctrl S" visibleWhen="#{mode != 'init' &amp;&amp; mode != 'view' &amp;&amp; entity.docstate != 'SUBMITTED' &amp;&amp; entity.docstate != 'APPROVED'}" caption="Save" mnemonic="s" icon="images/save.png"/>
+        <invoker type="formActions" action="edit" shortcut="ctrl D" visibleWhen="#{mode == 'view' &amp;&amp; entity.docstate == 'DRAFT' }" caption="Edit" mnemonic="d" icon="images/edit.png"/>
+        <invoker type="formActions" action="submit" shortcut="ctrl S" visibleWhen="#{mode == 'view' &amp;&amp; entity.docstate == 'DRAFT'}" caption="Submit" mnemonic="s" icon="images/doc-submit.png"/>
+        <invoker type="formActions" action="approve" shortcut="ctrl A" visibleWhen="#{entity.docstate == 'SUBMITTED'}" caption="Approve" mnemonic="a" icon="images/approve.png"/>
+        <invoker type="formActions" action="reject" shortcut="ctrl R" visibleWhen="#{entity.docstate == 'SUBMITTED'}" caption="Reject" mnemonic="r" icon="images/disapprove.png"/>
+    </invokers>
+    
+    <code lang="groovy">
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import com.rameses.osiris2.reports.*;
+        
+        public class ChangeAdminController {
+
+            @Service('BusinessTxnService')
+            def svc;
+            
+            @Caller
+            def caller;
+            
+            @Binding
+            def binding;
+            
+            def mode;
+            def business
+            def entity;
+            
+            def createBPAdmin() {
+                business  = null
+                mode = 'init';
+                entity = [
+                    info : buildInfo(),
+                    business : buildBusiness()
+                ];
+                return 'init';
+            }
+            
+            def buildInfo() {
+                return [:];
+            }
+            
+            def buildBusiness() {
+                return [:];
+            }
+            
+            def next() {
+                mode = 'edit';
+                return 'main';
+            }
+            
+            void setBusiness( sb ) {
+                business = sb 
+                entity.businessid = sb.objid;
+                entity.business.tradename = sb.tradename;
+                entity.business.businessaddress = sb.businessaddress;
+                entity.business.taxpayerid = sb.taxpayerid;
+                entity.business.taxpayername = sb.taxpayername;
+                entity.business.taxpayeraddress = sb.taxpayeraddress;
+                entity.business.adminid = sb.adminid;
+                entity.business.adminname = sb.adminname;
+                entity.business.adminaddress = sb.adminaddress;
+                binding.refresh();
+            }
+            
+            def getLookupBusiness() {
+                return InvokerUtil.lookupOpener( 'business:lookup', [:] );
+            }
+            
+            def onselectAdmin = { sa ->
+                entity.info.newadminid = sa.objid;
+                entity.info.newadminname = sa.entityname;
+                entity.info.newadminaddress = sa.entityaddress;
+                binding.refresh();
+            }
+            
+            def lookupAdmin() {
+                return InvokerUtil.lookupOpener( 'entity:lookup', [onselect:onselectAdmin, searchText:entity.info.newadminname] );
+            }
+            
+            def open() {
+                mode = 'view';
+                entity = svc.open( entity.objid, entity.txntype );
+                return 'main';
+            }
+
+            void edit() {
+                mode = 'edit';
+            }
+            
+            void save() {
+                if ( !entity.objid )
+                    entity = svc.createChangeAdmin( entity );
+                else
+                    entity = svc.update( entity );
+                mode = 'view';
+                if ( caller )
+                    caller.binding.refresh();
+                binding.refresh();
+            }
+            
+            void submit() {
+                if (! MsgBox.confirm( "Do you want to submit this document?" ) )
+                    return;
+                entity = svc.submitTransaction( entity );
+                mode = 'view';
+                binding.refresh();
+            }
+            
+            void approve() {
+                if (! MsgBox.confirm( "Do you want to approve this document?" ) )
+                    return;
+                entity = svc.approveTransaction( entity );
+                mode = 'view';
+                binding.refresh();
+            }
+            
+            void reject() {
+                if (! MsgBox.confirm( "Do you want to reject this document?" ) )
+                    return;
+                entity = svc.rejectTransaction( entity );
+                mode = 'view';
+                binding.refresh();
+            }
+            
+            def close() {
+                return '_close';
+            }
+            
+            def back() {
+                mode = 'init';
+                return 'init';
+            }
+
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page name="init" template="etracs2.bp.transaction.SelectBusinessPage" />
+        <page name="main" template="etracs2.bp.transaction.changeadmin.ChangeAdminPage" />
+    </pages>
+</workunit>

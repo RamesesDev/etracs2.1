@@ -1,0 +1,16 @@
+"entity.tax.*" [entity.info.mode=="ONLINE"] {
+    enabled: false;
+}
+
+"entity.tax.*" [entity.info.mode!="ONLINE"] {
+    enabled: true;
+}
+
+"entity.info.payer.entity(name|address)" [taxpayer!=null] {
+    enabled: false;
+}
+
+"entity.info.payer.entity(name|address)" [taxpayer==null] {
+    enabled: true;
+}
+

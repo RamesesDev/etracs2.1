@@ -1,0 +1,31 @@
+"rpu.*|classification|exemption|selectedLand|selectedPlantTree"  [allowEdit == true] {
+    enabled:true;
+}
+
+"exemption" [ rpu.taxable == true ] {
+    enabled:false;
+}
+
+"exemption" [ rpu.taxable == false ] {
+    enabled:true;
+}
+
+"openActualUseAdjustment" [selectedLand == null || selectedLand.subclassid == null] {
+    enabled:false;
+}
+
+"openActualUseAdjustment" [selectedLand != null && selectedLand.subclassid != null] {
+    enabled:true;
+}
+
+"rpu.*|classification|exemption|selectedLand|selectedPlantTree"  [allowEdit == false] {
+    enabled:false;
+}
+
+"formActions" [ onupdate == null ] {
+    visible:false;
+}
+
+"formActions" [ onupdate != null ] {
+    visible:true;
+}

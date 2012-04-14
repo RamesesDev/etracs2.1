@@ -1,0 +1,56 @@
+<workunit>
+    <invokers>
+        <invoker type="value_handler:txntype_lookup" caption="Select" target="popup"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+
+        class TxnTypeLookupController {
+        
+            @Binding
+            def binding
+
+            def searchText
+            def selectedItem
+            def selectedItems = [];
+            def handler
+
+            def select() {
+                if( handler ) handler( selectedItems )
+                return '_close' 
+            }
+
+            def remove() {
+                if( selectedItem ) {
+                    selectedItems.remove( selectedItem )
+                }
+            }
+
+            def selectAcctHandler = { x ->
+                x.each { o->
+                    if( ! selectedItems.find{ it.objid == o.objid } ) {
+                        selectedItems.add([ objid: o.objid, name : o.name ]);
+                    }
+                }
+                searchText = null
+                binding.refresh( 'searchText' )
+                binding.refresh('selectedItem')
+            }
+
+            def lookup() {
+                return InvokerUtil.lookupOpener('rptbilling_lookup.txntype', [searchText:searchText, finishHandler:selectAcctHandler])
+            }
+
+        }
+
+
+        ]]>
+    </code>
+    <pages>
+        <page template="rulemgmt.support.MultiValueLookupPage"/>
+    </pages>
+</workunit>
