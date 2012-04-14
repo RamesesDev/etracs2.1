@@ -1,7 +1,0 @@
-"selectedBarangay" [true == true] {
-    readonly:false;
-}
-
-"selectedBarangay" [ selectedItem == null || selectedItem.objid == null] {
-    readonly:true;
-}

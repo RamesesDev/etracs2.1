@@ -62,6 +62,7 @@ public class FormulaEditorPage extends javax.swing.JPanel {
 
         jSplitPane2.setTopComponent(jSplitPane3);
 
+        xLabel1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         xLabel1.setDepends(new String[] {"selectedDefinition"});
         xLabel1.setName("htmlInfo");
         jSplitPane2.setRightComponent(xLabel1);

@@ -52,7 +52,7 @@
             
             def getHtmlInfo() {
                 if( selectedDefinitionType == 'Functions' )
-                    return '<html>${selectedDefinition.info}</html>'
+                    return "<html>${selectedDefinition.info}</html>"
                     
                 def sb = new StringBuffer();
                 sb << "<b>${selectedDefinition.name}</b>"

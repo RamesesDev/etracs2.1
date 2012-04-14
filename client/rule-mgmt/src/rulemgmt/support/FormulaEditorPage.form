@@ -108,6 +108,7 @@
             </Container>
             <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
               <Properties>
+                <Property name="verticalAlignment" type="int" value="1"/>
                 <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                   <StringArray count="1">
                     <StringItem index="0" value="selectedDefinition"/>
