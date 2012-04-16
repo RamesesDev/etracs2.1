@@ -1,3 +1,5 @@
 <folders>
-
+    <folder id="report" caption="Reports">
+        <folder id="ctc" caption="CTC Reports"/>
+    </folder>
 </folders>

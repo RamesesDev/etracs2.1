@@ -1,0 +1,11 @@
+<schema>
+	
+    <element name="webdraft" tablename="webdraft">
+        <field name="objid" primary="true"/>
+        <field name="description"/>
+        <field name="owner"/>
+        <field name="refid"/>
+        <complex name="info" serializer="default"/>
+    </element>
+	
+</schema>

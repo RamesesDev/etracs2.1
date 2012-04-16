@@ -1,0 +1,110 @@
+<web-app version="2.4" 
+		xmlns="http://java.sun.com/xml/ns/j2ee" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+	<context-param>
+		<param-name>app.version</param-name>
+		<param-value>1.001</param-value>
+	</context-param>
+	<context-param>
+		<param-name>app.host</param-name>
+		<param-value>localhost:8080</param-value>
+	</context-param>
+	<context-param>
+		<param-name>app.context</param-name>
+		<param-value>bohol</param-value>
+	</context-param>
+	<context-param>
+		<param-name>session.host</param-name>
+		<param-value>localhost:8080</param-value>
+	</context-param>
+	<context-param>
+		<param-name>session.context</param-name>
+		<param-value>bohol</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>debug</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	
+    <servlet>
+		<servlet-name>JSInvoker</servlet-name>
+        <servlet-class>com.rameses.web.support.JsonInvoker</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>remoteJS</servlet-name>
+        <servlet-class>com.rameses.web.support.RemoteJSProxyService</servlet-class>
+    </servlet>
+
+	<servlet>
+		<servlet-name>poller</servlet-name>
+        <servlet-class>com.rameses.web.support.PollerServlet</servlet-class>
+    </servlet>
+	
+	<servlet>
+		<servlet-name>resource</servlet-name>
+        <servlet-class>com.rameses.web.support.ResourceServlet</servlet-class>
+    </servlet>
+
+	<servlet>
+		<servlet-name>cluster-resource</servlet-name>
+        <servlet-class>com.rameses.web.support.ClusterResourceServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>JSInvoker</servlet-name>
+        <url-pattern>/jsinvoker/*</url-pattern>
+    </servlet-mapping>
+	
+    <servlet-mapping>
+        <servlet-name>remoteJS</servlet-name>
+        <url-pattern>/remote-proxy/*</url-pattern>
+    </servlet-mapping>
+	
+	<servlet-mapping>
+        <servlet-name>poller</servlet-name>
+        <url-pattern>/poll</url-pattern>
+    </servlet-mapping>
+
+	<servlet-mapping>
+        <servlet-name>resource</servlet-name>
+        <url-pattern>/res/*</url-pattern>
+    </servlet-mapping>
+	
+	<servlet-mapping>
+        <servlet-name>cluster-resource</servlet-name>
+        <url-pattern>/cres/*</url-pattern>
+    </servlet-mapping>
+
+
+ 	<!-- WebFilter Configuration  -->
+    <filter>
+        <filter-name>WebFilter</filter-name>
+        <filter-class>com.rameses.web.support.Filter</filter-class>
+    </filter>
+	
+	<!-- SessionFilter Configuration  -->
+    <filter>
+        <filter-name>SessionFilter</filter-name>
+        <filter-class>com.rameses.web.support.SessionFilter</filter-class>
+    </filter>
+    
+	
+    <filter-mapping>
+        <filter-name>WebFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher> 
+		<dispatcher>FORWARD</dispatcher>
+    </filter-mapping>  
+ 
+    <filter-mapping>
+        <filter-name>SessionFilter</filter-name>
+        <url-pattern>*.jsp</url-pattern>
+		<dispatcher>REQUEST</dispatcher> 
+		<dispatcher>FORWARD</dispatcher>
+    </filter-mapping> 
+ 
+</web-app>

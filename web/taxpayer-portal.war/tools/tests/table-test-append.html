@@ -1,0 +1,83 @@
+<html>
+	<head>
+		<script type="text/javascript">
+			if( !window.console ) window.console = { log: function(msg){  }};
+		</script>
+		<script src="js/lib/jquery-all.js"></script>
+		<script src="js/lib/rameses-ext-lib.js"></script>
+		<script src="js/lib/rameses-ui.js"></script>
+
+		<style>
+			body, table { font: 10pt/145% 'arial', 'verdana'; }
+		
+			.post { margin: 10px; border-bottom: solid 1px lightgrey; }
+			.poster { color: #999; font-size: 0.8em; }
+			.message { color: #333; }
+			
+		</style>
+		<script>
+			$put( "profile",
+				new function() {
+
+					var idx = 0;
+				
+					this.model = {
+						fetchList: function( p, last ) {
+							idx++;
+							alert( last? last.id : '' );
+							return [
+								{id: idx+'001', firstname:"elmo", lastname:"nazareno"},
+								{id: idx+'002', firstname:"jess", lastname:"zamora"}
+							];
+						}
+					};
+					
+					this.addNew = function() {
+						idx++;
+						this.model.prependItem( {id: idx+'001', firstname:"elmo", lastname:"nazareno"} );
+					}
+					
+					this.addNewBottom = function() {
+						idx++;
+						this.model.appendItem( {id: idx+'001', firstname:"elmo", lastname:"nazareno"} );
+					}
+				}
+			);
+		</script>
+
+	</head>
+	<body>
+		<a r:context="profile" r:name="addNew">New Item</a>
+		<br/>
+		<table r:context="profile" r:model="model" r:varStatus="stat"
+			   cellpadding="0" cellspacing="0" width="400">
+			<thead>
+				<th>
+					Posts
+					<hr/>
+				</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<div class="post">
+							<div class="poster">#{id} - #{firstname} #{lastname}</div>
+							<div class="message">
+								Hi, this is my message.
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<br/>
+		<a r:context="profile" r:name="addNewBottom">Add Item</a>
+		
+		<br/>
+		<a r:context="profile" r:name="model.fetchNext">View More</a>
+		<br/>
+		
+	</body>
+
+</html>

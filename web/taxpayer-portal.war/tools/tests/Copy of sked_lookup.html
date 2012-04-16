@@ -1,0 +1,14 @@
+<script>
+	$put("sked_lookup", 
+		new function() {
+			this.handler;
+			this.event;
+			
+			this.select = function() {
+				this.handler("hello");
+			}
+		}
+	)
+</script>
+
+<label context="sked_lookup">Event is #{event}</label>
