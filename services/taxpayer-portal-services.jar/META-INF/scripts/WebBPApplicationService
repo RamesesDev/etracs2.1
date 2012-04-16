@@ -1,0 +1,180 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+class WebBPApplicationService 
+{	
+	@PersistenceContext("main")
+	def em;
+	
+	@Service("BPApplicationService")
+	def svc;
+	
+	@Service("EntityService")
+	def entitySvc;
+	
+	@Env
+	def env;
+	
+	@ProxyMethod
+	public def createRenewApplication( appid ) {
+		def app = svc.open( appid );
+		def newapp = createAppModel();
+		newapp.putAll([
+			txnmode   : "ONLINE",
+			txntype   : "RENEW",
+			parentid  : app.objid,
+			businessid: app.businessid
+		]);
+		
+		app = svc.evaluateTxnType( newapp );
+		return svc.save( app );
+	}
+	
+	@ProxyMethod
+	public def createNewApplication() {
+		def draft = openDraft(env.userid);
+		if(draft) return draft;
+		
+		return createAppModel();
+	}
+	
+	private def createAppModel() {
+		def taxpayer = entitySvc.open( env.userid, null );
+		
+		return [
+			txnmode  : "ONLINE",
+			docstate : 'DRAFT',
+			txntype  : 'NEW',
+			lobs     : [],
+			taxfees  : [],
+			info     : {},
+			_step_   : 1,
+			taxpayerid : taxpayer.objid,
+			info     : [
+				taxpayername : taxpayer.entityname,
+				taxpayeraddress : taxpayer.entityaddress,
+				contactno  : taxpayer.contactno,
+				taxpayerid : taxpayer.objid,
+			]
+		];
+	}
+	
+	@ProxyMethod
+	public def saveForAssessment( app ) {
+		app = svc.save( app );
+		app = svc.submitForAssessment( app.objid );
+		em.delete("webdraft", [objid: env.userid]);
+		return app;
+	}
+	
+	@ProxyMethod
+	public def cancelAssessment( app ) {
+		app = svc.cancelApplicationForAssessement( app.objid );
+		app._step_ = 2;
+		return svc.save(app);
+	}
+	
+	@ProxyMethod
+	public def evaluateApplicationInfo( app ) {
+		return svc.evaluateApplicationInfo( app );
+	}
+	
+	@ProxyMethod
+	public def evaluateTaxesAndFees( appid, applist, requirements ) {
+		return svc.evaluateTaxesAndFees( appid, applist, requirements );
+	}
+	
+	@ProxyMethod
+	public def getApplicationList( appid ) {
+		return svc.getApplicationList( appid );
+	}
+	
+	@ProxyMethod
+	public def reassess( objid ) {
+		def app = svc.open( objid );
+		app.docstate = 'FOR_ASSESSMENT';
+		app._step_ = 3;
+		app = svc.save( app );
+		return app;
+	}
+	
+	@ProxyMethod
+	public def edit( draftid ) {
+		
+	}
+	
+	@ProxyMethod
+	public def submitForReview( draftid, appid, applist, requirements ) {
+		return svc.submitForReview( appid, applist, requirements );
+	}
+	
+	@ProxyMethod
+	public def findAppByTxnno( txnno ) {
+		def app = em.sqlContext.createQuery('select objid from bpapplication where txnno=?')
+		            .setParameter(1, txnno)
+					.singleResult;
+					
+		return app? svc.open( app.objid ) : null;
+	}
+	
+	@ProxyMethod
+	public def save( app ) {
+		if( app.objid ) {
+			svc.save( app );
+		}
+		else {
+			def draft = [:];
+			draft.objid = env.userid;
+			draft.description = app.tradename;
+			draft.owner = env.userid;
+			draft.info = app;
+			em.save("webdraft", draft);
+		}
+		
+		return app;
+	}
+	
+	@ProxyMethod
+	public def open( appid ) {
+		return svc.open(appid);
+	}
+	
+	@ProxyMethod
+	public def cancelApplication( appid ) {
+		svc.cancelApplicationForAssessement( appid )
+		svc.delete( appid );
+	}
+	
+	
+	//-- draft support --
+	@ProxyMethod
+	public def openDraft( objid ) {
+		if( !objid ) objid = env.userid;
+		return em.read("webdraft", [objid:objid])?.info;
+	}
+	
+	@ProxyMethod
+	public void cancelDraft( objid ) {
+		if(!objid) objid = env.userid;
+		def app = openDraft(objid);
+		if(app) {
+			try {
+				svc.delete( app.objid );
+			}
+			catch(e){
+				def oe = ExceptionManager.getOriginal(e);
+				if(!(oe instanceof BusinessException)) throw e;
+			}
+		}
+		em.delete("webdraft", [objid:objid]);
+	}
+	
+	@ProxyMethod
+	public def getDraftList(param) {
+		def qry = em.sqlContext.createQuery('select objid,description,owner from webdraft');
+		if(param._start) qry.setFirstResult(param._start);
+		if(param._limit) qry.setMaxResults(param._limit);
+		return qry.resultList;
+	}
+	
+}

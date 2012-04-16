@@ -1,0 +1,47 @@
+.amount { color: maroon; }
+
+.appstate { 
+	color: #f00; font-weight: bold;
+	font-size: 1.1em;
+}
+
+.rightpanel .section {
+	margin-top: 20px;
+}
+
+.section-title { color: maroon; margin-top: 10px; font-weight: 12pt; }
+
+.form { font-size: 10pt; }
+
+.form .req { color: #ff0000; font-weight: bold; }
+.form td { padding: 0; margin: 0; }
+
+.form td, .form th { vertical-align: top; }
+
+.form th { text-align: left; font-weight: bold; }
+
+.form input,
+.form select { 
+	margin: 1px 0; font-size: 12pt; 
+	height: 26px; line-height: 26px; 
+}
+
+.right-form { margin-left: 10px; }
+
+.formpanel .category {
+	padding: 5px 10px;
+	background: #ccc;
+	color: #000;
+}
+
+span.step {
+	background: url(../../img/step.png) no-repeat center center;
+	color: #fff;
+	display: inline-block;
+	font-size: 14pt;
+	font-weight: bold;
+	margin-right: 5px;
+	height: 32px; line-height: 32px;
+	width: 32px;
+	text-align: center;
+}

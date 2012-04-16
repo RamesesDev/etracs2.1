@@ -1,0 +1,126 @@
+html, body {
+	font-family: arial, verdana, tahoma;
+	margin:0;
+	height: 100%;
+	background: #fff url(../img/index-header.png) repeat-x left top;
+	color: #3F5102;
+}
+
+h1, h2, h3, h4, h5, h6 { padding:0; margin:0; }
+img { border: none }
+
+.wrapper {
+	background: url(../img/index-logo.png) no-repeat left top;
+	border-collapse: collapse;
+}
+
+.footer {
+	font-size: 9pt;
+	background: #fff url(../img/index-footer.png) repeat-x 0 120%;
+}
+
+.login-box {
+	border: solid 1px #bbb;
+	padding: 20px 4px 40px 4px;
+	width: 450px;
+	zoom: 1; overflow: hidden;
+	background: #F6F6F6;
+	background: -moz-linear-gradient(top,#ffffff,#efefef);
+	background: -webkit-gradient(linear,left top,left bottom,from(#ffffff),to(#efefef));
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	-moz-box-shadow: 0 1px 2px #bbb,inset 0 0 3px #fff;
+	-ms-box-shadow: 0 1px 2px #bbb,inset 0 0 3px #fff;
+	-webkit-box-shadow: 0 1px 2px #bbb,inset 0 0 3px #fff;
+	box-shadow: 0 1px 2px #bbb,inset 0 0 3px #fff;
+}
+
+.login-box .title {
+	padding: 5px; margin-bottom: 5px;
+	padding-left: 20px;
+	border-bottom: solid 1px #ddd;
+}
+
+.login-box .icon { margin-top: 15px }
+
+.login-box form {
+	margin: 0; padding: 0;
+}
+
+.login-box label {
+	float: left; clear: both;
+}
+
+.login-box span {
+	display: inline-block;
+	width: 100px;
+}
+
+.login-box .err { color: #ff0000 }
+
+.align-l { text-align: left }
+.align-r { text-align: right }
+.align-c { text-align: center }
+.section {  margin-bottom: 3px; }
+
+.left { float: left }
+.clear { clear: both }
+
+button {
+	padding: 0 1em;
+	height: 2.3em;
+	border: 1px solid #CCC;
+	color: black;
+	background: #F6F6F6;
+	background: -moz-linear-gradient(top,#ffffff,#efefef);
+	background: -webkit-gradient(linear,left top,left bottom,from(#ffffff),to(#efefef));
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	vertical-align: middle;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+button:hover {
+	border-color: #aaa;
+	background: -moz-linear-gradient(top,#fff 0,#e0e0e0 100%);
+	background: -ms-linear-gradient(top,#fff 0,#e0e0e0 100%);
+	background: -o-linear-gradient(top,#fff 0,#e0e0e0 100%);
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0,#fff),color-stop(100%,#e0e0e0));
+	background: -webkit-linear-gradient(top,#fff 0,#e0e0e0 100%);
+	background: linear-gradient(to bottom,#fff 0,#e0e0e0 100%);
+	-moz-box-shadow: 0 1px 2px rgba(0,0,0,0.25),inset 0 0 3px #fff;
+	-ms-box-shadow: 0 1px 2px rgba(0,0,0,0.25),inset 0 0 3px #fff;
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.25),inset 0 0 3px #fff;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.25),inset 0 0 3px #fff;
+}
+
+button:active {
+	background: -moz-linear-gradient(top,#e0e0e0 0,#fff 100%);
+	background: -ms-linear-gradient(top,#e0e0e0 0,#fff 100%);
+	background: -o-linear-gradient(top,#e0e0e0 0,#fff 100%);
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0,#e0e0e0),color-stop(100%,#fff));
+	background: -webkit-linear-gradient(top,#e0e0e0 0,#fff 100%);
+	background: linear-gradient(to bottom,#e0e0e0 0,#fff 100%);
+}
+
+input {
+	height: 2.0833em;
+	line-height: 2.0833em;
+	border: 1px solid #CCC;
+	color: black;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	vertical-align: middle;
+	background: -moz-linear-gradient(top,#eee 0,#fff 100%);
+	background: -ms-linear-gradient(top,#eee 0,#fff 100%);
+	background: -o-linear-gradient(top,#eee 0,#fff 100%);
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0,#eee),color-stop(100%,#fff));
+	background: -webkit-linear-gradient(top,#eee 0,#fff 100%);
+	background: linear-gradient(to bottom,#eee 0,#fff 100%);
+}
+
+

@@ -1,0 +1,133 @@
+<html>
+	
+	<head>
+		<style>
+			body, td, input {
+				font-family:arial; font-size:12px;
+			}
+			.colhead {
+				border-bottom:1px solid gray;
+				background-color:lightgrey;
+				color:gray;
+				padding: 4px;
+			}
+			.even-row {
+				background-color: lightyellow;
+			}
+			.odd-row {
+				background-color: lightgrey;
+			}
+		</style>
+	
+		<link rel="stylesheet" href="../js/lib/css/jquery-ui/jquery.css" type="text/css" />
+		<script src="../js/lib/jquery-all.js" ></script>
+		<script src="../js/lib/rameses-lib.js" ></script>
+		<script>
+			$put("sked", 
+				new function() {
+					this.entity = { fromdate:"", todate:"", schedules: [ {days:[]} ] }
+					this.addSked = function() {
+						this.entity.schedules.push( {days:[]} ) 
+					}
+					this.show = function() {
+						alert( $.toJSON(this.entity) ); 
+					}
+					
+					this.lookupType = function() {
+						var owner = this;
+						return new PopupOpener( "sked_lookup.html", "sked_lookup",
+							{handler: function(o) { owner.entity.eventtype = o; }, event: owner.entity.event}
+						);
+					}
+					
+					this.locations = [   
+						{code:"loc1", name:"location 1"},
+						{code:"loc2", name:"location 2"},
+						{code:"loc3", name:"location 3"}
+					]
+				}
+			)
+		</script>
+	</head>
+	<body>
+		
+	<table context="sked" items="entity.schedules" varStatus="stat" width="600">
+		<thead>
+			<tr>
+				<td colspan="3">Enter Event</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<input type="text" context="sked" name="entity.event" style="width:100%" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">Type of Event</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<input type="text" context="sked" name="entity.eventtype"  />
+					<input type="button" context="sked" name="lookupType" value="Lookup" /> 
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">Location</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					
+				</td>
+			</tr>
+			
+			<tr>
+				<td width="20%"><b>From Date</b></td>
+				<td width="20%"><b>To Date</b></td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><input type="text" context="sked" name="entity.fromdate" datatype="date" /></td>
+				<td><input type="text" context="sked" name="entity.todate" datatype="date" /></td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					Schedules
+				</td>
+			</tr>
+			<tr>
+				<td class="colhead"><b>From Time</b></td>
+				<td class="colhead"><b>To Time</b></td>
+				<td class="colhead"><b>Days</b></td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="#{stat.index % 2 == 0 ? 'even-row' : 'odd-row' }">
+				<td valign="top">
+					<input type="text" context="sked" name="entity.schedules[#{stat.index}].fromtime" size="10"/>
+				</td>
+				<td valign="top">
+					<input type="text" context="sked" name="entity.schedules[#{stat.index}].totime"  size="10"/>
+				</td>
+				<td>
+					<input type="checkbox" context="sked" name="entity.schedules[#{stat.index}].days" mode="set" checkedValue="mon">Mon	
+					<input type="checkbox" context="sked" name="entity.schedules[#{stat.index}].days" mode="set" checkedValue="tue">Tue
+					<input type="checkbox" context="sked" name="entity.schedules[#{stat.index}].days" mode="set" checkedValue="wed">Wed
+					<input type="checkbox" context="sked" name="entity.schedules[#{stat.index}].days" mode="set" checkedValue="thu">Thu
+					<input type="checkbox" context="sked" name="entity.schedules[#{stat.index}].days" mode="set" checkedValue="fri">Fri
+					<input type="checkbox" context="sked" name="entity.schedules[#{stat.index}].days" mode="set" checkedValue="sat">Sat
+					<input type="checkbox" context="sked" name="entity.schedules[#{stat.index}].days" mode="set" checkedValue="sun">Sun
+				</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3">
+					<a href="#" context="sked" name="addSked">Add</a>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+	
+	<input type="button" context="sked" name="show" value="Show"/>
+	</body>
+</html>

@@ -1,0 +1,124 @@
+<html>
+	
+	<head>
+		<style>
+			body, td, input {
+				font-family:arial; font-size:12px;
+			}
+			.colhead {
+				border-bottom:1px solid gray;
+				background-color:lightgrey;
+				color:gray;
+				padding: 4px;
+			}
+			.even-row {
+				background-color: lightyellow;
+			}
+			.odd-row {
+				background-color: lightgrey;
+			}
+		</style>
+	
+		<link rel="stylesheet" href="../js/lib/css/jquery-ui/jquery.css" type="text/css" />
+		<script src="../js/lib/jquery-all.js" ></script>
+		<script src="../js/lib/rameses-lib.js" ></script>
+		<script>
+			$put("basket", 
+				new function() {
+					this.source = [];
+					this.target = [];
+					this.sourceSelectAll = false;
+					this.targetSelectAll = false;
+					this.onload = function() {
+						this.source = [ 
+							{ id: "CHEM", course: "Chemistry"},
+							{ id: "ENGL1", course: "ENGLISH 1"},
+							{ id: "ENGL2", course: "ENGLISH 2"},
+							{ id: "MATH", course: "MATH 1"},
+							{ id: "PSYC", course: "PSYCHOLOGY"},
+							{ id: "ALG", course: "ALGEBRA"}
+						]
+					}
+					var c = this;
+					this.propertyChangeListener = {
+						"sourceSelectAll" : function(v) {  c.source.each( function(o) { o.selected = v } )   },
+						"targetSelectAll" : function(v) {  c.target.each( function(o) { o.selected = v } )   }
+					}
+					
+					this.addItems = function() {
+						var f = function(o) { return o.selected == true };	//build fitering function
+						var list = this.source.removeAll( f );				//remove items from the source using filter function
+						$(list).each( function(idx,o) { o.selected = false; } );
+						this.target.addAll( list );							//add new list to the target.
+					}
+					
+					this.removeItems = function() {
+						var f = function(o) { return o.selected == true };	//build fitering function
+						var list = this.target.removeAll( f );				//remove items from the target using filter function
+						$(list).each( function(idx,o) { o.selected = false; } );
+						this.source.addAll( list );							//add new list back to the source.
+					}
+					
+					this.selectedSource;
+					this.selectedTarget;
+				}
+			)
+		</script>
+	</head>
+	<body>
+		
+		<!-- USING TABLES -->
+		This test will add items from one basket to another
+		<table width="600" cellpadding="0" cellspacing="0" border="1">
+			<tr>
+				<td valign="top">
+					<table context="basket" items="source" width="100%" varStatus="stat" varName="item">
+						<thead>
+							<tr>
+								<td style="background-color:lightgrey;">
+									<input type="checkbox" context="basket" name="sourceSelectAll"/>
+									Select Courses below:
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<input type="checkbox" context="basket" name="source[#{stat.index}].selected" depends="sourceSelectAll"/>
+									#{item.course}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+				<td valign="top" align="center" width="20%">
+					<input type="button" context="basket" name="addItems" value="Add >>" style="width:100px"/>
+					<br>
+					<input type="button" context="basket" name="removeItems" value="<< Remove"  style="width:100px"/>
+				</td>
+				<td valign="top">
+					<table context="basket" items="target" width="100%" varStatus="stat" varName="item">
+						<thead>
+							<tr>
+								<td style="background-color:lightgrey;">
+									<input type="checkbox" context="basket" name="targetSelectAll"/>
+									Courses selected:
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<input type="checkbox" context="basket" name="target[#{stat.index}].selected" depends="targetSelectAll"/>
+									#{item.course}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+
+		</table>	
+		
+	</body>
+</html>
