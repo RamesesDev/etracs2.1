@@ -44,6 +44,9 @@
             
             @Service("ReceiptService")
             def svc;
+            
+            @Service('ReportParameterService')
+            def paramsSvc;
         
             def collectiontitle = 'COMMUNITY TAX CERTIFICATE (INDIVIDUAL)'
             def taxpayer
@@ -102,7 +105,11 @@
             def getService() { return svc }
             def getHtmlService() {}
             def getCollectionTitle() { return collectiontitle }
-            def getParameters() {}
+
+            def getParameters() { 
+                return paramsSvc.getStandardParameter( OsirisContext.env.USERNAME )
+            }
+            
             def getReportName() { return 'AF0016' }
         }
         

@@ -17,6 +17,9 @@ class LandTaxReportService
 	@Service('Var')
 	def var 
 	
+	@Service('ETRACSUserService')
+	def userSvc;
+	
 	@Env
 	def env
 	
@@ -463,7 +466,7 @@ class LandTaxReportService
 	
 	@ProxyMethod
 	public List getCollectorList() {
-		return em.sqlContext.createNamedQuery('landtaxreport:getCollectorList').resultList 
+		return userSvc.getCollectorList().collect{[collectorid: it.objid, collectorname: it.name, collectortitle: it.jobtitle]};
 	}
 	
 	

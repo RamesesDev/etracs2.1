@@ -1,0 +1,111 @@
+<html>
+	
+	<head>
+
+		<link rel="stylesheet" href="../js/lib/css/jquery-ui/jquery.css" type="text/css" />
+		<script src="../js/lib/jquery-all.js" ></script>
+		<script src="../js/lib/rameses-lib.js" ></script>
+		<style>
+			.col {
+				background-color: lightgrey;color:gray;
+				border-bottom: 1px solid gray;
+				font-weight:bolder;
+				text-align:center;
+			}
+			.selected {
+				background-color: yellow;
+			}	
+			.unselected {
+				background-color: white;
+			}	
+			.odd{
+				background-color: gray;
+			}
+			.even {
+				background-color: lightgrey;
+			}
+		</style>
+		<script>
+			$put("test", 
+				new function() {
+					this.selectedCase = "C1";
+					this.cases = [
+						{objid:"C1", name: "Sked 1"},
+						{objid:"C2", name: "Sked 2"},
+						{objid:"C3", name: "Sked 3"}
+					]
+					
+					this._schedules = {
+						"C1": [
+							{schedule:"07:30-08:30 MWF", course:"MATH", room:"105"},
+							{schedule:"07:30-08:30 MWF", course:"ENGLISH", room:"110"},
+							{schedule:"07:30-08:30 MWF", course:"SOCIAL SCIENCE", room:"200"}
+						],
+						"C2": [
+							{schedule:"07:30-08:30 MWF", course:"MATH", room:"105"},
+							{schedule:"07:30-08:30 MWF", course:"SOCIAL SCIENCE", room:"200"},
+							{schedule:"07:30-08:30 MWF", course:"ENGLISH", room:"110"}
+						],
+						"C3": [
+							{schedule:"07:30-08:30 MWF", course:"ENGLISH", room:"110"},
+							{schedule:"07:30-08:30 MWF", course:"SOCIAL SCIENCE", room:"200"},
+							{schedule:"07:30-08:30 MWF", course:"MATH", room:"105"}
+						]
+					}
+					
+					this.schedules = function() {
+						if( this.selectedCase==null) return [];
+						return this._schedules[this.selectedCase];
+					}
+				}
+			)
+		</script>
+	</head>
+	
+	<body>
+		This is a sample of one list depending on another
+		<table width="900">
+			<tr>
+				<td  valign="top" width="200">
+					Select a case by clicking on it.<br>
+					<table context="test" items="cases" varName="item" width="100%" varStatus="stat">
+						<thead>
+							<tr>
+								<td class="col">Cases</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="#{stat.index % 2 == 0 ? 'even' : 'odd' }">
+								<td>
+									<a href="#" onclick="$get('test').set('selectedCase', '#{item.objid}')">#{item.name}<a/>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
+					
+				</td>
+				<td valign="top">
+					<label context="test" depends="selectedCase">Selected Schedule: #{selectedCase}</label><br>
+					<table context="test" items="schedules()" varName="item" depends="selectedCase" width="100%">
+						<thead>
+							<tr>
+								<td class="col">Course</td>
+								<td class="col">Schedule</td>
+								<td class="col">Room</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>#{item.course}</td>
+								<td>#{item.schedule}</td>
+								<td>#{item.room}</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			
+		</table>
+	</body>
+</html>	

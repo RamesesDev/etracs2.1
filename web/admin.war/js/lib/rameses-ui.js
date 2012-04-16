@@ -2488,7 +2488,9 @@ var MsgBox = {
 			buttons: {
 				'Ok' : function(){
 					$(this).dialog('close');
-					try { fn(); }
+					try { 
+						if(fn) fn(); 
+					}
 					catch(e) { MsgBox.error( e.message ); }
 				},
 				'Cancel' : function() {
@@ -2515,7 +2517,9 @@ var MsgBox = {
 			buttons:{
 				'Close' : function() {
 					$(this).dialog('close');
-					try { fn(); }
+					try { 
+						if(fn) fn(); 
+					}
 					catch(e) { MsgBox.error( e.message ); }
 				}
 			}
@@ -2539,7 +2543,9 @@ var MsgBox = {
 			buttons:{
 				'Close' : function() {
 					$(this).dialog('close');
-					try { fn(); }
+					try { 
+						if(fn) fn(); 
+					}
 					catch(e) { MsgBox.error( e.message ); }
 				}
 			}
@@ -2568,7 +2574,9 @@ var MsgBox = {
 				'Ok' : function() {
 					$(this).dialog('close');
 					var text = $(this).find('input:text').val();
-					try {  fn(text);  }
+					try {  
+						if( fn ) fn(text);  
+					}
 					catch(e) { MsgBox.error( e.message ); }
 				},
 				'Cancel' : function() {

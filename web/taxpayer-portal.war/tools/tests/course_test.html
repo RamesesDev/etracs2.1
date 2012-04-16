@@ -1,0 +1,99 @@
+<html>
+	
+	<head>
+		<style>
+			td {
+				font-family: arial;
+				font-size:11px;
+			}
+			.col {
+				background-color: lightgrey;color:gray;
+				border-bottom: 1px solid gray;
+				font-weight:bolder;
+				text-align:center;
+			}
+			.group-head {
+				padding-top:15px;
+				font-weight: bolder;
+				color:red;
+			}
+		</style>
+	
+		<link rel="stylesheet" href="../js/lib/css/jquery-ui/jquery.css" type="text/css" />
+		<script src="../js/lib/jquery-all.js" ></script>
+		<script src="../js/lib/rameses-lib.js" ></script>
+		<script>
+			$put("plan", 
+				new function() {
+					this.list = [];
+					
+					this.arrange = function() {
+						var f = function(b1,b2) {
+							if( b1.year < b2.year ) return -1;
+							if( b1.year > b2.year ) return 1;
+							if( b1.period < b2.period ) return -1;
+							if( b1.period > b2.period ) return 1;
+							return 0;
+						}
+						this.list.sort( f );
+					}
+					
+					this.addItem = function() {
+						var _self = this;
+						var adder = function(o) {
+							_self.list.push( o );
+							_self.arrange();	
+						}
+						var p = new PopupOpener( "add_course.html", "course_add", { handler: adder } );
+						p.title = "Add Course";
+						p.options.width = 400;
+						p.options.height = 500;
+						return p;
+					}
+				}
+			);
+		</script>
+	</head>
+	<body>
+		
+		
+		<!-- USING TABLES -->
+		This should group items. For this to work properly, items must be sorted first by its proper grouping.
+		<br>
+		<br>
+		<input type="button" context="plan" name="addItem" value="Add"/> 
+		<br>
+		<table context="plan" items="list" width="700" varStatus="stat" varName="item">
+			<tbody>
+				<tr visibleWhen="#{ (stat.prevItem==null) || (stat.prevItem.year != item.year) || (stat.prevItem.period != item.period) }">
+					<td class="group-head" colspan="7">Year: #{item.year} &nbsp;&nbsp;&nbsp;&nbsp;Period: #{item.period}</td>
+				</tr>
+				<tr visibleWhen="#{ (stat.prevItem.year != item.year) || (stat.prevItem.period != item.period) }">
+					<td class="col" rowspan="2" width="50">Code</td>
+					<td class="col" rowspan="2" width="220">Course</td>
+					<td class="col" colspan="2" >Units</td>
+					<td class="col" rowspan="2" width="40">Total Units</td>
+					<td class="col" rowspan="2">Prereq.</td>
+					<td class="col" rowspan="2">Coreq.</td>
+				</tr>
+				<tr visibleWhen="#{ (stat.prevItem.year != item.year) || (stat.prevItem.period != item.period) }">
+					<td class="col">Lec</td>
+					<td class="col">Lab</td>
+				</tr>
+				<tr>
+					<td>#{item.code}</td>
+					<td>#{item.course}</td>
+					<td align="center">#{item.lec}</td>
+					<td align="center">#{item.lab}</td>
+					<td align="center">#{item.total}</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr visibleWhen="#{ (stat.nextItem==null) || (stat.nextItem.year!=item.year) || (stat.nextItem.period !=item.period) }">
+					<td colspan="7" style="border-top:1px dashed gray;">- end -</td>
+				</tr>				
+			</tbody>
+		</table>
+		
+	</body>
+</html>

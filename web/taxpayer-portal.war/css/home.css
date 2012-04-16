@@ -1,0 +1,60 @@
+.shadowbox {
+	border: none;
+	background: none;
+	-moz-box-shadow: 0 0 0 #ccc;
+	-webkit-box-shadow: 0 0 0 #ccc;
+	box-shadow: 0 0 0 #ccc;
+	padding-bottom: 0;
+	height: auto;
+}
+
+.canvas .content { background: none; }
+
+.box {
+	border: solid 1px #aaa;
+	padding: 10px 20px;
+	background: #fff url(../img/gray-gradient.png) repeat-x left bottom;
+}
+
+.box-center { margin: 0 5px; }
+
+.box .hr {
+	border: none;
+	border-bottom: dashed 1px #cbcbcb;
+}
+
+input.search {
+	height: 20px; line-height: 20px;
+}
+
+.step-image {
+	height: 290px; width: 660px;
+	overflow: hidden;
+	border: solid 1px #aaa;
+	position: relative;
+}
+
+.step-image img { position: absolute; top: 0; left: 0; }
+
+.step-box {
+	background: #fff;
+	border: solid 1px #aaa;
+	padding-top: 15px;
+	padding-left: 5px;
+	margin-bottom: 1px;
+	width: 225px; height: 55px;
+	cursor: pointer;
+}
+
+.step-box-hover {
+	background: #e0e0e0;
+}
+
+.step-box-selected 	 {
+	background: url(../img/blue-gradient.png) repeat-x left bottom;
+	color: #fff;
+}
+
+
+
+

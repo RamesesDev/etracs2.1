@@ -1,0 +1,23 @@
+.section-title { color: maroon; margin-top: 10px; }
+
+.appstate { 
+	color: #f00; font-weight: bold;
+	font-size: 1.1em;
+}
+
+.form td { padding: 0; margin: 0; }
+
+.form td, .form th { vertical-align: top; }
+
+.form th { text-align: left; font-weight: bold; }
+
+.form input,
+.form select { margin: 0; }
+
+.right-form { margin-left: 10px; }
+
+.formpanel .category {
+	padding: 5px 10px;
+	background: #ccc;
+	color: #000;
+}

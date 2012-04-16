@@ -1,0 +1,30 @@
+<html>
+	
+	<head>
+		<link rel="stylesheet" href="../js/lib/css/jquery-ui/jquery.css" type="text/css" />
+		<script src="../js/lib/jquery-all.js" ></script>
+		<script src="../js/lib/rameses-lib.js" ></script>
+		
+		<script>
+			$put("test", 
+				new function() {
+					this.choice='type2';
+					this.choices = ["type1", "type2", "type3"]
+				}
+			);
+		</script>
+	</head>
+	<body>	
+		Choices:<br>		
+		<select items="choices" context="test" name="choice" ></select>
+		<label context="test" depends="choice">You have selected #{choice}</label>
+		
+		<label context="test" visibleWhen="#{choice == 'type1'}" depends="choice">
+			Choice one selection... sample
+		</label>
+		<label context="test" visibleWhen="#{choice == 'type2'}" depends="choice">
+			Choice one selection
+		</label>
+		
+	</body>
+</html>	

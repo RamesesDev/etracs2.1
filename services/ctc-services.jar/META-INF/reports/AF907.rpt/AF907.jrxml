@@ -52,7 +52,7 @@
 	<field name="info.payer.info.nature" class="java.lang.String"/>
 	<field name="payer.placeregistered" class="java.lang.String"/>
 	<field name="info.payer.entitytype" class="java.lang.String"/>
-	<field name="info.dtposted" class="java.util.Date"/>
+	<field name="info.dtposted" class="java.lang.String"/>
 	<field name="total_basic_additional" class="java.math.BigDecimal"/>
 
 		<background>
@@ -280,7 +280,9 @@
 						height="16"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="textField"/>
+						key="textField">
+							<printWhenExpression><![CDATA[new Boolean($F{info.amount}.compareTo(BigDecimal.ZERO) > 0)]]></printWhenExpression>
+						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
@@ -349,7 +351,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{info.dtposted}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{info.dtposted}==null? null : java.sql.Date.valueOf($F{info.dtposted})]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -369,7 +371,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{info.dtposted}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{info.dtposted}==null? null : java.sql.Date.valueOf($F{info.dtposted})]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -480,7 +482,9 @@
 						height="16"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="textField-26"/>
+						key="textField-26">
+							<printWhenExpression><![CDATA[new Boolean($F{total_basic_additional}.compareTo(BigDecimal.ZERO) > 0)]]></printWhenExpression>
+						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>

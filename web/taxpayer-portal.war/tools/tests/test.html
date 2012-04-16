@@ -1,0 +1,96 @@
+<html>
+	<head>
+		<script type="text/javascript" src="C:\jboss-4.0.5.GA\server\mlkp4\apps\mlkp4_partner.ear\mlkp4_partner.war\js\lib\jquery-all.js"></script>
+		<script type="text/javascript" src="C:\jboss-4.0.5.GA\server\mlkp4\apps\mlkp4_partner.ear\mlkp4_partner.war\js\lib\rameses-lib.js"></script>
+		<script>
+			$put(
+				'test',
+				new function() {
+					
+					this.click = function() {
+						alert('firing click..');
+					};
+					
+					this.btn_click = function() {
+						alert('firing button click...');
+					};
+					
+					this.menuItems = [
+						{code: "1", caption:"Item 1"}, 
+						{code: "2", caption:"Item 2"},
+						{code: "3", caption:"Item 3"},
+						{code: "4", caption:"Item 4"},
+						{code: "5", caption:"Item 5"}
+					];
+					
+					this.selected = this.menuItems[0];
+					
+					this.select = function() {
+						//console.log( 'Selecting ' + $.toJSON(this.selected) );
+					}
+					
+					this.fruitList = [
+						{caption:"Banana"}, {caption:"Papaya"}, {caption:"Orange"}, 
+						{caption:"Mango"}, {caption:"Peanut"}, {caption:"Buko"}, 
+						{caption:"Pineapple"}, {caption:"Banana 2"}, {caption:"Papaya 2"}, 
+						{caption:"Orange 2"}, {caption:"Mango 2"}, {caption:"Peanut 2"}, 
+						{caption:"Buko 2"}, {caption:"Pineapple 2"}
+					];
+					
+					this.fruit;
+				}
+			);
+		</script>
+		<style>
+			ul.menu li {
+				display: inline;
+				border-bottom: solid 1px lightgrey;
+				padding: 2px 10px;
+				list-style: circle;
+				cursor: pointer;
+			}
+			
+			ul li.selected { background: lightgrey; }
+			
+			.scrollable {
+				border: solid 1px gray;
+			}
+			.scrollable .title {
+				border-bottom: solid 1px gray; padding: 3px 2px; font-weight: bold;
+			}
+			.scrollable .items {
+				overflow: auto;
+			}
+			.scrollable ol { margin: 1px; }
+		</style>
+	</head>
+	<body>
+	
+		<span context="test" action="click">Clickable Span</span>
+		<input type="button" context="test" name="btn_click" action="click" value="Clickable Button" />
+		<br/>
+		<br/>
+		
+		<div style="width: 200px;" class="scrollable">
+			<div class="title">
+				Select Fruits To Order
+			</div>
+			<div class="items" style="height: 150px;">
+				<ol context="test" items="fruitList" name="fruit" varName="item" varStatus="stat">
+					<li>
+						<input id="#{item.caption}" type="checkbox" context="test" name="fruitList[#{stat.index}].selected"/> 
+						<label for="#{item.caption}">#{item.caption}</label>
+					</li>
+				</ol>
+			</div>
+		</div>
+		
+		<br/>
+		<br/>
+		
+		<ul class="menu" context="test" items="menuItems" name="selected">
+			<li context="test" action="select">[#{code} - #{caption}]</li>
+		</ul>
+	
+	</body>
+</html>

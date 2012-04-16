@@ -1,0 +1,25 @@
+<html>
+	
+	<head>
+		<link rel="stylesheet" href="../js/lib/css/jquery-ui/jquery.css" type="text/css" />
+		<script src="../js/lib/jquery-all.js" ></script>
+		<script src="../js/lib/rameses-lib.js" ></script>
+		
+		<script>
+			$put("test", 
+				new function() {
+					var svc = ProxyService.lookup("RuleTestService");
+					this.results;
+					this.execute = function() {
+						var list = [];
+						svc.execute();	
+					}
+				}
+			);
+		</script>
+	</head>
+	<body>	
+		Choices:<br>		
+		<input type="button" context="test" name="execute" value="Execute Rule"/> 	
+	</body>
+</html>	

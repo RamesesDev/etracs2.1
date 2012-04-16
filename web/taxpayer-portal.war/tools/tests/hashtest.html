@@ -1,0 +1,25 @@
+<html>
+	
+	<head>
+		<link rel="stylesheet" href="../js/lib/css/jquery-ui/jquery.css" type="text/css" />
+		<script src="../js/lib/jquery-all.js" ></script>
+		<script src="../js/lib/rameses-lib.js" ></script>
+		<script>
+			function test( ) {
+				window.location.hash = $('#t').val();
+			}
+		
+			$(window).bind('hashchange', function() {
+				alert("hash change " + window.location.hash );
+			});
+			
+			function fire() {
+				alert( "hash changed " );
+			}
+			
+		</script>
+	</head>
+	<body onhashchange="fire();">
+		<input type="text" id="t" /><input type="button" value="Test" onclick="test()" />
+	</body>
+</html>

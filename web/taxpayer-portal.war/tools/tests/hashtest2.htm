@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<script type="text/javascript">
+			function OnHashChange (event) {
+				var message = "The hash subsection of the document's URL has changed.\n";
+				message += "The current location: " + document.location + "\n";
+				message += "The current hash subsection: " + document.location.hash;
+
+				alert (message);
+			}
+
+			function ChangeHash () {
+				document.location.hash = "myBookmark";
+			}
+		</script>
+	</head>
+	<body onhashchange="OnHashChange (event);">
+		Click on the following sections:
+		<ul>
+			<li><a href="#section1">1. Section</a></li>
+			<li><a href="#section2">2. Section</a></li>
+		</ul>
+
+		or click on this button:
+		<button onclick="ChangeHash();">Change hash from JavaScript</button>
+		<br /><br />
+
+		<b><a name="section1">1. Section</a></b><br />
+		First line in the section.<br />...<br />...<br />...<br />
+		Last line in the section.<br /><br />
+
+		<b><a name="section2">2. Section</a></b><br />
+		First line in the section.<br />...<br />...<br />...<br />
+		Last line in the section.<br /><br />
+	</body>
+</html>	

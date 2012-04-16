@@ -1,0 +1,51 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+class WebTaxpayerProfileService 
+{	
+    @PersistenceContext("main")
+    def em;
+    
+	@Service("DateService")
+	def dateSvc;
+	
+	@Resource("CacheService")
+	def cacheService;
+	
+	def df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+	
+	@Env
+	def env;
+	
+	@Service("EntityService")
+	def entitySvc;
+	
+	
+   @ProxyMethod
+	public def getInfo( def o ){
+		try {
+			return entitySvc.open( o.objid, o.entitytype );
+		}
+		catch(e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	/**
+	 * This is marked as local to avoid interceptors
+	 * This is used to retrieve the user info from the SessionService
+	 * @see LoginService
+	 */
+	@ProxyMethod(local=true)
+	public def getUserInfo( def o ) {
+		def user = cacheService.get( o.objid );
+		if( !user ) {
+			user = getInfo( o );
+			cacheService.put(o.objid, user, 30000 );
+		}
+		
+		return user;
+	}
+	
+}

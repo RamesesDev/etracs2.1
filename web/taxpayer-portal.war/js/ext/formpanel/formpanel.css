@@ -1,0 +1,6 @@
+.formpanel th { text-align: left; font-weight: normal; }
+.formpanel th label {
+	padding-right: 10px;
+}
+
+.formpanel td span.req { color: #ff0000; }
