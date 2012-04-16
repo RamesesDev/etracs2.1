@@ -38,7 +38,7 @@
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://" + dbhost + "/test", dbuser, dbpwd);
+			conn = DriverManager.getConnection("jdbc:mysql://" + dbhost + "/mysql", dbuser, dbpwd);
 		}
 		catch(Exception e) {
 			out.write("Error: " + e.getMessage() );
