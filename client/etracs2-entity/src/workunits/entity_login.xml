@@ -1,0 +1,37 @@
+<workunit>
+    <invokers>
+        <invoker type="entity:login" action="init" caption="Login Info" target="popup" />
+    </invokers>
+    <code>
+        <![CDATA[
+
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+
+        class EntityLoginController {
+        
+            @Binding
+            def binding
+            
+            def entity;
+            def acct = [:];
+            
+            void init() {
+                
+            }
+            
+            def save() {
+                MsgBox.alert( 'Hello ' );
+            }
+            
+            
+            
+        }
+
+        ]]>
+    </code>
+    <pages>
+        <page template="etracs2.entity.EntityLoginAccountPage"/>
+    </pages>
+</workunit>
