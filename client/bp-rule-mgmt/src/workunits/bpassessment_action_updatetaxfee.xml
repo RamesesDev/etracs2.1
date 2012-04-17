@@ -8,6 +8,8 @@
         import com.rameses.rcp.annotations.*
         import com.rameses.rcp.common.*
         import com.rameses.osiris2.client.*
+        
+        import rulemgmt.*;
 
         class BPRuleActionUpdateTaxFeeController extends rulemgmt.RuleActionHandler 
         {
@@ -49,11 +51,22 @@
             }
 
 
-
             void createOpener() {
-                def formuladef = buildFormulaDef()
-                opener = InvokerUtil.lookupOpener('formulaeditor', [formuladef:formuladef, expr:action.expr ])
+                opener =  InvokerUtil.lookupOpener( 'rule:formula_editor', [ handler:formulaModel ]  )
             }
+            
+            def formulaModel = [
+                getFields : { return [] },
+                getVariables : { 
+                    return buildParameters()
+                },
+                getParameters : { return [] },
+                getFunctions : { return [ [name:"IIF", info: "IIF Function"] ] },
+                getExpr : { return action.expr },
+                setExpr : { s-> action.expr = s; }
+            ] as FormulaEditorModel;
+            
+            
 
             def buildFormulaDef() {
                 def variables = buildVariables()
@@ -71,10 +84,8 @@
             def buildParameters() {
                 def vars = []
                 vars += [
-                    objid   : 'AMOUNTDUE',
                     name    : 'AMOUNTDUE',
-                    caption : 'Amount Due',
-                    description : 'Amount Due',
+                    info    : 'Amount Due',
                 ]
                 return vars
             }
