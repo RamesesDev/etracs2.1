@@ -38,6 +38,6 @@
     </code>
     
     <pages>
-        <page template="etracs2.admin.HomePage"/>
+        <page template="etracs2.home.HomePage"/>
     </pages>
 </workunit>

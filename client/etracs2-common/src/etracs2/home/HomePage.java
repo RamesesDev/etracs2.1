@@ -4,7 +4,7 @@
  * Created on November 3, 2010, 4:55 PM
  */
 
-package etracs2.admin;
+package etracs2.home;
 
 /**
  *
