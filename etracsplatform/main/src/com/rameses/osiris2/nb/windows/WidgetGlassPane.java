@@ -1,5 +1,5 @@
 /*
- * GlassPane.java
+ * WidgetGlassPane.java
  *
  * Created on December 15, 2010, 10:20 AM
  * @author jaycverg
@@ -22,7 +22,7 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-public class GlassPane extends JPanel {
+public class WidgetGlassPane extends JPanel {
     
     private static final String MOVED_FLAG = "__moved";
     
@@ -30,7 +30,7 @@ public class GlassPane extends JPanel {
     private MouseSupport mouseSupport = new MouseSupport();
     
     
-    public GlassPane() {
+    public WidgetGlassPane() {
         setOpaque(false);
         setLayout(new GlassPaneLayout());
         
@@ -95,7 +95,7 @@ public class GlassPane extends JPanel {
         }
         
         private void layoutDraggable(FloatingWindow fw) {
-            Dimension parentSize = GlassPane.this.getSize();
+            Dimension parentSize = WidgetGlassPane.this.getSize();
             Rectangle bounds = fw.getBounds();
             
             int x = bounds.x;
@@ -200,7 +200,7 @@ public class GlassPane extends JPanel {
             Point anchor = d.getAnchorPoint();
             Point mousePoint = e.getPoint();
             Point location = c.getLocation();
-            Dimension parentSize = GlassPane.this.getSize();
+            Dimension parentSize = WidgetGlassPane.this.getSize();
             
             int x = location.x + (mousePoint.x - anchor.x);
             int y = location.y + (mousePoint.y - anchor.y);

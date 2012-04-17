@@ -1,25 +1,145 @@
 import com.rameses.annotations.*;
 import com.rameses.common.*;
-import java.rmi.server.UID
+import com.rameses.rules.common.*
+import java.math.BigDecimal
+import java.math.RoundingMode
 
-class CTCService 
+
+public class CTCService 
 {
+	@Resource('RuleService/local')
+	def ruleSvc
+	
+	@Service('DateService')
+	def dateSvc
 
 	@ProxyMethod
 	public def calculate( entity ) {
-		return [
-			tax: [
-				business: 0.00,
-				basic:    5.00,
-				salary:   0.00,
-				interest: 0.00,
-				property: 0.00,
-			],
-			total: 5.00,
-			items: [
-				[acctid:"IA-4184fe6b:135efbfb375:-7cc8",acctno:null,accttitle:"PERMIT FEE (MATCHMAKER)",fundid:"GENERAL",fundname:"GENERAL",amount:5.00]
-			]
+		def facts = []
+		if( entity.doctype == 'CTCI' )
+			facts << createIndividualFact( entity )
+		else if( entity.doctype == 'CTCC' )
+			facts << createCorporateFact( entity )
+		
+		if( entity.barangayid )
+			facts << createCTCFact( entity )
+			
+		def result = [:]
+		def ruleAction = ruleSvc.createRuleAction()
+		ruleAction.addCommand( 'compute', new ComputationHandler( result: result ) )		
+			
+		ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], 'TAX' )
+		ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], 'INTEREST' )
+		
+		def assessment = [:]
+		assessment.tax = createTaxItems( result )
+		assessment.items = result.values() as List
+		assessment.total = assessment.items*.amount.sum()
+		if( assessment.total==null ) assessment.total = 0.00
+		
+		return assessment
+	}
+	
+	def createTaxItems( result ) {
+		def values = [
+			business: 0.00,
+			basic:    0.00,
+			salary:   0.00,
+			interest: 0.00,
+			property: 0.00,
+		]
+		result.each{k,v-> values[k] = v.amount }
+		
+		return values
+	}
+	
+	def createIndividualFact( entity ) {
+		def fact = ruleSvc.createFact('ctcassessment','ctc.assessment.facts.IndividualFact')
+		
+		def payer = entity.info.payer;
+		fact.profession = payer.info.profession
+		fact.citizenship = payer.info.citizenship
+		fact.gender = payer.info.gender
+		fact.civilstatus = payer.info.civilstatus
+		fact.seniorcitizen = payer.info.seniorcitizen ? true : false
+		fact.annualsalary = entity.annualsalary
+		fact.businessgross = entity.businessgross
+		fact.propertyincome = entity.propertyincome
+		
+		return fact
+	}
+	
+	def createCorporateFact( entity ) {
+		def fact = ruleSvc.createFact('ctcassessment','ctc.assessment.facts.CorporateFact')
+
+		fact.orgtype = entity.info.payer.info.orgtype
+		fact.realpropertyav = entity.realpropertyav
+		fact.businessgross = entity.businessgross
+		
+		return fact
+	}
+	
+	def createCTCFact( entity ) {
+		def fact = ruleSvc.createFact('ctcassessment','ctc.assessment.facts.CTCFact')
+
+		fact.barangayid = entity.barangayid
+		
+		def currentDate = dateSvc.parseCurrentDate()
+		fact.year       = currentDate.year 
+		fact.qtr        = currentDate.qtr 
+		fact.month      = currentDate.month 
+		fact.day        = currentDate.day 
+		
+		return fact
+	}
+	
+}
+
+
+class ComputationHandler implements RuleActionHandler 
+{
+	def result
+	
+	def util = new Util()
+	
+	public void execute( drools, data) {	
+		compute( data )
+	}
+	
+	void compute( data ) {
+		def amount = util.round( util.evaluate( data.expr, data.vars ) )
+		
+		result[data.type] = [
+			acctid:    data.acctid,
+			acctno:    data.acctno,
+			accttitle: data.accttitle,
+			amount:    amount,
 		];
 	}
 	
+	def eval( data ) {
+		
+	}
+}
+
+
+class Util {
+
+   int DEFAULT_SCALE = 2
+	
+	public def evaluate( expr, params ) {
+		def fn = '''
+            def IIF( cond, trueval, falseval ) {
+                return ( cond ? trueval : falseval )
+            }
+        '''
+		
+		return (new GroovyShell( new Binding( params) )).evaluate( fn + expr )
+	}
+    
+    public def round( amount ) {
+		def bd = new BigDecimal(amount+'')
+        return bd.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP)
+    }
+
 }

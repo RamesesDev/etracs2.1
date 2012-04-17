@@ -35,7 +35,7 @@ public class NBSubWindow extends TopComponent implements SubWindow {
         contentPane = new JLayeredPane();
         contentPane.setLayout(new LayeredPaneLayout());
         
-        glassPane = new GlassPane();
+        glassPane = new WidgetGlassPane();
         contentPane.add(glassPane, JLayeredPane.MODAL_LAYER);
         
         super.addImpl(contentPane, null, -1);

@@ -1,0 +1,49 @@
+<workunit>
+    <invokers>
+        <invoker type="orgtype.lookup" caption="Org. Type Lookup" target="popup"/>
+    </invokers>
+    <code>
+    <![CDATA[
+
+    import com.rameses.rcp.annotations.*
+    import com.rameses.rcp.common.*
+    import com.rameses.osiris2.client.*
+
+    class OrgtypeLookupController
+    {
+        @Binding
+        def binding
+
+        @Service('EntityService')
+        def svc 
+
+        def searchText
+        def selected
+        def onselect
+
+        def ok() {
+            if( ! selected ) throw new Exception('Please select an item.')
+            if( onselect ) onselect( selected )
+            return '_close' 
+        }
+
+        def listHandler = [
+            getColumns: {
+                return [
+                    new Column(caption: "Org. Types")
+                ]
+            },
+            fetchList: {
+                return svc.getOrganizationTypes()
+            }
+        ] as SubListModel
+
+    }
+
+
+    ]]>
+    </code>
+    <pages>
+        <page template="etracs2.common.ListPage"/>
+    </pages>
+</workunit>
