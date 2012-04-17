@@ -18,7 +18,7 @@
             def account;
             
             public String getActiontype() {
-                return "calcBasicTax"
+                return "basic"
             }
             
             def getAccountLookup() {

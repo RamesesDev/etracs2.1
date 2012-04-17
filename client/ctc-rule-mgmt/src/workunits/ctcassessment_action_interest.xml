@@ -18,7 +18,7 @@
             def account;
             
             public String getActiontype() {
-                return "calcInterest"
+                return "interest"
             }
             
             def getAccountLookup() {

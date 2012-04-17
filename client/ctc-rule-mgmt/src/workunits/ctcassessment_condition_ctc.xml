@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="ctcassessment:rulecondition" caption="Barangay Fact" action="init" index="3"/>
+        <invoker type="ctcassessment:rulecondition" caption="CTC Fact" action="init" index="3"/>
     </invokers>
 
     <code>
@@ -17,12 +17,16 @@
             def binding
             
             public String getFactname() {
-                return "BarangayFact";
+                return "CTCFact";
             }
             
             public FactField[] getFields() {
                 return [
                     new FactField( "barangayid", "Barangay", "string", null, "barangay" ),
+                    new FactField( "year", "Year", "integer"),
+                    new FactField( "qtr", "Quarter", "integer"),
+                    new FactField( "month", "Month", "integer"),
+                    new FactField( "day", "Day", "integer"),
                 ] as FactField[];
             }
         }
