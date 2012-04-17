@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="entity:login" action="init" caption="Login Info" target="popup" />
+        <invoker type="entity:login" caption="Login Info" target="popup" />
     </invokers>
     <code>
         <![CDATA[
@@ -14,15 +14,21 @@
             @Binding
             def binding
             
-            def entity;
-            def acct = [:];
+            @Service("UserAccountService")
+            def usrSvc;
             
-            void init() {
-                
-            }
+            def saveHandler;
+            def mode = "create";
+            def acct;
             
             def save() {
-                MsgBox.alert( 'Hello ' );
+                if( acct.pwd != acct.confirmpwd )
+                    throw new Exception( "Password must be equal with the confirm password");
+                if( mode == "create" ) {    
+                    def u = usrSvc.createLoginAccount( acct );
+                    if(this.saveHandler) this.saveHandler( u );
+                }
+                return "_close";
             }
             
             

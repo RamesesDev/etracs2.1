@@ -57,7 +57,7 @@ public class EntityLoginAccountPage extends javax.swing.JPanel {
         xTextField1.setCaption("Account User Name");
         xTextField1.setCaptionWidth(120);
         xTextField1.setIndex(-10);
-        xTextField1.setName("acct.username");
+        xTextField1.setName("acct.uid");
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField1.setRequired(true);
         formPanel1.add(xTextField1);
@@ -85,7 +85,7 @@ public class EntityLoginAccountPage extends javax.swing.JPanel {
         xPasswordField2.setText("xPasswordField1");
         xPasswordField2.setCaption("Confirm Password");
         xPasswordField2.setCaptionWidth(120);
-        xPasswordField2.setName("acct.pwd");
+        xPasswordField2.setName("acct.confirmpwd");
         xPasswordField2.setPreferredSize(new java.awt.Dimension(0, 19));
         xPasswordField2.setRequired(true);
         formPanel1.add(xPasswordField2);
