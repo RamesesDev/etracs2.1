@@ -3,6 +3,10 @@
         <invoker folderid="/menu/tc/txn" action="init" caption="Requisition Issue Voucher" permission="riv_lgu.create" />
         <invoker folderid="/menu/tc/txn" action="initCollector" caption="Requisition Issue Voucher (Collector)" permission="riv.create"/>
         
+        <invoker type="quick_launcher" code="RIV01" action="init" caption="Requisition Issue Voucher" permission="riv_lgu.create" />
+        <invoker type="quick_launcher" code="RIV02" action="initCollector" caption="Requisition Issue Voucher (Collector)" permission="riv.create"/>
+        <invoker type="quick_launcher" code="RIV03" action="initRIVSale" caption="RIV (Sale)" permission="riv.salecreate" icon="images/folder.png" index="50" target="window"/>
+        
         <invoker type="home.action" action="init" caption="RIV" permission="riv_lgu.create" icon="images/folder.png" index="50" target="window"/>
         <invoker type="home.action" action="initCollector" caption="Collector RIV" permission="riv.create" icon="images/folder.png" index="50" target="window"/>
         <invoker type="home.action" action="initRIVSale" caption="RIV (Sale)" permission="riv.salecreate" icon="images/folder.png" index="50" target="window"/>
