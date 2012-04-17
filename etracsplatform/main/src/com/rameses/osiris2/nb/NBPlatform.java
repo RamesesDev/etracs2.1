@@ -12,9 +12,11 @@ import com.rameses.osiris2.nb.windows.NBMainWindow;
 import com.rameses.osiris2.nb.windows.NBPopup;
 import com.rameses.osiris2.nb.windows.NBSubWindow;
 import com.rameses.osiris2.nb.windows.StartupWindow;
+import com.rameses.osiris2.nb.windows.TransparentGlassPane;
 import com.rameses.platform.interfaces.MainWindow;
 import com.rameses.platform.interfaces.Platform;
 import com.rameses.platform.interfaces.SubWindow;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
@@ -22,8 +24,10 @@ import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.JComponent;
@@ -333,7 +337,40 @@ public class NBPlatform implements Platform {
         return true;
     }
     
-    public void lock() {}
+    private List<NBPopup> lockedwindows = new ArrayList();
+    private Component origGlassPane;
     
-    public void unlock() {}
+    public void lock() {
+//        if ( !windows.isEmpty() ) {
+//            Map m = new HashMap();
+//            m.putAll(windows);
+//            
+//            for(Map.Entry me: (Set<Map.Entry>) m.entrySet()) {
+//                SubWindow win = (SubWindow) windows.get(me.getKey());
+//                if ( win instanceof NBPopup ) {
+//                    NBPopup nbp = (NBPopup) win;
+//                    nbp.setVisible(false);
+//                    lockedwindows.add(nbp);
+//                }
+//            }
+//        }
+//        
+//        JFrame frame = (JFrame)mainWindow.getComponent();
+//        origGlassPane = frame.getGlassPane();
+//        Component overlay = new TransparentGlassPane(0.9f, Color.BLACK);
+//        frame.setGlassPane(overlay);
+//        overlay.setVisible(true);
+    }
+    
+    public void unlock() {
+//        if( !lockedwindows.isEmpty() ) {
+//            for(NBPopup nbp : lockedwindows) {
+//                nbp.setVisible(true);
+//            }
+//            lockedwindows.clear();
+//        }
+//        
+//        JFrame frame = (JFrame)mainWindow.getComponent();
+//        frame.setGlassPane(origGlassPane);
+    }
 }

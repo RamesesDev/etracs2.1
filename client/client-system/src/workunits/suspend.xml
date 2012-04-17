@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
-        <invoker type="system:suspend" caption="Suspend" target="popup"/>
-        <invoker folderid="/menu/system" caption="Suspend ... " index="17000" separator="before" target="popup" permission="system"/>
+        <invoker type="system:suspend" action="init" caption="Suspend" target="popup"/>
+        <invoker folderid="/menu/system"  action="init" caption="Suspend ... " index="17000" separator="before" target="popup" permission="system"/>
     </invokers>
     
     <code>
@@ -10,6 +10,8 @@
         import com.rameses.rcp.annotations.*;
         import com.rameses.util.*;
         import com.rameses.osiris2.client.*;
+        import com.rameses.rcp.framework.ClientContext;
+        
         
         public class SuspendController 
         {
@@ -20,6 +22,10 @@
             
             boolean canclose;
             
+            void init() {
+                ClientContext.currentContext.platform.lock();
+            }
+            
             @Close
             public boolean canClose() {
                 return canclose;
@@ -29,6 +35,7 @@
             
             public def resume() {
                 user.checkPwd( pwd );
+                ClientContext.currentContext.platform.unlock();
                 if(resetHandler) resetHandler();
                 canclose = true;
                 return "_exit";

@@ -1,6 +1,6 @@
 package com.rameses.osiris2.nb;
 
-import com.rameses.osiris2.nb.windows.GlassPane;
+import com.rameses.osiris2.nb.windows.WidgetGlassPane;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -48,7 +48,7 @@ public class MainWindowCustomizer
         lch.rootPane = rootPane;
         layeredPane.addContainerListener(lch);
         
-        frame.setGlassPane(new GlassPane());
+        frame.setGlassPane(new WidgetGlassPane());
     }
     
     //<editor-fold defaultstate="collapsed" desc=" ContentPaneHandler (Class) ">

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="bpbilling:ruleaction" caption="Discount Computation"  action="init" index="3" />        
+        <invoker type="ctcassessment:ruleaction" caption="Calculate Basic Tax"  action="init" index="1" />        
     </invokers>
     <code>
         <![CDATA[
@@ -10,23 +10,39 @@
         import com.rameses.osiris2.client.*
         import rulemgmt.*
 
-        class BPBillingRuleActionDiscountController extends RuleActionHandler
+        class BPBillingRuleActionBasicTaxController extends RuleActionHandler
         {
             @Binding
             def binding
             
+            def account;
+            
             public String getActiontype() {
-                return "calcDiscount"
+                return "calcBasicTax"
             }
+            
+            def getAccountLookup() {
+                return InvokerUtil.lookupOpener('incomeacct:lookup', null)
+            }
+            
+            void setAccount( acct ) {
+                this.account = acct;
+                action.acctid = acct?.objid 
+                action.accttitle = acct?.accttitle
+            }
+            
             
             def opener;
             
             public void init() {
                 opener = InvokerUtil.lookupOpener( 'rule:formula_editor', [ handler:formulaModel ]);
+                if( action.acctid ) {
+                    account = [accttitle: action.accttitle]
+                }
             }
 
             public void accept() {
-                action.displaytext = "Calculate Discount using formula: ${action.expr}".toString();
+                action.displaytext = "Calculate Basic Tax using formula: ${action.expr} for account ${account.accttitle}".toString();
             }
 
             def formulaModel = [
@@ -45,6 +61,6 @@
         ]]>
     </code>
     <pages>
-        <page template="bpbilling.rule.action.CalculateDiscountPage" />
+        <page template="ctc.rule.ComputationPage" />
     </pages>
 </workunit>
