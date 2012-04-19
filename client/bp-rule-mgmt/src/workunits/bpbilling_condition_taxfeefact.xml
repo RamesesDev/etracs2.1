@@ -29,7 +29,7 @@
                     new FactField( "daysfromjan", "Days from January", "integer" ),
                     new FactField( "daysfromqtr", "Days from Qtr", "integer" ),
                     new FactField( "acctid", "Account", "account" ),
-                    new FactField( "amount", "Amt Due", "decimal" ),
+                    new FactField( "amount", "Amount Due", "decimal" ),
                     new FactField( "surcharge", "Surcharge", "decimal" ),
                     new FactField( "applysurcharge", "Apply Surcharge", "boolean" ),
                     new FactField( "applydiscount", "Apply Discount", "boolean" ),
