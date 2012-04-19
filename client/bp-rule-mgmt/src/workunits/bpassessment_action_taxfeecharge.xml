@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="bpassessment:ruleaction" caption="Tax, Fee or Charge"  action="init" index="2" /> 
+        <invoker type="bpassessment:ruleaction" caption="Calculate Tax, Fee or Charge"  action="init" index="2" /> 
     </invokers>
     <code>
         <![CDATA[
