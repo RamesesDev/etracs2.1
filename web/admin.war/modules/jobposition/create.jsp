@@ -43,7 +43,6 @@
 			
 					this.save = function() {
 						this.jobposition = svc.create( this.jobposition );
-						MsgBox.alert("Record successfully saved.");
 						this.saveHandler();
 						return "_close";
 					}
