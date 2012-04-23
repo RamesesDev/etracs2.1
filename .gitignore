@@ -6,6 +6,7 @@ etracsplatform/client.conf
 etracsplatform/osiris2/modules/*
 etracsplatform/dist/etracs2.zip
 etracsplatform/reports/*
+etracsplatform/web-cache/*
 
 
 client/*/build
