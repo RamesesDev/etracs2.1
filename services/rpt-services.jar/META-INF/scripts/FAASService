@@ -1433,13 +1433,13 @@ class FAASService
     }
     
     void sendToOutbox( faas ) {	
-		def attachment = [ faas:faas, attachments:getAttachments( faas.objid) ]
-		def msg = msgSvc.createMessage( 'faas.receive', attachment )
-		msgSvc.send( msg ) 
+		//def attachment = [ faas:faas, attachments:getAttachments( faas.objid) ]
+		//def msg = msgSvc.createMessage( 'faas.receive', attachment )
+		//msgSvc.send( msg ) 
     }
     
     void moveOutboxMessageToProcessed( refid ) {
-		msgSvc.processOutboxMessage( refid )
+		//msgSvc.processOutboxMessage( refid )
     }
     
     void updateAttachmentStates( faas, docstate ) {
