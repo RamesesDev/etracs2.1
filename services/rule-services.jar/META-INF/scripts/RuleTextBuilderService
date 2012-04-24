@@ -34,5 +34,18 @@ public class RuleTextBuilderService
 		}
         return s 
 	}
+	
+	@ProxyMethod
+	public List getAllVariableNames( rule ) {
+		def list = []
+		for( c in rule.conditions ) {
+			if( c.factvar ) list.add( c.factvar )
+			def items = c.constraints.findAll{ it.fieldvar }.collect{ it.fieldvar }
+            list.addAll( items )
+        }
+		
+		list.unique()
+		return list
+	}
 
 }

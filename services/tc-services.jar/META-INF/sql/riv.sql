@@ -6,7 +6,7 @@ FROM riv WHERE rivtype = $P{rivtype} ORDER BY txnno DESC
 SELECT objid, txnno, docstate, requestedby, rivtype FROM riv WHERE txnno = $P{txnno} AND rivtype = $P{rivtype}
 
 [getListByRequester]
-SELECT objid, txnno, docstate, requestedby, rivtype FROM riv 
+SELECT objid, txnno, docstate, requestedby, rivtype FROM riv WHERE requestedby LIKE $P{requestedby} 
 
 [getListByRequesterTxnno]
 SELECT objid, txnno, docstate, requestedby, rivtype FROM riv WHERE txnno LIKE $P{txnno} 
