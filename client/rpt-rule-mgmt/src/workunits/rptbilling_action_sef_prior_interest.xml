@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptbilling:ruleaction" caption="Calculate SEF Prior Interest"  action="init" index="17" />        
+        <invoker type="rptbilling:ruleaction" caption="Calculate SEF Prior Penalty"  action="init" index="17" />        
     </invokers>
     <code>
         <![CDATA[
@@ -18,7 +18,7 @@
             }
             
             public String buildDisplayText() {
-                 return "Calculate SEF Prior Interest using formula: ${action.expr}".toString();
+                 return "Calculate SEF Prior Penalty using formula: ${action.expr}".toString();
             }
             
         }

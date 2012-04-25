@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptbilling:ruleaction" caption="Calculate Basic Interest"  action="init" index="5" />        
+        <invoker type="rptbilling:ruleaction" caption="Calculate Basic Current Penalty"  action="init" index="5" />        
     </invokers>
     <code>
         <![CDATA[
@@ -18,7 +18,7 @@
             }
             
             public String buildDisplayText() {
-                 return "Calculate Basic Interest using formula: ${action.expr}".toString();
+                 return "Calculate Basic Current Penalty using formula: ${action.expr}".toString();
             }
             
         }

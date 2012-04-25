@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptbilling:ruleaction" caption="Calculate SEF Interest"  action="init" index="15" />        
+        <invoker type="rptbilling:ruleaction" caption="Calculate SEF Current Penalty"  action="init" index="15" />        
     </invokers>
     <code>
         <![CDATA[
@@ -18,7 +18,7 @@
             }
             
             public String buildDisplayText() {
-                 return "Calculate Basic Interest using formula: ${action.expr}".toString();
+                 return "Calculate SEF Current Interest using formula: ${action.expr}".toString();
             }
             
         }
