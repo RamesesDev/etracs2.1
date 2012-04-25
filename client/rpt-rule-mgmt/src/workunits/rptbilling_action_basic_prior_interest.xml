@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptbilling:ruleaction" caption="Calculate Basic Prior Interest"  action="init" index="31" />        
+        <invoker type="rptbilling:ruleaction" caption="Calculate Basic Prior Interest"  action="init" index="7" />        
     </invokers>
     <code>
         <![CDATA[

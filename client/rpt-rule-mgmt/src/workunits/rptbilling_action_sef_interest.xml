@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptbilling:ruleaction" caption="Calculate SEF Interest"  action="init" index="41" />        
+        <invoker type="rptbilling:ruleaction" caption="Calculate SEF Interest"  action="init" index="15" />        
     </invokers>
     <code>
         <![CDATA[

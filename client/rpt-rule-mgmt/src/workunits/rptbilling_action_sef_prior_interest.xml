@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptbilling:ruleaction" caption="Calculate SEF Prior Interest"  action="init" index="43" />        
+        <invoker type="rptbilling:ruleaction" caption="Calculate SEF Prior Interest"  action="init" index="17" />        
     </invokers>
     <code>
         <![CDATA[
@@ -14,7 +14,7 @@
         public class RPTBillingRuleActionSEFPriorIntController extends RPTAbstractRuleAction {
         
             public String getActiontype() {
-                return "calcSefPriorIn";
+                return "calcSefPriorInt";
             }
             
             public String buildDisplayText() {

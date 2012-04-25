@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptbilling:ruleaction" caption="Calculate Prior SEF"  action="init" index="33" />        
+        <invoker type="rptbilling:ruleaction" caption="Calculate Prior SEF"  action="init" index="13" />        
     </invokers>
     <code>
         <![CDATA[
