@@ -152,6 +152,17 @@ class MessengerService
         em.update( msg.schemaname, msg ) 
     }
 	
+	@ProxyMethod
+	public void processOutboxMessage( refid ) {
+		def messages = em.sqlContext.createNamedQuery('messenger:getOutboxMessageByRefId')
+						.setParameter('refid', refid)
+						.resultList 
+        messages.each { 
+            def msg = em.read('message:outbox', it )
+            em.create('message:processedoutbox', msg )
+            em.delete('message:outbox', msg )
+        }
+	}
 	
 	def getMessageInfo( msgid ) {
 		def msg = em.sqlContext.createNamedQuery('messenger:getMessageInfo')
@@ -162,4 +173,5 @@ class MessengerService
 		return msg 
 	}
 	
+
 }

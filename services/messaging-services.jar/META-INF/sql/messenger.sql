@@ -13,8 +13,6 @@ SELECT
 FROM sys_inbox 
 WHERE objid = $P{objid}	
 
-
-
 [getInboxMessageId]
 SELECT objid FROM sys_inbox WHERE receiverid = $P{receiverid}  
 
@@ -26,6 +24,9 @@ SELECT objid FROM sys_outbox
 
 [getOutboxMessageByReceiverId]
 SELECT objid FROM sys_outbox WHERE receiverid = $P{receiverid} 
+
+[getOutboxMessageByRefId]
+SELECT objid FROM sys_outbox WHERE refid = $P{refid} 
 
 
 #--------------------------------------------
