@@ -2,7 +2,9 @@
 <workunit>
     <invokers>
         <invoker type="cancelannotation.init" action="init" caption="Cancel Annotation" target="window" permission="cancelannotation.create" />
-        <invoker type="cancelannotation.open" action="open" caption="Cancel Annotation Information"  target="window" permission="cancelannotation.view" />/>
+        <invoker type="cancelannotation.open" action="open" caption="Cancel Annotation Information"  target="window" permission="cancelannotation.view" />
+        
+        <invoker type="quick_launcher" code="FAC01" action="init" caption="Cancel Annotation" target="window" permission="cancelannotation.create" />
         
         <invoker type="formActions" action="_close"         caption="Close"                 shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
         <invoker type="formActions" action="save"           caption="Save"                  shortcut="ctrl S"   mnemonic="s"  visibleWhen="#{entity.docstate == 'DRAFT' or entity.docstate == 'FORAPPROVAL'}"  icon="images/save.png" />

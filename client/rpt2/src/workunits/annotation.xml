@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rpttransaction" action="initMortgage" caption="Mortgage Annotation" target="window" index="351" permission="mortgage.create" />
-        <invoker type="rpttransaction" action="initBailBond" caption="BailBond Annotation" target="window" index="352" permission="bailbond.create" />
-        <invoker type="rpttransaction" action="initOther" caption="Other Annotations" target="window" index="353" permission="other.create" />
+        <invoker type="xrpttransaction" action="initMortgage" caption="Mortgage Annotation" target="window" index="351" permission="mortgage.create" />
+        <invoker type="xrpttransaction" action="initBailBond" caption="BailBond Annotation" target="window" index="352" permission="bailbond.create" />
+        <invoker type="rpttransaction" action="initAnnotation" caption="Annotations" target="window" index="353" permission="other.create" />
         
-        <invoker type="rpttransaction.initMortgage" action="initMortgage" caption="Mortgage Annotation" target="window" />
-        <invoker type="rpttransaction.initBailBond" action="initBailBond" caption="BailBond Annotation" target="window" />
-        <invoker type="rpttransaction.initOther" action="initOther" caption="Other Annotation" target="window" />
+        <invoker type="xquick_laucher" code="FA01" action="initMortgage" caption="Mortgage Annotation" target="window" index="351" permission="mortgage.create" />
+        <invoker type="xquick_laucher" code="FA02" action="initBailBond" caption="BailBond Annotation" target="window" index="352" permission="bailbond.create" />
+        <invoker type="quick_laucher" code="FA01" action="initAnnotation" caption="Annotations" target="window" index="353" permission="other.create" />
+        
+        <invoker type="xrpttransaction.initMortgage" action="initMortgage" caption="Mortgage Annotation" target="window" />
+        <invoker type="xrpttransaction.initBailBond" action="initBailBond" caption="BailBond Annotation" target="window" />
+        <invoker type="rpttransaction.initAnnotation" action="initAnnotation" caption="Annotation" target="window" />
         
         <invoker type="mortgage.open" action="openMortgage"         caption="Mortgage Information"  target="window"/>
         <invoker type="bailbond.open" action="openBailBond"         caption="BailBond Information"  target="window"/>
@@ -55,7 +59,7 @@ public class AnnotationController {
         return 'init'
     }
     
-    def initOther(){
+    def initAnnotation(){
         entity = [:]
         setInfo('create', 'other')
         return 'init' 
