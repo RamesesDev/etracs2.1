@@ -102,7 +102,7 @@ public class BldgRPUController
     
     void setBldgtype( bldgtype ) {
         this.bldgtype = bldgtype 
-        rpu.info.bldgtype = bldgtype
+        rpu.info.bldgtype = bldgtype 
         clearBldgKindInfo()
         calcBldgAge();
         binding.refresh('rpu.info.bldgtype.*')
@@ -122,13 +122,14 @@ public class BldgRPUController
         }
         rpu.info.firstfloorbasevalue = firstfloorbasevalue
         calcBldgAge()
-        binding.refresh('bldgkind|rpu.info.bldgkind.*|rpu.info.firstfloorbasevalue')
+        recalc()
+        binding.refresh('bldgkind|rpu.info.bldgkind.*|rpu.info.firstfloorbasevalue|firstfloorbasevalue')
     }
     
     void clearBldgKindInfo() {
         bldgkind = null
         rpu.info.bldgkind = null 
-        rpu.info.bldgkindbucc.bldgkindname = null 
+        rpu.info.bldgkindbucc = null 
         rpu.info.firstfloorbasevalue = 0.0
         firstfloorbasevalue = 0.0
         binding.refresh('bldgkind|rpu.info.bldgkind.*|firstfloorbasevalue')

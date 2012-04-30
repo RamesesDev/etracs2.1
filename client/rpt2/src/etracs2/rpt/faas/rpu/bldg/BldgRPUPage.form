@@ -337,6 +337,7 @@
                             <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                               <Insets value="[0, 10, 0, 0]"/>
                             </Property>
+                            <Property name="dynamic" type="boolean" value="true"/>
                             <Property name="expression" type="java.lang.String" value="#{bldgtypecode}"/>
                             <Property name="handler" type="java.lang.String" value="lookupBldgType"/>
                             <Property name="name" type="java.lang.String" value="bldgtype"/>
@@ -394,6 +395,7 @@
                                 <StringItem index="0" value="bldgtype"/>
                               </StringArray>
                             </Property>
+                            <Property name="dynamic" type="boolean" value="true"/>
                             <Property name="expression" type="java.lang.String" value="#{bldgkindcode}"/>
                             <Property name="handler" type="java.lang.String" value="lookupBldgKind"/>
                             <Property name="name" type="java.lang.String" value="bldgkind"/>

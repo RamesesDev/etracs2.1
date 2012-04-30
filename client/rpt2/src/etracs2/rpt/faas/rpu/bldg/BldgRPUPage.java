@@ -186,6 +186,7 @@ public class BldgRPUPage extends javax.swing.JPanel {
         xLookupField1.setCaption("Building Type");
         xLookupField1.setCaptionWidth(120);
         xLookupField1.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xLookupField1.setDynamic(true);
         xLookupField1.setExpression("#{bldgtypecode}");
         xLookupField1.setHandler("lookupBldgType");
         xLookupField1.setName("bldgtype");
@@ -211,6 +212,7 @@ public class BldgRPUPage extends javax.swing.JPanel {
         xLookupField2.setCaptionWidth(120);
         xLookupField2.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
         xLookupField2.setDepends(new String[] {"bldgtype"});
+        xLookupField2.setDynamic(true);
         xLookupField2.setExpression("#{bldgkindcode}");
         xLookupField2.setHandler("lookupBldgKind");
         xLookupField2.setName("bldgkind");
