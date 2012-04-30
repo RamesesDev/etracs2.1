@@ -330,17 +330,18 @@
                         <Property name="showCaption" type="boolean" value="false"/>
                       </Properties>
                       <SubComponents>
-                        <Component class="com.rameses.rcp.control.XActionTextField" name="xActionTextField1">
+                        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
                           <Properties>
-                            <Property name="actionName" type="java.lang.String" value="lookupBldgType"/>
                             <Property name="caption" type="java.lang.String" value="Building Type"/>
                             <Property name="captionWidth" type="int" value="120"/>
                             <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                               <Insets value="[0, 10, 0, 0]"/>
                             </Property>
+                            <Property name="expression" type="java.lang.String" value="#{bldgtypecode}"/>
+                            <Property name="handler" type="java.lang.String" value="lookupBldgType"/>
                             <Property name="name" type="java.lang.String" value="bldgtype"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[80, 18]"/>
+                              <Dimension value="[80, 19]"/>
                             </Property>
                             <Property name="required" type="boolean" value="true"/>
                           </Properties>
@@ -375,20 +376,29 @@
                         <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                           <Insets value="[0, 0, 0, 0]"/>
                         </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[462, 19]"/>
+                        </Property>
                         <Property name="showCaption" type="boolean" value="false"/>
                       </Properties>
                       <SubComponents>
-                        <Component class="com.rameses.rcp.control.XActionTextField" name="xActionTextField3">
+                        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField2">
                           <Properties>
-                            <Property name="actionName" type="java.lang.String" value="lookupBldgKind"/>
-                            <Property name="caption" type="java.lang.String" value="Kind of Building"/>
+                            <Property name="caption" type="java.lang.String" value="Building Kind"/>
                             <Property name="captionWidth" type="int" value="120"/>
                             <Property name="cellPadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                               <Insets value="[0, 10, 0, 0]"/>
                             </Property>
+                            <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                              <StringArray count="1">
+                                <StringItem index="0" value="bldgtype"/>
+                              </StringArray>
+                            </Property>
+                            <Property name="expression" type="java.lang.String" value="#{bldgkindcode}"/>
+                            <Property name="handler" type="java.lang.String" value="lookupBldgKind"/>
                             <Property name="name" type="java.lang.String" value="bldgkind"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[80, 18]"/>
+                              <Dimension value="[80, 19]"/>
                             </Property>
                             <Property name="required" type="boolean" value="true"/>
                           </Properties>
@@ -404,8 +414,9 @@
                             </Property>
                             <Property name="caption" type="java.lang.String" value=""/>
                             <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-                              <StringArray count="1">
+                              <StringArray count="2">
                                 <StringItem index="0" value="bldgkind"/>
+                                <StringItem index="1" value="bldgtype"/>
                               </StringArray>
                             </Property>
                             <Property name="name" type="java.lang.String" value="rpu.info.bldgkindbucc.bldgkindname"/>
