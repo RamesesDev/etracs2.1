@@ -86,7 +86,7 @@ public class LandRPUPage extends javax.swing.JPanel {
         add(jPanel1, java.awt.BorderLayout.SOUTH);
 
         jPanel5.setOpaque(false);
-        jPanel5.setPreferredSize(new java.awt.Dimension(870, 532));
+        jPanel5.setPreferredSize(new java.awt.Dimension(923, 527));
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("General Information");
