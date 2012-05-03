@@ -142,7 +142,7 @@ class SubdivisionService
         validateInfo( subdivision )
         validateArea( subdivision )
         validateAffectedRpu( subdivision )
-		if( var.lgu_type?.toLowerCase() == 'city' ) {
+		if( var.lgu_type?.toLowerCase() != 'municipality' ) {
 			createSubdividedLandsFaas( subdivision )
 		}
         subdivision.docstate = FORAPPROVAL_STATE
@@ -195,7 +195,9 @@ class SubdivisionService
         def subdivision = em.read( SCHEMA_NAME, [objid:subdivisionid] )
         if( !subdivision ) throw new Exception('Subdivision does not exists or is already deleted.\nPlease requiry and verify that the document still exists.')
         if( subdivision.docstate == DRAFT_STATE ) throw new Exception('Subdivision is not yet submitted for approval.')
-        if( subdivision.docstate == FORAPPROVAL_STATE ) throw new Exception('Subdivision has already been submitted to province.')
+		if( var.lgu_type?.toLowerCase() == 'municipality') {
+			if( subdivision.docstate == FORAPPROVAL_STATE ) throw new Exception('Subdivision has already been submitted to province.')
+		}
         if( subdivision.docstate == APPROVED_STATE ) throw new Exception('Subdivision has already been approved.')      
         invokeSubdivisionCommonApprovalMethods( subdivision )
         return subdivision
