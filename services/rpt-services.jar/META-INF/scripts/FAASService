@@ -666,9 +666,22 @@ class FAASService
 		return ['OCT','TCT','CLOA','EP', 'KOT', 'CLT', 'T', 'P']
 	}
      
+	@ProxyMethod
+	public List getMunicipalities() {
+		return em.sqlContext.createNamedQuery('faas:getMunicipalities').resultList 
+	}
+	
     @ProxyMethod
     public List getBarangays() {
         return em.sqlContext.createNamedQuery('faas:getBarangays').resultList 
+    }
+	
+	@ProxyMethod
+    public List getBarangayListByParentId( parentid ) {
+		if( ! parentid ) return []
+        return em.sqlContext.createNamedQuery('faas:getBarangayListByParentId')
+					.setParameter('parentid', parentid)
+					.resultList 
     }
     
     @ProxyMethod

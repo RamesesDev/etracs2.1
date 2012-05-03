@@ -123,8 +123,19 @@ SELECT * FROM faasattachment WHERE faasid = $P{faasid}
 [getAttachmentForTransmittal]
 SELECT * FROM faasattachment WHERE docstate = 'FORTRANSMITTAL' 
 
+[getMunicipalities]
+SELECT * FROM lgu WHERE lgutype = 'MUNICIPALITY' ORDER BY objid 
+
 [getBarangays]
 SELECT * FROM lgu WHERE lgutype = 'BARANGAY' ORDER BY objid 
+
+
+[getBarangayListByParentId]
+SELECT * FROM lgu 
+WHERE parentid = $P{parentid} 
+  AND lgutype = 'BARANGAY' 
+ORDER BY objid 
+
 
 [getActiveAnnotationId] 
 SELECT objid FROM faasannotation WHERE faasid = $P{faasid} AND docstate = 'APPROVED' ORDER BY docno DESC 

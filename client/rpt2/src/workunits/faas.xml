@@ -85,6 +85,9 @@ public class FAASController
     @Service('FAASService')
     def svc
     
+    @Service('Var')
+    def var
+    
     
     def faas 
     def mode
@@ -122,6 +125,9 @@ public class FAASController
     def initCapture() {
         mode = 'create' 
         faas = svc.createFaas( )
+        if( isProvinceLgu() ) {
+            return 'newprov'
+        }
         return 'new'
     }
     
@@ -291,6 +297,7 @@ public class FAASController
     -----------------------------------------------------------------------------*/
     boolean iscondo = false 
     def barangay
+    def municipality
     def section = 0
     def parcel = 0
     
@@ -336,7 +343,15 @@ public class FAASController
     
     List getTxnTypes() { return svc.getTxnTypes() }
     List getPinTypes() { return ['new', 'old'] }
-    List getBarangays(){ return svc.getBarangays() }
+    List getMunicipalities() { return svc.getMunicipalities() }
+    
+    List getBarangays(){ 
+        if( isProvinceLgu() ) {
+            return svc.getBarangayListByParentId( municipality?.objid )
+        }
+        return svc.getBarangays()
+    }
+    
     List getQuarters() { return [1,2,3,4] }
     
     
@@ -563,6 +578,9 @@ public class FAASController
         return true
     }
     
+    boolean isProvinceLgu() {
+        return var.lgu_type?.toLowerCase() == 'province'
+    }
 }
 
 ]]>
@@ -571,6 +589,7 @@ public class FAASController
     <pages>
         <page template="etracs2.rpt.faas.FAASPage"/>
         <page name="new" template="etracs2.rpt.faas.FAASNewPage"/>
+        <page name="newprov" template="etracs2.rpt.faas.FAASProvNewPage"/>
         <page name="ndinit" template="etracs2.rpt.faas.FAASNDInitPage"/>
         <page name="grinit" template="etracs2.rpt.faas.FAASGRInitPage"/>
         <page name="txninit" template="etracs2.rpt.faas.FAASTxnInitPage"/>
