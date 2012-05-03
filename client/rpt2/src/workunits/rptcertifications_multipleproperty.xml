@@ -4,6 +4,8 @@
         <invoker type="rptcertifications" caption="Multiple Property" target="window" index="2" permission="multipleproperty.open" />
         <invoker type="multipleproperty.view"  caption="Multiple Property" index="2" action="doPreview" permission="multipleproperty.view" />
         
+        <invoker folderid="/menu/rpt/cert" caption="Multiple Property" target="window" index="10" permission="multipleproperty.open" />
+        
        <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />
         <invoker type="formActions" action="doPreview"  caption="Preview"   shourtcut="v" mnemonic="v"  index="2"  visibleWhen="#{mode == 'certified'}" icon="images/doc-view.png" />

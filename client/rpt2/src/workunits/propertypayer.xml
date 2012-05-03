@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
-    <invoker folderid="/menu/rpt/txn" action="init" caption="Property Payers" index="11" permission="propertypayer.view" />
+    <invoker folderid="/menu/rpt/landtax" action="init" caption="Property Payers" index="11" permission="propertypayer.view" />
+    <invoker type="quick_launcher" code="PP01" action="init" caption="Property Payers" index="11" permission="propertypayer.view" />
     <invoker type="home.action" action="init" caption="Property Payers" index="553" target="window" icon="images/entity1.png" permission="propertypayer.view" />
 
     <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" />

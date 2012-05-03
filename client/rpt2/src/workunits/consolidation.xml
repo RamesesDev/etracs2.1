@@ -6,10 +6,12 @@
 -->
 <workunit>
     <invokers>
-        <invoker type="rpttransaction" folderid="/menu/rpt/txn" action="initConsolidation" caption="Consolidation" target="window" permission="consolidation.view" index="302"/>
+        <invoker folderid="/menu/rpt/faas" action="initConsolidation" caption="Consolidation" target="window" permission="consolidation.view" index="30"/>
+        <invoker type="rpttransaction" action="initConsolidation" caption="Consolidation" target="window" permission="consolidation.view" index="30"/>
+        <invoker type="quick_launcher" code="CS01" action="initConsolidation" caption="Consolidation" target="window" permission="consolidation.view" index="302"/>
         <invoker type="rpttransaction.initConsolidation" action="initConsolidation" caption="Consolidation" target="window" />
         
-        <invoker type="consolidation.create" action="init" caption="New" mnemonic="n" shortcut="ctrl N" target="window" icon="images/doc-new.png" permission="consolidation.view" />
+        <invoker type="consolidation.create" action="initConsolidation" caption="New" mnemonic="n" shortcut="ctrl N" target="window" icon="images/doc-new.png" permission="consolidation.view" />
         <invoker type="consolidation.open" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" target="window" icon="images/open.png" permission="consolidation.view" />
         
         <invoker type="formActions" action="update" shortcut="ctrl S" visibleWhen="#{consolidation.docstate == 'DRAFT' or consolidation.docstate == 'FORAPPROVAL'}" caption="Save" mnemonic="s" icon="images/save.png" permission="consolidation.update" />
@@ -21,7 +23,7 @@
         <invoker type="formActions" action="submitToProvince" shortcut="ctrl M" visibleWhen="#{showSubmitToProvinceAction == true}" caption="Submit To Province" mnemonic="m" icon="images/doc-submit.png" permission="consolidation.submitToProvince" />
         <invoker type="formActions" action="disapproveByProvince" visibleWhen="#{showDisapproveByProvinceAction == true}" caption="Disapprove" icon="images/disapprove.png" permission="consolidation.disapproveByProvince" />
         <invoker type="formActions" action="approveByProvince" shortcut="ctrl A" visibleWhen="#{showApprovedByProvinceAction == true}" caption="Approve" mnemonic="a" icon="images/approve.png" permission="consolidation.approveByProvince" />
-        <invoker type="formActions" action="viewTaxdeclaration" shortcut="ctrl V" visibleWhen="#{consolidation.docstate == 'APPROVED'}" caption="View Taxdeclarations" mnemonic="a" icon="images/doc-view.png"/>
+        <invoker type="formActions" action="viewTaxdeclaration" shortcut="ctrl V" visibleWhen="#{consolidation.docstate == 'APPROVED'}" caption="View Tax Declarations" mnemonic="a" icon="images/doc-view.png"/>
         
         <invoker type="realpropertyActions" action="validateRealProperty" caption="Next" mnemonic="n" icon="images/next.png" permission="consolidation.view" />
         
@@ -407,14 +409,16 @@ public class ConsolidationController
     }
     
     boolean getShowApprovedByProvinceAction() {
-        if( consolidation.rp.lgutype?.toLowerCase() != 'municipality'  ) return false
-        if( consolidation.docstate != 'FORPROVAPPROVAL' ) return false
+        def lgutype = consolidation.rp.lgutype?.toLowerCase()
+        if( lgutype == 'municipality' && consolidation.docstate != 'FORPROVAPPROVAL' ) return false
+        if( lgutype != 'municipality' && consolidation.docstate != 'FORAPPROVAL' ) return false
         return true
     }
     
     boolean getShowDisapproveByProvinceAction() {
-        if( consolidation.rp.lgutype?.toLowerCase() != 'municipality'  ) return false
-        if( consolidation.docstate != 'FORPROVAPPROVAL' ) return false
+        def lgutype = consolidation.rp.lgutype?.toLowerCase()
+        if( lgutype == 'municipality' && consolidation.docstate != 'FORPROVAPPROVAL' ) return false
+        if( lgutype != 'municipality' && consolidation.docstate != 'FORAPPROVAL' ) return false
         return true
     }
     

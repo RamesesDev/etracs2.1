@@ -5,9 +5,11 @@
 -->
 <workunit>
     <invokers>
-        <invoker type="home.action" folderid="menu/rpt/txn" caption="Annotation Management" mnemonic="f" permission="annotationmgmt.view" icon="images/folder.png" index="5" target="window" />
-        <invoker type="formActions" action="createMortgage" immediate="true" caption="New Mortgage" mnemonic="m" icon="images/doc-new.png" permission="mortgage.create" />
-        <invoker type="formActions" action="createBailBond" immediate="true" caption="New BailBond" mnemonic="b" icon="images/doc-new.png" permission="bailbond.create" />
+        <invoker type="home.action" caption="Annotation Management" mnemonic="f" permission="annotationmgmt.view" icon="images/folder.png" index="5" target="window" />
+        <invoker folderid="/menu/mgmt" caption="Annotation Management" mnemonic="f" permission="annotationmgmt.view" index="130" target="window" />
+        <invoker type="quick_launcher" code="FA00" caption="Annotation Management" mnemonic="f" permission="annotationmgmt.view" icon="images/folder.png" index="5" target="window" />
+        <!-- <invoker type="formActions" action="createMortgage" immediate="true" caption="New Mortgage" mnemonic="m" icon="images/doc-new.png" permission="mortgage.create" /> -->
+        <invoker type="formActions" action="createAnnotation" immediate="true" caption="New Annotation" mnemonic="b" icon="images/doc-new.png" permission="bailbond.create" />
         <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="annotation.view"/>
         <invoker type="formActions" action="cancelAnnotation" shortcut="ctrl c" visibleWhen="#{selectedItem != null and selectedItem.docstate == 'APPROVED'}" immediate="true" caption="Cancel Annotation" mnemonic="c" icon="images/doc-cancel.png" permission="cancelannotation.create"/>
     </invokers>
@@ -37,6 +39,10 @@ public class AnnotationMgmtController
     
     def createBailBond() {
         return InvokerUtil.lookupOpener('rpttransaction.initBailBond', [:])
+    }
+    
+    def createAnnotation() {
+        return InvokerUtil.lookupOpener('rpttransaction.initAnnotation', [:])
     }
     
     def open() {
