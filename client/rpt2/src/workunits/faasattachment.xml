@@ -24,6 +24,9 @@ public class FAASAttachmentController {
     
     @Service('FAASService')
     def faasSvc
+    
+    @Service('ETRACSFileTransferService')
+    def svc 
 
     def faas 
     def selectedItem
@@ -33,7 +36,7 @@ public class FAASAttachmentController {
     
     
     void open() {
-        removeCachedDirectory()
+        //removeCachedDirectory()
         attachments = faasSvc.getAttachments( faas.objid )
     }
     
@@ -41,8 +44,6 @@ public class FAASAttachmentController {
         getRows    : { return 25 },
         getColumns : { return [
             new Column(name:'type', caption:'Attachment'),
-            new Column(name:'refno', caption:'Ref. No.'),
-            new Column(name:'refdate', caption:'Ref. Date'),
             new Column(name:'remarks', caption:'Remarks'),
         ]},
         onRemoveItem : { item -> removeItem( item ) },
@@ -100,10 +101,19 @@ public class FAASAttachmentController {
     
     def getImageUrl() {
         if( ! selectedItem ) {
+            return null
+        }
+        
+        return new File( resolveFileName(selectedItem.filename) )
+    }
+    
+    /*
+    def getImageUrl() {
+        if( ! selectedItem ) {
             return 'Select an attachment'
         }
         
-        def file = new File( resolveFileName(selectedItem.filename ) )
+        def file = new File( resolveFileName(selectedItem.filename) )
         def url = file.toURL().toString()
         return """
             <html>
@@ -113,6 +123,8 @@ public class FAASAttachmentController {
             </html>
         """
     }
+    
+    */
     
     /*----------------------------------------------------------------------
     *
@@ -131,7 +143,7 @@ public class FAASAttachmentController {
     }
     
     def addAttachment() {
-        attachment = [:]
+        attachment = [objid: 'FA' + new UID()]
         return 'attachment' 
     }
     
@@ -141,23 +153,35 @@ public class FAASAttachmentController {
     
     def upload() {
         def app = getAppInfo()
-        attachment.filename  = file.name 
-        attachment.directory = makeSafeFileName( faas.objid )
+        attachment.filename  = makeSafeFileName( attachment.objid ) + getFileExtension( file )
+        attachment.directory = makeSafeFileName( faas.objid ) 
         
         FileTransfer.FileInputSource fis = new FileTransfer.FileInputSource( file )
         DynamicHttpTransfer.Out handler = new DynamicHttpTransfer.Out(app.host , app.context, 'ETRACSFileTransferService', 'uploadAttachment')
         handler.parameters.put('attachment', attachment )
         
-        FileTransfer ft = new FileTransfer();
-        ft.transfer(fis, handler);
+        FileTransfer ft = new FileTransfer()
+        ft.transfer(fis, handler)
+        
+        svc.uploadComplete( attachment )
         
         copyToCache( file )
-        
         faasSvc.addAttachment( faas.objid, attachment )
         attachments.add( attachment )
         listHandler.load()
         return 'default' 
-
+    }
+    
+    def getFileExtension( file ) {
+        def ext = ''
+        if( file && file.exists()) {
+            def filename = file.absolutePath
+            int idx = filename.lastIndexOf(".")
+            if( idx >= 0 ) {
+                ext = '.' + filename.substring(idx+1, filename.length())
+            }
+        }
+        return ext.toLowerCase()
     }
     
     void copyToCache( file ) {
@@ -184,10 +208,10 @@ public class FAASAttachmentController {
     }
     
     def getAppInfo() {
-        def host        = OsirisContext.clientContext?.appEnv['default.host']
+        def host        = OsirisContext.clientContext?.appEnv['app.host']
         host            = ( host ? host : 'localhost:8080' )
         def context     = OsirisContext.clientContext?.appEnv['app.context']
-        context         = (context ? context : 'maribojoc' )
+        context         = (context ? context : 'lguname' )
         return [host:host, context:context]
     }
     
@@ -195,17 +219,6 @@ public class FAASAttachmentController {
         return strvalue.replaceAll('[\\W]', '')
     }
     
-    
-    def getExtension( s ) {
-        def startindex = s.indexOf( '.') 
-        if( startindex < 0 ) {
-            return ''
-        }
-        else {
-            def endindex = s.length()
-            return s.substring( startindex+1, endindex )
-        }
-    }    
 }
 
 

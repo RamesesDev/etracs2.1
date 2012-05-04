@@ -62,26 +62,6 @@
             <Property name="required" type="boolean" value="true"/>
           </Properties>
         </Component>
-        <Component class="com.rameses.rcp.control.XTextField" name="xTextField2">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Reference No."/>
-            <Property name="captionWidth" type="int" value="110"/>
-            <Property name="name" type="java.lang.String" value="attachment.refno"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 19]"/>
-            </Property>
-          </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XDateField" name="xDateField1">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="Reference Date"/>
-            <Property name="captionWidth" type="int" value="110"/>
-            <Property name="name" type="java.lang.String" value="attachment.refdate"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 19]"/>
-            </Property>
-          </Properties>
-        </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
           <Properties>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -97,7 +77,9 @@
             <Component class="com.rameses.rcp.control.XTextArea" name="xTextArea1">
               <Properties>
                 <Property name="columns" type="int" value="20"/>
+                <Property name="lineWrap" type="boolean" value="true"/>
                 <Property name="rows" type="int" value="5"/>
+                <Property name="wrapStyleWord" type="boolean" value="true"/>
                 <Property name="caption" type="java.lang.String" value="Remarks"/>
                 <Property name="captionWidth" type="int" value="110"/>
                 <Property name="name" type="java.lang.String" value="attachment.remarks"/>

@@ -24,12 +24,18 @@ public class FAASAttachmentPage extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+        jScrollPane1 = new javax.swing.JScrollPane();
+        xEditorPane1 = new com.rameses.rcp.control.XEditorPane();
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xEditorPane1 = new com.rameses.rcp.control.XEditorPane();
+        xImageViewer1 = new com.rameses.rcp.control.XImageViewer();
+
+        jScrollPane1.setName("imageUrl");
+        xEditorPane1.setDepends(new String[] {"selectedItem"});
+        xEditorPane1.setName("imageUrl");
+        jScrollPane1.setViewportView(xEditorPane1);
 
         setLayout(new java.awt.BorderLayout());
 
@@ -51,12 +57,11 @@ public class FAASAttachmentPage extends javax.swing.JPanel {
 
         jSplitPane1.setLeftComponent(jPanel1);
 
-        jScrollPane1.setName("imageUrl");
-        xEditorPane1.setDepends(new String[] {"selectedItem"});
-        xEditorPane1.setName("imageUrl");
-        jScrollPane1.setViewportView(xEditorPane1);
-
-        jSplitPane1.setRightComponent(jScrollPane1);
+        xImageViewer1.setAdvanced(true);
+        xImageViewer1.setDepends(new String[] {"selectedItem"});
+        xImageViewer1.setDynamic(true);
+        xImageViewer1.setName("imageUrl");
+        jSplitPane1.setRightComponent(xImageViewer1);
 
         add(jSplitPane1, java.awt.BorderLayout.CENTER);
 
@@ -70,6 +75,7 @@ public class FAASAttachmentPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XEditorPane xEditorPane1;
+    private com.rameses.rcp.control.XImageViewer xImageViewer1;
     // End of variables declaration//GEN-END:variables
     
 }

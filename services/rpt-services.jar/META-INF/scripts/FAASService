@@ -815,9 +815,8 @@ class FAASService
     /*-----------------------------------------------------------------------
     ** Attachment Support 
     -----------------------------------------------------------------------*/
-    @ProxyMethod
+    @ProxyMethod 
     public void addAttachment( faasid, attachment ) {
-        attachment.objid    = 'FA' + new UID()
         attachment.faasid   = faasid 
         attachment.docstate = 'INTERIM' 
         em.validate('faas:faasattachment', attachment )
@@ -1443,10 +1442,12 @@ class FAASService
     }
     
     void sendToOutbox( faas ) {	
-		def attachment = [ faas:faas, attachments:getAttachments( faas.objid) ]
-		def msg = msgSvc.createMessage( 'faas.receive', attachment )
-		msg.refid = faas.objid 
-		msgSvc.send( msg ) 
+		if( faas.info.datacapture == false ) {
+			def attachment = [ faas:faas, attachments:getAttachments( faas.objid) ]
+			def msg = msgSvc.createMessage( 'faas.receive', attachment )
+			msg.refid = faas.objid 
+			msgSvc.send( msg ) 
+		}
     }
     
     void moveOutboxMessageToProcessed( refid ) {
