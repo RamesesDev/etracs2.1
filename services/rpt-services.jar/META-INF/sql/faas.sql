@@ -117,6 +117,9 @@ WHERE objid = $P{objid}
 [getTaxpayerInfo]
 SELECT taxpayerid, taxpayerno, taxpayername, taxpayeraddress FROM faaslist WHERE objid = $P{objid} 
 
+[getAttachmentById]
+SELECT * FROM faasattachment WHERE objid = $P{objid}
+
 [getAttachments]
 SELECT * FROM faasattachment WHERE faasid = $P{faasid}
 

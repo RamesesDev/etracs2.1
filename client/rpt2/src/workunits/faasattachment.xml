@@ -4,7 +4,8 @@
         <invoker type="faasattachment.open" action="open" />
         <invoker type="formActions" action="_close" caption="Back" mnemonic="b" shortcut="ctrl B" icon="images/back.png" />
         <invoker type="formActions" action="addAttachment" caption="Add" mnemonic="a" shortcut="ctrl A" icon="images/doc-add.png" />
-        <invoker type="formActions" action="removeAttachment" caption="Remove" mnemonic="r" icon="images/doc-delete.png" />
+        
+        <invoker type="viewActions" action="_default" caption="Back" mnemonic="b" shortcut="ctrl B" icon="images/back.png" />
     </invokers>
     <code lang="groovy">
 <![CDATA[
@@ -33,11 +34,13 @@ public class FAASAttachmentController {
     def attachments
     
     
-    
-    
     void open() {
         //removeCachedDirectory()
         attachments = faasSvc.getAttachments( faas.objid )
+    }
+    
+    def getHtml() {
+        return faasSvc.buildHtml( faas.objid )
     }
     
     def listHandler = [
@@ -100,31 +103,19 @@ public class FAASAttachmentController {
     }
     
     def getImageUrl() {
-        if( ! selectedItem ) {
-            return null
-        }
-        
-        return new File( resolveFileName(selectedItem.filename) )
+        return new File( resolveFileName(attachment.filename) )
     }
     
-    /*
-    def getImageUrl() {
-        if( ! selectedItem ) {
-            return 'Select an attachment'
+    def displayAttachment( attachmentid ) {
+        attachment = faasSvc.getAttachmentById( attachmentid )
+        if( attachment ) {
+            def file = new File( resolveFileName( attachment.filename ) )
+            if( ! file.exists() ) {
+                downloadFile( attachment )
+            }
         }
-        
-        def file = new File( resolveFileName(selectedItem.filename) )
-        def url = file.toURL().toString()
-        return """
-            <html>
-                <body>
-                    <img src="$url">
-                </body>
-            </html>
-        """
+        return 'view'
     }
-    
-    */
     
     /*----------------------------------------------------------------------
     *
@@ -134,11 +125,10 @@ public class FAASAttachmentController {
     def attachment
     def file
     
-    void removeAttachment() {
-        if( selectedItem == null || selectedItem.type == null )  return 
+    
+    void removeAttachment( attachmentid ) {
         if( MsgBox.confirm('Delete attachment?') ) {
-            faasSvc.removeAttachment( faas.objid, selectedItem )
-            attachments.remove( selectedItem )
+            faasSvc.removeAttachment( faas.objid, attachmentid )
         }
     }
     
@@ -162,7 +152,7 @@ public class FAASAttachmentController {
         
         FileTransfer ft = new FileTransfer()
         ft.transfer(fis, handler)
-        
+        try { Thread.sleep(1000) }catch( e ){}
         svc.uploadComplete( attachment )
         
         copyToCache( file )
@@ -228,5 +218,6 @@ public class FAASAttachmentController {
     <pages>
         <page template="etracs2.rpt.faas.FAASAttachmentPage"/>
         <page name="attachment" template="etracs2.rpt.faas.FAASAttachmentAddPage"/>
+        <page name="view" template="etracs2.rpt.faas.FAASAttachmentViewPage"/>
     </pages>
 </workunit>

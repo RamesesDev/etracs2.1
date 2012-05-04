@@ -51,7 +51,6 @@ public class FAASAttachmentAddPage extends javax.swing.JPanel {
         xTextArea1.setCaptionWidth(110);
         xTextArea1.setName("attachment.remarks");
         xTextArea1.setPreferredSize(new java.awt.Dimension(0, 100));
-        xTextArea1.setTextCase(com.rameses.rcp.constant.TextCase.UPPER);
         jScrollPane1.setViewportView(xTextArea1);
 
         formPanel1.add(jScrollPane1);

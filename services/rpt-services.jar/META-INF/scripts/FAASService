@@ -825,15 +825,103 @@ class FAASService
     
     @ProxyMethod
     public void removeAttachment( faasid, attachment )  {
-        em.delete( 'faas:faasattachment', attachment )
+        em.delete( 'faas:faasattachment', [objid:attachment] )
     }
     
     @ProxyMethod
     public List getAttachments( faasid ) {
         return em.sqlContext.createNamedQuery('faas:getAttachments').setParameter('faasid', faasid).resultList
     }
+	
+	@ProxyMethod
+    public def getAttachmentById( objid ) {
+        return em.sqlContext.createNamedQuery('faas:getAttachmentById').setParameter('objid', objid).singleResult
+    }
     
+	@ProxyMethod
+	public def buildHtml( faasid ) {
+		def attachments = getAttachments( faasid )
+		if( ! attachments ) return '<html><body><h3>There are no associated attachments.</h3></body></html>'
+		
+		def html = '''<html>
+				<head>
+					<style type="text/css">
+						body, td, th { 
+							font-family: tahoma
+							font-size  : 10pt
+						}	
+						td {
+							background-color:white
+						}
+						th {
+							background-color : #CCCCCC
+						}
+					</style>
+				</head>
+			<body>
+		'''
+		html += '<h2>List of Attachments</h2>'
+		html += '<table>'
+		
+		def safefaasid = makeSafeFileName( faasid )
+		
+		attachments.each{
+			def thumbfilename = buildThumbnailFileName( it )
+			def imagepage = "http://${var.server_address}/admin/faasattachment.jsp?faasid=${safefaasid}&resid=${thumbfilename}"
+			def deleteicon = "http://${var.server_address}/downloads/images/delete.jpg"
+			html += '<tr>'
+			html += '<td><a href="displayAttachment?' + it.objid +'"><img src="' + imagepage + '"></img></a>' 
+			html += '<td valign="top">'
+			html += '  <table>'
+			html += '   <tr>'
+			html += '      <td valign="top"><b>' + it.type + '</b></td>'
+			html += '   </tr>'
+			html += '   <tr>'
+			html += '      <td>' + (it.remarks ? it.remarks :'') + '</td>'
+			html += '   </tr>'
+			html += '   <tr>'
+			html += '      <td><br><a title="remove" href="removeAttachment?' + it.objid +'"><img src="' + deleteicon + '"></img></a></td>' 
+			html += '   </tr>'
+			html += ' </table>'
+			html += '</td>'
+			html += '</tr>'
+			html += '<tr><td><br></td></tr>'
+		}
+		html += '</table>'
+		html += '</body></html>'
+		return html 
+	}
     
+	
+	def getFileName(  filename ) {
+		def fname = '' 
+		def idx = filename.lastIndexOf( '.' )
+		if( idx >= 0 ) {
+			fname = filename.substring(0, idx)
+		}
+		return fname 
+	}
+	
+	def getFileExtension(  filename ) {
+		def ext = ''
+		int idx = filename.lastIndexOf(".")
+		if( idx >= 0 ) {
+			ext = '.' + filename.substring(idx+1, filename.length())
+		}
+        return ext.toLowerCase()
+	}
+
+	def buildThumbnailFileName( attachment) {
+		def ext = getFileExtension( attachment.filename )
+		def targetname = getFileName( attachment.filename ) + '-thumb'
+		if( ext ) targetname += ext 
+		return targetname 
+	}
+	
+	    
+    def makeSafeFileName( strvalue ) {
+        return strvalue.replaceAll('[\\W]', '')
+    }
     
     /*-----------------------------------------------------------------------
     ** Support Methods
@@ -1442,12 +1530,12 @@ class FAASService
     }
     
     void sendToOutbox( faas ) {	
-		if( faas.info.datacapture == false ) {
+		///// if( faas.info.datacapture == false ) {
 			def attachment = [ faas:faas, attachments:getAttachments( faas.objid) ]
 			def msg = msgSvc.createMessage( 'faas.receive', attachment )
 			msg.refid = faas.objid 
 			msgSvc.send( msg ) 
-		}
+		///// }
     }
     
     void moveOutboxMessageToProcessed( refid ) {

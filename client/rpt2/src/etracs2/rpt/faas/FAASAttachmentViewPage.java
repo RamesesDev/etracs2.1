@@ -10,10 +10,10 @@ package etracs2.rpt.faas;
  *
  * @author  jzamora
  */
-public class FAASAttachmentPage extends javax.swing.JPanel {
+public class FAASAttachmentViewPage extends javax.swing.JPanel {
     
     /** Creates new form FAASAttachmentPage */
-    public FAASAttachmentPage() {
+    public FAASAttachmentViewPage() {
         initComponents();
     }
     
@@ -24,36 +24,34 @@ public class FAASAttachmentPage extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        jPanel1 = new javax.swing.JPanel();
+        xImageViewer1 = new com.rameses.rcp.control.XImageViewer();
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xEditorPane1 = new com.rameses.rcp.control.XEditorPane();
+        xImageViewer2 = new com.rameses.rcp.control.XImageViewer();
 
-        jPanel1.setLayout(new java.awt.BorderLayout());
-
-        jPanel1.setPreferredSize(new java.awt.Dimension(350, 150));
+        xImageViewer1.setAdvanced(true);
+        xImageViewer1.setDepends(new String[] {"selectedItem"});
+        xImageViewer1.setDynamic(true);
+        xImageViewer1.setName("imageUrl");
 
         setLayout(new java.awt.BorderLayout());
 
-        xActionBar1.setName("formActions");
+        xActionBar1.setName("viewActions");
         xActionBar1.setPadding(new java.awt.Insets(2, 2, 2, 2));
         xActionBar1.setUseToolBar(false);
         add(xActionBar1, java.awt.BorderLayout.NORTH);
 
-        jScrollPane1.setName("imageUrl");
-        xEditorPane1.setName("html");
-        jScrollPane1.setViewportView(xEditorPane1);
-
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        xImageViewer2.setAdvanced(true);
+        xImageViewer2.setDynamic(true);
+        xImageViewer2.setName("imageUrl");
+        add(xImageViewer2, java.awt.BorderLayout.CENTER);
 
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
-    private com.rameses.rcp.control.XEditorPane xEditorPane1;
+    private com.rameses.rcp.control.XImageViewer xImageViewer1;
+    private com.rameses.rcp.control.XImageViewer xImageViewer2;
     // End of variables declaration//GEN-END:variables
     
 }
