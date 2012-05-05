@@ -106,6 +106,7 @@ public class RPTBillingService
 		}
 		item.amount = item.basicnet + item.sefnet 
 		item.period += 'P'
+		
 		return item 
 	}
 	
@@ -302,9 +303,62 @@ public class RPTBillingService
         def cyfact = createCYFact( bill )
 		facts += cyfact
         facts += createLedgerFacts( bill, cyfact )
+		facts += createAssessedValueFacts( bill, cyfact )
 		return facts 
 	}
     
+	def createAssessedValueFacts( bill, cyfact ) {
+		def facts = []
+		
+		def avyears = var.rptbilling_assessed_value_fact_years
+		if( avyears ) {
+			avyears = avyears.replaceAll(',', ' ')
+			avyears = avyears.split()
+		}
+		
+		bill.items.each{ ledger ->
+			def ledgeritems = em.sqlContext.createNamedQuery('rptbill:getOpenLedgerItems')
+									.setParameters([parentid:ledger.objid, currentyr:cyfact.year])
+									.resultList 
+			if( avyears ) {
+				avyears.each{ avyear ->
+					int year = toInteger( avyear, 0)
+					def litem = ledgeritems.find{ year >= it.fromyear && year <= it.toyear }
+					if( litem ) {
+						facts += createAVFact( ledger.objid, year, litem.assessedvalue )
+					}
+				}
+			}
+			else {
+				ledgeritems.each{ item ->
+					for(int yr = item.fromyear; yr <= item.toyear; yr++) {
+						facts += createAVFact( ledger.objid, yr, item.assessedvalue )
+					}
+				}
+			}
+		}
+		return facts 
+	}
+	
+	int toInteger( value, defvalue  ) {
+		if( !value) return defvalue 
+		if( value instanceof Integer)  return value 
+		try {
+			return Integer.parseInt( value )
+		}
+		catch( e ) {
+			return defvalue 
+		}
+	}
+	
+	def createAVFact( ledgerid, year, assessedvalue ) {
+		def lfact = ruleService.createFact(RULESET, FACTS_PACKAGE + '.AssessedValueFact')
+		lfact.rptledgerid   = ledgerid 
+		lfact.year          = year 
+		lfact.assessedvalue = assessedvalue
+		return lfact 
+	}
+	
     def createLedgerFacts( bill, cyfact ) {
 		def facts = []
         bill.items.each { item -> 
@@ -313,8 +367,8 @@ public class RPTBillingService
                 detail.keySet().each {
 					try { lfact[it] = detail[it] } catch( e ) { ;}
                 }
-                lfact.factname               = 'RPTLedgerFact'
-                lfact.rptledgerid            = item.rptledgerid
+				lfact.factname               = 'RPTLedgerFact'
+                lfact.rptledgerid            = item.objid
                 lfact.rputype                = item.rputype                
                 lfact.numberofmonthsfromqtr  = calculateNoOfMonthsFromQtr( cyfact, lfact.year, lfact.qtr )
                 lfact.numberofmonthsfromjan  = calculateNoOfMonthsFromJan( cyfact, lfact.year, lfact.qtr )
