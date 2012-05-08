@@ -36,6 +36,7 @@ public class TaskMgmtPage extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
+        xTextField10 = new com.rameses.rcp.control.XTextField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
         xTextField6 = new com.rameses.rcp.control.XTextField();
@@ -43,6 +44,9 @@ public class TaskMgmtPage extends javax.swing.JPanel {
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xTextField4 = new com.rameses.rcp.control.XTextField();
         xTextField5 = new com.rameses.rcp.control.XTextField();
+        xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xTextField9 = new com.rameses.rcp.control.XTextField();
+        xTextField8 = new com.rameses.rcp.control.XTextField();
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
 
         setLayout(new java.awt.BorderLayout());
@@ -95,20 +99,32 @@ public class TaskMgmtPage extends javax.swing.JPanel {
 
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel2.setCaption("Task ID");
+        xLabel2.setCaptionWidth(100);
         xLabel2.setDepends(new String[] {"selectedItem"});
         xLabel2.setName("task.taskid");
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel1.add(xLabel2);
 
-        xTextField1.setCaption("Script Name");
+        xTextField10.setCaption("Service Type");
+        xTextField10.setCaptionWidth(100);
+        xTextField10.setDepends(new String[] {"selectedItem"});
+        xTextField10.setName("task.servicetype");
+        xTextField10.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField10.setRequired(true);
+        xTextField10.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
+        formPanel1.add(xTextField10);
+
+        xTextField1.setCaption("Service");
+        xTextField1.setCaptionWidth(100);
         xTextField1.setDepends(new String[] {"selectedItem"});
-        xTextField1.setName("task.scriptname");
+        xTextField1.setName("task.service");
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField1.setRequired(true);
         xTextField1.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
         formPanel1.add(xTextField1);
 
         xTextField2.setCaption("Method");
+        xTextField2.setCaptionWidth(100);
         xTextField2.setDepends(new String[] {"selectedItem"});
         xTextField2.setName("task.method");
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -117,6 +133,7 @@ public class TaskMgmtPage extends javax.swing.JPanel {
         formPanel1.add(xTextField2);
 
         xTextField6.setCaption("Start Date");
+        xTextField6.setCaptionWidth(100);
         xTextField6.setDepends(new String[] {"selectedItem"});
         xTextField6.setName("task.startdate");
         xTextField6.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -125,21 +142,24 @@ public class TaskMgmtPage extends javax.swing.JPanel {
         formPanel1.add(xTextField6);
 
         xTextField7.setCaption("End Date");
+        xTextField7.setCaptionWidth(100);
         xTextField7.setDepends(new String[] {"selectedItem"});
         xTextField7.setName("task.enddate");
         xTextField7.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField7.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
         formPanel1.add(xTextField7);
 
-        xTextField3.setCaption("Duration");
+        xTextField3.setCaption("Interval");
+        xTextField3.setCaptionWidth(100);
         xTextField3.setDepends(new String[] {"selectedItem"});
-        xTextField3.setName("task.duration");
+        xTextField3.setName("task.interval");
         xTextField3.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField3.setRequired(true);
         xTextField3.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
         formPanel1.add(xTextField3);
 
         xTextField4.setCaption("Parameters");
+        xTextField4.setCaptionWidth(100);
         xTextField4.setDepends(new String[] {"selectedItem"});
         xTextField4.setName("task.parameters");
         xTextField4.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -147,11 +167,43 @@ public class TaskMgmtPage extends javax.swing.JPanel {
         formPanel1.add(xTextField4);
 
         xTextField5.setCaption("Allowed Host");
+        xTextField5.setCaptionWidth(100);
         xTextField5.setDepends(new String[] {"selectedItem"});
         xTextField5.setName("task.allowedhost");
         xTextField5.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField5.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
         formPanel1.add(xTextField5);
+
+        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
+        org.jdesktop.layout.GroupLayout xSeparator1Layout = new org.jdesktop.layout.GroupLayout(xSeparator1);
+        xSeparator1.setLayout(xSeparator1Layout);
+        xSeparator1Layout.setHorizontalGroup(
+            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 320, Short.MAX_VALUE)
+        );
+        xSeparator1Layout.setVerticalGroup(
+            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 20, Short.MAX_VALUE)
+        );
+        formPanel1.add(xSeparator1);
+
+        xTextField9.setCaption("Host");
+        xTextField9.setCaptionWidth(100);
+        xTextField9.setDepends(new String[] {"selectedItem"});
+        xTextField9.setName("task.apphost");
+        xTextField9.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField9.setRequired(true);
+        xTextField9.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
+        formPanel1.add(xTextField9);
+
+        xTextField8.setCaption("Context");
+        xTextField8.setCaptionWidth(100);
+        xTextField8.setDepends(new String[] {"selectedItem"});
+        xTextField8.setName("task.appcontext");
+        xTextField8.setPreferredSize(new java.awt.Dimension(0, 19));
+        xTextField8.setRequired(true);
+        xTextField8.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
+        formPanel1.add(xTextField8);
 
         xActionBar1.setDepends(new String[] {"selectedItem"});
         xActionBar1.setName("formActions");
@@ -160,11 +212,11 @@ public class TaskMgmtPage extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel3Layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                    .add(xActionBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, xActionBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -172,8 +224,8 @@ public class TaskMgmtPage extends javax.swing.JPanel {
             .add(jPanel3Layout.createSequentialGroup()
                 .add(xActionBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 190, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(175, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 315, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
@@ -211,14 +263,18 @@ public class TaskMgmtPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XTable xTable1;
     private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XTextField xTextField10;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;
     private com.rameses.rcp.control.XTextField xTextField6;
     private com.rameses.rcp.control.XTextField xTextField7;
+    private com.rameses.rcp.control.XTextField xTextField8;
+    private com.rameses.rcp.control.XTextField xTextField9;
     // End of variables declaration//GEN-END:variables
     
 }

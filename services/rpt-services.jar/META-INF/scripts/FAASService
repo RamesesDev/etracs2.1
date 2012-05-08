@@ -215,7 +215,7 @@ class FAASService
                                 claimno			: '-',
 								annotated		: false, 
                             ],
-            rp            : [lgutype: var.lgu_type, attributes:[], autonumber:var.pin_autonumber, pintype:var.pin_type],
+            rp            : [lgutype: var.lgu_type?.toLowerCase(), attributes:[], autonumber:var.pin_autonumber, pintype:var.pin_type?.toLowerCase()],
             rpu           : [ry:ry, classid:'RES', classcode:'RES', classname:'RES',suffix:0,info:[:], taxable:true, totalareasqm:0.0, totalareaha:0.0],
             previousfaases: [],
             lgutype       : var.lgu_type,
@@ -276,7 +276,7 @@ class FAASService
 	}
     
     @ProxyMethod
-    public Map update( faas ) {		
+    public Map update( faas ) {
         checkDuplicateTdNo( faas.objid, faas.info.tdno )
         em.validate( faas.schemaname, faas )
         em.validate( LISTSCHEMA_NAME, faas )
@@ -304,10 +304,7 @@ class FAASService
         faas.info.autonumber 	= TO_BOOLEAN( faas.info.autonumber )
         faas.rpu.taxable 		= TO_BOOLEAN( faas.rpu.taxable )
         initOpenRpuInfo( faas.rpu )
-		
-		println faas.lgutype;
-		
-        return faas 
+		return faas 
     }
     
     @ProxyMethod
@@ -669,9 +666,22 @@ class FAASService
 		return ['OCT','TCT','CLOA','EP', 'KOT', 'CLT', 'T', 'P']
 	}
      
+	@ProxyMethod
+	public List getMunicipalities() {
+		return em.sqlContext.createNamedQuery('faas:getMunicipalities').resultList 
+	}
+	
     @ProxyMethod
     public List getBarangays() {
         return em.sqlContext.createNamedQuery('faas:getBarangays').resultList 
+    }
+	
+	@ProxyMethod
+    public List getBarangayListByParentId( parentid ) {
+		if( ! parentid ) return []
+        return em.sqlContext.createNamedQuery('faas:getBarangayListByParentId')
+					.setParameter('parentid', parentid)
+					.resultList 
     }
     
     @ProxyMethod
@@ -805,9 +815,8 @@ class FAASService
     /*-----------------------------------------------------------------------
     ** Attachment Support 
     -----------------------------------------------------------------------*/
-    @ProxyMethod
+    @ProxyMethod 
     public void addAttachment( faasid, attachment ) {
-        attachment.objid    = 'FA' + new UID()
         attachment.faasid   = faasid 
         attachment.docstate = 'INTERIM' 
         em.validate('faas:faasattachment', attachment )
@@ -816,15 +825,103 @@ class FAASService
     
     @ProxyMethod
     public void removeAttachment( faasid, attachment )  {
-        em.delete( 'faas:faasattachment', attachment )
+        em.delete( 'faas:faasattachment', [objid:attachment] )
     }
     
     @ProxyMethod
     public List getAttachments( faasid ) {
         return em.sqlContext.createNamedQuery('faas:getAttachments').setParameter('faasid', faasid).resultList
     }
+	
+	@ProxyMethod
+    public def getAttachmentById( objid ) {
+        return em.sqlContext.createNamedQuery('faas:getAttachmentById').setParameter('objid', objid).singleResult
+    }
     
+	@ProxyMethod
+	public def buildHtml( faasid ) {
+		def attachments = getAttachments( faasid )
+		if( ! attachments ) return '<html><body><h3>There are no associated attachments.</h3></body></html>'
+		
+		def html = '''<html>
+				<head>
+					<style type="text/css">
+						body, td, th { 
+							font-family: tahoma
+							font-size  : 10pt
+						}	
+						td {
+							background-color:white
+						}
+						th {
+							background-color : #CCCCCC
+						}
+					</style>
+				</head>
+			<body>
+		'''
+		html += '<h2>List of Attachments</h2>'
+		html += '<table>'
+		
+		def safefaasid = makeSafeFileName( faasid )
+		
+		attachments.each{
+			def thumbfilename = buildThumbnailFileName( it )
+			def imagepage = "http://${var.server_address}/admin/faasattachment.jsp?faasid=${safefaasid}&resid=${thumbfilename}"
+			def deleteicon = "http://${var.server_address}/downloads/images/delete.jpg"
+			html += '<tr>'
+			html += '<td><a href="displayAttachment?' + it.objid +'"><img src="' + imagepage + '"></img></a>' 
+			html += '<td valign="top">'
+			html += '  <table>'
+			html += '   <tr>'
+			html += '      <td valign="top"><b>' + it.type + '</b></td>'
+			html += '   </tr>'
+			html += '   <tr>'
+			html += '      <td>' + (it.remarks ? it.remarks :'') + '</td>'
+			html += '   </tr>'
+			html += '   <tr>'
+			html += '      <td><br><a title="remove" href="removeAttachment?' + it.objid +'"><img src="' + deleteicon + '"></img></a></td>' 
+			html += '   </tr>'
+			html += ' </table>'
+			html += '</td>'
+			html += '</tr>'
+			html += '<tr><td><br></td></tr>'
+		}
+		html += '</table>'
+		html += '</body></html>'
+		return html 
+	}
     
+	
+	def getFileName(  filename ) {
+		def fname = '' 
+		def idx = filename.lastIndexOf( '.' )
+		if( idx >= 0 ) {
+			fname = filename.substring(0, idx)
+		}
+		return fname 
+	}
+	
+	def getFileExtension(  filename ) {
+		def ext = ''
+		int idx = filename.lastIndexOf(".")
+		if( idx >= 0 ) {
+			ext = '.' + filename.substring(idx+1, filename.length())
+		}
+        return ext.toLowerCase()
+	}
+
+	def buildThumbnailFileName( attachment) {
+		def ext = getFileExtension( attachment.filename )
+		def targetname = getFileName( attachment.filename ) + '-thumb'
+		if( ext ) targetname += ext 
+		return targetname 
+	}
+	
+	    
+    def makeSafeFileName( strvalue ) {
+        return strvalue.replaceAll('[\\W]', '')
+    }
     
     /*-----------------------------------------------------------------------
     ** Support Methods
@@ -858,11 +955,11 @@ class FAASService
         if( rpu.rputype == LAND_TYPE ) {
             rpu.info.landdetails.each{ it.taxable = TO_BOOLEAN( it.taxable )}
 			rpu.info.planttrees.each {
-				it.bearing = it.bearing ? it.bearing * 1.0 : 0.00 
-				it.nonbearing = it.nonbearing ? it.nonbearing * 1.0 : 0.00
+				it.bearing = it.bearing * 1.0 
+				it.nonbearing = it.nonbearing * 1.0 
 			}
-			rpu.info.planttotal.bearing  = rpu.info.planttotal.bearing ? rpu.info.planttotal.bearing * 1.0 : 0.00
-			rpu.info.planttotal.nonbearing  = rpu.info.planttotal.nonbearing ? rpu.info.planttotal.nonbearing * 1.0 : 0.00
+			rpu.info.planttotal.bearing  = rpu.info.planttotal.bearing * 1.0 
+			rpu.info.planttotal.nonbearing  = rpu.info.planttotal.nonbearing * 1.0 
         }
         else if( rpu.rputype == BLDG_TYPE ) {
             rpu.info.swornstatement = TO_BOOLEAN( rpu.info.swornstatement  )
@@ -1044,7 +1141,7 @@ class FAASService
         checkDuplicateTdNo( faasinfo.objid, faasinfo.tdno )
         validateTransactionInfo( faasinfo )
 		
-		if( 'GR/ND'.indexOf(faasinfo.txntype) == -1 && faasinfo.datacapture == false ) {
+		if( 'GR/ND'.indexOf(faasinfo.txntype) == -1  && faasinfo.datacapture == false ) {
 			checkLedgerBalanceByDate( faasinfo, faasinfo.issuedate )
 		}
 		
@@ -1433,9 +1530,12 @@ class FAASService
     }
     
     void sendToOutbox( faas ) {	
-		def attachment = [ faas:faas, attachments:getAttachments( faas.objid) ]
-		def msg = msgSvc.createMessage( 'faas.receive', attachment )
-		msgSvc.send( msg ) 
+		///// if( faas.info.datacapture == false ) {
+			def attachment = [ faas:faas, attachments:getAttachments( faas.objid) ]
+			def msg = msgSvc.createMessage( 'faas.receive', attachment )
+			msg.refid = faas.objid 
+			msgSvc.send( msg ) 
+		///// }
     }
     
     void moveOutboxMessageToProcessed( refid ) {

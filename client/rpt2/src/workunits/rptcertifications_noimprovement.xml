@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" caption="No Improvement" target="window" index="3" permission="noimprovement.open" />
-        <invoker type="noimprovement.view"  caption="No Improvement" index="3" action="doPreview" permission="noimprovement.view" />
+        <invoker type="rptcertifications" caption="Land with No Improvement" target="window" index="3" permission="noimprovement.open" />
+        <invoker type="noimprovement.view"  caption="Land with No Improvement" index="3" action="doPreview" permission="noimprovement.view" />
+        
+        <invoker folderid="/menu/rpt/cert" caption="Land with No Improvement" target="window" index="4" permission="noimprovement.open" />
         
         <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />

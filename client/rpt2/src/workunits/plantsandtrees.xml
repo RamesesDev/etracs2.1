@@ -2,6 +2,7 @@
 <workunit>
     
     <invoker folderid="/menu/rpt/master" action="init" caption="Plants and Trees" index="11" permission="plantstrees.view" />
+    <invoker type="quick_launcher" code="PT01" action="init" caption="Plants and Trees" index="11" permission="plantstrees.view" />
     <invoker type="rpt.master" action="init" caption="Plants and Trees" index="9" permission="plantstrees.view" />
         
     <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="plantstrees.create" />

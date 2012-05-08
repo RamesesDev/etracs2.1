@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptbilling:ruleaction" caption="Calculate Prior Basic Tax"  action="init" index="3" />        
+        <invoker type="rptbilling:ruleaction" caption="Calculate Basic Prior"  action="init" index="3" />        
     </invokers>
     <code>
         <![CDATA[
@@ -18,7 +18,7 @@
             }
             
             public String buildDisplayText() {
-                 return "Calculate Prior Basic Tax using formula: ${action.expr}".toString();
+                 return "Calculate Basic Prior using formula: ${action.expr}".toString();
             }
             
         }

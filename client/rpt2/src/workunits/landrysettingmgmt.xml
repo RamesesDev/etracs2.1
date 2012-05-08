@@ -2,6 +2,7 @@
 <workunit>
     <invokers>
         <invoker type="rysettingmgmt.type" caption="Land" />
+        <invoker type="quick_launcher" code="GRY00" target="window" caption="Land Revision Setting" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" />
         <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null }" immediate="true" caption="Open" mnemonic="e" icon="images/open.png" />

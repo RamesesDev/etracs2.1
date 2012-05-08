@@ -3,6 +3,7 @@
     <invokers>
         <invoker type="rptcertifications" caption="No Property" target="window" index="0" permission="noproperty.open" />
         <invoker type="noproperty.view"  caption="No Property" index="0" action="doPreview" permission="noproperty.view" />
+        <invoker folderid="/menu/rpt/cert" caption="No Property" target="window" index="90" permission="noproperty.open" />
         
        <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />

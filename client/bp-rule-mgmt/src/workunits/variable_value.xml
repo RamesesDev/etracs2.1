@@ -35,6 +35,6 @@ class VariableValueController
         
     </code>
     <pages>
-        <page template="etracs2.bp.rule.condition.VariableValuePage"/>
+        <page template="bpassessment.rule.condition.VariableValuePage"/>
     </pages>
 </workunit>

@@ -31,8 +31,8 @@ SELECT objid, rptledgerid, fromyear, fromqtr, toyear, toqtr FROM rptpayment WHER
 [updateLedgerLastYearQtrPaid]
 UPDATE rptledger SET 
 	lastyearpaid = $P{lastyearpaid}, lastqtrpaid = $P{lastqtrpaid},
-	partialbasic = 0.0, partialsef = 0.0,
-	partialbasicint = 0.0, partialsefint = 0.0 
+	partialbasic = $P{partialbasic}, partialsef = $P{partialsef},
+	partialbasicint = $P{partialbasicint}, partialsefint = $P{partialsefint}  
 WHERE objid = $P{objid} 
 
 

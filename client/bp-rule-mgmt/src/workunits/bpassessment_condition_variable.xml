@@ -53,11 +53,10 @@
                 }
             }
 
-
             public void accept() {
                 if( ! condition.variable ) 
                     throw new Exception('Property is required.')
-                if( condition.variable.vartype == 'string_array' && condition.value == null ) 
+                if( condition.variable.datatype == 'string_array' && condition.value == null ) 
                     throw new Exception('Value is required.')
                 condition.displaytext = buildDisplayText()
             }

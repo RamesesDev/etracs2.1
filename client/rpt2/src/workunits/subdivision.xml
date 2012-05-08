@@ -6,8 +6,10 @@
 -->
 <workunit>
     <invokers>
-        <invoker type="rpttransaction" folderid="/menu/rpt/txn" action="initSubdivision" caption="Subdivision" target="window" permission="subdivision.view" index="301"/>
+        <invoker folderid="/menu/rpt/faas" action="initSubdivision" caption="Subdivision" target="window" permission="subdivision.view" index="20"/>
+        <invoker type="rpttransaction" action="initSubdivision" caption="Subdivision" target="window" permission="subdivision.view" index="20"/>
         <invoker type="rpttransaction.initSubdivision" action="initSubdivision" caption="Subdivision" target="window" />
+        <invoker type="quick_launcher" code="SD01" action="initSubdivision" caption="Subdivision:New" mnemonic="n" shortcut="ctrl N" target="window" icon="images/doc-new.png" permission="subdivision.create" />
         
         <invoker type="subdivision.create" action="init" caption="Subdivision:New" mnemonic="n" shortcut="ctrl N" target="window" icon="images/doc-new.png" permission="subdivision.create" />
         <invoker type="subdivision.open" action="open" caption="Subdivision:Open" mnemonic="o" shortcut="ctrl O" target="window" icon="images/open.png" permission="subdivision.view" />
@@ -20,7 +22,7 @@
         <invoker type="formActions" action="submitToProvince" shortcut="ctrl M" visibleWhen="#{showSubmitToProvinceAction == true}" caption="Submit To Province" mnemonic="m" icon="images/doc-submit.png" permission="subdivision.submitToProvince"/>
         <invoker type="formActions" action="disapproveByProvince" visibleWhen="#{showDisapproveByProvinceAction == true}" caption="Disapprove" icon="images/disapprove.png" permission="subdivision.disapproveByProvince" />
         <invoker type="formActions" action="approveByProvince" shortcut="ctrl A" visibleWhen="#{showApprovedByProvinceAction == true}" caption="Approve" mnemonic="a" icon="images/approve.png" permission="subdivision.approveByProvince" />
-        <invoker type="formActions" action="viewTaxDeclarations" shortcut="ctrl A" visibleWhen="#{subdivision.docstate == 'APPROVED'}" caption="View Taxdeclarations" mnemonic="v" icon="images/doc-view.png"/>
+        <invoker type="formActions" action="viewTaxDeclarations" shortcut="ctrl A" visibleWhen="#{subdivision.docstate == 'APPROVED'}" caption="View Tax Declarations" mnemonic="v" icon="images/doc-view.png"/>
         
         <invoker type="subdividedlandActions" action="addSubdividedLand" caption="Add" mnemonic="a" icon="images/doc-add.png" />
         <invoker type="subdividedlandActions" action="editSubdividedLand" caption="Edit" mnemonic="e" icon="images/edit.png" />
@@ -363,14 +365,16 @@ public class SubdivisionController
     }
     
     boolean getShowApprovedByProvinceAction() {
-        if( subdivision.lgutype?.toLowerCase() != 'municipality'  ) return false
-        if( subdivision.docstate != 'FORPROVAPPROVAL' ) return false
+        def lgutype = subdivision.lgutype?.toLowerCase()
+        if( lgutype == 'municipality' && subdivision.docstate != 'FORPROVAPPROVAL' ) return false
+        if( lgutype != 'municipality' && subdivision.docstate != 'FORAPPROVAL' ) return false
         return true
     }
     
     boolean getShowDisapproveByProvinceAction() {
-        if( subdivision.lgutype?.toLowerCase() != 'municipality'  ) return false
-        if( subdivision.docstate != 'FORPROVAPPROVAL' ) return false
+        def lgutype = subdivision.lgutype?.toLowerCase()
+        if( lgutype == 'municipality' && subdivision.docstate != 'FORPROVAPPROVAL' ) return false
+        if( lgutype != 'municipality' && subdivision.docstate != 'FORAPPROVAL' ) return false
         return true
     }
     

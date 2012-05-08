@@ -4,7 +4,8 @@
         <invoker type="faasattachment.open" action="open" />
         <invoker type="formActions" action="_close" caption="Back" mnemonic="b" shortcut="ctrl B" icon="images/back.png" />
         <invoker type="formActions" action="addAttachment" caption="Add" mnemonic="a" shortcut="ctrl A" icon="images/doc-add.png" />
-        <invoker type="formActions" action="removeAttachment" caption="Remove" mnemonic="r" icon="images/doc-delete.png" />
+        
+        <invoker type="viewActions" action="_default" caption="Back" mnemonic="b" shortcut="ctrl B" icon="images/back.png" />
     </invokers>
     <code lang="groovy">
 <![CDATA[
@@ -24,25 +25,28 @@ public class FAASAttachmentController {
     
     @Service('FAASService')
     def faasSvc
+    
+    @Service('ETRACSFileTransferService')
+    def svc 
 
     def faas 
     def selectedItem
     def attachments
     
     
-    
-    
     void open() {
-        removeCachedDirectory()
+        //removeCachedDirectory()
         attachments = faasSvc.getAttachments( faas.objid )
+    }
+    
+    def getHtml() {
+        return faasSvc.buildHtml( faas.objid )
     }
     
     def listHandler = [
         getRows    : { return 25 },
         getColumns : { return [
             new Column(name:'type', caption:'Attachment'),
-            new Column(name:'refno', caption:'Ref. No.'),
-            new Column(name:'refdate', caption:'Ref. Date'),
             new Column(name:'remarks', caption:'Remarks'),
         ]},
         onRemoveItem : { item -> removeItem( item ) },
@@ -99,19 +103,18 @@ public class FAASAttachmentController {
     }
     
     def getImageUrl() {
-        if( ! selectedItem ) {
-            return 'Select an attachment'
+        return new File( resolveFileName(attachment.filename) )
+    }
+    
+    def displayAttachment( attachmentid ) {
+        attachment = faasSvc.getAttachmentById( attachmentid )
+        if( attachment ) {
+            def file = new File( resolveFileName( attachment.filename ) )
+            if( ! file.exists() ) {
+                downloadFile( attachment )
+            }
         }
-        
-        def file = new File( resolveFileName(selectedItem.filename ) )
-        def url = file.toURL().toString()
-        return """
-            <html>
-                <body>
-                    <img src="$url">
-                </body>
-            </html>
-        """
+        return 'view'
     }
     
     /*----------------------------------------------------------------------
@@ -122,16 +125,15 @@ public class FAASAttachmentController {
     def attachment
     def file
     
-    void removeAttachment() {
-        if( selectedItem == null || selectedItem.type == null )  return 
+    
+    void removeAttachment( attachmentid ) {
         if( MsgBox.confirm('Delete attachment?') ) {
-            faasSvc.removeAttachment( faas.objid, selectedItem )
-            attachments.remove( selectedItem )
+            faasSvc.removeAttachment( faas.objid, attachmentid )
         }
     }
     
     def addAttachment() {
-        attachment = [:]
+        attachment = [objid: 'FA' + new UID()]
         return 'attachment' 
     }
     
@@ -141,23 +143,35 @@ public class FAASAttachmentController {
     
     def upload() {
         def app = getAppInfo()
-        attachment.filename  = file.name 
-        attachment.directory = makeSafeFileName( faas.objid )
+        attachment.filename  = makeSafeFileName( attachment.objid ) + getFileExtension( file )
+        attachment.directory = makeSafeFileName( faas.objid ) 
         
         FileTransfer.FileInputSource fis = new FileTransfer.FileInputSource( file )
         DynamicHttpTransfer.Out handler = new DynamicHttpTransfer.Out(app.host , app.context, 'ETRACSFileTransferService', 'uploadAttachment')
         handler.parameters.put('attachment', attachment )
         
-        FileTransfer ft = new FileTransfer();
-        ft.transfer(fis, handler);
+        FileTransfer ft = new FileTransfer()
+        ft.transfer(fis, handler)
+        try { Thread.sleep(1000) }catch( e ){}
+        svc.uploadComplete( attachment )
         
         copyToCache( file )
-        
         faasSvc.addAttachment( faas.objid, attachment )
         attachments.add( attachment )
         listHandler.load()
         return 'default' 
-
+    }
+    
+    def getFileExtension( file ) {
+        def ext = ''
+        if( file && file.exists()) {
+            def filename = file.absolutePath
+            int idx = filename.lastIndexOf(".")
+            if( idx >= 0 ) {
+                ext = '.' + filename.substring(idx+1, filename.length())
+            }
+        }
+        return ext.toLowerCase()
     }
     
     void copyToCache( file ) {
@@ -184,10 +198,10 @@ public class FAASAttachmentController {
     }
     
     def getAppInfo() {
-        def host        = OsirisContext.clientContext?.appEnv['default.host']
+        def host        = OsirisContext.clientContext?.appEnv['app.host']
         host            = ( host ? host : 'localhost:8080' )
         def context     = OsirisContext.clientContext?.appEnv['app.context']
-        context         = (context ? context : 'maribojoc' )
+        context         = (context ? context : 'lguname' )
         return [host:host, context:context]
     }
     
@@ -195,17 +209,6 @@ public class FAASAttachmentController {
         return strvalue.replaceAll('[\\W]', '')
     }
     
-    
-    def getExtension( s ) {
-        def startindex = s.indexOf( '.') 
-        if( startindex < 0 ) {
-            return ''
-        }
-        else {
-            def endindex = s.length()
-            return s.substring( startindex+1, endindex )
-        }
-    }    
 }
 
 
@@ -215,5 +218,6 @@ public class FAASAttachmentController {
     <pages>
         <page template="etracs2.rpt.faas.FAASAttachmentPage"/>
         <page name="attachment" template="etracs2.rpt.faas.FAASAttachmentAddPage"/>
+        <page name="view" template="etracs2.rpt.faas.FAASAttachmentViewPage"/>
     </pages>
 </workunit>

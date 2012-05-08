@@ -3,6 +3,8 @@
         <invoker type="tc.master" action="init" caption="Income Account Groups" permission="incomeacctgroup.viewlist" icon="images/folder.png" target="window" index="3"/>
         <invoker folderid="/menu/tc/master" action="init" caption="Income Account Groups" permission="incomeacctgroup.viewlist" target="window"/>
         
+        <invoker type="quick_launcher" code="ACCTGRP" action="init" caption="Income Account Groups" permission="incomeacctgroup.viewlist" />
+        
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"  permission="incomeacctgroup.create"/>
         <invoker type="formActions" action="save" shortcut="ctrl S" visibleWhen="#{mode != 'view'}" caption="Save" mnemonic="s" icon="images/save.png"/>
         <invoker type="formActions" action="cancel" visibleWhen="#{mode != 'view'}"  immediate="true" caption="Cancel" mnemonic="c" icon="images/doc-cancel.png"/>

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptbilling:ruleaction" caption="Calculate Basic Tax"  action="init" index="1" />        
+        <invoker type="rptbilling:ruleaction" caption="Calculate Basic Current"  action="init" index="1" />        
     </invokers>
     <code>
         <![CDATA[
@@ -18,7 +18,7 @@
             }
             
             public String buildDisplayText() {
-                 return "Calculate Basic Tax using formula: ${action.expr}".toString();
+                 return "Calculate Basic Current using formula: ${action.expr}".toString();
             }
             
         }

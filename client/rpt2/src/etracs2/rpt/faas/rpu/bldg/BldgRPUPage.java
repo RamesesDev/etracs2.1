@@ -43,10 +43,10 @@ public class BldgRPUPage extends javax.swing.JPanel {
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         formPanel4 = new com.rameses.rcp.util.FormPanel();
         formPanel12 = new com.rameses.rcp.util.FormPanel();
-        xActionTextField1 = new com.rameses.rcp.control.XActionTextField();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         formPanel13 = new com.rameses.rcp.util.FormPanel();
-        xActionTextField3 = new com.rameses.rcp.control.XActionTextField();
+        xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
         xNumberField4 = new com.rameses.rcp.control.XNumberField();
@@ -183,14 +183,16 @@ public class BldgRPUPage extends javax.swing.JPanel {
         formPanel12.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         formPanel12.setPadding(new java.awt.Insets(0, 0, 0, 0));
         formPanel12.setShowCaption(false);
-        xActionTextField1.setActionName("lookupBldgType");
-        xActionTextField1.setCaption("Building Type");
-        xActionTextField1.setCaptionWidth(120);
-        xActionTextField1.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
-        xActionTextField1.setName("bldgtype");
-        xActionTextField1.setPreferredSize(new java.awt.Dimension(80, 18));
-        xActionTextField1.setRequired(true);
-        formPanel12.add(xActionTextField1);
+        xLookupField1.setCaption("Building Type");
+        xLookupField1.setCaptionWidth(120);
+        xLookupField1.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xLookupField1.setDynamic(true);
+        xLookupField1.setExpression("#{bldgtypecode}");
+        xLookupField1.setHandler("lookupBldgType");
+        xLookupField1.setName("bldgtype");
+        xLookupField1.setPreferredSize(new java.awt.Dimension(80, 19));
+        xLookupField1.setRequired(true);
+        formPanel12.add(xLookupField1);
 
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel3.setCaption("");
@@ -204,19 +206,23 @@ public class BldgRPUPage extends javax.swing.JPanel {
 
         formPanel13.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
         formPanel13.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        formPanel13.setPreferredSize(new java.awt.Dimension(462, 19));
         formPanel13.setShowCaption(false);
-        xActionTextField3.setActionName("lookupBldgKind");
-        xActionTextField3.setCaption("Kind of Building");
-        xActionTextField3.setCaptionWidth(120);
-        xActionTextField3.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
-        xActionTextField3.setName("bldgkind");
-        xActionTextField3.setPreferredSize(new java.awt.Dimension(80, 18));
-        xActionTextField3.setRequired(true);
-        formPanel13.add(xActionTextField3);
+        xLookupField2.setCaption("Building Kind");
+        xLookupField2.setCaptionWidth(120);
+        xLookupField2.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
+        xLookupField2.setDepends(new String[] {"bldgtype"});
+        xLookupField2.setDynamic(true);
+        xLookupField2.setExpression("#{bldgkindcode}");
+        xLookupField2.setHandler("lookupBldgKind");
+        xLookupField2.setName("bldgkind");
+        xLookupField2.setPreferredSize(new java.awt.Dimension(80, 19));
+        xLookupField2.setRequired(true);
+        formPanel13.add(xLookupField2);
 
         xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel4.setCaption("");
-        xLabel4.setDepends(new String[] {"bldgkind"});
+        xLabel4.setDepends(new String[] {"bldgkind", "bldgtype"});
         xLabel4.setName("rpu.info.bldgkindbucc.bldgkindname");
         xLabel4.setPreferredSize(new java.awt.Dimension(250, 18));
         xLabel4.setShowCaption(false);
@@ -599,8 +605,6 @@ public class BldgRPUPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
-    private com.rameses.rcp.control.XActionTextField xActionTextField1;
-    private com.rameses.rcp.control.XActionTextField xActionTextField3;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
@@ -618,6 +622,8 @@ public class BldgRPUPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
     private com.rameses.rcp.control.XLabel xLabel6;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField10;
     private com.rameses.rcp.control.XNumberField xNumberField2;

@@ -2,6 +2,7 @@
 <workunit>
     
     <invoker folderid="/menu/rpt/master" action="init" caption="Materials" index="7" permission="materials.view" />
+    <invoker type="quick_launcher" code="MAT01" action="init" caption="Materials" index="7" permission="materials.view" />
     <invoker type="rpt.master" action="init" caption="Materials" index="5" permission="materials.view" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="materials.create" />

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptbilling:ruleaction" caption="Calculate SEF Discount"  action="init" index="24" />        
+        <invoker type="rptbilling:ruleaction" caption="Calculate SEF Discount"  action="init" index="14" />        
     </invokers>
     <code>
         <![CDATA[
@@ -14,7 +14,7 @@
         public class RPTBillingRuleActionSEFDiscountController extends RPTAbstractDiscountRuleAction {
         
             public String getActiontype() {
-                return "calcSefDisc ";
+                return "calcSefDisc";
             }
             
             public String buildDisplayText() {

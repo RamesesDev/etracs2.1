@@ -23,6 +23,7 @@ class FAASAttachmentTask
             catch( e ) {
                 //log encountered error, just ignore and redeliver attachment 
                 println 'Delivery of attachment error -> ' + e.message 
+				updateFaasAttachmentStatus( attachment, 'ERROR', e.message)
             }
         }
         return true 
@@ -30,6 +31,9 @@ class FAASAttachmentTask
     
     def uploadAttachment( attachment ) {
         def sourceDir = var.faas_attachment_path
+		if( ! sourceDir ) {
+			throw new Exception('FAAS Attachment Path is not set.')
+		}
         if( ! sourceDir.endsWith('/') ) {
             sourceDir += '/'
         }
@@ -64,7 +68,4 @@ class FAASAttachmentTask
         em.sqlContext.createNamedExecutor('faas:updateFaasAttachmentInfo').setParameters( params ).execute()
     }
     
-    String makeSafeFileName( strvalue ) {
-        return strvalue.replaceAll('[\\W]', '')
-    }
 }

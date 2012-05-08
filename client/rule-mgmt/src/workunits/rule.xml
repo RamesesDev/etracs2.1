@@ -97,9 +97,12 @@
                 rule = svc.undeploy( rule.objid );
             }
             
-            public def remove() {
-                svc.remove( rule.objid );
-                return '_close';
+            public def remove() {   
+                if( MsgBox.confirm('Delete rule?') ) {
+                    svc.remove( rule.objid );
+                    return '_close';
+                }
+                return null 
             }
             
             @Close

@@ -2,6 +2,7 @@
 <workunit>
     
     <invoker folderid="/menu/rpt/master" action="init" caption="Machines" index="10" permission="machines.view" />
+    <invoker type="quick_launcher" code="MACH01" action="init" caption="Machines" index="10" permission="machines.view" />
     <invoker type="rpt.master" action="init" caption="Machines" index="8" permission="machines.view" />
         
     <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="machines.create" />
@@ -57,3 +58,4 @@
         <page template="etracs2.rpt.master.machines.MachinesPage" />
     </pages>
 </workunit>
+

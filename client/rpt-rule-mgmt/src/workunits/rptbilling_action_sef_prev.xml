@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptbilling:ruleaction" caption="Calculate Previous SEF"  action="init" index="32" />        
+        <invoker type="rptbilling:ruleaction" caption="Calculate SEF Previous"  action="init" index="12" />        
     </invokers>
     <code>
         <![CDATA[
@@ -18,7 +18,7 @@
             }
             
             public String buildDisplayText() {
-                 return "Calculate Previous SEF using formula: ${action.expr}".toString();
+                 return "Calculate SEF Previous using formula: ${action.expr}".toString();
             }
             
         }
