@@ -12,13 +12,6 @@
 <c:set var="PERMISSIONS" value="${JOB.permissions}" scope="request"/>
 
 <t:secured-master>
-	
-	<jsp:attribute name="head">
-		<link rel="stylesheet" href="${pageContext.servletContext.contextPath}/js/ext/calendar/fullcalendar.css" type="text/css"/>
-		<script src="${pageContext.servletContext.contextPath}/js/ext/calendar/fullcalendar.js"></script>
-		<script src="${pageContext.servletContext.contextPath}/js/ext/calendar/calendar.js"></script>
-		<script src="${pageContext.servletContext.contextPath}/js/apps/SkedUtil.js"></script>
-	</jsp:attribute>
 
 	<jsp:attribute name="script">
 		<common:loadmodules name="modules"/>

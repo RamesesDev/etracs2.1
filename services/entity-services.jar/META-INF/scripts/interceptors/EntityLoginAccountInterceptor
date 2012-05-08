@@ -10,6 +10,8 @@ class EntityLoginAccountInterceptor {
 	@After(pattern="EntityService\\.open.*", eval="args[1] == 'individual'") 
 	public void onOpen( evt  ) {
 		def r = evt.result;
+		if( !r ) return;
+		
 		def acct = usrSvc.getAccount( [objid: r.objid] );
 		if(acct) {
 			//remove the password. very impt
@@ -25,7 +27,12 @@ class EntityLoginAccountInterceptor {
 		u.lastname = r.info.lastname;
 		u.firstname = r.info.firstname;
 		u.middlename = r.info.middlename;
-		usrSvc.update( u );
+		try {
+			usrSvc.update( u );
+		}
+		catch(e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@After(pattern="EntityService\\.delete.*") 

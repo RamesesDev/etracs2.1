@@ -23,12 +23,10 @@ body, table, p, ul, ol  {
 .header .content { height: 45px; }
 
 .header .content td.left-side {
-	background: url(../img/page/header-bg-l.png) no-repeat left bottom;
 	width: 7px;
 }
 
 .header .content td.right-side {
-	background: url(../img/page/header-bg-r.png) no-repeat right bottom;
 	width: 8px;
 }
 

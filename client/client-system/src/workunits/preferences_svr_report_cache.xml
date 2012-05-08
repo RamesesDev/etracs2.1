@@ -1,0 +1,52 @@
+<workunit>
+    
+    <invokers>
+         <invoker type="preferences" caption="Server Report Cache" index="3"/>
+    </invokers>
+    
+    <code>
+    <![CDATA[
+    
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.util.*;
+        import com.rameses.osiris2.reports.*;
+        
+        public class SystemInfoController
+        {
+
+            def handler = [
+                getRows: {
+                    return 20;
+                },
+                getColumns : {
+                    return [
+                        new Column( name:"name", caption:"Name"),
+                        new Column( name:"version", caption:"Version")
+                    ]
+                },
+            
+                fetchList : {o->
+                    return ServerReportUtil.reports.collect { 
+                        def v = it.value ? it.value['report.version'] : null;
+                        return [ name: it.key, version: v ? v : 0 ] 
+                    }
+                }
+            ] as SubListModel;
+            
+            void clearCache() {
+                ServerReportUtil.clearCache();
+                handler.load();
+            }
+            
+            void save() {}
+        
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="system.tools.ui.ServerReportCachePage" />
+    </pages>
+</workunit>

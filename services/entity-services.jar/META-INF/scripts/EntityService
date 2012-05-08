@@ -137,7 +137,8 @@ class EntityService
 	
 	@ProxyMethod
 	public List getCitizenshipList() {
-		return [ 'FILIPINO', 'AMERICAN', 'CHINESE', 'JAPANESE','KOREAN']
+		def list = em.sqlContext.createQuery('select objid from citizenship').resultList
+		return list ? list*.objid : []
 	}
 	
 	@ProxyMethod
@@ -147,7 +148,8 @@ class EntityService
 	
 	@ProxyMethod
 	public List getProfessionList() {
-		return ['DOCTOR', 'ENGINEER', 'NURSE', 'STUDENT',]
+		def list = em.sqlContext.createQuery('select objid from profession').resultList
+		return list ? list*.objid : []
 	}
 	
 	@ProxyMethod
@@ -273,6 +275,7 @@ class EntityService
 		if( ! params ) {
 			params = [_start:0, _limit:50]
 		}
+		
 		return em.sqlContext.createNamedQuery( query )
 					.setParameters( criteria )
 					.setFirstResult( params._start )

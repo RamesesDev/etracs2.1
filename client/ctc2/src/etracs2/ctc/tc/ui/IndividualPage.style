@@ -1,10 +1,17 @@
-"entity.tax.*" [entity.info.mode=="ONLINE"] {
-    enabled: false;
-}
+"entity.tax.*" [entity.info.mode=="ONLINE"] { enabled: false; }
+"entity.tax.*" [entity.info.mode!="ONLINE"] { enabled: true; }
 
-"entity.tax.*" [entity.info.mode!="ONLINE"] {
-    enabled: true;
-}
+"calculate" [entity.info.mode=="ONLINE"] { visible: true; }
+"calculate" [entity.info.mode!="ONLINE"] { visible: false; }
+
+"txninfo" [entity.info.mode=="ONLINE" && entity.barangayid==null] { visible: false; }
+"txninfo" [entity.info.mode!="ONLINE" || entity.barangayid!=null] { visible: true; }
+
+"entity.txndate" [entity.info.mode=="ONLINE"] { visible: false; }
+"entity.txndate" [entity.info.mode!="ONLINE"] { visible: true; }
+
+"entity.barangayname" [entity.barangayid==null] { visible: false; }
+"entity.barangayname" [entity.barangayid!=null] { visible: true; }
 
 "entity.info.payer.info.(lastname|firstname|middlename)" [taxpayer!=null] {
     enabled: false;
@@ -13,4 +20,7 @@
 "entity.info.payer.info.(lastname|firstname|middlename)" [taxpayer==null] {
     enabled: true;
 }
+
+"entity.additional_remarks" [entity.additional==true] { enabled:true; }
+"entity.additional_remarks" [entity.additional!=true] { enabled:false; text: ""; }
 

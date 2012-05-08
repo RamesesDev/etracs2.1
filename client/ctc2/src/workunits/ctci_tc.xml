@@ -47,11 +47,23 @@
             
             @Service('ReportParameterService')
             def paramsSvc;
+            
+            @Service('LGUService')
+            def lguSvc;
         
             def collectiontitle = 'COMMUNITY TAX CERTIFICATE (INDIVIDUAL)'
             def taxpayer
             def taxpayerLookup = InvokerUtil.lookupOpener("entity.lookup", [:])
             def genderList = ['MALE','FEMALE']
+            
+            void init() {
+                super.init();
+                if( OsirisContext.env.CLIENT?.orgtype == 'BARANGAY' ) {
+                    def brgy = lguSvc.open( OsirisContext.env.CLIENT.refid );
+                    entity.barangayid = brgy.objid;
+                    entity.barangayname = brgy.lguname;
+                }
+            }
             
             def next() {
                 if(taxpayer && taxpayer.entitytype != 'individual') {

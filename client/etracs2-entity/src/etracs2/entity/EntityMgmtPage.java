@@ -62,7 +62,6 @@ public class EntityMgmtPage extends javax.swing.JPanel {
         jPanel1.add(jPanel3, java.awt.BorderLayout.NORTH);
 
         xDataTable1.setHandler("listHandler");
-        xDataTable1.setImmediate(true);
         xDataTable1.setName("selectedItem");
         jPanel1.add(xDataTable1, java.awt.BorderLayout.CENTER);
 

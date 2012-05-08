@@ -2,6 +2,10 @@
 SELECT * FROM liquidationlist 
 ORDER BY txndate DESC, txnno DESC
 
+[getListByTxnno]
+SELECT * FROM liquidationlist WHERE txnno = $P{txnno}
+ORDER BY txndate DESC, txnno DESC
+
 
 [getUnliquidatedRemittanceByLiquidatingOfficer]
 SELECT * FROM remittancelist 

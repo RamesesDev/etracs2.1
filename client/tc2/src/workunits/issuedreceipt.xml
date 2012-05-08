@@ -2,6 +2,8 @@
     <invokers>
         <invoker folderid="/menu/tc/txn" action="init" caption="Issued Receipt" permission="receipt.viewissued" />
         <invoker type="home.action" action="init" caption="Issued Receipts" permission="receipt.viewissued" index="104" icon="images/folder.png" target="window"/>
+        
+        <invoker type="formActions" action="_close" immediate="true" caption="Close" icon="images/cancel.png" index="-10"/>
     </invokers>
     <code>
 <![CDATA[

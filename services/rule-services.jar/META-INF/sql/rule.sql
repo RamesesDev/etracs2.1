@@ -1,7 +1,7 @@
 [list]
 SELECT objid, docstate, agendagroup, rulename, description, author, salience   
 FROM rule 
-WHERE ruleset = $P{ruleset}
+WHERE ruleset = $P{ruleset} ${filter}
 ORDER BY agendagroup, rulename  
 
 [list-byname]

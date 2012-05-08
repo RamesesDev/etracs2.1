@@ -3,6 +3,7 @@ SELECT objid, schemaname, schemaversion, entityno, entitytype, entityname, entit
 FROM entity 
 ORDER BY entityname 
 
+
 [getListByNo] 
 SELECT objid, schemaname, schemaversion, entityno, entitytype, entityname, entityaddress  
 FROM entity 

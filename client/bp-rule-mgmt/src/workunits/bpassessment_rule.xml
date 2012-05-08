@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="ruleset" caption="BP Assessment Rules" zpermission="bpassessmentrule.view" index="-10"/>
+        <invoker type="ruleset" caption="BP Assessment Rules" permission="bpassessmentrule.view" index="-10"/>
     </invokers>
     
     <code>

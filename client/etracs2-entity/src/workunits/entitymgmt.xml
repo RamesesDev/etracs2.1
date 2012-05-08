@@ -20,7 +20,6 @@ class EntityMgmtController
     def selectedItem
     def opener
     def searchText
-    def list = []
     def mode = 'view'
     
     def getFormActions() {
@@ -28,7 +27,7 @@ class EntityMgmtController
     }
     
     void init() {
-        search()
+        
     }
 	
     def createHandler = { changeMode('create') }
@@ -36,32 +35,23 @@ class EntityMgmtController
     def cancelHandler = { changeMode('view') }
     
     def insertHandler = { entity ->
-        def item = findEntityFromList( entity )
-        if( item ) {
-                list.add( list.indexOf(item), entity )
-        }
-        else {
-                list.add( entity )
-        }
+        listHandler.refresh()
         changeMode('view')
     }
     
     def updateHandler = { entity ->
-        def item = findEntityFromList( entity )
-        if( item ) {
-            list.set( list.indexOf(item), entity);
-        }
+        listHandler.refresh()
         changeMode('view')
     }
     
     def deleteHandler = { entity ->
-        def item = list.find { it.objid == entity.objid }
-        list.remove( item )
-        listHandler.load()
+        listHandler.refresh()
         changeMode('view')
     }
     
     void setSelectedItem( item ) {
+        if( mode != 'view' ) return;
+        
         selectedItem = item 
         opener = null
         if( selectedItem ) {
@@ -92,15 +82,10 @@ class EntityMgmtController
                 new Column(name:"entityaddress", caption:"Address"),
             ]
         },
-        fetchList : { return list },
-    ] as SubListModel
+        fetchList : { return svc.getList( searchText, it ) },
+    ] as PageListModel
     
     void search() {
-        fetchList( [_start:0, _limit:50] )
-    }
-    
-    void fetchList( params ) {
-        list = svc.getList( searchText, params )
         listHandler.load()
     }
     
@@ -108,11 +93,7 @@ class EntityMgmtController
         mode = md
         binding.refresh()
     }
-	
-    def findEntityFromList( entity ) {
-            return list.find { it.objid == entity.objid }
-    }
-    
+
     def getOpenerList() {
         return InvokerUtil.lookupOpeners('entity.type', [:])
     }

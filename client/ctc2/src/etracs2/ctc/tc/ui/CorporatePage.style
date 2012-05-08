@@ -14,3 +14,6 @@
     enabled: true;
 }
 
+"entity.additional_remarks" [entity.additional==true] { readonly:false; }
+"entity.additional_remarks" [entity.additional!=true] { readonly:true; text: ""; }
+

@@ -12,23 +12,26 @@ public class CTCService
 	
 	@Service('DateService')
 	def dateSvc
+	
+	@PersistenceContext("main")
+	def em
+	
 
 	@ProxyMethod
 	public def calculate( entity ) {
 		def facts = []
+		facts << createCTCFact( entity )
 		if( entity.doctype == 'CTCI' )
 			facts << createIndividualFact( entity )
 		else if( entity.doctype == 'CTCC' )
 			facts << createCorporateFact( entity )
-		
-		if( entity.barangayid )
-			facts << createCTCFact( entity )
 			
 		def result = [:]
 		def ruleAction = ruleSvc.createRuleAction()
 		ruleAction.addCommand( 'compute', new ComputationHandler( result: result ) )		
 			
 		ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], 'TAX' )
+		updateCTCFact( facts[0], result )
 		ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], 'INTEREST' )
 		
 		def assessment = [:]
@@ -36,6 +39,15 @@ public class CTCService
 		assessment.items = result.values() as List
 		assessment.total = assessment.items*.amount.sum()
 		if( assessment.total==null ) assessment.total = 0.00
+		
+		assessment.items.each {
+			def acct = em.read("incomeacct:incomeacct", [objid: it.acctid])
+			it.accttitle = acct.accttitle
+			it.acctno    = acct.acctno
+			it.systype   = acct.systype
+			it.fundid	 = acct.fundid
+			it.fundname	 = acct.fundname
+		}
 		
 		return assessment
 	}
@@ -45,12 +57,22 @@ public class CTCService
 			business: 0.00,
 			basic:    0.00,
 			salary:   0.00,
-			interest: 0.00,
 			property: 0.00,
+			interest: 0.00,
 		]
 		result.each{k,v-> values[k] = v.amount }
 		
 		return values
+	}
+	
+	void updateCTCFact( fact, result ) {
+		def taxes = createTaxItems( result );
+		fact.basictax   = taxes.basic
+		fact.salarytax	= taxes.salary
+		fact.businessgrosstax = taxes.business
+		fact.propertyincometax  = taxes.property
+		fact.additionaltax      = taxes.additionaltax
+		fact.amtdue		= taxes.business + taxes.basic + taxes.salary + taxes.property
 	}
 	
 	def createIndividualFact( entity ) {
@@ -89,6 +111,13 @@ public class CTCService
 		fact.qtr        = currentDate.qtr 
 		fact.month      = currentDate.month 
 		fact.day        = currentDate.day 
+		fact.additional = entity.additional ? true : false
+		fact.basictax   = 0.00
+		fact.salarytax	= 0.00
+		fact.businessgrosstax   = 0.00
+		fact.propertyincometax  = 0.00
+		fact.additionaltax      = 0.00
+		fact.amtdue		= 0.00
 		
 		return fact
 	}

@@ -43,7 +43,7 @@
 					}
 			
 					this.propertyChangeListener = {
-						orgType : function(o) { self.listModel.refresh(true); }
+						orgType : function(o) { self.listModel.load(); }
 					}
 				}
 			);

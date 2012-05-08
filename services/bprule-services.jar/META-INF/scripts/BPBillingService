@@ -31,7 +31,7 @@ public class BPBillingService
 	
 	@ProxyMethod
 	public def getBilling( billing ) {
-		def businesslist = getBusinessByTaxpayer( billing.info.taxpayerid, billing.info.barangayid );
+		def businesslist = getBusinessByTaxpayer( billing );
 		if( !businesslist ) throw new Exception("There are no businesses registered for this taxpayer.");
 		billing.items = [];
 		billing.grandtotal = 0.0;
@@ -141,7 +141,7 @@ public class BPBillingService
 		return (Integer)(month / 3);
 	}
 	
-	private def getBusinessByTaxpayer( taxpayerid, barangayid  ) {
+	private def getBusinessByTaxpayer( billing ) {
 		def params = [
 			taxpayerid : billing.info.taxpayerid, 
 			tradename : ( billing.info.tradename ? billing.info.tradename : '%' ),

@@ -33,15 +33,25 @@ class RuleService {
 	public def getList( ruleset, searchText, params ) {
 		if( ! ruleset ) return []
 		if( ! params ) params = [_start:0, _limit:50]
+		params.ruleset = ruleset
+		
+		def vars = [filter: '']
+		if( params.state ) vars.filter = ' and state=$P{state} ';
+		
 		if( ! searchText ) {
 			return em.sqlContext.createNamedQuery('rule:list')
-					.setParameter('ruleset', ruleset )
+					.setVars(vars)
+					.setParameters( params )
 					.setFirstResult( params._start )
 					.setMaxResults( params._limit )
 					.resultList
 		}
+		
+		params.name = searchText+'%';
+		
 		return em.sqlContext.createNamedQuery('rule:list-byname')
-					.setParameters( [ name: searchText+'%', ruleset: ruleset])
+					.setVars(vars)
+					.setParameters( params )
 					.setFirstResult( params._start )
 					.setMaxResults( params._limit )
 					.resultList
@@ -59,7 +69,7 @@ class RuleService {
 		rule.schemaversion = SCHEMA_VERSION
 		rule.rulename = rule.rulename.replaceAll('\\W', '_');
 		rule.docstate = DRAFT_STATE
-		rule.packagename = rule.ruleset + "." + rule.rulename 
+		rule.packagename = rule.ruleset + "._" + rule.rulename 
 		em.validate(rule.schemaname, rule );
 		
 		def data = em.sqlContext.createNamedQuery('rule:check-duplicate').setParameters( rule ).singleResult 
@@ -94,7 +104,18 @@ class RuleService {
 		
 		rule.docstate = DEPLOYED_STATE
 		em.update( rule.schemaname, rule )
-		ruleMgmt.addRulePackage( rule.ruleset, '', rule.packagename, rule.ruletext );
+		
+		try 
+		{
+			ruleMgmt.addRulePackage( rule.ruleset, '', rule.packagename, rule.ruletext );
+		}
+		catch(e) {
+			println "\n---- debug ---------"
+			println rule.ruletext
+			println "--------------------"
+			throw e;
+		}
+		
 		logService.log('DEPLOY', 'Rule', rule.objid)
 		return rule 
 	}

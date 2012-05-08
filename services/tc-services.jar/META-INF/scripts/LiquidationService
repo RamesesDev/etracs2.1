@@ -34,9 +34,17 @@ class LiquidationService {
 	
 	@ProxyMethod
 	public def getList( searchText, params ) {
-		if ( !searchText )
-			return em.sqlContext.createNamedQuery( "liquidation:getList" ).resultList;
-		return [];
+		if ( !searchText ) {
+			if( !params ) params = [:];
+			if( !params._start ) params._start = 0;
+			if( !params._limit ) params._limit = 50;
+			return em.sqlContext.createNamedQuery( "liquidation:getList" )
+			         .setFirstResult(params._start)
+					 .setMaxResults(params._limit)
+					 .resultList;
+		}
+		
+		return em.sqlContext.createNamedQuery( "liquidation:getListByTxnno" ).setParameter('txnno', searchText).resultList;
 	}
 	
 	@ProxyMethod

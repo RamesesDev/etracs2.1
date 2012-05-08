@@ -1,0 +1,29 @@
+<workunit>
+    <invokers>
+        <invoker type="rule.htmlinfo" caption="Rule Information" target="popup"/>
+    </invokers>
+    <code>
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+class BPRuleInfoController 
+{
+    @Service('BPRuleHtmlService')
+    def svc 
+    
+    def rulename
+    
+    
+    def getHtml() {
+        return svc.getHtmlByRuleName( rulename )
+    }
+}
+        
+        
+    </code>
+    <pages>
+        <page template="bpassessment.rule.RuleHtmlInfoPage"/>
+    </pages>
+</workunit>

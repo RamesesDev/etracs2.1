@@ -32,6 +32,8 @@ public class CorporatePage extends javax.swing.JPanel {
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xTextField4 = new com.rameses.rcp.control.XTextField();
+        xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
+        xTextField11 = new com.rameses.rcp.control.XTextField();
         jPanel2 = new javax.swing.JPanel();
         formPanel2 = new com.rameses.rcp.util.FormPanel();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
@@ -90,6 +92,18 @@ public class CorporatePage extends javax.swing.JPanel {
         xTextField4.setName("entity.info.payer.info.placeregistered");
         xTextField4.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel1.add(xTextField4);
+
+        xCheckBox2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox2.setCaption("Is Additional?");
+        xCheckBox2.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox2.setName("entity.additional");
+        formPanel1.add(xCheckBox2);
+
+        xTextField11.setCaption("Weight");
+        xTextField11.setDepends(new String[] {"entity.additional"});
+        xTextField11.setName("entity.additional_remarks");
+        xTextField11.setPreferredSize(new java.awt.Dimension(165, 19));
+        formPanel1.add(xTextField11);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -241,6 +255,7 @@ public class CorporatePage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XNumberField xNumberField1;
@@ -250,6 +265,7 @@ public class CorporatePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XNumberField xNumberField7;
     private com.rameses.rcp.control.XNumberField xNumberField8;
     private com.rameses.rcp.control.XTextField xTextField1;
+    private com.rameses.rcp.control.XTextField xTextField11;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;

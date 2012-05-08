@@ -27,6 +27,14 @@
                     new FactField( "qtr", "Quarter", "integer"),
                     new FactField( "month", "Month", "integer"),
                     new FactField( "day", "Day", "integer"),
+                    new FactField( "additional", "Is Additional?", "boolean"),
+                    new FactField( "basictax", "Basic Tax", "decimal"),
+                    new FactField( "salarytax", "Annual Salary Tax", "decimal"),
+                    new FactField( "businessgrosstax", "Business Gross Tax", "decimal"),
+                    new FactField( "propertyincometax", "Property Income Tax", "decimal"),
+                    new FactField( "additionaltax", "Additional Tax", "decimal"),
+                    new FactField( "amtdue", "Amount Due", "decimal"),
+
                 ] as FactField[];
             }
         }

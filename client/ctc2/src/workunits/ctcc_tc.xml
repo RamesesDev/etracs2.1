@@ -6,6 +6,7 @@
 -->
 <workunit>
     <invokers>
+        <invoker type="collection" caption="CTC-Corporate" afid="907" appcode="ctc_corporate" permission="collection_ctc_corporate.create"/>
         <invoker type="collection" caption="CTC-Corporate" afid="0017" appcode="ctc_corporate" permission="collection_ctc_corporate.create"/>
         <invoker type="tc:ctc_corporate" action="init" caption="CTC-Corporate" afid="0016" permission="collection_ctc_corporate.create"/>
         

@@ -1,0 +1,69 @@
+<workunit>
+    <invokers>
+        <invoker type="ruleanalyzer.inputvalues" caption="Input Values" target="popup"  />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+
+class InputValuesController
+{
+    @Binding
+    def binding
+    
+    def entity 
+    def selectedInfo
+    def selectedLobInfo
+    def inputHandler 
+    def acceptInputHandler
+      
+    def cancel() {
+        return '_close'
+    }
+    
+    def ok() {
+        def done = false 
+        if( inputHandler ) {
+            done = inputHandler( entity )
+        }
+        if( !done ) {
+            return 'default' 
+        }
+        else {
+            if( acceptInputHandler ) acceptInputHandler( entity )
+            return '_close'
+        }
+    }
+    
+    def getFields(){
+        def fieldinfos = entity.infos;
+        fieldinfos.each{
+            it.datatype = it.vartype;
+            it.category = it.lobname;
+            it.caption = it.varcaption;
+            it.items = it.arrayvalues;
+        }
+
+        fieldinfos.sort{ a, b -> 
+            def atext = (a.category ? a.category : '-') + a.caption
+            def btext = (b.category ? b.category : '-') + b.caption
+            return atext <=> btext 
+        }
+        return fieldinfos;
+    }
+    
+    public def getInfoHandler(){
+        return InvokerUtil.lookupOpener('input_fields', [fields: getFields()]);
+    }
+}
+
+
+]]>
+    </code>
+    <pages>
+        <page template="bpassessment.rule.analyzer.InputValuesPage" />
+    </pages>
+</workunit>
