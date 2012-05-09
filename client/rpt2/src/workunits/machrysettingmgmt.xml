@@ -6,6 +6,7 @@
 <workunit>
     <invokers>
         <invoker type="rysettingmgmt.type" caption="Machinery" index="30" />
+        <invoker type="quick_launcher" code="GRY02" caption="Machinery Revision Setting" index="30" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" />
         <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null }" immediate="true" caption="Open" mnemonic="e" icon="images/open.png" />

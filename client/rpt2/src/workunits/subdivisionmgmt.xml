@@ -5,7 +5,7 @@
 -->
 <workunit>
     <invokers>
-        <invoker folderid="menu/rpt/txn" caption="Subdivision Management" mnemonic="s" permission="subdivisionmgt.view" />
+        <invoker folderid="/menu/mgmt" caption="Subdivision Management" mnemonic="s" permission="subdivisionmgt.view" index="110"/>
         <invoker type="home.action" caption="Subdivision Management" mnemonic="s" permission="subdivisionmgt.view" index="3" icon="images/folder.png" target="window" />
         
         <!-- 

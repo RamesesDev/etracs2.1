@@ -135,14 +135,18 @@ class IncomeAcctService
 	}
 	
 	private void resetNgasAccount( incomeacct ) {
-		if( ! incomeacct.ngastitle ) {
-			incomeacct.ngasacctid = null;
+		if( ! incomeacct.ngasid ) {
+			incomeacct.ngastitle = null;
+			incomeacct.ngassubacctid = null
+			incomeacct.ngassubaccttitle = null 
 		}
 	}
 	
 	private void resetSreAccount( incomeacct ) {
-		if( ! incomeacct.sretitle ) {
-			incomeacct.sreacctid = null;
+		if( ! incomeacct.sreid) {
+			incomeacct.sretitle = null;
+			incomeacct.sresubacctid
+			incomeacct.sresubaccttitle
 		}
 	}
 	

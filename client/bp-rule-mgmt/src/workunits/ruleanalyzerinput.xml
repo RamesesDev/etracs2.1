@@ -67,3 +67,6 @@ class InputValuesController
         <page template="bpassessment.rule.analyzer.InputValuesPage" />
     </pages>
 </workunit>
+
+
+

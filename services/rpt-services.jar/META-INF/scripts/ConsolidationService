@@ -126,7 +126,7 @@ class ConsolidationService
         if( consolidation.docstate == FORPROVAPPROVAL_STATE ) throw new Exception('Consolidation has already been submitted to province.')
         if( consolidation.docstate == APPROVED_STATE ) throw new Exception('Consolidation has already been approved.')
         validateConsolidationInfo( consolidation )
-		if( var.lgu_type?.toLowerCase() == 'city' ) {
+		if( var.lgu_type?.toLowerCase() != 'municipality' ) {
 			createConsolidatedFaas( consolidation )
 			createAffectedRpuFaas( consolidation ) 
 		}
@@ -191,7 +191,9 @@ class ConsolidationService
     public Map approveByProvince( consolidationid ) {
         def consolidation = open( consolidationid )
         if( consolidation.docstate == DRAFT_STATE ) throw new Exception('Consolidation is still a draft document.')
-        if( consolidation.docstate == FORAPPROVAL_STATE ) throw new Exception('Consolidation has already been submitted for approval')
+		if( var.lgu_type?.toLowerCase() == 'municipality' ) {
+			if( consolidation.docstate == FORAPPROVAL_STATE ) throw new Exception('Consolidation has already been submitted for approval')
+		}
         if( consolidation.docstate == APPROVED_STATE ) throw new Exception('Consolidation has already been approved.')
         
         def landfaas = faasSvc.approveConsolidatedFaas( consolidation.newfaasid )

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="variablevalue" caption="Variable Value" />
+        <invoker type="variablevaluex" caption="Variable Value" />
     </invokers>
     <code>
 <![CDATA[

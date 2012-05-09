@@ -53,8 +53,8 @@ public class BldgRPUController
         exemptionList       = exemptSvc.lookup(null, null) 
         classification      = classificationList.find{ it.classid == rpu.classid }
         exemption           = exemptionList.find{ it.exemptid == rpu.exemptid }
-        bldgtype            = rpu.info.bldgtype?.bldgtypecode
-        bldgkind            = rpu.info.bldgkindbucc?.bldgkindcode 
+        bldgtype            = rpu.info.bldgtype
+        bldgkind            = rpu.info.bldgkindbucc
         dtcompleted         = rpu.info.dtcompleted
         dtoccupied          = rpu.info.dtoccupied
         bldgage             = rpu.info.bldgage
@@ -87,6 +87,7 @@ public class BldgRPUController
                 firstfloorbasevalue = minvalue
             }
             if( firstfloorbasevalue <  minvalue || firstfloorbasevalue > maxvalue ) {
+                MsgBox.err( 'Base value must be between ' + minvalue + ' and ' + maxvalue + '.' )
                 throw new Exception('Base value must be between ' + minvalue + ' and ' + maxvalue + '.')
             }
         }
@@ -95,39 +96,40 @@ public class BldgRPUController
         recalc()
     }
     
-    def onselectBldgType = { bt ->
-        rpu.info.bldgtype = bt 
-        bldgtype = bt.bldgtypecode 
+    def getLookupBldgType() {
+        return InvokerUtil.lookupOpener('bldgtype.lookup', [ ry:rpu.ry])
+    }
+    
+    void setBldgtype( bldgtype ) {
+        this.bldgtype = bldgtype 
+        rpu.info.bldgtype = bldgtype 
         clearBldgKindInfo()
         calcBldgAge();
-        binding.refresh('bldgtype|rpu.info.bldgtype.*')
+        binding.refresh('rpu.info.bldgtype.*')
     }
     
-    def lookupBldgType() {
-        return InvokerUtil.lookupOpener('bldgtype.lookup', [onselect:onselectBldgType, ry:rpu.ry, searchText:bldgtype])
+    def getLookupBldgKind() {
+        required( 'Building Type', rpu.info.bldgtype )
+        return InvokerUtil.lookupOpener('bldgtypebldgkind.lookup', [bldgtypeid:rpu.info.bldgtype.bldgtypeid])
     }
     
-    def onselectBldgKind = { bk ->
-        rpu.info.bldgkindbucc = bk
-        firstfloorbasevalue = bk.basevalue
+    void setBldgkind( bldgkind ) {
+        this.bldgkind = bldgkind 
+        rpu.info.bldgkindbucc = bldgkind
+        firstfloorbasevalue = (bldgkind ? bldgkind.basevalue : 0.0 )
         if( rpu.info.bldgtype.basevaluetype == 'range' ) {
-            firstfloorbasevalue = bk.minbasevalue 
+            firstfloorbasevalue = bldgkind.minbasevalue 
         }
         rpu.info.firstfloorbasevalue = firstfloorbasevalue
-        
-        bldgkind = bk.bldgkindcode 
         calcBldgAge()
-        binding.refresh('bldgkind|rpu.info.bldgkind.*|rpu.info.firstfloorbasevalue')
-    }
-    
-    def lookupBldgKind() {
-        required( 'Building Type', rpu.info.bldgtype )
-        return InvokerUtil.lookupOpener('bldgtypebldgkind.lookup', [onselect:onselectBldgKind, bldgtypeid:rpu.info.bldgtype.bldgtypeid, searchText:bldgkind])
+        recalc()
+        binding.refresh('bldgkind|rpu.info.bldgkind.*|rpu.info.firstfloorbasevalue|firstfloorbasevalue')
     }
     
     void clearBldgKindInfo() {
         bldgkind = null
         rpu.info.bldgkind = null 
+        rpu.info.bldgkindbucc = null 
         rpu.info.firstfloorbasevalue = 0.0
         firstfloorbasevalue = 0.0
         binding.refresh('bldgkind|rpu.info.bldgkind.*|firstfloorbasevalue')

@@ -5,7 +5,8 @@
 -->
 <workunit>
     <invokers>
-        <invoker folderid="menu/rpt/txn" caption="Consolidation Management" mnemonic="c" permission="consolidationmgt.view" />
+        <invoker folderid="/menu/mgmt" caption="Consolidation Management" mnemonic="c" permission="consolidationmgt.view" index="120"/>
+        <invoker type="quick_launcher" code="CS00" caption="Consolidation Management" mnemonic="c" permission="consolidationmgt.view" />
         <invoker type="home.action" caption="Consolidation Management" mnemonic="c" permission="consolidationmgt.view" index="4" icon="images/folder.png" target="window"  />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="consolidationmgt.create" />

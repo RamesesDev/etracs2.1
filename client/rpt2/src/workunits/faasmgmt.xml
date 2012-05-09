@@ -5,7 +5,8 @@
 -->
 <workunit>
     <invokers>
-        <invoker folderid="menu/rpt/txn" caption="FAAS Management" mnemonic="f" permission="faasmgt.view" />
+        <invoker folderid="menu/mgmt" caption="FAAS Management" mnemonic="f" permission="faasmgt.view" index="100"/>
+        <invoker type="quick_launcher" code="FA00" caption="FAAS Management" mnemonic="f" permission="faasmgt.view" />
         
         <invoker type="home.action" caption="FAAS Management" mnemonic="f"  icon="images/faas.png" permission="faasmgt.view" target="window" index="2" />
         

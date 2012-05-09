@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptbilling:ruleaction" caption="Calculate Basic Prior Interest"  action="init" index="31" />        
+        <invoker type="rptbilling:ruleaction" caption="Calculate Basic Prior Penalty"  action="init" index="7" />        
     </invokers>
     <code>
         <![CDATA[
@@ -18,7 +18,7 @@
             }
             
             public String buildDisplayText() {
-                 return "Calculate Basic Prior Interest using formula: ${action.expr}".toString();
+                 return "Calculate Basic Prior Penalty using formula: ${action.expr}".toString();
             }
             
         }

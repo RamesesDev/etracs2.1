@@ -110,6 +110,7 @@ public class RPTLedgerItemPage extends javax.swing.JPanel {
         xNumberField2.setCaptionWidth(110);
         xNumberField2.setFieldType(BigDecimal.class);
         xNumberField2.setName("ledgeritem.assessedvalue");
+        xNumberField2.setPattern("#,##0.00");
         xNumberField2.setPreferredSize(new java.awt.Dimension(150, 19));
         formPanel1.add(xNumberField2);
 

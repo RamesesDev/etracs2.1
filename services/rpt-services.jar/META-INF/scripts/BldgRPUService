@@ -271,7 +271,7 @@ class BldgRPUService
         //calculate rpu market value
         rpu.totalareasqm    = calculateSum('area', rpu.info.bldguses )
 			
-		if( rpu.info.useswornamount == true  ) {
+		if( IS_TRUE( rpu.info.useswornamount )) {
 			rpu.totalbmv        = rpu.info.swornamount 
 			rpu.info.depreciationvalue = numberSvc.round( rpu.totalbmv * rpu.info.depreciation / 100 )
 			rpu.totalmv         = rpu.totalbmv - rpu.info.depreciationvalue
@@ -282,7 +282,7 @@ class BldgRPUService
 			rpu.totalmv         = calculateSum('marketvalue', rpu.info.bldguses )
 			rpu.info.depreciationvalue = calculateSum('depreciationvalue', rpu.info.bldguses )
 			
-			if( rpu.info.predominant || rpu.info.predoument == 1 ) {
+			if( IS_TRUE(rpu.info.predominant) ) {
 				calculatePredominantAssessment( rpu )
 			}
 			else {

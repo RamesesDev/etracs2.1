@@ -26,8 +26,6 @@ public class FAASAttachmentAddPage extends javax.swing.JPanel {
     private void initComponents() {
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xTextField1 = new com.rameses.rcp.control.XTextField();
-        xTextField2 = new com.rameses.rcp.control.XTextField();
-        xDateField1 = new com.rameses.rcp.control.XDateField();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
         xFileBrowser1 = new com.rameses.rcp.control.XFileBrowser();
@@ -44,26 +42,15 @@ public class FAASAttachmentAddPage extends javax.swing.JPanel {
         xTextField1.setRequired(true);
         formPanel1.add(xTextField1);
 
-        xTextField2.setCaption("Reference No.");
-        xTextField2.setCaptionWidth(110);
-        xTextField2.setName("attachment.refno");
-        xTextField2.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel1.add(xTextField2);
-
-        xDateField1.setCaption("Reference Date");
-        xDateField1.setCaptionWidth(110);
-        xDateField1.setName("attachment.refdate");
-        xDateField1.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel1.add(xDateField1);
-
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 120));
         xTextArea1.setColumns(20);
+        xTextArea1.setLineWrap(true);
         xTextArea1.setRows(5);
+        xTextArea1.setWrapStyleWord(true);
         xTextArea1.setCaption("Remarks");
         xTextArea1.setCaptionWidth(110);
         xTextArea1.setName("attachment.remarks");
         xTextArea1.setPreferredSize(new java.awt.Dimension(0, 100));
-        xTextArea1.setTextCase(com.rameses.rcp.constant.TextCase.UPPER);
         jScrollPane1.setViewportView(xTextArea1);
 
         formPanel1.add(jScrollPane1);
@@ -116,11 +103,9 @@ public class FAASAttachmentAddPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
-    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XFileBrowser xFileBrowser1;
     private com.rameses.rcp.control.XTextArea xTextArea1;
     private com.rameses.rcp.control.XTextField xTextField1;
-    private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
     
 }

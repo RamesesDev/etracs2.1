@@ -3,6 +3,8 @@
         <invoker type="tc.master" action="init" caption="Bank Account" permission="bankacct.view" target="window" icon="images/folder.png" index="11"/>
         <invoker folderid="/menu/tc/master" action="init" caption="Bank Account" permission="bankacct.view" target="window" index="5"/>
         
+        <invoker type="quick_launcher" code="BANKACCT" action="init" caption="Bank Account" permission="bankacct.view" index="5"/>
+        
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"  permission="bankacct.create" />
         <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Edit" mnemonic="e" icon="images/edit.png"  permission="bankacct.edit" />
         <invoker type="formActions" action="save" shortcut="ctrl S" visibleWhen="#{mode != 'view'}" caption="Save" mnemonic="s" icon="images/save.png"/>

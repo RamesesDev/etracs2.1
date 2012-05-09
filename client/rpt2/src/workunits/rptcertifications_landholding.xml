@@ -4,6 +4,8 @@
         <invoker type="rptcertifications" caption="Land Holding" target="window" index="1" permission="landholding.view"/>
         <invoker type="landholding.view"  caption="Land Holding" index="1" action="doPreview" permission="landholding.view" />
         
+        <invoker folderid="/menu/rpt/cert" caption="Land Holding" target="window" index="1" permission="landholding.view"/>
+        
         <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />
         <invoker type="formActions" action="doPreview"  caption="Preview"   shourtcut="v" mnemonic="v"  index="2"  visibleWhen="#{mode == 'certified'}" icon="images/doc-view.png" />

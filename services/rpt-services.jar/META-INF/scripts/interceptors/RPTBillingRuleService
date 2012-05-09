@@ -18,7 +18,6 @@ public class RPTBillingRuleService
 	
 	@Before(pattern="RuleService\\.buildRuleText.*", eval="#{args[0].ruleset == 'rptbilling'}")
 	public void buildRuleText( evt ) {
-		println '-- firing rule test ---'
 		def rule = evt.args[0];
 		rule.ruletext = doBuildRuleText( rule );
 	}
@@ -50,15 +49,26 @@ public class RPTBillingRuleService
 			else if( action.actiontype == 'calcSefInt' ) s += calcSefInterest( rule, action, 'calcSefInt', 'current' )
             else if( action.actiontype == 'calcSefPrevInt' ) s += calcSefInterest( rule, action, 'calcSefInt', 'previous' )
             else if( action.actiontype == 'calcSefPriorInt' ) s += calcSefInterest( rule, action, 'calcSefInt', 'prior' )
-			else if( action.actiontype == 'calcSefDisc' ) s += calcSefDiscount( rule, action )
+			else if( action.actiontype.trim() == 'calcSefDisc' ) s += calcSefDiscount( rule, action )
             else throw new Exception('Action ' + action + ' is not yet supported.')
 		}
 		return s
 	}
     
     String buildVarListParams( rule ) {
+		def varlist = []
+		rule.conditions.each { cond ->
+			if( cond.factvar ) {
+				varlist.add( cond.factvar )
+			}
+			cond.constraints.each { constraint ->
+				if (constraint.fieldvar ) {
+					varlist.add( constraint.fieldvar )
+				}
+			}
+		}
         String s = ''
-        rule.varlist.each {
+		varlist.each {
             s += '$LEDGER.getVarlist().put("' + it + '", ' + it + ');\n'
         }
         return s 
@@ -138,6 +148,7 @@ public class RPTBillingRuleService
 		rule.conditions.each { cond ->
 			if( cond.factname == 'RPTLedgerFact' ) s += ruleBuilderSvc.buildFactCondition( cond, 'ledgerid == $ledgerid' )
 			else if( cond.factname == 'CurrentYearFact' ) s += ruleBuilderSvc.buildFactCondition( cond, null )
+			else if( cond.factname == 'AssessedValueFact' ) s += ruleBuilderSvc.buildFactCondition( cond, 'rptledgerid == $rptledgerid' )
 		}
 		return s 
 	}
@@ -154,7 +165,7 @@ public class RPTBillingRuleService
 		s += 'no-loop\n'
 		s += 'salience ' + rule.salience + '\n\n'
 		s += 'when\n'
-		s += '$LEDGER : RPTLedgerFact( $ledgerid:ledgerid )\n'
+		s += '$LEDGER : RPTLedgerFact( $rptledgerid:rptledgerid, $ledgerid:ledgerid )\n'
 		return s
 	}	
 }

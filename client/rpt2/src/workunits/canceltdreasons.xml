@@ -2,6 +2,7 @@
 <workunit>
     
     <invoker folderid="/menu/rpt/master" action="init" caption="Cancel TD Reasons" index="5" permission="canceltdreasons.view" />
+    <invoker type="quick_launcher" code="CFR01" action="init" caption="Cancel TD Reasons" index="5" permission="canceltdreasons.view" />
     <invoker type="rpt.master" action="init"  caption="Cancel TD Reasons" index="14" permission="canceltdreasons.view" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="canceltdreasons.create" />

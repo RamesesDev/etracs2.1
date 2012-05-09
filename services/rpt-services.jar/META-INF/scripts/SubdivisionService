@@ -31,6 +31,9 @@ class SubdivisionService
     
     @Service('TxnReference')
     def txnSvc
+	
+	@Service('MessengerService')
+	def msgSvc 
     
     def FAAS_SCHEMANAME = 'faas:faas'
     def FAASLIST_SCHEMANAME = 'faas:faaslist'
@@ -139,7 +142,7 @@ class SubdivisionService
         validateInfo( subdivision )
         validateArea( subdivision )
         validateAffectedRpu( subdivision )
-		if( var.lgu_type?.toLowerCase() == 'city' ) {
+		if( var.lgu_type?.toLowerCase() != 'municipality' ) {
 			createSubdividedLandsFaas( subdivision )
 		}
         subdivision.docstate = FORAPPROVAL_STATE
@@ -192,7 +195,9 @@ class SubdivisionService
         def subdivision = em.read( SCHEMA_NAME, [objid:subdivisionid] )
         if( !subdivision ) throw new Exception('Subdivision does not exists or is already deleted.\nPlease requiry and verify that the document still exists.')
         if( subdivision.docstate == DRAFT_STATE ) throw new Exception('Subdivision is not yet submitted for approval.')
-        if( subdivision.docstate == FORAPPROVAL_STATE ) throw new Exception('Subdivision has already been submitted to province.')
+		if( var.lgu_type?.toLowerCase() == 'municipality') {
+			if( subdivision.docstate == FORAPPROVAL_STATE ) throw new Exception('Subdivision has already been submitted to province.')
+		}
         if( subdivision.docstate == APPROVED_STATE ) throw new Exception('Subdivision has already been approved.')      
         invokeSubdivisionCommonApprovalMethods( subdivision )
         return subdivision
@@ -405,11 +410,7 @@ class SubdivisionService
             def sland = em.read(SUBDIVISIONLAND_SCHEMANAME, slandid )
             if( !sland ) throw new Exception('Cannot open Subdivision Land with ID no. ' + slandid )
             def newfaas = em.read( FAAS_SCHEMANAME, [objid:sland.newfaasid])
-			
-            boolean autonumber = false; 
-			if( newfaas.rp.autonumber ) {
-				autonumber = TO_BOOLEAN( newfaas.rp.autonumber )
-			}
+            boolean autonumber = TO_BOOLEAN( newfaas.rp.autonumber )
             if(  autonumber == true ) {
                 faasSvc.assignNextPin( newfaas  )
             }
@@ -453,22 +454,9 @@ class SubdivisionService
     }
     
     void postMessage( refid, action, data  ) {
-        def msg = [
-            objid           : 'MI' + new UID(),
-            schemaname      : 'message:outbox',
-            schemaversion   : '1.0',
-            refid           : refid, 
-            fromlguindex    : var.lgu_index,
-            fromlguname     : var.lgu_name,
-            tolguindex      : var.remote_lgu_index,
-            tolguname       : var.remote_lgu_name,
-            dtsent          : new Date(),
-            sentby          : ( env.USERNAME ? env.USERNAME : 'SYSTEM' ),
-            sentbytitle     : ( env.JOBTITLE ? env.JOBTITLE : 'SYSTEM' ),
-            action          : action,
-            data            : data,
-        ]
-        em.create('message:outbox', msg )
+		def msg = msgSvc.createMessage( action, [data:data] )
+		msg.refid = refid 
+		msgSvc.send( msg ) 
     }
     
     void validateArea( subdivision ) {
@@ -666,7 +654,7 @@ class SubdivisionService
     
     
     void moveMessageToProcessedOutbox( refid ) {
-        def messages = em.sqlContext.createNamedQuery('message:getOutboxMessageByRefId').setParameter('refid', refid).resultList 
+        def messages = em.sqlContext.createNamedQuery('messenger:getOutboxMessageByRefId').setParameter('refid', refid).resultList 
         messages.each { 
             def msg = em.read('message:outbox', it )
             em.create('message:processedoutbox', msg )
