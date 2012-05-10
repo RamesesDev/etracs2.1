@@ -3,6 +3,7 @@
     <invokers>
         <invoker type="toolbar" caption="" tooltip="View all quick launcher keys" 
                  target="popup" icon="system/images/list-icon16.png" index="-19"
+                 permission="system:quick_launch_list.view"
                  action="init"/> 
     </invokers>
     
@@ -24,6 +25,7 @@
             
             void init() {
                 list = QuickLaunchHelper.instance.allLaunchers;
+                if( list ) list.sort { it.code }
             }
             
             def launch() {

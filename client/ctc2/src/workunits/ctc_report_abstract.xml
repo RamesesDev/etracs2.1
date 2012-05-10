@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
-        <invoker type="remittance.report" caption="Abstract of CTC Collection"/>
-        <invoker type="formActions" action="_close"  immediate="true" caption="Close" mnemonic="c" icon="images/cancel.png"/>
+        <invoker type="remittance.report" action="view" caption="Abstract of CTC Collection"/>
+        <invoker type="formActions" action="_close"  immediate="true" caption="Back" mnemonic="b" icon="images/back.png"/>
     </invokers>
     <code>
         <![CDATA[
@@ -24,7 +24,7 @@
         
             def report = [
                 getReportName : { return 'Abstract0016' },
-                getReportData : { return svc.buildRCDReportData( entity.objid,  ); }, 
+                getReportData : { return svc.buildAbstractCtc0016( entity.objid ); }, 
                 getParameters : { return paramSvc.getStandardParameter( OsirisContext.env.USERNAME ) }
             ] as ServerReportModel;
             
@@ -42,6 +42,6 @@
         
     </code>
     <pages>
-        <page template="etracs2.common.PreviewPage" />
+        <page template="etracs2.tc.PreviewPage" />
     </pages>
 </workunit>

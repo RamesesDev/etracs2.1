@@ -16,9 +16,34 @@ public class CTCService
 	@PersistenceContext("main")
 	def em
 	
-
+	
 	@ProxyMethod
 	public def calculate( entity ) {
+		def result = executeRule( entity )
+		def assessment = [:]
+		assessment.tax = createTaxItems( result )
+		assessment.items = result.values() as List
+		assessment.total = assessment.items*.amount.sum()
+		if( assessment.total==null ) assessment.total = 0.00
+		initItems( assessment )		
+		return assessment
+	}
+	
+	@ProxyMethod
+	public def buildCaptureItems( entity ) {
+		def result = executeRule( entity )
+		if( result.business ) result.business.amount = entity.tax.business
+		if( result.basic )    result.basic.amount = entity.tax.basic
+		if( result.salary )   result.salary.amount = entity.tax.salary
+		if( result.property ) result.property.amount = entity.tax.property
+		if( result.interest ) result.interest.amount = entity.tax.interest
+		entity.items = result.values() as List
+		initItems( entity )
+		return entity
+	}
+	
+	
+	def executeRule( entity ) {
 		def facts = []
 		facts << createCTCFact( entity )
 		if( entity.doctype == 'CTCI' )
@@ -33,23 +58,7 @@ public class CTCService
 		ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], 'TAX' )
 		updateCTCFact( facts[0], result )
 		ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], 'INTEREST' )
-		
-		def assessment = [:]
-		assessment.tax = createTaxItems( result )
-		assessment.items = result.values() as List
-		assessment.total = assessment.items*.amount.sum()
-		if( assessment.total==null ) assessment.total = 0.00
-		
-		assessment.items.each {
-			def acct = em.read("incomeacct:incomeacct", [objid: it.acctid])
-			it.accttitle = acct.accttitle
-			it.acctno    = acct.acctno
-			it.systype   = acct.systype
-			it.fundid	 = acct.fundid
-			it.fundname	 = acct.fundname
-		}
-		
-		return assessment
+		return result;
 	}
 	
 	def createTaxItems( result ) {
@@ -63,6 +72,23 @@ public class CTCService
 		result.each{k,v-> values[k] = v.amount }
 		
 		return values
+	}
+	
+	void initItems( assessment ) {
+		assessment.items = assessment.items.groupBy { it.acctid }.collect {
+			def v = it.value.remove(0)
+			it.value.each { v.amount += it.amount }
+			return v
+		}
+		
+		assessment.items.each {
+			def acct = em.read("incomeacct:incomeacct", [objid: it.acctid])
+			it.accttitle = acct.accttitle
+			it.acctno    = acct.acctno
+			it.systype   = acct.systype
+			it.fundid	 = acct.fundid
+			it.fundname	 = acct.fundname
+		}
 	}
 	
 	void updateCTCFact( fact, result ) {
@@ -106,7 +132,7 @@ public class CTCService
 
 		fact.barangayid = entity.barangayid
 		
-		def currentDate = dateSvc.parseCurrentDate()
+		def currentDate = entity.info.txndate ? dateSvc.parseDate(entity.info.txndate, null) : dateSvc.parseCurrentDate()
 		fact.year       = currentDate.year 
 		fact.qtr        = currentDate.qtr 
 		fact.month      = currentDate.month 

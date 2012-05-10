@@ -468,7 +468,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{info.dtposted}==null? null : java.sql.Date.valueOf($F{info.dtposted})]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{info.txndate}==null? null : java.sql.Date.valueOf($F{info.txndate})]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -488,7 +488,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.util.Date"><![CDATA[$F{info.dtposted}==null? null : java.sql.Date.valueOf($F{info.dtposted})]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{info.txndate}==null? null : java.sql.Date.valueOf($F{info.txndate})]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

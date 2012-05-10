@@ -51,7 +51,7 @@
         
             def collectiontitle = 'COMMUNITY TAX CERTIFICATE (CORPORATE)'
             def taxpayer
-            def taxpayerLookup = InvokerUtil.lookupOpener("entity.lookup", [:])
+            def taxpayerLookup = InvokerUtil.lookupOpener("entity\\.lookup", [:])
             
             def next() {
                 if(taxpayer && taxpayer.entitytype != 'juridical') {
@@ -98,6 +98,15 @@
                 entity.tax = result.tax;
                 entity.info.amount = result.total;
                 entity.items = result.items;
+            }
+            
+            void acceptTaxDue() {
+                def total = 0.00;
+                if( entity.tax.business ) total += entity.tax.business;
+                if( entity.tax.basic )    total += entity.tax.basic;
+                if( entity.tax.property ) total += entity.tax.property;
+                if( entity.tax.interest ) total += entity.tax.interest;
+                entity.info.amount = total;
             }
             
             def getService() { return svc }
