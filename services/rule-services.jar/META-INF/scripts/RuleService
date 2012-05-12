@@ -36,7 +36,7 @@ class RuleService {
 		params.ruleset = ruleset
 		
 		def vars = [filter: '']
-		if( params.state ) vars.filter = ' and state=$P{state} ';
+		if( params.state ) vars.filter = ' and docstate=$P{state} ';
 		
 		if( ! searchText ) {
 			return em.sqlContext.createNamedQuery('rule:list')
