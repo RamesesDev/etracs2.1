@@ -43,6 +43,7 @@ public class InputValuesPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Application Information");
         jPanel1.setBorder(xTitledBorder1);
+        xSubFormPanel1.setCaption("");
         xSubFormPanel1.setDynamic(true);
         xSubFormPanel1.setHandler("infoHandler");
 

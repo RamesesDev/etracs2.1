@@ -109,7 +109,6 @@ public class RuleMgmtMainPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Rule Sets");
         jScrollPane1.setBorder(xTitledBorder1);
         jScrollPane1.setPreferredSize(new java.awt.Dimension(200, 130));
-        xList1.setDynamic(true);
         xList1.setExpression("#{caption}");
         xList1.setItems("rulesets");
         xList1.setName("selectedRuleset");

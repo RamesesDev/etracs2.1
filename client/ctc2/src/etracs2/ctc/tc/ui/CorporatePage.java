@@ -110,7 +110,7 @@ public class CorporatePage extends javax.swing.JPanel {
         xCheckBox2.setName("entity.additional");
         formPanel1.add(xCheckBox2);
 
-        xTextField11.setCaption("Weight");
+        xTextField11.setCaption("Remarks");
         xTextField11.setDepends(new String[] {"entity.additional"});
         xTextField11.setName("entity.additional_remarks");
         xTextField11.setPreferredSize(new java.awt.Dimension(165, 19));

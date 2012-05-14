@@ -21,9 +21,7 @@ where ruleset=$P{ruleset}
 and packagename=$P{packagename} 
 and rulegroup=$P{rulegroup}
 
-[get-rule]
-select content from rule_package where ruleset = $P{ruleset} 
-and rulegroup=$P{rulegroup} and type='facts' 
-union 
-select content from rule_package where ruleset = $P{ruleset} 
-and rulegroup=$P{rulegroup} and packagename=$P{packagename}
+[get-facts]
+select * from rule_package 
+where ruleset=$P{ruleset} 
+and `type`='facts' 

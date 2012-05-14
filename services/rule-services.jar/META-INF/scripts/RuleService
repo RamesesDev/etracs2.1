@@ -63,6 +63,12 @@ class RuleService {
 	}
 	
 	@ProxyMethod
+	public def openByName( rulename ) {
+		def rule = em.sqlContext.createQuery('select objid from rule where rulename=?').setParameter(1, rulename).singleResult;
+		return rule ? em.read( SCHEMA_NAME, rule ) : null
+	}
+	
+	@ProxyMethod
 	public def create( rule ) {
 		rule.objid = 'R' + new UID()
 		rule.schemaname = SCHEMA_NAME

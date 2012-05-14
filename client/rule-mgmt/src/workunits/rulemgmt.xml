@@ -62,8 +62,11 @@
                     onOpenItem : {item, colname -> open() }
                 ] as PageListModel
     
+                def rulesets;
+                
                 def getRulesets() {
-                    return InvokerUtil.lookupOpeners('ruleset', null)
+                    if( this.rulesets ) return this.rulesets
+                    return ( this.rulesets = InvokerUtil.lookupOpeners('ruleset', null) )
                 }
                 
                 def getHtml() {

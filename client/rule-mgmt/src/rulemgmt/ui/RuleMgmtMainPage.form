@@ -199,7 +199,6 @@
           <SubComponents>
             <Component class="com.rameses.rcp.control.XList" name="xList1">
               <Properties>
-                <Property name="dynamic" type="boolean" value="true"/>
                 <Property name="expression" type="java.lang.String" value="#{caption}"/>
                 <Property name="items" type="java.lang.String" value="rulesets"/>
                 <Property name="name" type="java.lang.String" value="selectedRuleset"/>
