@@ -1,0 +1,81 @@
+Migration Instruction:
+------------------------------------------------------------------------------------
+
+1. Shutdown JBoss and backup "{JBOSS_HOME}/server/etracs2_lguname" folder.
+
+2. Backup "etracs_lguname" production  database. 
+   This is the ETRACS version 1.0 database.
+
+3. Create the "lguname_etracs" and "lguname_system" version 2.0 databases.
+
+4. Restore the "db/lguname_etracs_blank.sql" script to lguname_etracs database.
+
+5. Restore the "db/lguname_system_blank.sql" script to lguname_system database.
+
+6. Launch SQLYog and connect to the database server.
+   Select  "lguname_system.sys_ds" table and view table data.
+   Add a new entry with the following values:
+   
+     name   : etracsv1
+     host   : <address of dbserver>
+     dbname : etracs_lguname  -> the name of the version 1.0 db
+     user   : <the dbuser>
+     pwd    : <dbuser password>
+     scheme : mysql 
+	 
+	 IMPORTANT: The value for name "etracsv1" must be written exactly and case-sensitive.
+   
+5. Open "01 - TC ETRACS1 to ETRACS2 Migration.sql" in SQLYog. 
+   Replace all instances of "etracs_lguname" with the name of the version 1.0 database.
+   Replace all instances of "lguname_etracs" with the name of the version 2.0 database.
+
+6. Open "02 - BP ETRACS1 to ETRACS2 Migration.sql" in SQLYog. 
+   Replace all instances of "etracs_lguname" with the name of the version 1.0 database.
+   Replace all instances of "lguname_etracs" with the name of the version 2.0 database.
+   
+7. Open "03 - RPT ETRACS1 to ETRACS2 Migration.sql" in SQLYog. 
+   Replace all instances of "etracs_lguname" with the name of the version 1.0 database.
+   Replace all instances of "lguname_etracs" with the name of the version 2.0 database.   
+
+8. Copy "xetracs1-migration-services.jar" to "{JBOSS_HOME}/services/etracs2_lguname/apps/lguname.ear/services.jar" folder.
+   Just overwrite existing files.
+
+10. Run JBoss server.
+
+11. With running JBoss server, launch "Groovy-1.6.2/bin/groovyConsole".
+
+12. Open "TC_ETRACS1To2TCMigration.groovy" file 
+    and set the values for "default.host" and "app.context".
+    Press CTRL+R to execute the script.
+    If errors occur, save the errors and send to Rameses.
+
+13. Open "BP_ETRACS1To2Migration.groovy" file 
+    and set the values for "default.host" and "app.context".
+    Press CTRL+R to execute the script.
+    If errors occur, save the errors and send to Rameses.
+	
+14. Open "RPT_ETRACS1To2Migration.groovy" file 
+    and set the values for "default.host" and "app.context".
+    Press CTRL+R to execute the script.
+    If errors occur, save the errors and send to Rameses.
+
+
+15. Run ETRACS Client and create users for treasury and assessor.
+    Verify migrated data. 
+
+	
+	
+	
+#---------------------------------------------------------------------------------------
+#
+# IMPORTANT:
+#
+#---------------------------------------------------------------------------------------
+
+For the BP Assessment Rules, you need to open each rule, edit, save and deploy
+it to re-generate the rules properly.
+
+#---------------------------------------------------------------------------------------
+
+
+

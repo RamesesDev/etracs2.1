@@ -1,0 +1,33 @@
+insert (system db):
+- sys_module
+- sys_roleclass
+- sys_roleclass_module
+- 
+
+
+insert (main db):
+- docno_generator
+- jobposition
+- jobposition_tag
+- orgtype
+- orgunit
+- personnel
+- useraccount
+- role
+- webdraft
+
+
+
+remove (main db):
+- branch
+- business_unit
+- company
+- login_account
+- permissionset
+- rptofficers
+- rule          (move to system db)
+- rule_package  (move to system db)
+- rulegroup     (move to system db)
+- user
+- user_role
+

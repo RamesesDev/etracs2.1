@@ -1,0 +1,660 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.sql.*
+import java.sql.*
+
+
+class BPV1MigrationService
+{
+    
+	@PersistenceContext("etracsv1")
+	def em1;
+	
+	@PersistenceContext("main")
+	def em2;
+	
+	@PersistenceContext("system")
+	def sys_em;
+	
+	@Service("RuleService")
+	def rulesvc;
+	
+	@Resource('RuleMgmt')
+	def ruleMgmt 
+	
+		
+	@ProxyMethod
+	public def open( objid ) {
+		return sys_em.read( 'bpapplication:bpapplication', [objid:objid])
+	}
+	
+		
+	@ProxyMethod
+	public void cleanupRuleConditions() {
+		sys_em.sqlContext.createExecutor("update rule set conditions = '[]' where ruleset='bpassessment'").execute()
+	}
+	
+	@ProxyMethod
+	public void migrateApplicationTypeConditions() {
+		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		rulelist.each{ rule -> 
+			def typelist = em1.sqlContext.createQuery('''
+					select pa.types_name as apptype
+					from abstractrule r 
+						inner join abstractrulecondition  rc on r.objid = rc. parentid
+						inner join ruleconditionapplicationtype a on rc.objid = a.objid
+						inner join ruleconditionapplicationtype_permitapplicationtype pa on a.objid = ruleconditionapplicationtype_objid	
+					where r.objid = $P{objid}
+			''')
+			.setParameter('objid', rule.objid )
+			.resultList 
+			
+			if( ! typelist ) return 
+			rule.conditions = sys_em.serializer.read( rule.conditions )
+			
+			rule.conditions.add([
+				opener			: 'bp-rule-mgmt:bpassessment_condition_apptype',
+				conditiontype	: 'applicationtype',
+				types			: typelist.apptype,
+				displaytext		:'Application Type is any of the following: ' + typelist.apptype.join(','),
+			])
+			
+			updateRuleConditions( rule ) 
+		}
+	}
+	
+	
+	@ProxyMethod
+	public void migrateLobClassificationConditions() {
+		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		rulelist.each{ rule -> 
+			def list = em1.sqlContext.createQuery('''
+					select lc.objid, lc.name 
+					from abstractrule r
+						inner join abstractrulecondition c on r.objid = c.parentid 
+						inner join ruleconditionlobclassification ct on c.objid = ct.objid
+						inner join ruleconditionlobclassification_lobclassification pt on ct.objid = pt.ruleconditionlobclassification_objid
+						inner join lobclassification lc on pt.classifications_objid = lc.objid 
+					where r.objid = $P{objid}
+			''')
+			.setParameter('objid', rule.objid )
+			.resultList 
+			
+			if( ! list ) return 
+			rule.conditions = sys_em.serializer.read( rule.conditions )
+			
+			rule.conditions.add([
+				opener				: 'bp-rule-mgmt:bpassessment_condition_lobclassification',
+				conditiontype		: 'lobclassification',
+				lobclassifications	: list,
+				displaytext			: 'Line of Business Classification is any of the following: ' + list.name.join( ', ')
+			])
+			
+			updateRuleConditions( rule ) 
+		}
+	}
+	
+	@ProxyMethod
+	public void migrateBusinessOrgConditions() {
+		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		rulelist.each{ rule -> 
+			def list = em1.sqlContext.createQuery('''
+					select pt.organizationtypes_name as name 
+					from abstractrule r
+						inner join abstractrulecondition c on r.objid = c.parentid 
+						inner join ruleconditionbusinessorganization ct on c.objid = ct.objid
+						inner join ruleconditionbusinessorganization_businessorganizationtype pt on ct.objid = pt.ruleconditionbusinessorganization_objid
+					where r.objid = $P{objid}
+			''')
+			.setParameter('objid', rule.objid )
+			.resultList 
+			
+			if( ! list ) return 
+			rule.conditions = sys_em.serializer.read( rule.conditions )
+			
+			rule.conditions.add([
+				opener				: 'bp-rule-mgmt:bpassessment_condition_businessorg',
+				conditiontype		: 'businessorg',
+				organizations		: list.name,
+				displaytext			: 'Business Organization is any of the following: ' + list.name.join( ', ')
+			])
+			
+			updateRuleConditions( rule ) 
+		}
+	}
+	
+	@ProxyMethod
+	public void migrateOfficeTypeConditions() {
+		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		rulelist.each{ rule -> 
+			def list = em1.sqlContext.createQuery('''
+					select pt.officetypes_name as name 
+					from abstractrule r
+						inner join abstractrulecondition c on r.objid = c.parentid 
+						inner join ruleconditionofficetype ct on c.objid = ct.objid
+						inner join ruleconditionofficetype_businessofficetype pt on ct.objid = pt.ruleconditionofficetype_objid
+					where r.objid = $P{objid}
+			''')
+			.setParameter('objid', rule.objid )
+			.resultList 
+			
+			if( ! list ) return 
+			rule.conditions = sys_em.serializer.read( rule.conditions )
+			
+			rule.conditions.add([
+				opener				: 'bp-rule-mgmt:bpassessment_condition_officetype',
+				conditiontype		: 'officetype',
+				organizations		: list.name,
+				displaytext			: 'Office Type is any of the following:  ' + list.name.join( ', ')
+			])
+			
+			updateRuleConditions( rule ) 
+		}
+	}
+	
+	
+	@ProxyMethod
+	public void migrateBarangayConditions() {
+		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		rulelist.each{ rule -> 
+			def list = em1.sqlContext.createQuery('''
+					select l.objid, l.name  as name 
+					from abstractrule r
+						inner join abstractrulecondition c on r.objid = c.parentid 
+						inner join ruleconditionbarangay ct on c.objid = ct.objid
+						inner join ruleconditionbarangay_lgu pt on ct.objid = pt.ruleconditionbarangay_objid 
+						inner join lgu l on pt.barangays_objid = l.objid 
+					where r.objid = $P{objid}
+			''')
+			.setParameter('objid', rule.objid )
+			.resultList 
+			
+			if( ! list ) return 
+			rule.conditions = sys_em.serializer.read( rule.conditions )
+			
+			rule.conditions.add([
+				opener				: 'bp-rule-mgmt:bpassessment_condition_barangay',
+				conditiontype		: 'barangay',
+				organizations		: list, 
+				displaytext			: 'Barangay is any of the following:  ' + list.name.join( ', ')
+			])
+			
+			updateRuleConditions( rule ) 
+		}
+	}
+	
+	
+	@ProxyMethod
+	public void migrateLobConditions() {
+		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		rulelist.each{ rule -> 
+			def list = em1.sqlContext.createQuery('''
+					select ct.includetype, l.objid, l.name 
+					from abstractrule r
+						inner join abstractrulecondition c on r.objid = c.parentid 
+						inner join ruleconditionlob ct on c.objid = ct.objid
+						inner join ruleconditionlob_lob pt on ct.objid = pt.ruleconditionlob_objid 
+						inner join lob l on pt.lines_objid   = l.objid 
+					where r.objid = $P{objid}
+			''')
+			.setParameter('objid', rule.objid )
+			.resultList 
+			
+			if( ! list ) return 
+			rule.conditions = sys_em.serializer.read( rule.conditions )
+			
+			rule.conditions.add([
+				opener				: 'bp-rule-mgmt:bpassessment_condition_lob',
+				conditiontype		: 'lob',
+				includetype			: ( list[0].includetype == 0  ? 'INCLUDE' : 'EXCLUDE' ),
+				lobs				: list.collect{ [objid:it.objid, name:it.name ]}, 
+				displaytext			: 'Line of Business includes the following: ' + list.name.join( ', ')
+			])
+			
+			updateRuleConditions( rule ) 
+		}
+	}
+	
+	
+	
+	@ProxyMethod
+	public void cleanupRuleAction() {
+		sys_em.sqlContext.createExecutor("update rule set actions = '[]' where ruleset='bpassessment'").execute()
+	}
+	
+	
+	@ProxyMethod
+	public void migrateAskInfoAction() {
+		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, actions FROM rule ").resultList 
+		rulelist.each{ rule -> 
+			def list = em1.sqlContext.createQuery('''
+					select 
+						case when ai.perlob = 1 then 1 else 0 end as perlob,
+						case when ai.required = 1 then 1 else 0 end as required,
+						case when ai.beforeprint = 1 then 1 else 0 end as beforeprint,
+						v.* 
+					from abstractrule r
+						inner join abstractruleaction a on r.objid = a.parentid 
+						inner join ruleactionaddinfo ai on a.objid = ai.objid
+						inner join abstractvariable v on ai.varid = v.objid 
+					where r.objid = $P{objid}
+			''')
+			.setParameter('objid', rule.objid )
+			.resultList 
+			
+			if( ! list ) return 
+			
+			rule.actions = sys_em.serializer.read( rule.actions )
+			
+			list.each {
+				rule.actions.add([
+					opener				: 'bp-rule-mgmt:bpassessment_action_requireinfo',
+					actiontype			: 'requireinfo',
+					applyperlob			: it.perlob as boolean,
+					required			: it.required as boolean, 
+					requiredbeforeprint : it.beforeprint as boolean,
+					conditions			: [],
+					displaytext			: 'Ask information : ' + it.caption, 
+					variable			: [
+							objid			: it.objid,
+							schemaname		: it.schemaname,
+							description		: it.description,
+							datatype		: it.datatype,
+							caption			: it.caption,
+							name			: it.name,
+							schemaversion	: it.schemaversion,
+							arrayvalues		: ( it.arrayvalues ? sys_em.serializer.read( it.arrayvalues ) : null),
+					]
+				])
+			}
+			
+			updateRuleActions( rule ) 
+		}
+	}
+	
+	
+	@ProxyMethod
+	public void migrateTaxFeeChargeFormulaModeAction() {
+		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, actions FROM rule ").resultList 
+		rulelist.each{ rule -> 
+			def list = em1.sqlContext.createQuery('''
+					select 
+						ai.expression as expr, ai.applytype, ai.computationtype as computationmode, ai.varid,
+						i.objid as acctid, i.title as accttitle 
+					from abstractrule r
+						inner join abstractruleaction a on r.objid = a.parentid 
+						inner join ruleactioncomputetaxfee ai on a.objid = ai.objid
+						inner join incomeaccount i on ai.acctid = i.objid 
+					where r.objid = $P{objid}
+					  and ai.computationtype = 'FORMULA'
+			''')
+			.setParameter('objid', rule.objid )
+			.resultList 
+			
+			if( ! list ) return 
+			
+			rule.actions = sys_em.serializer.read( rule.actions )
+			
+			list.each {
+				it.expr = it.expr.replace('$V{', '').replace('$F{','').replace('}','')
+				rule.actions.add([
+					opener				: 'bp-rule-mgmt:bpassessment_action_taxfeecharge',
+					actiontype			: 'taxfeecharge',
+					expr				: it.expr, 
+					applytype			: [
+							name    : (it.applytype == 0 ? 'PERLINE' : 'MAX' ),
+							caption : (it.applytype == 0 ? 'Apply per Line of Business' : 'Apply once per establishment based on maximum value'),
+					],
+					acctid				: it.acctid,
+					accttitle			: it.accttitle,
+					computationmode		: it.computationmode,
+					variable			: null,
+					conditions			: [],
+					ranges				: [],
+					displaytext			: 'Calculate ' + it.accttitle + (it.applytype == 0 ? ' per Line of Business ' : ' per establishment based on maximum value ')  + 'using the formula: ' + it.expr,
+				])
+			}
+			
+			updateRuleActions( rule ) 
+		}
+	}
+	
+	@ProxyMethod
+	public void migrateTaxFeeChargeRangeModeAction() {
+		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, actions FROM rule ").resultList 
+		rulelist.each{ rule -> 
+			def list = em1.sqlContext.createQuery('''
+					select 
+						ai.objid, ai.expression, ai.applytype, ai.computationtype as computationmode, ai.varid,
+						v.name as varname, v.caption as varcaption, v.description,
+						i.objid as acctid, i.title as accttitle 
+					from abstractrule r
+						inner join abstractruleaction a on r.objid = a.parentid 
+						inner join ruleactioncomputetaxfee ai on a.objid = ai.objid
+						inner join incomeaccount i on ai.acctid = i.objid 
+						inner join abstractvariable v on ai.varid = v.objid 
+					where r.objid = $P{objid}
+					  and ai.computationtype = 'RANGE'
+			''')
+			.setParameter('objid', rule.objid )
+			.resultList 
+			
+			if( ! list ) return 
+			
+			rule.actions = sys_em.serializer.read( rule.actions )
+			
+			list.each {
+				rule.actions.add([
+					opener				: 'bp-rule-mgmt:bpassessment_action_taxfeecharge',
+					actiontype			: 'taxfeecharge',
+					expr				: '', 
+					acctid				: it.acctid,
+					accttitle			: it.accttitle,
+					applytype			: [
+							name    : (it.applytype == 0 ? 'PERLINE' : 'MAX' ),
+							caption : (it.applytype == 0 ? 'Apply per Line of Business' : 'Apply once per establishment based on maximum value'),
+					],
+					computationmode		: 'RANGE',
+					conditions			: [],
+					variable			: [
+						objid: it.varid, name: it.varname, caption: it.varcaption, description:it.description,
+					],
+					startvalue			: 0.0,
+					displaytext			: 'Calculate ' + it.accttitle + (it.applytype == 0 ? ' per Line of Business ' : ' per establishment based on maximum value ')  + 'based on Tax Table using ' + it.varcaption,
+					ranges				: loadRanges( it.objid ),
+				])
+			}
+			
+			updateRuleActions( rule ) 
+		}
+	}
+	
+	def loadRanges( objid ) {
+		return  em1.sqlContext.createQuery('''
+			select 
+				minvalue as `from`,
+				maxvalue as `to`, 
+				expression as expr
+			from taxfeerangeentry
+			where parentid = $P{objid}
+			order by `from` 
+		''')
+		.setParameter('objid', objid )
+		.resultList
+		.each {
+			it.expr = it.expr.replace('$V{', '').replace('$F{','').replace('}','')
+		}
+	}
+	
+	
+	@ProxyMethod
+	public void migrateUpdateAmountDueAction() {
+		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, actions FROM rule ").resultList 
+		rulelist.each{ rule -> 
+			def list = em1.sqlContext.createQuery('''
+					select 
+						'AMOUNTDUE * 0.50' as expr
+					from abstractrule r
+						inner join abstractruleaction a on r.objid = a.parentid 
+						inner join ruleactionupdatetaxfee ai on a.objid = ai.objid
+					where r.objid = $P{objid}
+			''')
+			.setParameter('objid', rule.objid )
+			.resultList 
+			
+			if( ! list ) return 
+			
+			rule.actions = sys_em.serializer.read( rule.actions )
+			
+			list.each {
+				it.expr = it.expr.replace('$V{', '').replace('$F{','').replace('}','')
+				rule.actions.add([
+					opener				: 'bp-rule-mgmt:bpassessment_action_updatetaxfee',
+					actiontype			: 'updatetaxfee',
+					expr				: it.expr,
+					conditions			: [], 
+					displaytext			: 'Update amount due using the formula : AMOUNTDUE * 0.50',
+				])
+			}
+			
+			updateRuleActions( rule ) 
+		}
+	}
+	
+	@ProxyMethod
+	public void migrateVariableConditions() {
+		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		rulelist.each{ rule -> 
+			def list = em1.sqlContext.createQuery('''
+					select 
+						case when ct.perlob = 1 then 1 else 0 end as perlob, 
+						v.objid as varid, 
+						v.caption,  
+						v.datatype,
+						ct.stringvalue
+					from abstractrule r
+						inner join abstractrulecondition c on r.objid = c.parentid 
+						inner join ruleconditionvariable ct on c.objid = ct.objid
+						inner join abstractvariable v on ct.variable_objid = v.objid 
+					where r.objid = $P{objid}
+			''')
+			.setParameter('objid', rule.objid )
+			.resultList 
+			
+			if( ! list ) return 
+			rule.conditions = sys_em.serializer.read( rule.conditions )
+			list.each {
+				rule.conditions.add([
+					opener               : 'bp-rule-mgmt:bpassessment_condition_variable',
+					conditiontype        : 'variable',
+					value                : it.datatype == 'STRING_ARRAY' ? it.stringvalue : null ,
+					perline              : ( it.perlob == 1 ? true : false ),
+					displaytext          : 'Use Application Data provided per line of business : ' + it.caption + (it.datatype == 'STRING_ARRAY' ? ' = ' + it.stringvalue : ''),
+					variable             :  em2.read('variable', [objid:it.varid]),
+				])
+			}
+			
+			updateRuleConditions( rule ) 
+		}
+	}
+	
+	
+	@ProxyMethod
+	public void migrateTaxFeeConditions() {
+		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		rulelist.each{ rule -> 
+			def list = em1.sqlContext.createQuery('''
+					select ct.*, a.*
+					from abstractrule r
+						inner join abstractrulecondition c on r.objid = c.parentid 
+						inner join ruleconditiontaxfee ct on c.objid = ct.objid
+						inner join ruleconditiontaxfee_incomeaccount ia on ct.objid = ia.ruleconditiontaxfee_objid
+						inner join incomeaccount a on ia.accounts_objid = a.objid 
+					where r.objid = $P{objid}
+			''')
+			.setParameter('objid', rule.objid )
+			.resultList 
+			
+			if( ! list ) return 
+			rule.conditions = sys_em.serializer.read( rule.conditions )
+			rule.conditions.add([
+				opener			: 'bp-rule-mgmt:bpassessment_condition_taxfee',
+				conditiontype	: 'taxfee',
+				option			: [name:list[0].conditionType],
+				displaytext		: 'Tax Fee Account is any of the following: ' + list.title.join(', '),
+				accounts  		: list.collect{[
+					objid		: it.objid,
+					amounttype	: null, 
+					acctno		: it.acctno,
+					fundname	: it.fund_name, 
+					fundid		: it.fund_name,
+					acctcode	: it.code,
+					accttitle	: it.title, 
+					defaultvalue: null,
+				]}
+			])
+			
+			updateRuleConditions( rule ) 
+		}
+	}
+	
+	
+	void updateRuleConditions( rule ) {
+		sys_em.sqlContext.createExecutor('update rule set conditions = $P{conditions} where objid = $P{objid}')
+				.setParameters( [objid:rule.objid, conditions:sys_em.serializer.write(rule.conditions) ])
+				.execute()
+	}
+	
+	void updateRuleActions( rule ) {
+		sys_em.sqlContext.createExecutor('update rule set actions = $P{actions} where objid = $P{objid}')
+				.setParameters( [objid:rule.objid, actions:sys_em.serializer.write(rule.actions) ])
+				.execute()
+	}
+	
+	@ProxyMethod
+	public def deployRules() {
+		println "deploying deployed rules"
+		
+		def messages = [];
+		def fhandler = { xrule ->
+			def rule = sys_em.read("rule", [objid:xrule.objid])
+			if( !rule ) {
+				messages << "rule (${xrule.objid}) not found."
+				return;
+			}
+			
+			println "deploying rule " + rule.rulename;
+			
+			rulesvc.buildRuleText( rule );
+			
+			if( !rule.ruletext ) {
+				messages << rule.rulename + ': Rule text must be implemented.';
+				return;
+			}
+			
+			try 
+			{
+				ruleMgmt.addRulePackage( rule.ruleset, '', rule.packagename, rule.ruletext, false );
+			}
+			catch(e) {
+				messages <<  "---- ERROR : " + rule.rulename + " -------\n" + 
+							rule.ruletext +
+							"--------------------"
+				return;
+			}
+			
+			sys_em.sqlContext.createExecutor('update rule set docstate=? where objid=?')
+			      .setParameter(1, 'DEPLOYED')
+				  .setParameter(2, rule.objid)
+				  .execute()
+		}
+		
+		def qry = em1.sqlContext.createQuery("select objid from abstractrule where state = 'deployed'")
+		qry.fetchHandler = new CustomFetchHandler( handler: fhandler )
+		qry.resultList
+		
+		ruleMgmt.redeployAll()
+		return messages
+	}
+	
+	@ProxyMethod
+	public void updateBPReceivables() {
+		def fhandler = { app ->
+			println "processing bp application: ${app.objid}"
+			
+			def rcvlist = em1.sqlContext.createQuery('''
+				select 
+				  br.objid, br.businessid, 
+				  ab.objid as appid,
+				  br.applicationtype as apptype,
+				  ab.appno as appno,
+				  ab.year as iyear,
+				  btf.lobid, btf.lobname,
+				  btf.acctid, btf.accountno as acctno, btf.accounttitle as accttitle, btf.accttype,
+				  br.amount, br.amtpaid
+				from  bptaxfee btf, bpreceivable br, abstractbpapplication ab
+				where ab.objid = btf.parentid
+				  and btf.objid = br.taxfeeid 
+				  and ab.objid = ?
+			''')
+			.setParameter(1, app.objid)
+			.resultList
+			
+			def bprcvlist = []
+			rcvlist.each { rcv ->
+				rcv.iqtr = 1
+				if( rcv.accttype == 'BUSINESS_TAX' ) {
+					def amt = rcv.amount
+					def amtpaid = rcv.amtpaid
+					def qtramt = fixAmount( amt / 4 );
+					for(def i=1; i<=3; ++i) {
+						def b = [:]
+						if( i > 1 ) b.objid = b.objid + i
+						b.putAll( rcv )
+						b.iqtr = i
+						b.amount = qtramt
+						b.amtpaid = (amtpaid > qtramt ? qtramt : amtpaid)
+						amtpaid -= b.amtpaid
+						bprcvlist << b
+					}
+					rcv.amtpaid = amtpaid
+					rcv.iqtr = 4
+					rcv.amount = amt - (qtramt * 3)
+				}
+				
+				bprcvlist << rcv
+			}
+			
+			em2.sqlContext.createExecutor('update bpapplication set receivables=? where objid=?')
+			   .setParameter(1, em2.serializer.write( bprcvlist ))
+			   .setParameter(2, app.objid)
+			   .execute()
+		}
+		
+		def qry = em1.sqlContext.createQuery('select objid from abstractbpapplication where amtpaid < amtdue')
+		qry.fetchHandler = new CustomFetchHandler( handler: fhandler )
+		qry.resultList
+	}
+	
+	private def createRCV( info ) {
+		return [
+			objid: 				info.objid,
+			businessid: 		info.businessid,
+			applicationid: 		info.appid,
+			applicationtype:	info.apptype,
+			appno: 				info.appno,
+			iyear: 				info.iyear,
+			iqtr:				info.iqtr,
+			lobid: 				info.lobid,
+			lobname:			info.lobname,
+			acctid: 			info.acctid,
+			acctno: 			info.acctno,
+			accttitle: 			info.accttitle,
+			amount: 			info.amount,
+			amtpaid: 			info.amtpaid,
+		]
+	}
+	
+	private def fixAmount( value ) {
+		def formatter = new java.text.DecimalFormat("###0.00")
+		return new BigDecimal( formatter.format(value) );
+	}
+   	
+}
+
+
+//====== helper class ==========
+
+class CustomFetchHandler extends MapFetchHandler {
+	
+	def handler;
+
+	public Object getObject(ResultSet rs) throws Exception {
+		def data = super.getObject( rs );
+		if( handler ) handler( data );
+		return null;
+	}
+	
+}
+
+
