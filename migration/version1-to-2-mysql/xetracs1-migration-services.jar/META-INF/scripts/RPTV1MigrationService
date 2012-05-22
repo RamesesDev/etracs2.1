@@ -72,7 +72,7 @@ class RPTV1MigrationService
 						trim(td.remarks) as memoranda,
 						0 as autonumber,
 						0 as backtaxyrs,
-						'-' as claimno,
+						rp.claimno as claimno,
 						0 as annotated,
 						case 
 							when td.txntype = 'GR' then '[txntype:"GR", caption:"General Revision"]'
@@ -1156,9 +1156,9 @@ class RPTV1MigrationService
 					select
 						rpu.objid ,
 						rpu.ry,
-						(select objid from propertyclassification where code = rpu.classcode) as classid,
+						rpu.classificationId as classid,
 						rpu.classcode,
-						(select description from propertyclassification where code = rpu.classcode) as classname,
+						rpu.classTitle as classname,
 						rpu.suffix,
 						rpu.taxable,
 						rpu. areainsqm as totalareasqm,
@@ -1237,7 +1237,7 @@ class RPTV1MigrationService
 						then rp.pin 
 						else concat(rp.pin, '-', r.suffix) 
 					end as fullpin, 
-					'-' as claimno, 
+					rp.claimno as claimno, 
 					td.objid as faasid, 
 					lower(r.type ) as  rputype, 
 					r.classificationId as  classid, 
@@ -1314,7 +1314,7 @@ class RPTV1MigrationService
 					r.classCode as  classcode, 
 					r.classificationId as actualuseid, 
 					r.classCode as actualusecode, 
-					r.taxable as  taxable, 
+					case when r.taxable is null then 1 else r.taxable end as  taxable, 
 					0 as backtax, 
 					rli.fromYear as  fromyear, 
 					rli.toYear as  toyear,

@@ -43,7 +43,7 @@
 	<field name="info.txndate" class="java.lang.String"/>
 	<field name="info.collectorname" class="java.lang.String"/>
 	<field name="info.amount" class="java.math.BigDecimal"/>
-	<field name="info.payer.entityaddress" class="java.lang.String"/>
+	<field name="info.payoraddress" class="java.lang.String"/>
 	<field name="info.collectortitle" class="java.lang.String"/>
 	<field name="tax.basic" class="java.math.BigDecimal"/>
 	<field name="tax.salary" class="java.math.BigDecimal"/>
@@ -366,7 +366,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.payer.entityaddress}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.payoraddress}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

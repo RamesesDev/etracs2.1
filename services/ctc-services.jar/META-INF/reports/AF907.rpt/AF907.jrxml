@@ -33,12 +33,12 @@
 	<parameter name="TREASURERNAME" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="info.serialno" class="java.lang.String"/>
-	<field name="info.payer.entityname" class="java.lang.String"/>
+	<field name="info.payorname" class="java.lang.String"/>
 	<field name="amountinwords" class="java.lang.String"/>
 	<field name="info.txndate" class="java.lang.String"/>
 	<field name="info.collectorname" class="java.lang.String"/>
 	<field name="info.amount" class="java.math.BigDecimal"/>
-	<field name="info.payer.entityaddress" class="java.lang.String"/>
+	<field name="info.payoraddress" class="java.lang.String"/>
 	<field name="info.collectortitle" class="java.lang.String"/>
 	<field name="tax.basic" class="java.math.BigDecimal"/>
 	<field name="tax.interest" class="java.math.BigDecimal"/>
@@ -227,7 +227,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.payer.entityname}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.payorname}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -247,7 +247,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.payer.entityaddress}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.payoraddress}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -533,7 +533,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.payer.entityaddress}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.payoraddress}]]></textFieldExpression>
 				</textField>
 			</band>
 		</title>

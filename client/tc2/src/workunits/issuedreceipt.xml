@@ -28,8 +28,16 @@ class IssuedReceiptController
     def collector 
     def formActions
     
+    def docstateList = ['OPEN', 'CLOSED']
+    def docstate = docstateList[0];
+    
     void init() {
         collector = userService.getCollector( OsirisContext.env.USERID )
+    }
+    
+    void setDocstate( d ) {
+        this.docstate = d
+        listHandler.load()
     }
     
     void setSelectedItem( item ) {
@@ -59,7 +67,7 @@ class IssuedReceiptController
         fetchList : { 
             def searchParam = [ 
                 collectorid:collector.objid, 
-                docstate : 'OPEN',
+                docstate : docstate,
                 searchText:searchText 
             ]
             return svc.getList( searchParam, it ) 

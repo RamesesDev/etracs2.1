@@ -48,7 +48,7 @@
             @Service('ReportParameterService')
             def paramsSvc;
             
-            @Service('LGUService')
+            @Service('LguService')
             def lguSvc;
         
             def collectiontitle = 'COMMUNITY TAX CERTIFICATE (INDIVIDUAL)'

@@ -321,8 +321,9 @@ class BPLedgerService {
 				app.surcharge_paid = app.credits.surcharge.sum()
 				app.interest_paid = app.credits.interest.sum()
 				
-				app.putAll( em.serializer.read( app.extended ) );
-				
+				if( app.extended ) {
+					app.putAll( em.serializer.read( app.extended ) );
+				}				
 				
 			 };
 	}

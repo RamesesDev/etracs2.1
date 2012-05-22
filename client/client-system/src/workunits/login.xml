@@ -47,7 +47,7 @@
                     user.init( usr, _pwd );
                     
                     if( !config.getProperty("app.clientcode") ) {
-                        config.put("app.clientcode", clientcode);
+                        config.put("app.clientcode", clientcode ? clientcode : '');
                         config.update();
                     }
                 }

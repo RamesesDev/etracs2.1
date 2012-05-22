@@ -138,7 +138,6 @@ public class AFControlSerialPage extends javax.swing.JPanel {
 
         xNumberField1.setCaption("Qty. Received");
         xNumberField1.setCaptionWidth(105);
-        xNumberField1.setEnabled(false);
         xNumberField1.setFieldType(Integer.class);
         xNumberField1.setName("afcontrol.qtyreceived");
         xNumberField1.setPreferredSize(new java.awt.Dimension(150, 19));

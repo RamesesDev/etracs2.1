@@ -3,7 +3,7 @@ etracsplatform/main/build/*
 etracsplatform/rameses-updates/build/*
 etracsplatform/.terminal
 etracsplatform/client.conf
-etracsplatform/osiris2/modules/*
+etracsplatform/osiris2/*
 etracsplatform/dist/etracs2.zip
 etracsplatform/reports/*
 etracsplatform/web-cache/*

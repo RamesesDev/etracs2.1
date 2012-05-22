@@ -11,6 +11,7 @@ ORDER BY txndate DESC, txnno DESC
 SELECT * FROM remittancelist 
 WHERE docstate = 'OPEN' 
 AND liquidatingofficerid = $P{liquidatingofficerid}  
+AND txndate <= $P{txndate} 
 ORDER BY txndate, txnno 
 
 
@@ -18,6 +19,7 @@ ORDER BY txndate, txnno
 SELECT pay.* 
 FROM paymentitem pay, receiptlist rl, remittancelist rml 
 WHERE rml.liquidatingofficerid = $P{liquidatingofficerid} 
+AND rml.txndate <= $P{txndate} 
 AND rml.docstate = 'OPEN' 
 AND rml.objid = rl.remittanceid 
 AND rl.objid = pay.receiptid 
@@ -59,6 +61,7 @@ SELECT
 FROM remittancelist 
 WHERE docstate = 'OPEN' 
 AND liquidatingofficerid = $P{liquidatingofficerid} 
+AND txndate <= $P{txndate}
 
 
 [getOpenFundSummaries]
@@ -76,6 +79,7 @@ FROM receiptlist rct
 	INNER JOIN incomeaccount ia ON ri.acctid = ia.objid 
 	INNER JOIN remittancelist rem ON rct.remittanceid = rem.objid  
 WHERE rem.liquidatingofficerid = $P{lqofficerid}  
+  AND rem.txndate <= $P{txndate} 
   AND rem.docstate = 'OPEN' 
   AND rct.voided = 0 
 GROUP BY ia.fundid, ia.fundname 
@@ -145,6 +149,7 @@ ORDER BY rl.afid, ri.fundname, ia.groupid
 SELECT pay.* 
 FROM paymentitem pay, receiptlist r, remittancelist rm 
 WHERE rm.liquidationid = $P{liquidationid} 
+AND rm.txndate <= $P{txndate} 
 AND NOT pay.paytype = 'CASH' 
 AND rm.objid = r.remittanceid 
 AND r.voided = 0 
@@ -179,13 +184,15 @@ AND collectorid = $P{collectorid}
 
 
 [closeRemittanceByLiquidatingOfficer]
-UPDATE remittance SET 
-	docstate = 'CLOSED', 
-	liquidationid = $P{liquidationid}, 
-	liquidationno = $P{liquidationno}, 
-	liquidationdate = $P{liquidationdate} 
-WHERE docstate = 'OPEN' 
-AND liquidatingofficerid = $P{liquidatingofficerid}
+UPDATE remittance r, remittancelist rl SET 
+	r.docstate = 'CLOSED', 
+	r.liquidationid = $P{liquidationid}, 
+	r.liquidationno = $P{liquidationno}, 
+	r.liquidationdate = $P{liquidationdate} 
+WHERE r.objid = rl.objid 
+AND r.docstate = 'OPEN' 
+AND r.liquidatingofficerid = $P{liquidatingofficerid} 
+AND rl.txndate <= $P{liquidationdate} 
 
 
 [closeRemittanceListByLiquidatingOfficer]
@@ -194,17 +201,20 @@ SET docstate = 'CLOSED',
 	liquidationid = $P{liquidationid}, 
 	liquidationno = $P{liquidationno} 
 WHERE docstate = 'OPEN' 
-AND liquidatingofficerid = $P{liquidatingofficerid} 
+AND liquidatingofficerid = $P{liquidatingofficerid}  
+AND txndate <= $P{liquidationdate}
 
 [getOtherPaymentNoLiq]
 SELECT  
  rl.objid, rl.remittanceid, r.objid, r.liquidationid,
  i.receiptid, i.paytype, i.particulars, i.amount 
 FROM remittance r 
+INNER JOIN remittancelist rml ON rml.objid = r.objid 
 INNER JOIN receiptlist rl ON rl.remittanceid = r.objid 
 INNER JOIN paymentitem i ON i.receiptid = rl.objid  
 WHERE rl.voided = 0  
  AND r.liquidationid IS NULL 
+ AND rml.txndate <= $P{txndate} 
  AND paytype = 'CHECK' 
  
 [getCashierlist]

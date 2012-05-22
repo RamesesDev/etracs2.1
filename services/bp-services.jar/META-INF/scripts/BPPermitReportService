@@ -155,7 +155,29 @@ public class BPPermitReportService
 		}
 		
 		bp.orlist = [ or ];
-		bp.ordetails = bp.orlist[0]	
+		bp.ordetails = bp.orlist[0]
+		bp.ordetails.businesstax = 0.00;
+		bp.ordetails.regfee = 0.00;
+		bp.ordetails.othercharge = 0.00;
+		
+		em.sqlContext.createQuery('''		
+			select i.systype, sum(r.amount) as total
+			from receiptlist rl
+			inner join receiptitem r on r.receiptid = rl.objid
+			inner join incomeaccount i on r.acctid = i.objid
+			where rl.serialno = ?
+			group by i.systype
+		''')
+		.setParameter(1, bp.ordetails.orno)
+		.resultList
+		.each{
+			if( it.systype == 'BUSINESS_TAX' )
+				bp.ordetails.businesstax += it.total
+			else if( it.systype == 'REG_FEE' )
+				bp.ordetails.regfee += it.total
+			else
+				bp.ordetails.othercharge += it.total
+		};
 	}	
 	
 	private def buildReportParameter( def bp ){

@@ -69,7 +69,7 @@ void printDone( action, g_errorlist ){
 
 
 def proxy = new TestProxy([
-     'default.host' : '192.168.0.4:8080',
+     'default.host' : 'localhost:8080',
      'app.context'  : 'sancarlos',   
 ])
 
@@ -103,7 +103,7 @@ println 'done svc.updateMachAssessLevelRanges()...'
 
 svc.updateMultipleEntityInfo()
 println 'done svc.updateMultipleEntityInfo()...'
-*/
+
 
 executeAction2(
     { 
@@ -151,6 +151,6 @@ printDone( 'done svc.insertRPTLedger()...', g_errorlist )
 
 executeAction2({ g_errorlist.addAll(svc.insertRPTLedgerItem( it )); it.clear() }, svc.getLedgerItemList(), 'insert rpt ledger item' )
 printDone( 'done svc.insertRPTLedgerItem()...', g_errorlist )
-
+*/
 
 println 'done' 

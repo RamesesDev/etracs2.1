@@ -34,7 +34,6 @@ public class LedgerMgmtController
     
     def docstate 
     def selectedItem
-    List list
     
     
     def getFormActions() {
@@ -50,7 +49,6 @@ public class LedgerMgmtController
     
     
     void search() {
-        list = null
         listHandler.load()
         binding.refresh('html')
     }
@@ -73,10 +71,7 @@ public class LedgerMgmtController
         ]},
         onOpenItem: { item, colname -> open() },
         fetchList  : {
-            if( ! list  ) {
-                list = svc.getList( docstate, searchText, it )
-            }
-            return list 
+            svc.getList( docstate, searchText, it )
         }
     ] as PageListModel
     

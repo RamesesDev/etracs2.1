@@ -5,7 +5,7 @@
 
 alter table sancarlos_etracs2.rptpayment change column receiptdate receiptdate date null;
 
-
+/*===== CAPTURE =======*/
 insert into sancarlos_etracs2.rptpayment (
 	objid, schemaname, schemaversion, 
 	rptledgerid, opener, mode, dtposted, receiptid, receiptdate, receiptno, collectorid, collectorname, 
@@ -27,20 +27,20 @@ select
 	objid, schemaname, schemaversion, 
 	rptledgerid, opener, mode, dtposted, receiptid, receiptdate, receiptno, collectorid, collectorname, 
 	collectortitle, capturedby, particulars, voided, 
-	concat(min(fromqtr), 'Q,', min(fromyear), ' - ', max(toqtr),'Q,', max(toyear)) as period, 
+	concat(fromqtr, 'Q,', fromyear, ' - ', toqtr,'Q,', toyear) as period, 
 	revtype, 
-	min(fromyear) as fromyear,
-	min(fromqtr) as fromqtr, 
-	max(toyear) as toyear, 
-	max(toqtr) as toqtr, 
-	sum(basic) as basic, 
-	sum(basicint) as basicint, 
-	sum(basicdisc) as basicdisc, 
-	sum(basicpartial) as basicpartial, 
-	sum(sef) as sef, 
-	sum(sefint) as sefint, 
-	sum(sefdisc) as sefdisc, 
-	sum(sefpartial) as sefpartial, 
+	fromyear as fromyear,
+	fromqtr as fromqtr, 
+	toyear as toyear, 
+	toqtr as toqtr, 
+	basic as basic, 
+	basicint as basicint, 
+	basicdisc as basicdisc, 
+	basicpartial as basicpartial, 
+	sef as sef, 
+	sefint as sefint, 
+	sefdisc as sefdisc, 
+	sefpartial as sefpartial, 
 	collectingagencyid, 
 	collectingagency
 from (
@@ -78,11 +78,88 @@ from (
 		null as collectingagency
 	from etracs_sancarlos.abstractrptcredit mc 
 	where dtype = 'RPTDataCapturePayment'
-) t
-group by t.rptledgerid, t.receiptno;
+) t;
 
 
 
+/*===== ONLINE =======*/
+insert into sancarlos_etracs.rptpayment (
+	objid, schemaname, schemaversion, 
+	rptledgerid, opener, mode, dtposted, receiptid, receiptdate, receiptno, collectorid, collectorname, 
+	collectortitle, capturedby, particulars, voided, period, revtype, 
+	fromyear, fromqtr, toyear, 
+	toqtr, 
+	basic, 
+	basicint, 
+	basicdisc, 
+	basicpartial, 
+	sef, 
+	sefint, 
+	sefdisc, 
+	sefpartial, 
+	collectingagencyid, 
+	collectingagency
+)
+select 
+	objid, schemaname, schemaversion, 
+	rptledgerid, opener, mode, dtposted, receiptid, receiptdate, receiptno, collectorid, collectorname, 
+	collectortitle, capturedby, particulars, voided, 
+	concat(fromqtr, 'Q,', fromyear, ' - ', toqtr,'Q,', toyear) as period, 
+	revtype, 
+	fromyear as fromyear,
+	fromqtr as fromqtr, 
+	toyear as toyear, 
+	toqtr as toqtr, 
+	basic as basic, 
+	basicint as basicint, 
+	basicdisc as basicdisc, 
+	basicpartial as basicpartial, 
+	sef as sef, 
+	sefint as sefint, 
+	sefdisc as sefdisc, 
+	sefpartial as sefpartial, 
+	collectingagencyid, 
+	collectingagency
+from (
+	select 
+		mc.objid, 
+		'rptpayment'as schemaname, 
+		'1.0' as schemaversion, 
+		mc.ledgerid as rptledgerid, 
+		'rptonline' as opener, 
+		'ONLINE' AS mode,
+		mc.txndate as dtposted, 
+		r.objid as receiptid, 
+		mc.receiptdate as receiptdate, 
+		mc.receiptno as receiptno, 
+		r.collectorid, 
+		r.collectorname, 
+		r.collectortitle, 
+		mc.capturedby, 
+		null as particulars, 
+		0 as voided, 
+		null as revtype, 
+		mc.fromyear, 
+		mc.fromqtr, 
+		mc.toyear, 
+		mc.toqtr, 
+		(mc.basic + mc.basicprevious + mc.basicprior ) as basic , 
+		(mc.basicinterest + mc.basicintprevious + mc.basicintprior) as basicint, 
+		mc.basicdiscount as basicdisc, 
+		0.0 as basicpartial, 
+		(mc.sef + mc.sefprevious + mc.sefprior) as sef, 
+		(mc.sefinterest + mc.sefintprevious + mc.sefintprior ) as sefint, 
+		mc.sefdiscount as sefdisc, 
+		0.0 as sefpartial, 
+		null as collectingagencyid, 
+		null as collectingagency
+	from etracs_sancarlos.abstractrptcredit mc 
+	inner join etracs_sancarlos.receipt r on r.serialno = mc.receiptno
+	where mc.dtype <> 'RPTDataCapturePayment'
+) t;
+
+
+/*===== PAYMENT DETAIL =======*/
 insert into sancarlos_etracs2.rptpaymentdetail (
 	objid, 
 	receiptid, 

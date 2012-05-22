@@ -304,6 +304,13 @@ class FAASService
         faas.info.autonumber 	= TO_BOOLEAN( faas.info.autonumber )
         faas.rpu.taxable 		= TO_BOOLEAN( faas.rpu.taxable )
         initOpenRpuInfo( faas.rpu )
+		
+		//the statements below are for those migrated data with null initialization values
+		if( faas.info.txntype == 'MC' && (!faas.info.claimno || faas.info.claimno.trim() == '-') ) {
+			def result = em.sqlContext.createQuery('select claimno from faaslist where objid=?').setParameter(1, faas.objid).singleResult
+			faas.info.claimno = result.claimno
+		}
+		
 		return faas 
     }
     
@@ -960,6 +967,8 @@ class FAASService
 			}
 			rpu.info.planttotal.bearing  = rpu.info.planttotal.bearing * 1.0 
 			rpu.info.planttotal.nonbearing  = rpu.info.planttotal.nonbearing * 1.0 
+			if( rpu.info.planttotal.adjustment == null )
+				rpu.info.planttotal.adjustment = 0.00
         }
         else if( rpu.rputype == BLDG_TYPE ) {
             rpu.info.swornstatement = TO_BOOLEAN( rpu.info.swornstatement  )

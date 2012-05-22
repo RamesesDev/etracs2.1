@@ -1,11 +1,13 @@
-<%@ taglib tagdir="/WEB-INF/tags/server" prefix="s" %>
-<%@ page import="java.util.*" %>
+<script>
+	$put(
+		"${param.id}_widget",
+		new function() {
+			this.click = function() {
+				alert('button clicked!');
+			}
+		}
+	);
+</script>
 
-<%
-	Map env = new HashMap();
-	//env.put("ds.prefix", "usc");
-	request.setAttribute("env", env);
-%>
-<s:invoke service="MultiTenantTestService" method="test" env="${env}" var="result"/>
-
-${result}
+This is widget [${param.id}]
+<button r:context="${param.id}_widget" r:name="click">+/- Like</button>
