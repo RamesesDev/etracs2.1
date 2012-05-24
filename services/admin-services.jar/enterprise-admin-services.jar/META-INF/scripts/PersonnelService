@@ -16,10 +16,14 @@ class PersonnelService {
 	@ProxyMethod
 	public def getList(def params) {
 		def qry = em.sqlContext.createNamedQuery( "personnel:list" );
+		qry.setPagingKeys(["p.lastname", "p.firstname", "p.staffno"] as String[]);
+		
 		def sb = new StringBuffer();
 		if(params) {
 			if(params._start) qry.setFirstResult( params._start );
 			if(params._limit) qry.setMaxResults( params._limit );
+			
+			def condition = '';
 			if( params.staffno  ) {
 				params.staffno += '%';
 				sb.append( ''' staffno like $P{staffno} ''' ); 	
@@ -35,10 +39,13 @@ class PersonnelService {
 				sb.append( ''' firstname like $P{firstname} ''' ); 	
 			}
 			if( sb.length() > 0 ) {
-				qry.setVars( [condition: " where " + sb.toString() ] );
+				condition = " where " + sb.toString();
 			}
+			
+			qry.setVars([condition: condition]);
 			qry.setParameters( params );
 		}
+		
 		return qry.resultList;
 	}
 	
