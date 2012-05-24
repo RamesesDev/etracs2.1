@@ -105,8 +105,7 @@ CREATE TABLE "sys_module" (
   "filename" varchar(255) default NULL,
   "lastmodified" datetime default NULL,
   "permissions" text,
-  PRIMARY KEY  ("name"),
-  UNIQUE ("filename")
+  PRIMARY KEY  ("name")
 );
 
 /*Table structure for table "sys_roleclass" */

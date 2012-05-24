@@ -59,6 +59,7 @@
                 catch(e) {
                     e.printStackTrace()
                     image = null
+                    binding.refresh('imageUrl')
                 }
             }
         }
