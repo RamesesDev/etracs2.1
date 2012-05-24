@@ -430,18 +430,21 @@ from etracs_lguname.bldgassesslevel a ;
 
 
 
-insert into lguname_etracs.bldgtype 
-(
-	objid, bldgrysettingid, code, name, basevaluetype, residualrate, multistoreyadjustments, depreciations, previd
-)
-select 
-	objid, bldgrysettingid, code, description, 
-	(select basevaluetype from bldgkindbucc where bldgtypeid=bt.objid limit 1) as basevaluetype, 
-	residualvalue, 
-	'[]' as multistoreyadjustments, 
-	'[]' as depreciations, 
-	previd
-from etracs_lguname.bldgtype bt
+-- (22)
+insert into lguname_etracs.bldgassesslevel 
+	(objid, bldgrysettingid, code, name, fixrate, rate, previd, 
+	ranges
+	)
+select
+	a.objid, 
+	a.bldgrysettingid, 
+	a.code, 
+	a.description as name, 
+	a.special as fixrate, 
+	a.assesslevel as rate, 
+	a.previd, 
+	'[]' as ranges
+from etracs_lguname.bldgassesslevel a ;
 
 
 insert into lguname_etracs.bldgkindbucc 
