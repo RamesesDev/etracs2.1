@@ -48,4 +48,9 @@ class CTCCollectionInterceptor
 		if( receipt.taxnmode == 'CAPTURE' ) ctcSvc.buildCaptureItems( receipt )
 	}
 	
+	@After(pattern="ReceiptService.open", eval="#{result.doctype == 'CTCI' || result.doctype == 'CTCC'}")
+	public void afterOpenReceipt( evt ){
+		def receipt = evt.result
+	}
+	
 }

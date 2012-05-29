@@ -58,7 +58,7 @@
 	<field name="info.payer.info.height" class="java.lang.String"/>
 	<field name="info.payer.info.weight" class="java.lang.String"/>
 	<field name="info.payer.info.birthdate" class="java.lang.String"/>
-	<field name="info.payer.info.placeofbirth" class="java.lang.String"/>
+	<field name="info.payer.info.birthplace" class="java.lang.String"/>
 	<field name="info.payer.info.acr" class="java.lang.String"/>
 	<field name="info.payer.info.tin" class="java.lang.String"/>
 	<field name="info.dtposted" class="java.lang.String"/>
@@ -69,6 +69,7 @@
 	<field name="total_basic_additional" class="java.math.BigDecimal"/>
 	<field name="info.payer.info.gender" class="java.lang.String"/>
 	<field name="info.payer.info.civilstatus" class="java.lang.String"/>
+	<field name="newbusiness" class="java.lang.Boolean"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -515,11 +516,12 @@
 						mode="Transparent"
 						x="181"
 						y="68"
-						width="154"
+						width="189"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="textField"/>
+						key="textField"
+						isPrintWhenDetailOverflows="true"/>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
@@ -528,7 +530,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.payer.info.placeofbirth}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.payer.info.birthplace}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -638,6 +640,21 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.payer.info.civilstatus}]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement
+						x="196"
+						y="143"
+						width="64"
+						height="13"
+						key="staticText-1">
+							<printWhenExpression><![CDATA[new Boolean( Boolean.TRUE.equals($F{newbusiness}) )]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font fontName="Tahoma"/>
+					</textElement>
+				<text><![CDATA[(Initial)]]></text>
+				</staticText>
 			</band>
 		</title>
 		<pageHeader>

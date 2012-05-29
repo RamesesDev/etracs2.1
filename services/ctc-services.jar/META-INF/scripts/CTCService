@@ -110,6 +110,7 @@ public class CTCService
 		fact.gender = payer.info.gender
 		fact.civilstatus = payer.info.civilstatus
 		fact.seniorcitizen = payer.info.seniorcitizen ? true : false
+		fact.newbusiness = entity.newbusiness ? true : false
 		fact.annualsalary = entity.annualsalary
 		fact.businessgross = entity.businessgross
 		fact.propertyincome = entity.propertyincome

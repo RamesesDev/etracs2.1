@@ -48,6 +48,9 @@
             
             @Service('ReportParameterService')
             def paramsSvc;
+            
+            @Service('CTCReceiptHtmlService')
+            def htmlSvc;
         
             def collectiontitle = 'COMMUNITY TAX CERTIFICATE (CORPORATE)'
             def taxpayer
@@ -110,7 +113,7 @@
             }
             
             def getService() { return svc }
-            def getHtmlService() {}
+            def getHtmlService() { return htmlSvc }
             def getCollectionTitle() { return collectiontitle }
             
             def getParameters() { 

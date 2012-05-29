@@ -19,6 +19,8 @@ class RoleService {
 		//if( params.exclude_system ) sql += "-exclude-system";
 		
 		def qry = em.sqlContext.createNamedQuery( sql );
+		qry.setPagingKeys("name");
+		
 		if(params) {
 			if(params._start) qry.setFirstResult( params._start );
 			if(params._limit) qry.setMaxResults( params._limit );

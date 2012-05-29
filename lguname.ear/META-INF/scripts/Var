@@ -41,8 +41,9 @@ class Var {
 
    @ProxyMethod(local=true)
    public def getList(def param) {
-		print param;
 		def qry = em.sqlContext.createNamedQuery("sys_var:list");	
+		qry.setPagingKeys("name");
+		
 		if( param?._start ) qry.setFirstResult( param._start );
 		if( param?._limit ) qry.setMaxResults( param._limit );
 		if( param ) qry.setParameters( param );

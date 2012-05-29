@@ -47,8 +47,9 @@ public class IndividualPage extends javax.swing.JPanel {
         xTextField11 = new com.rameses.rcp.control.XTextField();
         jPanel9 = new javax.swing.JPanel();
         formPanel3 = new com.rameses.rcp.util.FormPanel();
-        xNumberField4 = new com.rameses.rcp.control.XNumberField();
+        xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
         xNumberField5 = new com.rameses.rcp.control.XNumberField();
+        xNumberField4 = new com.rameses.rcp.control.XNumberField();
         xNumberField6 = new com.rameses.rcp.control.XNumberField();
         xButton1 = new com.rameses.rcp.control.XButton();
         jPanel10 = new javax.swing.JPanel();
@@ -197,13 +198,12 @@ public class IndividualPage extends javax.swing.JPanel {
         jPanel9.setBorder(xTitledBorder2);
 
         formPanel3.setCaptionWidth(120);
-        xNumberField4.setCaption("Annual Salary");
-        xNumberField4.setFieldType(java.math.BigDecimal.class);
-        xNumberField4.setFont(new java.awt.Font("Arial", 1, 11));
-        xNumberField4.setName("entity.annualsalary");
-        xNumberField4.setPattern("#,##0.00");
-        xNumberField4.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel3.add(xNumberField4);
+        formPanel3.setPadding(new java.awt.Insets(5, 5, 10, 0));
+        xCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox3.setCaption("Is New Business?");
+        xCheckBox3.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox3.setName("entity.newbusiness");
+        formPanel3.add(xCheckBox3);
 
         xNumberField5.setCaption("Business Gross");
         xNumberField5.setFieldType(java.math.BigDecimal.class);
@@ -212,6 +212,14 @@ public class IndividualPage extends javax.swing.JPanel {
         xNumberField5.setPattern("#,##0.00");
         xNumberField5.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel3.add(xNumberField5);
+
+        xNumberField4.setCaption("Annual Salary");
+        xNumberField4.setFieldType(java.math.BigDecimal.class);
+        xNumberField4.setFont(new java.awt.Font("Arial", 1, 11));
+        xNumberField4.setName("entity.annualsalary");
+        xNumberField4.setPattern("#,##0.00");
+        xNumberField4.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel3.add(xNumberField4);
 
         xNumberField6.setCaption("Property Income");
         xNumberField6.setFieldType(java.math.BigDecimal.class);
@@ -234,7 +242,7 @@ public class IndividualPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(jPanel9Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(formPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
-                    .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 128, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 128, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
@@ -251,6 +259,7 @@ public class IndividualPage extends javax.swing.JPanel {
         jPanel10.setBorder(xTitledBorder3);
 
         formPanel4.setCaptionWidth(120);
+        formPanel4.setPadding(new java.awt.Insets(5, 5, 10, 5));
         xNumberField7.setCaption("Basic Tax");
         xNumberField7.setFieldType(java.math.BigDecimal.class);
         xNumberField7.setFont(new java.awt.Font("Arial", 1, 11));
@@ -304,7 +313,7 @@ public class IndividualPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(jPanel10Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(formPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
-                    .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 128, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 128, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
@@ -323,6 +332,7 @@ public class IndividualPage extends javax.swing.JPanel {
 
         formPanel2.setBorder(javax.swing.BorderFactory.createCompoundBorder(null, javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         formPanel2.setCaptionWidth(120);
+        formPanel2.setPadding(new java.awt.Insets(0, 5, 0, 0));
         xDateField1.setCaption("Transaction Date");
         xDateField1.setFont(new java.awt.Font("Arial", 1, 11));
         xDateField1.setName("entity.info.txndate");
@@ -365,20 +375,20 @@ public class IndividualPage extends javax.swing.JPanel {
                     .add(jPanel10, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(jPanel9, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(xPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .add(156, 156, 156))
+                .addContainerGap(106, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(layout.createSequentialGroup()
                         .add(xPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanel8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(53, 53, 53))
+                        .add(jPanel10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -395,6 +405,7 @@ public class IndividualPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
+    private com.rameses.rcp.control.XCheckBox xCheckBox3;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;

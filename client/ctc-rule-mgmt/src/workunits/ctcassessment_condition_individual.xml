@@ -27,8 +27,9 @@
                     new FactField( "gender", "Gender", "string", "gender", "gender" ),
                     new FactField( "civilstatus", "Civil Status", "string", null, "civilstatus" ),
                     new FactField( "seniorcitizen", "Is Senior Citizen?", "boolean" ),
-                    new FactField( "annualsalary", "Annual Salary", "decimal" ),
+                    new FactField( "newbusiness", "Is New Business?", "boolean" ),
                     new FactField( "businessgross", "Business Gross Receipt", "decimal" ),
+                    new FactField( "annualsalary", "Annual Salary", "decimal" ),
                     new FactField( "propertyincome", "Property Income", "decimal" ),
                 ] as FactField[];
             }

@@ -234,6 +234,7 @@ public class LandRYSettingPage extends javax.swing.JPanel {
         xButton4.setName("removeLandAdjustment");
 
         xDataTable10.setHandler("landAdjustmentListHandler");
+        xDataTable10.setImmediate(true);
         xDataTable10.setName("selectedLandAdjustment");
 
         org.jdesktop.layout.GroupLayout jPanel7Layout = new org.jdesktop.layout.GroupLayout(jPanel7);

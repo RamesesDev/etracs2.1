@@ -37,8 +37,8 @@ CREATE TABLE "af" (
   "schemaname" varchar(50) NOT NULL,
   "schemaversion" varchar(10) NOT NULL,
   "docstate" varchar(10) NOT NULL,
-  "description" varchar(100) default NULL,
-  "aftype" varchar(10) NOT NULL,
+  "description" varchar(150) default NULL,
+  "aftype" varchar(20) NOT NULL,
   "unit" varchar(10) NOT NULL,
   "pcsperunit" int NOT NULL,
   "denomination" decimal(10,2) default NULL,
@@ -2172,7 +2172,7 @@ CREATE TABLE "remittancelist" (
   "totalcash" decimal(10,2) default NULL,
   "totalotherpayment" decimal(10,2) default NULL,
   "liquidationid" varchar(50) default NULL,
-  "txndatetime" varchar(10) default NULL,
+  "txntimestamp" varchar(10) default NULL,
   "liquidationno" varchar(15) default NULL,
   "liquidationdate" date default NULL,
   "liquidatingofficerid" varchar(50) default NULL,
@@ -2239,15 +2239,15 @@ CREATE TABLE "revenue" (
   "remittanceid" varchar(50) NOT NULL,
   "remittanceno" varchar(20) NOT NULL,
   "remittancedate" datetime NOT NULL,
-  "remittancedatetime" varchar(12) NOT NULL,
+  "remittancetimestamp" varchar(12) NOT NULL,
   "liquidationid" varchar(50) default NULL,
   "liquidationno" varchar(20) default NULL,
   "liquidationdate" datetime default NULL,
-  "liquidationdatetime" varchar(12) default NULL,
+  "liquidationtimestamp" varchar(12) default NULL,
   "depositid" varchar(50) default NULL,
   "depositno" varchar(20) default NULL,
   "depositdate" datetime default NULL,
-  "depositdatetime" varchar(12) default NULL,
+  "deposittimestamp" varchar(12) default NULL,
   "collectorid" varchar(50) NOT NULL,
   "collectorname" varchar(70) NOT NULL,
   "collectortitle" varchar(50) NOT NULL,
@@ -2270,7 +2270,7 @@ CREATE TABLE "revenue" (
   "ngasid" varchar(50) default '',
   "sreid" varchar(50) default '',
   "amount" decimal(14,2) default NULL,
-  "voided" int NOT NULL,
+  "voided" int(11) NOT NULL,
   "liquidationrcdid" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
   /*
@@ -2283,8 +2283,8 @@ CREATE TABLE "revenue" (
   KEY "FK_revenue_receipt" ("receiptid"),
   KEY "FK_revenue_af" ("afid"),
   KEY "FK_revenue_afcontrol" ("afcontrolid"),
-  KEY "ix_revenue_liquidationdatetime_voided" ("liquidationdatetime","voided"),
-  KEY "ix_revenue_liquidationdatetime" ("liquidationdatetime"),
+  KEY "ix_revenue_liquidationtimestamp_voided" ("liquidationtimestamp","voided"),
+  KEY "ix_revenue_liquidationtimestamp" ("liquidationtimestamp"),
   KEY "ix_revenue_liquidationrcdid" ("liquidationrcdid"),
   CONSTRAINT "FK_revenue_af" FOREIGN KEY ("afid") REFERENCES "af" ("objid"),
   CONSTRAINT "FK_revenue_afcontrol" FOREIGN KEY ("afcontrolid") REFERENCES "afcontrol" ("objid"),
@@ -2296,6 +2296,7 @@ CREATE TABLE "revenue" (
   CONSTRAINT "FK_revenue_sre" FOREIGN KEY ("sreid") REFERENCES "account" ("objid")
   */
 );
+
 
 /*Table structure for table "riv" */
 

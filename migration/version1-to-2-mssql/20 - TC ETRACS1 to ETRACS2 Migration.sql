@@ -852,8 +852,6 @@ FROM etracs_bayombong..collectionremittance r
 
 
 
-alter table bayombong_etracs..af change column description description varchar(100) null;
-
 insert into bayombong_etracs..af (
 	"objid", 
 	schemaname, 
@@ -919,17 +917,13 @@ SELECT
 	r.endingto, 
 	r.endingqty, 
 	r.parentid AS remittanceid, 
-	ifnull(a.stub,'-') AS stubno, 
+	isnull(a.stub,'-') AS stubno, 
 	'serial' AS aftype 
 FROM etracs_bayombong..remittedform r
 	INNER JOIN etracs_bayombong..afcontrol a ON r.afissuedid = a."objid";
 
 
 
-
-
-alter table bayombong_etracs..remittancelist change column liquidatingofficertitle liquidatingofficertitle varchar(50) ;
-alter table bayombong_etracs..remittancelist change column collectortitle collectortitle varchar(50) ;
 
 INSERT INTO bayombong_etracs..remittancelist 
 	("objid", docstate, txnno, txndate, collectorname, amount, 

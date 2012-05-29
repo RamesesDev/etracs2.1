@@ -1,6 +1,7 @@
 <workunit>
     <invokers>
         <invoker folderid="menu/mgmt" action="init" caption="Rule Management" permission="rulemgmt.view"/>
+        <invoker type="quick_launcher" code="rules" action="init" caption="Rule Management" permission="rulemgmt.view"/>
         
         <invoker type="formActions" action="create" caption="New" mnemonic="n" shortcut="ctrl N" icon="images/doc-new.png"/>
         <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" visibleWhen="#{selectedItem != null}" icon="images/open.png"/>

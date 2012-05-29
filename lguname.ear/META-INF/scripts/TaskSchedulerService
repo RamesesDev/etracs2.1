@@ -11,6 +11,8 @@ class TaskSchedulerService {
 	@ProxyMethod 
 	public def getActiveTasks( def param ) {
 		def qry = em.sqlContext.createNamedQuery("scheduler:active-tasks");
+		qry.setPagingKeys("t.id");
+		
 		if(param?._start) qry.setFirstResult(param._start);
 		if(param?._limit) qry.setMaxResults(param._limit);		
 		def list = qry.resultList;

@@ -50,6 +50,9 @@
             
             @Service('LguService')
             def lguSvc;
+            
+            @Service('CTCReceiptHtmlService')
+            def htmlSvc;
         
             def collectiontitle = 'COMMUNITY TAX CERTIFICATE (INDIVIDUAL)'
             def taxpayer
@@ -125,7 +128,8 @@
             }
             
             def getService() { return svc }
-            def getHtmlService() {}
+            def getHtmlService() { return htmlSvc }
+            
             def getCollectionTitle() { return collectiontitle }
 
             def getParameters() { 

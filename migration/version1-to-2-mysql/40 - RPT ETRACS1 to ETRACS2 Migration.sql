@@ -387,6 +387,38 @@ from etracs_lguname.landadjustmenttype l;
 update  lguname_etracs.landadjustment set expression = replace(replace(replace( expression, '$F{', ''), '$P{',''),'}','');
 
 
+set @@group_concat_max_len=32768;
+
+update lguname_etracs.landadjustment l
+set 
+ classids = (
+	select group_concat(propertyclassificationid) 
+	from etracs_lguname.landadjustmenttype_propertyclassification 
+	where landadjustmenttypeid = l.objid
+ ),
+ appliedto = (
+	select group_concat(pc.code) 
+	from etracs_lguname.landadjustmenttype_propertyclassification la,
+		 etracs_lguname.propertyclassification pc
+	where la.landadjustmenttypeid = l.objid
+	  and la.propertyclassificationid = pc.objid
+ ),
+ classifications = concat(
+	'[',
+	(
+		select group_concat(
+			'[propertyclass:[classname:"', pc.description, '", classcode:"', pc.code, '", classid:"', pc.objid, '"],',
+			'propertyid:"', pc.objid, '", propertycode:"', pc.code, '", propertyname:"', pc.description, '"]'
+		) 
+		from etracs_lguname.landadjustmenttype_propertyclassification la,
+             etracs_lguname.propertyclassification pc
+		where la.landadjustmenttypeid = l.objid
+		  and la.propertyclassificationid = pc.objid
+	),
+	']'
+);
+
+
 
 /**********************************************************************
 * (20)
@@ -490,7 +522,15 @@ select
 	bi.code, 
 	bi.description as name, 
 	bi.unit, 
-	replace(replace(replace(bi.expression, '$P{', ''), '}', ''), '$F{','') as expr, 
+	replace(
+		replace(
+			replace(
+				replace(bi.expression, '$P{', ''), 
+				'}', ''
+			), '$F{',''
+		), 
+		'BASE_VALUE', 'SYS_BASE_VALUE'
+	) as expr, 
 	bi.previd
 from etracs_lguname.bldgadditionalitem bi ;
 

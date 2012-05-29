@@ -1,0 +1,11 @@
+<schema>
+	<element name="collectiongroup" tablename="collectiongroup" >
+		<field name="objid" primary="true"/>
+		<field name="name" required="true"/>
+	</element>
+	
+	<element name="item" tablename="collectiongroup_incomeaccount" >
+		<field name="groupid" primary="true"/>
+		<field name="incomeaccountid" primary="true"/>
+	</element>
+</schema>
