@@ -131,18 +131,10 @@ class RPTLedgerService
     public void post( faasid ) {
         def faas = openFaas( faasid )
 		
-		//check if this faas already has a ledgerid
-		//this happens if the faas state was changed to FORAPPROVAL due typo error of the information
-		//especially in Data Capture transaction
-		if( !faas.ledgerid ) {
-			if( faas.datacapture == true ) postNewLedger( faas, PENDING_STATE )
-			else if( 'TR/TRE/RE/CE/CC/CT'.indexOf( faas.txntype ) >= 0 ) postLedgerItem( faas ) 
-			else if( 'ND/MC'.indexOf( faas.txntype ) >= 0 ) postNewLedger( faas, APPROVED_STATE )
-			else throw new Exception('RPTLedgerService.post: Posting of TxnType ' + faas.txntype + ' is not yet supported.')        
-		}
-		else {
-			updateLedger( faas );
-		}
+		if( faas.datacapture == true ) postNewLedger( faas, PENDING_STATE )
+		else if( 'TR/TRE/RE/CE/CC/CT'.indexOf( faas.txntype ) >= 0 ) postLedgerItem( faas ) 
+		else if( 'ND/MC'.indexOf( faas.txntype ) >= 0 ) postNewLedger( faas, APPROVED_STATE )
+		else throw new Exception('RPTLedgerService.post: Posting of TxnType ' + faas.txntype + ' is not yet supported.')
     }
     
     @ProxyMethod
@@ -207,6 +199,12 @@ class RPTLedgerService
     * Support Methods 
     -------------------------------------------------------------------*/
     void postNewLedger( faas, state ) {
+		//this might happen when the faas state is already APPROVED and was changed to FOR_APPROVAL
+		if( faas.ledgerid ) {
+			updateLedger( faas );
+			return;
+		}
+		
         def ledger = createLedger( faas, state)
         def ledgeritem = createLedgerItem( ledger )
         em.validate( ledger.schemaname, ledger ) 
