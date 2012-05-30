@@ -41,6 +41,11 @@
                 return "_exit";
             }
             
+            public void logoff() {
+                canclose = true;
+                ClientContext.currentContext.platform.logoff();
+            }
+            
             public void exit() {
                 canclose = true;
                 OsirisContext.clientContext.platform.shutdown();

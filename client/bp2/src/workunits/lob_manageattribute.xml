@@ -1,6 +1,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/menu/bp/master" caption="LOB Attributes" permission="bpadmin.lobattributes"/>
+        <invoker folderid="/txn/bp/master" caption="LOB Attributes" permission="bpadmin.lobattributes"/>
         <invoker type="bp.master" caption="LOB Attributes" permission="bpadmin.lobattributes" index="51" target="window" icon="images/folder.png"/>
         
         <invoker type="formActions" action="cancel" shortcut="ctrl c" caption="Cancel" mnemonic="c" immediate="true" icon="images/cancel.png" visibleWhen="#{mode != 'view'}"/>
