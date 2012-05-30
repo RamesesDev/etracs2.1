@@ -10,10 +10,10 @@ package system.reports.ui;
  *
  * @author  ms
  */
-public class ReportsPage extends javax.swing.JPanel {
+public class TreeExplorerPage extends javax.swing.JPanel {
     
     /** Creates new form ReportPage */
-    public ReportsPage() {
+    public TreeExplorerPage() {
         initComponents();
     }
     
@@ -29,6 +29,7 @@ public class ReportsPage extends javax.swing.JPanel {
 
         xTree1.setHandler("tree");
         xTree1.setName("selection");
+        xTree1.setRowHeight(20);
         jScrollPane1.setViewportView(xTree1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
