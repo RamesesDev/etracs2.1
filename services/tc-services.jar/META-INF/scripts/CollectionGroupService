@@ -19,7 +19,7 @@ public class CollectionGroupService
 		else {
 			qry = em.sqlContext.createNamedQuery('collectiongroup:get-list')
 		}
-		qry.setPagingKeys("objid")
+		//qry.setPagingKeys("objid")
 		qry.setParameters(param)
 		
 		if( param._start ) qry.setFirstResult(param._start)
