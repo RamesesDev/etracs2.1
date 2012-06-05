@@ -1,0 +1,91 @@
+import com.rameses.annotations.*;
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+
+
+class FAASTitleUpdateService
+{
+	@PersistenceContext('main')
+	def em
+	
+	@Service('LogService')
+	def logService
+	
+	@Service('SequenceService')
+	def seqSvc
+	
+	@Service('DateService')
+	def dateSvc
+	
+	@Env
+	def env
+	
+	
+	@ProxyMethod
+	public def getList( param ) {
+		def qry
+		if( param.searchText || param.state ) {
+			if( param.searchText == null ) param.searchText = ''
+			param.tdno = param.searchText + '%'
+			if( param.state )
+				qry = em.sqlContext.createNamedQuery('faastitleupdate:list-by-tdno-state').setParameters(param)
+			else
+				qry = em.sqlContext.createNamedQuery('faastitleupdate:list-by-tdno').setParameters(param)
+		}
+		else {
+			qry = em.sqlContext.createNamedQuery('faastitleupdate:list')
+		}
+		
+		if( param._start ) qry.setFirstResult( param._start )
+		if( param._limit ) qry.setMaxResults( param._limit )
+		
+		return qry.resultList
+	}
+	
+	@ProxyMethod
+	public def approve( entity ) {
+		def faas = em.sqlContext.createNamedQuery('faastitleupdate:get-faas-info').setParameter('objid', entity.faasid).singleResult
+		faas.info = em.serializer.read( faas.info )
+		
+		faas.info.titleno = entity.titleno
+		faas.info.titledate = entity.titledate
+		faas.info = em.serializer.write( faas.info )
+		em.sqlContext.createNamedExecutor('faastitleupdate:update-faas').setParameters(faas).execute()
+		
+		faas.titleno = entity.titleno
+		faas.titledate = entity.titledate
+		em.sqlContext.createNamedExecutor('faastitleupdate:update-faaslist').setParameters(faas).execute()
+		
+		entity.state = 'APPROVED'
+		return save( entity )
+	}
+	
+	@ProxyMethod
+	public def save( entity ) {
+		if( entity.sate == 'APPROVED' ) {
+			entity.approvedby = env.USER
+			entity.dtapproved = dateSvc.serverDate
+		}
+		else {
+			entity.lastmodifiedby = env.USER
+			entity.dtlastmodified = dateSvc.serverDate
+		}
+		
+		if( !entity.txnno ) {
+			def year = dateSvc.serverYear
+			def series = seqSvc.getNextFormattedSeries( 'FAASTITLEUPDATE-' + year );
+			entity.txnno = year + '-' + series
+			return em.create('faastitleupdate', entity)
+		}
+		else {
+			return em.update('faastitleupdate', entity)
+		}
+	}
+	
+	@ProxyMethod
+	public def read( objid ) {
+		return em.read('faastitleupdate', [objid: objid])
+	}
+
+
+}

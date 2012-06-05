@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/txn/rpt/titleupdate" caption="FAAS Title Update List" index="2" target="window" permission="titleupdate.view"/>
+        
+        <invoker type="formActions" caption="Close" action="_close" icon="images/cancel.png" mnemonic="c" index="-1"/>
+    </invokers>
+    
+    <code lang="groovy">
+    <![CDATA[
+    import com.rameses.rcp.annotations.* 
+    import com.rameses.rcp.common.* 
+    import com.rameses.osiris2.client.* 
+    
+
+    public class FAASTitleUpdateMgmtController 
+    {
+        @Service('FAASTitleUpdateService')
+        def svc
+        
+        def selectedItem
+        def filter = [:]
+        def stateList = ['DRAFT', 'APPROVED']
+        
+        def formActions = InvokerUtil.lookupActions('faastitleupdate:formActions', { [entity: selectedItem] } as InvokerParameter)
+        
+        
+        def getState() { filter.state }
+        
+        void setState( s ) {
+            filter.state = s
+            listHandler.load()
+        }
+        
+        def listHandler = [
+            getRows: { return 20 },
+            getColumns: {
+                return [
+                    new Column(name:'txnno', caption:'Txn No.'),
+                    new Column(name:'state', caption:'State'),
+                    new Column(name:'tdno', caption:'TD No.'),
+                    new Column(name:'titleno', caption:'New Title No.'),
+                    new Column(name:'titledate', caption:'New Title Date'),
+                    new Column(name:'remarks', caption:'Remarks'),
+                ]
+            },
+            fetchList: { params ->
+                params.putAll( filter )
+                return svc.getList( params )
+            }
+        ] as PageListModel
+    }
+
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.update.FAASTitleUpdateListPage"/>
+    </pages>
+</workunit>
+
+

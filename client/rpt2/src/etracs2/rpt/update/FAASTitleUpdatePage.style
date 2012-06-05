@@ -1,0 +1,10 @@
+"faasinfo" [mode=='create'] { enabled: true; }
+"faasinfo" [mode!='create'] { enabled: false; }
+
+"entity.(title.*|remarks)" [entity.tdno!=null && mode!='view'] {
+    enabled: true;
+}
+
+"entity.(title.*|remarks)" [entity.tdno==null || mode=='view'] {
+    enabled: false;
+}

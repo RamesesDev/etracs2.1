@@ -46,7 +46,7 @@ class Var {
 		
 		if( param?._start ) qry.setFirstResult( param._start );
 		if( param?._limit ) qry.setMaxResults( param._limit );
-		if( param ) qry.setParameters( param );
+		if( param.category ) qry.setParameter( 1, param.category );
 		return qry.resultList;
    }
 

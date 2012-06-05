@@ -1,12 +1,12 @@
 [get]
-select value, datatype from sys_var where name=$P{name}
+select value, datatype from sys_var where name=? 
 
 [set]
-update sys_var set value=$P{value} where name=$P{name}
+update sys_var set value=? where name=? 
 
 [list]
 select * from sys_var 
-where category=$P{category} 
+where category=? 
 order by name 
 
 [category]

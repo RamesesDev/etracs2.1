@@ -4,7 +4,7 @@
  * Created on November 2, 2010, 3:59 PM
  */
 
-package system.reports.ui;
+package system.explorer.ui;
 
 /**
  *

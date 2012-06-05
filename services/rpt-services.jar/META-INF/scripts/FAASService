@@ -713,27 +713,27 @@ class FAASService
         if( ledger.docstate == 'CANCELLED') throw new Exception('Ledger has already been cancelled.')
 		if( TO_BOOLEAN( ledger.taxable ) == false ) return 
 		
-		def rptsetting = rptsettingSvc.open()
-		
-		if( !rptsetting ) {}
-		else if( txntype.matches(/TR|TRE/) && rptsetting.allowtransferwithbalance ) 
-			return;
-		else if( txntype == 'CE' && rptsetting.allowcorrectionwithbalance )
-			return;
-		else if( txntype == 'CT' && rptsetting.allowchangetaxabilitywithbalance )
-			return;
-		else if( txntype == 'SD' && rptsetting.allowsubdivisionwithbalance )
-			return;
-		else if( txntype == 'CS' && rptsetting.allowconsolidationwithbalance )
-			return;
-		else if( txntype == 'CC' && rptsetting.allowreclasswithbalance )
-			return;
+		if( isTxnAllowedWithBalance( txntype ) ) return
 		
 		def errmsg = 'Ledger is not fully paid.'
 		if( ledger.assessedvalue > 0.0 && ledger.lastyearpaid < parseddate.year ) throw new Exception( errmsg )
         if( ledger.assessedvalue > 0.0 && ledger.lastqtrpaid < 4 ) throw new Exception( errmsg )
     }
     
+	@ProxyMethod
+	public boolean isTxnAllowedWithBalance( txntype ) {
+		def rptsetting = rptsettingSvc.open()
+		
+		if( !rptsetting ) {}
+		else if( txntype.matches(/TR|TRE/) && rptsetting.allowtransferwithbalance )  return true
+		else if( txntype == 'CE' && rptsetting.allowcorrectionwithbalance )          return true
+		else if( txntype == 'CT' && rptsetting.allowchangetaxabilitywithbalance )    return true
+		else if( txntype == 'SD' && rptsetting.allowsubdivisionwithbalance )         return true
+		else if( txntype == 'CS' && rptsetting.allowconsolidationwithbalance )       return true
+		else if( txntype == 'CC' && rptsetting.allowreclasswithbalance )             return true
+		
+		return false;
+	}
     
     @ProxyMethod
     public void initFaasInfo( faas ) {

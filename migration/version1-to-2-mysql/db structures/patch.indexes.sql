@@ -12,6 +12,9 @@ create index  ix_liquidatingofficerid_txndate on remittancelist(liquidatingoffic
 alter table subdivisionland change column itemno itemno int(11);
 
 
+/* faaslist */
+create index ix_faaslist_pin on faaslist(pin);
+
 
 
 

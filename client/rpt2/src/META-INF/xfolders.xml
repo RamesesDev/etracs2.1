@@ -21,6 +21,8 @@
             <folder id="subdivision" caption="Subdivision"/>
             <folder id="consolidation" caption="Consolidation"/>
             <folder id="cert" caption="Certifications"/>
+            <folder id="rpupdate" caption="Real Property Update"/>
+            <folder id="titleupdate" caption="Title Update"/>
         </folder>
         <folder id="landtax" caption="Land Tax"/>
     </folder>

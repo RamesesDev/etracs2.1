@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/txn/rpt/rpupdate" caption="Real Property Update List" index="2" target="window" permission="realpropertyupdate.view"/>
+        
+        <invoker type="formActions" caption="Close" action="_close" icon="images/cancel.png" mnemonic="c" index="-1"/>
+    </invokers>
+    
+    <code lang="groovy">
+    <![CDATA[
+    import com.rameses.rcp.annotations.* 
+    import com.rameses.rcp.common.* 
+    import com.rameses.osiris2.client.* 
+    
+
+    public class FAASRealPropertyUpdateMgmtController 
+    {
+        @Service('RealPropertyUpdateService')
+        def svc
+        
+        def selectedItem
+        def filter = [:]
+        def stateList = ['DRAFT', 'APPROVED']
+        
+        def formActions = InvokerUtil.lookupActions('realproperty:formActions', { [entity: selectedItem] } as InvokerParameter)
+        
+        
+        def getState() { filter.state }
+        
+        void setState( s ) {
+            filter.state = s
+            listHandler.load()
+        }
+        
+        def listHandler = [
+            getRows: { return 20 },
+            getColumns: {
+                return [
+                    new Column(name:'txnno', caption:'Txn No.'),
+                    new Column(name:'state', caption:'State'),
+                    new Column(name:'pin', caption:'PIN'),
+                    new Column(name:'cadastrallotno', caption:'Cadastral'),
+                    new Column(name:'blockno', caption:'Block No.'),
+                    new Column(name:'surveyno', caption:'Survey No.'),
+                    new Column(name:'houseno', caption:'House No.'),
+                    new Column(name:'street', caption:'Street'),
+                    new Column(name:'purok', caption:'Purok'),
+                    new Column(name:'north', caption:'North Boundary'),
+                    new Column(name:'east', caption:'East Boundary'),
+                    new Column(name:'south', caption:'South Boundary'),
+                    new Column(name:'west', caption:'West Boundary'),
+                ]
+            },
+            fetchList: { params ->
+                params.putAll( filter )
+                return svc.getList( params )
+            }
+        ] as PageListModel
+    }
+
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.update.RPUpdateListPage"/>
+    </pages>
+</workunit>
+
+
