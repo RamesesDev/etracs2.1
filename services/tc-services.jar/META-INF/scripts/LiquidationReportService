@@ -58,7 +58,7 @@ public class LiquidationReportServices{
 		
 		def liquidation = em.read( "liquidation:liquidation", [objid: liquidationid] );
 		if( !liquidation ) throw new Exception("Liquidation with objid $liquidationid not found.");
-		if( liquidation.opener == 'single' ) throw new Exception('This report is applicable to Multi-Cashier transaction only.')
+		//if( liquidation.opener == 'single' ) throw new Exception('This report is applicable to Multi-Cashier transaction only.')
 		
 		//get the rcd for the specified fundTotal
 		def rcd = liquidation.rcds.find{ it.fundid == fundid }
