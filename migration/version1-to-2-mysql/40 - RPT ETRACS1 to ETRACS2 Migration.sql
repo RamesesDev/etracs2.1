@@ -758,7 +758,6 @@ from etracs_lguname.taxdeclaration td
 
 
 
--- (35)
 insert into lguname_etracs.faaslist 
 	(objid, schemaname, schemaversion, docstate, datacapture, 
 	autonumber, 
