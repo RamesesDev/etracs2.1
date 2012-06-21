@@ -58,12 +58,6 @@
 	<variable name="TOTALAREAHA" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{areaha}]]></variableExpression>
 	</variable>
-	<variable name="AREA_TYPE" class="java.lang.String" resetType="Report" calculation="First">
-		<variableExpression><![CDATA[$F{areatype}]]></variableExpression>
-	</variable>
-	<variable name="MIXED_AREA" class="java.lang.Integer" resetType="Report" calculation="First">
-		<variableExpression><![CDATA[$F{mixedarea}]]></variableExpression>
-	</variable>
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
@@ -451,7 +445,7 @@ Type]]></text>
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-15">
-							<printWhenExpression><![CDATA[new Boolean( $V{MIXED_AREA}.intValue() == 0 && "sqm".equals(($V{AREA_TYPE}+"").toLowerCase()) )]]></printWhenExpression>
+							<printWhenExpression><![CDATA[new Boolean( $F{mixedarea}.intValue() == 0 && "sqm".equals(($F{areatype}+"").toLowerCase()) )]]></printWhenExpression>
 						</reportElement>
 					<box rightPadding="3">					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
@@ -470,7 +464,7 @@ Type]]></text>
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-18">
-							<printWhenExpression><![CDATA[new Boolean( $V{MIXED_AREA}.intValue() == 0 && "ha".equals(($V{AREA_TYPE}+"").toLowerCase()) )]]></printWhenExpression>
+							<printWhenExpression><![CDATA[new Boolean( $F{mixedarea}.intValue() == 0 && "ha".equals(($F{areatype}+"").toLowerCase()) )]]></printWhenExpression>
 						</reportElement>
 					<box rightPadding="3">					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
@@ -505,7 +499,7 @@ Type]]></text>
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-20">
-							<printWhenExpression><![CDATA[new Boolean( $V{MIXED_AREA}.intValue() == 1 )]]></printWhenExpression>
+							<printWhenExpression><![CDATA[new Boolean( $F{mixedarea}.intValue() == 1 )]]></printWhenExpression>
 						</reportElement>
 					<box rightPadding="3">					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
