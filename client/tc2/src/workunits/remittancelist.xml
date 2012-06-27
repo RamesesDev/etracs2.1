@@ -2,8 +2,8 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/tc/txn" caption="Remittances" permission="remittance.viewlist"/>
-        <invoker type="home.action" caption="Remittances" permission="remittance.viewlist" index="111" icon="images/folder.png" target="window"/>
+        <invoker folderid="/menu/mgmt" caption="Remittance Management" permission="remittance.viewlist"/>
+        <invoker type="home.action" caption="Remittance Management" permission="remittance.viewlist" index="111" icon="images/folder.png" target="window"/>
         
         <invoker type="quick_launcher" code="REMIT00" caption="Remittances" permission="remittance.viewlist"/>
         

@@ -45,6 +45,7 @@ class EntityIndividualController extends etracs2.groovy.AbstractEntityController
         return [
             entitytype : 'individual',
             info       : [:],
+            lguname    : var.lgu_name,
         ]
     } 
 

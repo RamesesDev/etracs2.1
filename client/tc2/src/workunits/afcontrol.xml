@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="menu/tc/txn" action="init" caption="AF Control" permission="afcontrol.changemode" />
+        <invoker folderid="menu/tc" action="init" caption="AF Control" permission="afcontrol.changemode" />
         <invoker type="home.action" action="init" caption="AF Control" target="window" icon="images/folder.png" permission="afcontrol.changemode" />
         
         <invoker type="quick_launcher" code="AFC01" action="init" caption="AF Control" permission="afcontrol.changemode" />

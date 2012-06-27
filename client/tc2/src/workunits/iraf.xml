@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker type="home.action" action="init" caption="IRAF" permission="iraf.viewlist" icon="images/folder.png" target="window"/>
-        <invoker folderid="/menu/tc/txn" action="init" caption="IRAF" permission="iraf.viewlist" target="window"/>
+        <invoker folderid="/menu/tc" action="init" caption="IRAF" permission="iraf.viewlist" target="window"/>
         
         <invoker type="quick_launcher" code="IRAF01" action="init" caption="IRAF" permission="iraf.viewlist" target="window"/>
         

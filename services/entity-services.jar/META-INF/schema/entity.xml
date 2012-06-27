@@ -9,6 +9,7 @@
 		<field name="mailingaddress" />
 		<field name="entitytype" required="true"/>
 		<field name="remarks" />
+		<field name="lguname" />
 		<complex name="info" ref="${entitytype}" serializer="default" />
 	</element>
 	

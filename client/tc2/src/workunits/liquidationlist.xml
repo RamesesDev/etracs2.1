@@ -2,7 +2,8 @@
 <workunit>
     
     <invokers>
-        <invoker type="home.action" folderid="/menu/tc/txn" caption="Liquidations" permission="liquidation.viewlist" index="122" icon="images/folder.png" target="window"/>
+        <invoker folderid="/menu/mgmt" caption="Liquidation Management" permission="liquidation.viewlist" index="122" target="window"/>
+        <invoker type="home.action" caption="Liquidation Management" permission="liquidation.viewlist" index="122" icon="images/folder.png" target="window"/>
         <invoker type="quick_launcher" code="LIQ00"  caption="Liquidations" permission="liquidation.viewlist" index="122" icon="images/folder.png" />
         <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="liquidation.create"/>
     </invokers>

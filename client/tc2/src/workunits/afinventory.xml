@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker type="home.action" action="init" caption="Accountable Form Inventory" permission="afinventory.view" icon="images/folder.png" target="window"/>
-        <invoker folderid="/menu/tc/txn" action="init" caption="Accountable Form Inventory" permission="afinventory.view" target="window"/>
+        <invoker folderid="/menu/tc" action="init" caption="Accountable Form Inventory" permission="afinventory.view" target="window"/>
         <invoker type="quick_launcher" code="AFINV01" action="init" caption="Accountable Form Inventory" permission="afinventory.view" target="window"/>
     </invokers>
     <code>

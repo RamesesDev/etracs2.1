@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="ruleset" caption="RPT Billing Rules (New)" zpermission="rptbillingrules.view" index="50"/>
+        <invoker type="ruleset" caption="RPT Billing Rules" permission="rptbillingrule.view" index="50"/>
     </invokers>
     
     <code>

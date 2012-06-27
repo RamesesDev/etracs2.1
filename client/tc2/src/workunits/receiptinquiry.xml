@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc/txn" caption="Receipt Inquiry" permission="receipt.inquire"/>
+        <invoker folderid="/menu/tc" caption="Receipt Inquiry" permission="receipt.inquire"/>
     </invokers>
     <code>
 <![CDATA[

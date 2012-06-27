@@ -2,9 +2,9 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/tc/txn" caption="Post Captures" permission="postcapturereceipt.viewlist"/>
+        <invoker folderid="/menu/mgmt" caption="Post Capture Receipt Management" permission="postcapturereceipt.viewlist"/>
         <invoker type="quick_launcher" code="POSTCAPTURE00" caption="Post Captures" permission="postcapturereceipt.viewlist"/>
-        <invoker type="home.action" caption="Post Captures" permission="postcapturereceipt.viewlist" index="113" icon="images/folder.png" target="window"/>
+        <invoker type="home.action" caption="Post Capture Receipt Management" permission="postcapturereceipt.viewlist" index="113" icon="images/folder.png" target="window"/>
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="postcapturereceipt.create"/>
     </invokers>

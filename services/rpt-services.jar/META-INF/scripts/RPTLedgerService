@@ -35,7 +35,9 @@ class RPTLedgerService
     def LEDGERITEM_SCHEMA = 'rptledger:rptledgeritem' 
     def SCHEMA_VERSION = '1.0'
     
-    
+    @Service('MessengerService')
+	def msgSvc
+
     
     @ProxyMethod
     public List getList( docstate, searchText, params ) {
@@ -83,12 +85,14 @@ class RPTLedgerService
         ledger.lastyearpaid = minyear - 1
         ledger.lastqtrpaid  = 4
         em.update( ledger.schemaname, ledger )
+		
+		sendToProvince(ledger.objid )
         
         logSvc.log('APPROVE', 'RPTLedger', ledger.objid)
         return ledger 
     }
     
-    @ProxyMethod
+	@ProxyMethod
     public void insertLedgerItem( ledgeritem ) { 
         ledgeritem.schemaname = LEDGERITEM_SCHEMA
         ledgeritem.schemaversion = SCHEMA_VERSION
@@ -331,6 +335,25 @@ class RPTLedgerService
 						.setFirstResult( params._start )
 						.setMaxResults( params._limit )
 						.resultList
+	}
+	
+	void sendToProvince( ledgerid ) {	
+		if( var.lgu_type?.toLowerCase() != 'municipality' ) return 
+		
+		def remote_connection_active = var.remote_connection_active
+		if( !remote_connection_active ) remote_connection_active = 0
+		
+		if( TO_BOOLEAN(remote_connection_active) == true) {
+			def attachment = [ ledger: open( ledgerid) ]
+			def msg = msgSvc.createMessage( 'province-rptledger.approve', attachment )
+			msg.refid = ledgerid 
+			msgSvc.send( msg ) 
+		}
+    }
+	
+	boolean TO_BOOLEAN( value ) {
+		if( value instanceof Boolean ) return value 
+		return '1/y/yes/true/t'.indexOf( value.toString().toLowerCase() ) >= 0
 	}
 }
 

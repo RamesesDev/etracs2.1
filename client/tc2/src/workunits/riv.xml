@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc/txn" action="init" caption="Requisition Issue Voucher" permission="riv_lgu.create" />
-        <invoker folderid="/menu/tc/txn" action="initCollector" caption="Requisition Issue Voucher (Collector)" permission="riv.create"/>
+        <invoker folderid="/menu/tc" action="init" caption="Requisition Issue Voucher" permission="riv_lgu.create" index="20"/>
+        <invoker folderid="/menu/tc" action="initCollector" caption="Requisition Issue Voucher (Collector)" permission="riv.create" index="20"/>
         
         <invoker type="quick_launcher" code="RIV01" action="init" caption="Requisition Issue Voucher" permission="riv_lgu.create" />
         <invoker type="quick_launcher" code="RIV02" action="initCollector" caption="Requisition Issue Voucher (Collector)" permission="riv.create"/>

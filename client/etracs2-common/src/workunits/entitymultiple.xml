@@ -80,6 +80,7 @@ class EntityMultipleController extends etracs2.groovy.AbstractEntityController
             info       : [
                 fullname : ''
             ],
+            lguname    : var.lgu_name,
         ]
     } 
     

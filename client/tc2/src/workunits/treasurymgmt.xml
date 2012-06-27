@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="menu/tc/txn" action="init" caption="Treasury Management" permission="treasurymgmt.view"/>
+        <invoker folderid="menu/mgmt" action="init" caption="Treasury Management" permission="treasurymgmt.view" index="50"/>
         
         <invoker type="quick_launcher" code="TRMGMT" action="init" caption="Treasury Management" permission="treasurymgmt.view"/>
         

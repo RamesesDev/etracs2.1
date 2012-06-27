@@ -46,6 +46,7 @@ class EntityJuridicalController extends etracs2.groovy.AbstractEntityController
         return [
             entitytype : 'juridical',
             info       : [:],
+            lguname    : var.lgu_name,
         ]
     } 
 

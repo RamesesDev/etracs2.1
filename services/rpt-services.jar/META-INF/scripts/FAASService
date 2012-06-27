@@ -1530,12 +1530,18 @@ class FAASService
     }
     
     void sendToOutbox( faas ) {	
-		///// if( faas.info.datacapture == false ) {
+		def remote_connection_active = var.remote_connection_active
+		if( !remote_connection_active ) remote_connection_active = 0
+		
+		def remote_connection_debug = var.remote_connection_debug
+		if( ! remote_connection_debug ) remote_connection_debug = 0
+		
+		if( (faas.info.datacapture == false || TO_BOOLEAN(remote_connection_debug) == true ) && TO_BOOLEAN(remote_connection_active) == true) {
 			def attachment = [ faas:faas, attachments:getAttachments( faas.objid) ]
 			def msg = msgSvc.createMessage( 'faas.receive', attachment )
 			msg.refid = faas.objid 
 			msgSvc.send( msg ) 
-		///// }
+		}
     }
     
     void moveOutboxMessageToProcessed( refid ) {

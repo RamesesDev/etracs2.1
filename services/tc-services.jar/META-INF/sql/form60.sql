@@ -45,6 +45,15 @@ DELETE FROM form60account WHERE acctid = $P{acctid}
 [removeAccountByParentId]
 DELETE FROM form60account WHERE parentid = $P{parentid} 
 
+[getLiquidatedSummary]
+SELECT  
+	fa.parentid,  
+	SUM(rev.amount) AS total  
+FROM revenue rev 
+	INNER JOIN form60account fa ON rev.acctid = fa.acctid 
+WHERE rev.liquidationtimestamp LIKE $P{timestamp} 
+  AND rev.voided = 0 
+GROUP BY fa.parentid 
 
 [getDepositedSummary]
 SELECT  
@@ -54,5 +63,4 @@ FROM revenue rev
 	INNER JOIN form60account fa ON rev.acctid = fa.acctid 
 WHERE rev.deposittimestamp LIKE $P{timestamp} 
   AND rev.voided = 0 
-  AND rev.docstate = 'DEPOSITED' 
 GROUP BY fa.parentid 

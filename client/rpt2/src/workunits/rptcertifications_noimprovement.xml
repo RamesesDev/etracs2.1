@@ -4,7 +4,7 @@
         <invoker type="rptcertifications" caption="Land with No Improvement" target="window" index="3" permission="noimprovement.open" />
         <invoker type="noimprovement.view"  caption="Land with No Improvement" index="3" action="doPreview" permission="noimprovement.view" />
         
-        <invoker folderid="/menu/rpt/cert" caption="Land with No Improvement" target="window" index="4" permission="noimprovement.open" />
+        <invoker folderid="/menu/rpt/cert" action="init" caption="Land with No Improvement" target="window" index="4" permission="noimprovement.open" />
         
         <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />
@@ -32,6 +32,9 @@
             @Service('RPTCertificationsService')
             def svc;
         
+            @Service('DateService')
+            def dtSvc;
+
             @Binding 
             def binding;
             
@@ -39,6 +42,15 @@
             def list = [];
             def mode = '_default';
             def taxpayer;
+            
+            void init() {
+                certification.certifiedby = svcParams.getStandardParameter( OsirisContext.env.USERNAME ).ASSESSORNAME;
+                certification.certifiedbytitle = svcParams.getStandardParameter( OsirisContext.env.USERNAME ).ASSESSORTITLE;
+                certification.byauthority = svcParams.getStandardParameter( OsirisContext.env.USERNAME ).ASSESSOROFFICETITLE
+                certification.purpose = "whatever legal purposes it may serve him/her"; 
+                certification.serverDate = new java.sql.Date( dtSvc.serverDate.getTime() );
+                certification.caption = 'Land with No Improvement'
+            }
             
             def getLookupEntity(){
                 return InvokerUtil.lookupOpener("entity.lookup", [:] );

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="ruleset" caption="BP Billing Rules" zpermission="bpbillingrules.view" index="50"/>
+        <invoker type="ruleset" caption="BP Billing Rules" permission="bpbillingrule.view" index="50"/>
     </invokers>
     
     <code>

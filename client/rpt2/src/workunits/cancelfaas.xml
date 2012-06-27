@@ -4,8 +4,8 @@
        <invoker type="cancelfaas.create" action="initCreate" caption="New Cancel FAAS" />
        <invoker type="cancelfaas.open" action="initOpen" caption="View Cancel FAAS" />
        
-       <invoker type="quick_launcher" code="CF01" target="window" action="initCreate" caption="New Cancel FAAS" />
-       <invoker folderid="/menu/rpt/faas" index="95" target="window" action="initCreate" caption="Cancel FAAS" />
+       <invoker type="quick_launcher" code="CF01" target="window" action="initCreate" caption="New Cancel FAAS" permission="cancelfaasmgt.view"/>
+       <invoker folderid="/menu/rpt/faas" index="95" target="window" action="initCreate" caption="Cancel FAAS" permission="cancelfaasmgt.view"/>
        
        <invoker type="formActions" action="_close"         caption="Close"                 shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
        <invoker type="formActions" action="save"           caption="Save"                  shortcut="ctrl S"   mnemonic="s"  visibleWhen="#{entity.docstate != 'APPROVED' and mode != 'view'}"  icon="images/save.png" />

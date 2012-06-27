@@ -20,10 +20,6 @@ class RPTOfficersService
 	def schemaname = 'rptofficers:rptofficers';
 	def schemaversion = '1.0';
 	
-	@Service('ETRACSUserService')
-	def userSvc;
-	
-	
     @ProxyMethod
     public List lookup( searchText, officerType, params ) {
 		params.searchText = searchText;

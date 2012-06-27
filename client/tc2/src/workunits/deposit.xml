@@ -1,9 +1,9 @@
 <workunit>
     <invokers>
         <invoker type="home.action" caption="Deposit" permission="deposit.create" icon="images/folder.png" target="window" index="131"/>
-        <invoker folderid="menu/tc" caption="Deposit" permission="deposit.create" target="window" index="131"/>
+        <invoker folderid="/menu/tc" caption="Deposit" permission="deposit.create" target="window" index="131"/>
         
-        <invoker type="quick_launcher" code="DEPOSIT01" caption="Deposit" permission="deposit.create" target="window" index="131"/>
+        <invoker type="quick_launcher" code="DEP01" caption="Deposit" permission="deposit.create" target="window" index="131"/>
         
         <invoker type="initActions" action="doNext" caption="Next" mnemonic="n" shortcut="ctrl N" icon="images/next.png" index="0" />
         <invoker type="initActions" action="_close" immediate="true" caption="Cancel" mnemonic="c" icon="images/doc-cancel.png" />
