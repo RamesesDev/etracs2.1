@@ -47,7 +47,7 @@ public final class UpdateCenterUtil {
         //create the directories
         File f = new File(appPath);
         if (!f.exists()) f.mkdirs();
-        return appPath + "/update.sxml";
+        return appPath + "/updates.sxml";
     }
     
     public static String buildHostPath(String appurl) {

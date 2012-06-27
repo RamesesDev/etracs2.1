@@ -29,6 +29,7 @@ public class RuleMgmtMainPage extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         xActionTextField1 = new com.rameses.rcp.control.XActionTextField();
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         jPanel3 = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
@@ -42,21 +43,38 @@ public class RuleMgmtMainPage extends javax.swing.JPanel {
         jSplitPane2.setDividerLocation(250);
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.BorderLayout());
-
         jPanel2.setBorder(new com.rameses.rcp.control.border.XUnderlineBorder());
         xActionTextField1.setActionName("search");
         xActionTextField1.setHint("Search Rule");
         xActionTextField1.setName("searchText");
         xActionTextField1.setPreferredSize(new java.awt.Dimension(200, 19));
-        jPanel2.add(xActionTextField1, java.awt.BorderLayout.WEST);
 
         xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 5, 1, 1));
         xActionBar1.setDepends(new String[] {"selectedItem"});
         xActionBar1.setDynamic(true);
         xActionBar1.setName("formActions");
-        jPanel2.add(xActionBar1, java.awt.BorderLayout.CENTER);
 
+        xComboBox1.setImmediate(true);
+        xComboBox1.setItems("stateList");
+        xComboBox1.setName("state");
+
+        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel2Layout.createSequentialGroup()
+                .add(xActionTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(xComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 170, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(xActionBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(xActionTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+            .add(xComboBox1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+            .add(xActionBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+        );
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
         jSplitPane1.setDividerLocation(200);
@@ -77,11 +95,11 @@ public class RuleMgmtMainPage extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 439, Short.MAX_VALUE)
         );
         jPanel1.add(jPanel3, java.awt.BorderLayout.CENTER);
 
@@ -91,7 +109,6 @@ public class RuleMgmtMainPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Rule Sets");
         jScrollPane1.setBorder(xTitledBorder1);
         jScrollPane1.setPreferredSize(new java.awt.Dimension(200, 130));
-        xList1.setDynamic(true);
         xList1.setExpression("#{caption}");
         xList1.setItems("rulesets");
         xList1.setName("selectedRuleset");
@@ -114,6 +131,7 @@ public class RuleMgmtMainPage extends javax.swing.JPanel {
     private javax.swing.JSplitPane jSplitPane2;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XActionTextField xActionTextField1;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XEditorPane xEditorPane1;
     private com.rameses.rcp.control.XList xList1;

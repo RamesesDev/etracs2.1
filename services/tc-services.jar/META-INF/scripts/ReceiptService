@@ -42,18 +42,24 @@ class ReceiptService
 	
 	@ProxyMethod
 	public def create( receipt ) {
-		updateReceiptInfo( receipt )
-		checkDuplicateSerialNo( receipt.objid, receipt.info.afid, receipt.info.serialno )
-		validate( receipt )
-		em.create( receipt.schemaname, receipt )
-		buildDateBreakdownInfo( receipt )
-		em.create( LIST_SCHEMA, receipt )
-		postReceiptItems( receipt )
-		postPayments( receipt )
-		postAFControl( receipt )
-		logService.log('CREATE',receipt.doctype, receipt.objid)
-		
-		return receipt 
+		try {
+			updateReceiptInfo( receipt )
+			checkDuplicateSerialNo( receipt.objid, receipt.info.afid, receipt.info.serialno )
+			validate( receipt )
+			em.create( receipt.schemaname, receipt )
+			buildDateBreakdownInfo( receipt )
+			em.create( LIST_SCHEMA, receipt )
+			postReceiptItems( receipt )
+			postPayments( receipt )
+			postAFControl( receipt )
+			logService.log('CREATE',receipt.doctype, receipt.objid)
+			
+			return receipt 
+		}
+		catch(e) {
+			e.printStackTrace()
+			throw e
+		}
 	}
 	
 	@ProxyMethod
@@ -420,14 +426,18 @@ class ReceiptService
 		}
 		else if( afcontrol.qtyissued == 0 ){
 			//first issuance after remittance
-			afcontrol.qtyissued += 1
+			if( afcontrol.qtyissued ) //some migrated values from version 1 are null
+				afcontrol.qtyissued += 1
+			
 			afcontrol.balance -= 1
 			afcontrol.issuedfrom = afcontrol.beginseries
 			afcontrol.issuedto = afcontrol.beginseries
 		}
 		else {
 			//succeeding issuances
-			afcontrol.qtyissued += 1
+			if( afcontrol.qtyissued ) //some migrated values from version 1 are null
+				afcontrol.qtyissued += 1
+			
 			afcontrol.balance -= 1
 			afcontrol.issuedto = afcontrol.currentseries
 		}

@@ -6,6 +6,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/menu/mgmt" caption="Cancel Annotation Management" permission="cancelannotationmgmt.view" index="140"/>
+        <invoker folderid="/txn/rpt" caption="Cancel Annotation Management" permission="cancelannotationmgmt.view" index="140"/>
         <invoker type="quick_launcher" code="FAC00" caption="Cancel Annotation Management" permission="cancelannotationmgmt.view"/>
         <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="cancelannotation.open"/>
     </invokers>

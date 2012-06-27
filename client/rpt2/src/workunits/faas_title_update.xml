@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/txn/rpt/titleupdate" action="create" caption="Title Update" index="0" permission="titleupdate.create"/>
+        <invoker type="faastitleupdate:formActions" action="create" caption="New" index="0" target="window" icon="images/doc-new.png" permission="titleupdate.create"/>
+        <invoker type="faastitleupdate:formActions" action="open" caption="Open" index="0" target="window" icon="images/open.png" permission="titleupdate.open"/>
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" visibleWhen="#{mode=='view'}" icon="images/cancel.png"/>
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{mode=='view' and entity.state != 'APPROVED'}" icon="images/edit.png" permission="titleupdate.edit"/>
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode!='view'}" icon="images/save.png"/>
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" visibleWhen="#{mode!='view'}" icon="images/cancel.png" immediate="true"/>
+        <invoker type="formActions" action="approve" caption="Approve" mnemonic="c" visibleWhen="#{mode=='view' and entity!=null and entity.state=='DRAFT'}" icon="images/doc-approve.png" permission="titleupdate.approve"/>
+    </invokers>
+    
+    <code lang="groovy">
+    <![CDATA[
+    import com.rameses.rcp.annotations.* 
+    import com.rameses.rcp.common.* 
+    import com.rameses.osiris2.client.* 
+    
+
+    public class FAASTitleUpdateController 
+    {
+        @Binding
+        def binding
+        
+        @Service('FAASTitleUpdateService')
+        def svc
+        
+        @Service('FAASService')
+        def faasSvc
+        
+        @FormId
+        @FormTitle
+        def formTitle
+        
+        def entity
+        def mode
+        
+        def faasinfo
+        
+        def faasLookupHandler = InvokerUtil.lookupOpener('faas.lookup', [:])
+        
+        
+        void create() {
+            formTitle = 'FAAS Title Update'
+            entity = [:]
+            entity.objid = 'FTUPDT' + new java.rmi.server.UID()
+            entity.state = 'DRAFT'
+            mode = 'create'
+        }
+        
+        void open() {
+            if( !entity ) throw new Exception('Please select an item to open.')
+            entity = svc.read( entity.objid )
+            if( !entity ) throw new Exception('No record found.')
+            
+            faasinfo = [tdno: entity.tdno]
+            formTitle = 'FAAS Title Update - ' + entity.txnno
+            mode = 'view'
+        }
+        
+        void edit() {
+            entity = svc.read( entity.objid )
+            mode = 'edit'
+        }
+        
+        def cancel() {
+            if( mode == 'create' ) return '_close'
+            
+            entity = svc.read( entity.objid )
+            mode = 'view'
+            return null
+        }
+        
+        void save() {
+            if( !entity.tdno ) {
+                throw new Exception('No FAAS to update.')
+            }
+            entity = svc.save( entity )
+            mode = 'view'
+        }
+        
+        void approve() {
+            entity = svc.approve( entity )
+        }
+        
+        void setFaasinfo( faas ) {
+            this.faasinfo = faas
+            
+            if( faas && faas.docstate != 'CURRENT' ) {                
+                MsgBox.err('FAAS to be updated must be CURRENT.')
+                this.faasinfo = faas = null
+            }
+            
+            if( faas ) {
+                faas = faasSvc.open( faas.objid )
+                clearEntity()
+                entity.faasid = faas.objid
+                entity.tdno = faas.info.tdno
+                entity.faas = [:]
+                entity.faas.info = faas.info
+                entity.faas.rpu = faas.rpu
+                entity.faas.rp = faas.rp
+            }
+            else {
+                clearEntity()
+            }
+            
+            binding.refresh('entity.*')
+        }
+        
+        void clearEntity() {
+            def objid = entity.objid
+            def state = entity.state
+            entity.clear()
+            entity.objid = objid
+            entity.state = state
+        }
+
+    }
+
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.update.FAASTitleUpdatePage"/>
+    </pages>
+</workunit>
+
+

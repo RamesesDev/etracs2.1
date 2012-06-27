@@ -7,76 +7,61 @@
         <invoker type="formActions" action="previewAssessment" caption="View Assessment" icon="images/doc-view.png"/>
         <invoker type="formActions" action="release" caption="Release" visibleWhen="#{permit.docstate != 'ACTIVE'}" mnemonic="r" icon="images/doc-approve.png" permission="bppermit.release"/>
         <invoker type="formActions" action="viewPermit" caption="View Permit" visibleWhen="#{permit.docstate == 'ACTIVE'}" mnemonic="r" icon="images/doc-view.png"/>
-        <invoker type="formActions" action="addSpecs" caption="Add Specifications" visibleWhen="#{var == 'LANTAPAN' and isHabalRela and permit.docstate != 'ACTIVE'}" mnemonic="a" icon="images/doc-view.png" index="10" />
     </invokers>
     <code>
-<![CDATA[
+        <![CDATA[
 
-import com.rameses.rcp.annotations.*
-import com.rameses.rcp.common.*
-import com.rameses.osiris2.client.* 
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.* 
 
-class BPReleasePermitController 
-{
-    @Binding
-    def binding;
-    
-    @Service('BusinessMgmtService')
-    def svc;
-    
-    
-    @Service('Var')
-    def svcVar
-    
-    def permit;
-    def var
-    def isHabalRela
-    
-    void init(){
-        isHabalRela = false
-        var = svcVar.get('lgu_name')
-        if( permit.lobs[0].name.matches('HABAL-HABAL|MOTORELA') ) 
-            isHabalRela = true
-    }
-    
-    def lobHandler = [
-        getRows: {return 5;},
-        getColumns: {
-            return [ 
-                new Column(name:'name', caption:'Name'),
-                new Column(name:'assessmenttype', caption:'Type'),
-            ];
-        },
-        fetchList : {  return permit.lobs; }
-    ] as SubListModel;
-    
-    public void release(){
-        if( MsgBox.confirm('Release permit?') ) permit = svc.releasePermit( permit );
-    }
-    
-    def previewApplication(){
-        return InvokerUtil.lookupOpener('bp.applicationreport', [applicationid:permit.applicationid]);
-    }
-    
-    def previewAssessment(){
-        return InvokerUtil.lookupOpener('bp.assessmentreport', [applicationid:permit.applicationid]);
-    }
-    
-    def viewPermit(){
-        return InvokerUtil.lookupOpener('bp.bppermitreport', [applicationid:permit.applicationid]);
-    }
-    
-    def addSpecs(){
-        permit.info = [:]
-        return 'infopage'
-    }
-    
-}
+        class BPReleasePermitController 
+        {
+            @Binding
+            def binding;
 
-]]>
+            @Service('BusinessMgmtService')
+            def svc;
+
+
+            def permit;
+
+            void init(){
+            }
+
+            def lobHandler = [
+                getRows: {return 5;},
+                getColumns: {
+                    return [ 
+                        new Column(name:'name', caption:'Name'),
+                        new Column(name:'assessmenttype', caption:'Type'),
+                    ];
+                },
+                fetchList : {  return permit.lobs; }
+            ] as SubListModel;
+
+            public void release(){
+                if( MsgBox.confirm('Release permit?') ) permit = svc.releasePermit( permit );
+            }
+
+            def previewApplication(){
+                return InvokerUtil.lookupOpener('bp.applicationreport', [applicationid:permit.applicationid]);
+            }
+
+            def previewAssessment(){
+                return InvokerUtil.lookupOpener('bp.assessmentreport', [applicationid:permit.applicationid]);
+            }
+
+            def viewPermit(){
+                return InvokerUtil.lookupOpener('bp.bppermitreport', [applicationid:permit.applicationid]);
+            }
+
+
+        }
+
+        ]]>
     </code>
     <pages>
         <page template="etracs2.bp.application.PermitPage" />
-        <page name="infopage" template="etracs2.bp.application.PermitInfoPage" />
     </pages>
 </workunit>

@@ -126,6 +126,7 @@ public class AssessmentInfoPage extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 13));
         jLabel1.setText("Information For Application No:");
 
+        xSubFormPanel1.setCaption("Assessment Info");
         xSubFormPanel1.setDynamic(true);
         xSubFormPanel1.setHandler("infoHandler");
 

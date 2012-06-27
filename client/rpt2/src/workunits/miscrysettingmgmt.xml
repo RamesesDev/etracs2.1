@@ -7,6 +7,7 @@
 <workunit>
     <invokers>
         <invoker type="rysettingmgmt.type" caption="Miscellaneous" index="50" />
+        <invoker folderid="/txn/rpt/ry" caption="Miscellaneous" target="window" permission="rysetting.view" index="50"/>
         <invoker type="quick_launcher" code="GRY07" caption="Miscellaneous Revision Setting" index="50" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" />

@@ -41,7 +41,16 @@ class InputValuesController
     def getFields(){
         def fieldinfos = entity.infos;
         fieldinfos.each{
+            //-- all fields are not necessary to be required
+            //-- in rule analyzer
+            it.required = false
+            
             it.datatype = it.vartype;
+            if( it.datatype == 'decimal' )
+                it.value = 0.00
+            else if( it.datatype == 'integer' )
+                it.value = 0
+            
             it.category = it.lobname;
             it.caption = it.varcaption;
             it.items = it.arrayvalues;
@@ -56,7 +65,7 @@ class InputValuesController
     }
     
     public def getInfoHandler(){
-        return InvokerUtil.lookupOpener('input_fields', [fields: getFields()]);
+        return InvokerUtil.lookupOpener('input_fields', [fields: getFields(), required: false]);
     }
 }
 
@@ -64,6 +73,9 @@ class InputValuesController
 ]]>
     </code>
     <pages>
-        <page template="etracs2.bp.rule.analyzer.InputValuesPage" />
+        <page template="bpassessment.rule.analyzer.InputValuesPage" />
     </pages>
 </workunit>
+
+
+

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/txn/rpt/rpupdate" action="create" caption="Update Real Property" index="0" permission="realpropertyupdate.create"/>
+        <invoker type="realproperty:formActions" action="create" caption="New" index="0" target="window" icon="images/doc-new.png" permission="realpropertyupdate.create"/>
+        <invoker type="realproperty:formActions" action="open" caption="Open" index="0" target="window" icon="images/open.png" permission="realpropertyupdate.open"/>
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" visibleWhen="#{mode=='view'}" icon="images/cancel.png"/>
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{mode=='view' and entity.state != 'APPROVED'}" icon="images/edit.png" permission="realpropertyupdate.edit"/>
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode!='view'}" icon="images/save.png"/>
+        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" visibleWhen="#{mode!='view'}" icon="images/cancel.png" immediate="true"/>
+        <invoker type="formActions" action="approve" caption="Approve" mnemonic="c" visibleWhen="#{mode=='view' and entity!=null and entity.state=='DRAFT'}" icon="images/doc-approve.png" permission="realpropertyupdate.approve"/>
+    </invokers>
+    
+    <code lang="groovy">
+    <![CDATA[
+    import com.rameses.rcp.annotations.* 
+    import com.rameses.rcp.common.* 
+    import com.rameses.osiris2.client.* 
+    
+
+    public class FAASRealPropertyUpdateController 
+    {
+        @Binding
+        def binding
+        
+        @Service('RealPropertyUpdateService')
+        def svc
+        
+        @FormId
+        @FormTitle
+        def formTitle
+        
+        def entity
+        def mode;
+        
+        def rplookupHandler = InvokerUtil.lookupOpener('realproperty:lookup', [:])
+        def rpinfo = [:]
+        
+        void create() {
+            formTitle = 'Update Real Property'
+            entity = [:]
+            entity.objid = 'RPUPDT' + new java.rmi.server.UID()
+            entity.state = 'DRAFT'
+            mode = 'create'
+        }
+        
+        void open() {
+            if( !entity ) throw new Exception('Please select an item to open.')
+            entity = svc.read( entity.objid )
+            if( !entity ) throw new Exception('No record found.')
+            
+            rpinfo = [pin: entity.pin]
+            formTitle = 'Update Real Property - ' + entity.txnno
+            mode = 'view'
+        }
+        
+        void edit() {
+            entity = svc.read( entity.objid )
+            mode = 'edit'
+        }
+        
+        def cancel() {
+            if( mode == 'create' ) return '_close'
+            
+            entity = svc.read( entity.objid )
+            mode = 'view'
+            return null
+        }
+        
+        void save() {
+            if( !entity.pin ) {
+                throw new Exception('No Real Property to update.')
+            }
+            entity = svc.save( entity )
+            mode = 'view'
+        }
+        
+        void approve() {
+            entity = svc.approve( entity )
+        }
+        
+        void setRpinfo( info ) {
+            this.rpinfo = info
+            
+            if( info ) {
+                info = svc.getInfo( info.pin )
+                clearEntity()
+                entity.pin = info.pin
+                entity.cadastrallotno = entity.prevcadastrallotno = info.cadastrallotno
+                entity.blockno = entity.prevblockno = info.blockno
+                entity.surveyno = entity.prevsurveyno = info.surveyno
+                entity.houseno = entity.prevhouseno = info.houseno
+                entity.street = entity.prevstreet = info.street
+                entity.purok = entity.prevpurok = info.purok
+                entity.north = entity.prevnorth = info.north
+                entity.east = entity.preveast = info.east
+                entity.south = entity.prevsouth = info.south
+                entity.west = entity.prevwest = info.west
+            }
+            else {
+                clearEntity()
+            }
+            
+            binding.refresh('entity.*')
+        }
+        
+        void clearEntity() {
+            def objid = entity.objid
+            def state = entity.state
+            entity.clear()
+            entity.objid = objid
+            entity.state = state
+        }
+
+    }
+
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.update.RPUpdatePage"/>
+    </pages>
+</workunit>
+
+

@@ -5,6 +5,8 @@
         <invoker type="quick_launcher" code="ISSUEDRCT" action="init" caption="Issued Receipt" permission="receipt.viewissued" />
         
         <invoker type="home.action" action="init" caption="Issued Receipts" permission="receipt.viewissued" index="104" icon="images/folder.png" target="window"/>
+        
+        <invoker type="formActions" action="_close" immediate="true" caption="Close" icon="images/cancel.png" index="-10"/>
     </invokers>
     <code>
 <![CDATA[
@@ -26,8 +28,16 @@ class IssuedReceiptController
     def collector 
     def formActions
     
+    def docstateList = ['OPEN', 'CLOSED']
+    def docstate = docstateList[0];
+    
     void init() {
         collector = userService.getCollector( OsirisContext.env.USERID )
+    }
+    
+    void setDocstate( d ) {
+        this.docstate = d
+        listHandler.load()
     }
     
     void setSelectedItem( item ) {
@@ -57,7 +67,7 @@ class IssuedReceiptController
         fetchList : { 
             def searchParam = [ 
                 collectorid:collector.objid, 
-                docstate : 'OPEN',
+                docstate : docstate,
                 searchText:searchText 
             ]
             return svc.getList( searchParam, it ) 

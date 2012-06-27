@@ -1,0 +1,109 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/mgmt" action="init" caption="Entity Management" index="20" permission="entity.manage" />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+
+class EntityMgmtController 
+{
+    @Binding
+    def binding
+    
+    @Service("EntityService")
+    def svc
+    
+    def selectedItem
+    def opener
+    def searchText
+    def mode = 'view'
+    
+    def getFormActions() {
+        return InvokerUtil.lookupActions('entity.type')
+    }
+    
+    void init() {
+        
+    }
+	
+    def createHandler = { changeMode('create') }
+    def editHandler   = { changeMode('edit') }
+    def cancelHandler = { changeMode('view') }
+    
+    def insertHandler = { entity ->
+        listHandler.refresh()
+        changeMode('view')
+    }
+    
+    def updateHandler = { entity ->
+        listHandler.refresh()
+        changeMode('view')
+    }
+    
+    def deleteHandler = { entity ->
+        listHandler.refresh()
+        changeMode('view')
+    }
+    
+    void setSelectedItem( item ) {
+        if( mode != 'view' ) return;
+        
+        selectedItem = item 
+        opener = null
+        if( selectedItem ) {
+            String openerType = 'entity.' + selectedItem.entitytype
+            opener = InvokerUtil.lookupOpener(openerType, buildOpenerParams() )
+        }
+    }
+    
+    def buildOpenerParams() {
+        return [
+            entity        : svc.open( selectedItem.objid, selectedItem.entitytype ),
+            showClose     : false,
+            createHandler : createHandler,
+            editHandler   : editHandler,
+            insertHandler : insertHandler,
+            updateHandler : updateHandler,
+            deleteHandler : deleteHandler,
+            cancelHandler : cancelHandler,
+        ]
+    }
+    
+    def listHandler = [
+        getRows    : { return 50 },
+        getColumns : {
+            return [
+                new Column(name:"entityno", caption:"Entity No.", maxWidth:70),
+                new Column(name:"entityname", caption:"Name"),
+                new Column(name:"entityaddress", caption:"Address"),
+                new Column(name:"lguname", caption:"LGU"),
+            ]
+        },
+        fetchList : { return svc.getList( searchText, it ) },
+    ] as PageListModel
+    
+    void search() {
+        listHandler.load()
+    }
+    
+    void changeMode( md ) {
+        mode = md
+        binding.refresh()
+    }
+
+    def getOpenerList() {
+        return InvokerUtil.lookupOpeners('entity.type', [:])
+    }
+    
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.entity.EntityMgmtPage"/>
+    </pages>
+</workunit>

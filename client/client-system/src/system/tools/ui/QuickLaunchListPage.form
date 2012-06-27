@@ -77,6 +77,7 @@
     </Component>
     <Component class="com.rameses.rcp.control.XButton" name="xButton2">
       <Properties>
+        <Property name="mnemonic" type="int" value="108"/>
         <Property name="text" type="java.lang.String" value="Launch"/>
         <Property name="name" type="java.lang.String" value="launch"/>
       </Properties>

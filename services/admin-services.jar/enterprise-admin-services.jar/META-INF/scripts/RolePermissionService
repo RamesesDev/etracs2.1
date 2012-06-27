@@ -42,6 +42,12 @@ class RolePermissionService {
 			//add the action
 			obj.actions.add( [id:o.id, title:o.title, allowed: item_allowed, action: o.action  ] );
 		});
+		
+		modules.each { k,m -> 
+			m.objects.sort { it.id };
+			m.objects.each { it.actions.sort { it.title } }
+		}
+		
 		return [modules: modules*.value];
 	}	
 	

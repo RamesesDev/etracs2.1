@@ -1,8 +1,6 @@
 <workunit>
-    <invokers>
-        <invoker folderid="menu/bp/master" action="init" caption="Rule Analyzer" permission="bpadmin.bpruleanalyzer"/>
-        <invoker type="bpassessment:formActions" action="init" caption="Rule Analyzer" target="window"/>
-        <invoker type="home.action" action="init" caption="Rule Analyzer" permission="bpadmin.bpruleanalyzer" target="window" index="30" icon="images/debug.png"/>
+    <invokers>       
+        <invoker type="bpassessment:formActions" action="init" caption="Rule Analyzer" permission="bpruleanalyzer.view" target="window" index="30" icon="images/debug.png"/>
     </invokers>
     <code>
 <![CDATA[
@@ -51,8 +49,9 @@ class RuleAnalyzerController
     }
     
     void getInfos() {
-        inputtedValues.clear() 
+        inputtedValues.clear()
         entity = svc.buildInfos( entity )
+        lobListHandler.load();
         calculateTotalAssessment()
         lobListHandler.load()
         binding.refresh('selectedInfo')
@@ -261,6 +260,9 @@ class RuleAnalyzerController
 ]]>
     </code>
     <pages>
-        <page template="etracs2.bp.rule.analyzer.RuleAnalyzerPage"/>
+        <page template="bpassessment.rule.analyzer.RuleAnalyzerPage"/>
     </pages>
 </workunit>
+
+
+

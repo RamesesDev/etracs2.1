@@ -35,7 +35,13 @@ public class RPTBillingRuleService
 	-------------------------------------------------------------*/
 	String buildRuleActions( rule ) {
 		String s = 'then\n'
-		rule.actions.each { action ->
+		rule.actions.each { xaction ->
+			def action = [:]
+			action.putAll( xaction )
+			if( action.expr ) {
+				action.expr = action.expr.replace('\n', '\\n').replace('\r', '\\n')
+			}
+			
 			if( action.actiontype == 'calcBasic' ) s += calcBasic( rule, action, 'calcBasic', 'current' )
             else if( action.actiontype == 'calcBasicPrev' ) s += calcBasic( rule, action, 'calcBasic', 'previous' )
             else if( action.actiontype == 'calcBasicPrior' ) s += calcBasic( rule, action, 'calcBasic', 'prior' )

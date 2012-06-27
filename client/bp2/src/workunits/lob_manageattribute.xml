@@ -1,6 +1,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/menu/bp/master" caption="LOB Attributes" permission="bpadmin.lobattributes"/>
+        <invoker folderid="/txn/bp/master" caption="LOB Attributes" permission="bpadmin.lobattributes"/>
         <invoker type="bp.master" caption="LOB Attributes" permission="bpadmin.lobattributes" index="51" target="window" icon="images/folder.png"/>
         
         <invoker type="formActions" action="cancel" shortcut="ctrl c" caption="Cancel" mnemonic="c" immediate="true" icon="images/cancel.png" visibleWhen="#{mode != 'view'}"/>
@@ -10,78 +11,77 @@
         <invoker type="formActions" action="delete" caption="Delete" mnemonic="d" immediate="true" icon="images/doc-delete.png" visibleWhen="#{mode == 'view' and attribute != null}"/>
     </invokers>
     <code>
-<![CDATA[
+        <![CDATA[
 
-import com.rameses.rcp.common.*;
-import com.rameses.rcp.annotations.*;
-import com.rameses.osiris2.client.*;
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
 
-class LobController
-{
-    @Binding
-    def binding
+        class LobController
+        {
+            @Binding
+            def binding
 
-    @Service("LobAttributeService")
-    def svc;
-    
-    def mode = 'view';
-    def searchText;
-    def attribute;
-    
-    def oldValue;
-    
-    def listHandler = [
-        getColumns : {
-            return [
-                new Column(name:'name', caption:'Attribute'),
-                new Column(name:'description', caption:'Description'),
-            ]
-        },
-        fetchList    : { return svc.getList( searchText, it ); },
-    ] as SubListModel
-    
-    public void create(){ 
-        attribute = [:];
-        mode = 'new';
-    }
-    
-    public void edit(){ 
-        mode = 'edit';
-        oldValue = [:];
-        oldValue.putAll( attribute );
-        binding.refresh();
-    }
-    
-    public void cancel(){
-        if( oldValue )
-            attribute?.putAll( oldValue );
-        oldValue = [:];
-        mode = 'view'; 
-    }
-    
-    public void save(){
-        if( mode == 'new' ) attribute = svc.create( attribute );
-        else attribute = svc.update( attribute );
-        listHandler.load()
-        mode = 'view';
-    }
-    
-    public void delete(){
-        if( MsgBox.confirm('Delete?') ) {
-            svc.delete( attribute );
-            attribute = [:];
-            listHandler.load();
-            binding.refresh();
+            @Service("LobAttributeService")
+            def svc;
+
+            def mode = 'view';
+            def searchText;
+            def attribute;
+
+            def oldValue;
+
+            def listHandler = [
+                getColumns : {
+                    return [
+                        new Column(name:'name', caption:'Attribute'),
+                        new Column(name:'description', caption:'Description'),
+                    ]
+                },
+                fetchList    : { return svc.getList( searchText, it ); },
+            ] as SubListModel
+
+            public void create(){ 
+                attribute = [:];
+                mode = 'new';
+            }
+
+            public void edit(){ 
+                mode = 'edit';
+                oldValue = [:];
+                oldValue.putAll( attribute );
+                binding.refresh();
+            }
+
+            public void cancel(){
+                if( oldValue )
+                    attribute?.putAll( oldValue );
+                oldValue = [:];
+                mode = 'view'; 
+            }
+
+            public void save(){
+                if( mode == 'new' ) attribute = svc.create( attribute );
+                else attribute = svc.update( attribute );
+                listHandler.load()
+                mode = 'view';
+            }
+
+            public void delete(){
+                if( MsgBox.confirm('Delete?') ) {
+                    svc.delete( attribute );
+                    attribute = [:];
+                    listHandler.load();
+                    binding.refresh();
+                }
+            }
+
+            void search(){
+                listHandler.load();
+            }
         }
-    }
-    
-    void search(){
-        listHandler.load();
-    }
-}
 
-]]>        
-        
+        ]]>        
     </code>
     <pages>
         <page template="etracs2.bp.master.LobAttributePage"/>

@@ -180,6 +180,11 @@ class LguService
         return lgu;
     }
 	
+	@ProxyMethod
+	public def open( objid ) {
+		return em.read( SCHEMA_NAME, [objid: objid] );
+	}
+	
 	private def getListByQuery(namedQuery, values, params ) {
 		if( ! params ) params = [ _start:0, _limit:50 ]
 		return em.sqlContext.createNamedQuery( namedQuery ).setParameters(values)

@@ -1,49 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <datasources>
-   
-   <local-tx-datasource>
-      <jndi-name>${appname}_system</jndi-name>
-        <connection-url>jdbc:mysql://localhost/${system_dbname}</connection-url>
-        <driver-class>com.mysql.jdbc.Driver</driver-class>
-        <user-name>${dbuser}</user-name>
-        <password>${dbpwd}</password>
-        <min-pool-size>5</min-pool-size>
-        <max-pool-size>50</max-pool-size>
-         <metadata>
-            <type-mapping>mySQL</type-mapping>
-        </metadata>
-        <check-valid-connection-sql>select 1</check-valid-connection-sql>
-   </local-tx-datasource>
-   
-   <local-tx-datasource>
-      <jndi-name>${appname}_etracs</jndi-name>
-        <connection-url>jdbc:mysql://localhost/${main_dbname}</connection-url>
-        <driver-class>com.mysql.jdbc.Driver</driver-class>
-        <user-name>${dbuser}</user-name>
-        <password>${dbpwd}</password>
-        <min-pool-size>5</min-pool-size>
-        <max-pool-size>50</max-pool-size>
-         <metadata>
-            <type-mapping>mySQL</type-mapping>
-        </metadata>
-        <check-valid-connection-sql>select 1</check-valid-connection-sql>
-   </local-tx-datasource>
-   
-   <local-tx-datasource>
-      <jndi-name>${appname}_main</jndi-name>
-        <connection-url>jdbc:mysql://localhost/${main_dbname}</connection-url>
-        <driver-class>com.mysql.jdbc.Driver</driver-class>
-        <user-name>${dbuser}</user-name>
-        <password>${dbpwd}</password>
-        <min-pool-size>5</min-pool-size>
-        <max-pool-size>50</max-pool-size>
-         <metadata>
-            <type-mapping>mySQL</type-mapping>
-        </metadata>
-        <check-valid-connection-sql>select 1</check-valid-connection-sql>
-   </local-tx-datasource>
-   
+	
+	<!-- Sql Server Settings -->
+	<local-tx-datasource>
+	  <jndi-name>${appname}_system</jndi-name>
+		<connection-url>jdbc:sqlserver://${dbhost};DatabaseName=${system_dbname}</connection-url>
+		<driver-class>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver-class>
+		<user-name>${dbuser}</user-name>
+		<password>${dbpwd}</password>
+		<min-pool-size>5</min-pool-size>
+		<max-pool-size>50</max-pool-size>
+		 <metadata>
+			<type-mapping>MS SQLSERVER</type-mapping>
+		</metadata>
+		<check-valid-connection-sql>select 1</check-valid-connection-sql>
+	</local-tx-datasource>
+
+	<local-tx-datasource>
+	  <jndi-name>${appname}_etracs</jndi-name>
+		<connection-url>jdbc:sqlserver://${dbhost};DatabaseName=${main_dbname}</connection-url>
+		<driver-class>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver-class>
+		<user-name>${dbuser}</user-name>
+		<password>${dbpwd}</password>
+		<min-pool-size>5</min-pool-size>
+		<max-pool-size>50</max-pool-size>
+		 <metadata>
+			<type-mapping>MS SQLSERVER</type-mapping>
+		</metadata>
+		<check-valid-connection-sql>select 1</check-valid-connection-sql>
+	</local-tx-datasource>
+
+	<local-tx-datasource>
+	  <jndi-name>${appname}_main</jndi-name>
+		<connection-url>jdbc:sqlserver://${dbhost};DatabaseName=${main_dbname}</connection-url>
+		<driver-class>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver-class>
+		<user-name>${dbuser}</user-name>
+		<password>${dbpwd}</password>
+		<min-pool-size>5</min-pool-size>
+		<max-pool-size>50</max-pool-size>
+		 <metadata>
+			<type-mapping>MS SQLSERVER</type-mapping>
+		</metadata>
+		<check-valid-connection-sql>select 1</check-valid-connection-sql>
+	</local-tx-datasource>
+	
+	
+	
+	<!-- MySql server Settings 
+	<local-tx-datasource>
+	  <jndi-name>${appname}_system</jndi-name>
+		<connection-url>jdbc:mysql://${dbhost}/${system_dbname}</connection-url>
+		<driver-class>com.mysql.jdbc.Driver</driver-class>
+		<user-name>${dbuser}</user-name>
+		<password>${dbpwd}</password>
+		<min-pool-size>5</min-pool-size>
+		<max-pool-size>50</max-pool-size>
+		 <metadata>
+			<type-mapping>mySQL</type-mapping>
+		</metadata>
+		<check-valid-connection-sql>select 1</check-valid-connection-sql>
+	</local-tx-datasource>
+
+	<local-tx-datasource>
+	  <jndi-name>${appname}_etracs</jndi-name>
+		<connection-url>jdbc:mysql://${dbhost}/${main_dbname}</connection-url>
+		<driver-class>com.mysql.jdbc.Driver</driver-class>
+		<user-name>${dbuser}</user-name>
+		<password>${dbpwd}</password>
+		<min-pool-size>5</min-pool-size>
+		<max-pool-size>50</max-pool-size>
+		 <metadata>
+			<type-mapping>mySQL</type-mapping>
+		</metadata>
+		<check-valid-connection-sql>select 1</check-valid-connection-sql>
+	</local-tx-datasource>
+
+	<local-tx-datasource>
+	  <jndi-name>${appname}_main</jndi-name>
+		<connection-url>jdbc:mysql://${dbhost}/${main_dbname}</connection-url>
+		<driver-class>com.mysql.jdbc.Driver</driver-class>
+		<user-name>${dbuser}</user-name>
+		<password>${dbpwd}</password>
+		<min-pool-size>5</min-pool-size>
+		<max-pool-size>50</max-pool-size>
+		 <metadata>
+			<type-mapping>mySQL</type-mapping>
+		</metadata>
+		<check-valid-connection-sql>select 1</check-valid-connection-sql>
+	</local-tx-datasource>
+	-->
 </datasources>
 
 

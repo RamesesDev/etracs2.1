@@ -46,6 +46,9 @@ class FAASService
 	
 	@Service('MessengerService')
 	def msgSvc
+	
+	@Service('RPTSettingService')
+	def rptsettingSvc
 
     def INTERIM_STATE = 'INTERIM'
     def FORAPPROVAL_STATE = 'FORAPPROVAL'
@@ -304,6 +307,13 @@ class FAASService
         faas.info.autonumber 	= TO_BOOLEAN( faas.info.autonumber )
         faas.rpu.taxable 		= TO_BOOLEAN( faas.rpu.taxable )
         initOpenRpuInfo( faas.rpu )
+		
+		//the statements below are for those migrated data with null initialization values
+		if( faas.info.txntype == 'MC' && (!faas.info.claimno || faas.info.claimno.trim() == '-') ) {
+			def result = em.sqlContext.createQuery('select claimno from faaslist where objid=?').setParameter(1, faas.objid).singleResult
+			faas.info.claimno = result.claimno
+		}
+		
 		return faas 
     }
     
@@ -591,7 +601,7 @@ class FAASService
 	
     @ProxyMethod
 	public Map initTransaction( txntype, prevtdno, autonumber, claimno) {
-		return initTransaction2( txntype, prevtdno, autonumber, null )
+		return initTransaction2( txntype, prevtdno, autonumber, claimno, null )
 	}
 	
 	@ProxyMethod
@@ -691,21 +701,39 @@ class FAASService
 	
 	@ProxyMethod
     public void checkLedgerBalanceByDate( faas, refdate ) {
-		if( faas.txntype == 'MC' ) return 
+		def txntype = faas.txntype
+		if( txntype == 'MC' ) return 
 		
 		def ledger = em.sqlContext.createNamedQuery('faas:getLedgerInfo').setParameter('objid', faas.ledgerid ).singleResult
         if( !ledger) throw new Exception('Cannot open Ledger for FAAS ' + faas.tdno + '.')
         
 		//check clearance against FAAS issuedate 
-		def msg = 'Ledger is not fully paid.'
         def parseddate = dateSvc.parseDate( refdate, null )
         if( ledger.docstate == 'PENDING' ) throw new Exception('Ledger is not yet approved.\nLet LandTax approve the ledger before processing the transaction.')
         if( ledger.docstate == 'CANCELLED') throw new Exception('Ledger has already been cancelled.')
 		if( TO_BOOLEAN( ledger.taxable ) == false ) return 
-		if( ledger.assessedvalue > 0.0 && ledger.lastyearpaid < parseddate.year ) throw new Exception( msg )
-        if( ledger.assessedvalue > 0.0 && ledger.lastqtrpaid < 4 ) throw new Exception( msg )
+		
+		if( isTxnAllowedWithBalance( txntype ) ) return
+		
+		def errmsg = 'Ledger is not fully paid.'
+		if( ledger.assessedvalue > 0.0 && ledger.lastyearpaid < parseddate.year ) throw new Exception( errmsg )
+        if( ledger.assessedvalue > 0.0 && ledger.lastqtrpaid < 4 ) throw new Exception( errmsg )
     }
     
+	@ProxyMethod
+	public boolean isTxnAllowedWithBalance( txntype ) {
+		def rptsetting = rptsettingSvc.open()
+		
+		if( !rptsetting ) {}
+		else if( txntype.matches(/TR|TRE/) && rptsetting.allowtransferwithbalance )  return true
+		else if( txntype == 'CE' && rptsetting.allowcorrectionwithbalance )          return true
+		else if( txntype == 'CT' && rptsetting.allowchangetaxabilitywithbalance )    return true
+		else if( txntype == 'SD' && rptsetting.allowsubdivisionwithbalance )         return true
+		else if( txntype == 'CS' && rptsetting.allowconsolidationwithbalance )       return true
+		else if( txntype == 'CC' && rptsetting.allowreclasswithbalance )             return true
+		
+		return false;
+	}
     
     @ProxyMethod
     public void initFaasInfo( faas ) {
@@ -960,6 +988,8 @@ class FAASService
 			}
 			rpu.info.planttotal.bearing  = rpu.info.planttotal.bearing * 1.0 
 			rpu.info.planttotal.nonbearing  = rpu.info.planttotal.nonbearing * 1.0 
+			if( rpu.info.planttotal.adjustment == null )
+				rpu.info.planttotal.adjustment = 0.00
         }
         else if( rpu.rputype == BLDG_TYPE ) {
             rpu.info.swornstatement = TO_BOOLEAN( rpu.info.swornstatement  )
@@ -1173,7 +1203,7 @@ class FAASService
         }
     }
     
-    //valida rpu specific information here
+    //validate rpu specific information here
     void validateRPUInfo( faas ) {
         if( faas.rpu.rputype == LAND_TYPE ) {
             //TODO:validate LandRPU 
@@ -1545,7 +1575,7 @@ class FAASService
     }
     
     void moveOutboxMessageToProcessed( refid ) {
-		msgSvc.processOutboxMessage( refid )
+		//msgSvc.processOutboxMessage( refid )
     }
     
     void updateAttachmentStates( faas, docstate ) {

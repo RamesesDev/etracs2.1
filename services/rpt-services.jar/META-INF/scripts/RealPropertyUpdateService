@@ -1,0 +1,130 @@
+import com.rameses.annotations.*;
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+import java.rmi.server.UID;
+
+class RealPropertyUpdateService
+{
+	@PersistenceContext('main')
+	def em
+	
+	@Service('LogService')
+	def logService
+	
+	@Service('SequenceService')
+	def seqSvc
+	
+	@Service('DateService')
+	def dateSvc
+	
+	@Env
+	def env
+	
+	
+	@ProxyMethod
+	public def getList( param ) {
+		def qry
+		if( param.searchText || param.state ) {
+			if( param.searchText == null ) param.searchText = ''
+			param.pin = param.searchText + '%'
+			if( param.state )
+				qry = em.sqlContext.createNamedQuery('realpropertyupdate:list-by-pin-state').setParameters(param)
+			else
+				qry = em.sqlContext.createNamedQuery('realpropertyupdate:list-by-pin').setParameters(param)
+		}
+		else {
+			qry = em.sqlContext.createNamedQuery('realpropertyupdate:list')
+		}
+		
+		if( param._start ) qry.setFirstResult( param._start )
+		if( param._limit ) qry.setMaxResults( param._limit )
+		
+		return qry.resultList
+	}
+	
+	@ProxyMethod
+	public def approve( entity ) {
+		def faaslist = em.sqlContext.createNamedQuery('realpropertyupdate:get-affected-faas').setParameter('pin', entity.pin).resultList
+		def newinfo = [
+			cadastrallotno	: entity.cadastrallotno,
+			blockno			: entity.blockno,
+			surveyno		: entity.surveyno,
+			houseno			: entity.houseno,
+			street			: entity.street,
+			purok			: entity.purok,
+			north			: entity.north,
+			east			: entity.east,
+			south			: entity.south,
+			west			: entity.west
+		]
+		
+		for( faas in faaslist ) {
+			def info = em.sqlContext.createNamedQuery('realpropertyupdate:get-faas-rp').setParameter('objid', faas.objid).singleResult
+			info = em.serializer.read( info.rp )
+			info.putAll( newinfo )
+			faas.rp = em.serializer.write( info )
+			em.sqlContext.createNamedExecutor('realpropertyupdate:update-faas-rp').setParameters(faas).execute()
+			
+			info.pin = entity.pin
+			em.sqlContext.createNamedExecutor('realpropertyupdate:update-faaslist-rp').setParameters(info).execute()
+			em.sqlContext.createNamedExecutor('realpropertyupdate:update-faaslist-rp').setParameters(info).execute()
+		}
+		
+		entity.state = 'APPROVED'
+		return save( entity )
+	}
+	
+	@ProxyMethod
+	public def save( entity ) {
+		if( entity.sate == 'APPROVED' ) {
+			entity.approvedby = env.USER
+			entity.dtapproved = dateSvc.serverDate
+		}
+		else {
+			entity.lastmodifiedby = env.USER
+			entity.dtlastmodified = dateSvc.serverDate
+		}
+		
+		if( !entity.txnno ) {
+			def year = dateSvc.serverYear
+			def series = seqSvc.getNextFormattedSeries( 'RPUPDATE-' + year );
+			entity.txnno = year + '-' + series
+			return em.create('realpropertyupdate', entity)
+		}
+		else {
+			return em.update('realpropertyupdate', entity)
+		}
+	}
+	
+	@ProxyMethod
+	public def read( objid ) {
+		return em.read('realpropertyupdate', [objid: objid])
+	}
+	
+	@ProxyMethod
+	public def lookupRealProperties( param ) {
+		def qry
+		if( param.searchText ) {
+			qry = em.sqlContext.createNamedQuery('realpropertyupdate:realproperty-list-by-pin').setParameter('pin', param.searchText+'%')
+		}
+		else {
+			qry = em.sqlContext.createNamedQuery('realpropertyupdate:realproperty-list')
+		}
+		
+		if( param._start ) qry.setFirstResult( param._start )
+		if( param._limit ) qry.setMaxResults( param._limit )
+		
+		return qry.resultList
+	}
+	
+	@ProxyMethod
+	public def getInfo( pin ) {
+		def rpinfo = em.sqlContext.createNamedQuery('realpropertyupdate:get-info').setParameter('pin', pin).singleResult
+		if( !rpinfo ) return;
+		
+		rpinfo = em.serializer.read( rpinfo.rp )
+		rpinfo.pin = pin
+		return rpinfo
+	}
+
+}

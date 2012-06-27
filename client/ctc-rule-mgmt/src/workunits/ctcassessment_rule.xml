@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="ruleset" caption="CTC Assessment Rules" zpermission="ctcassessmentrule.view" index="-10"/>
+        <invoker type="ruleset" caption="CTC Assessment Rules" permission="ctcassessmentrule.view" index="-10"/>
     </invokers>
     
     <code>

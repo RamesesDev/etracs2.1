@@ -50,7 +50,9 @@ public class GeneralCollectionPage extends javax.swing.JPanel {
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
+        formPanel3 = new com.rameses.rcp.util.FormPanel();
         xDateField1 = new com.rameses.rcp.control.XDateField();
+        xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xSubFormPanel1 = new com.rameses.rcp.control.XSubFormPanel();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
@@ -145,6 +147,7 @@ public class GeneralCollectionPage extends javax.swing.JPanel {
 
         formPanel1.setCaptionBorder(null);
         formPanel1.setCaptionFont(new java.awt.Font("Arial", 0, 12));
+        formPanel1.setCaptionWidth(75);
         formPanel1.setPadding(new java.awt.Insets(8, 8, 8, 8));
 
         formPanel2.setCaptionBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -188,7 +191,6 @@ public class GeneralCollectionPage extends javax.swing.JPanel {
         formPanel1.add(formPanel2);
 
         xLookupField1.setCaption("Payor");
-        xLookupField1.setCaptionWidth(75);
         xLookupField1.setExpression("#{entityname}");
         xLookupField1.setHandler("lookupEntity2");
         xLookupField1.setName("payor");
@@ -196,7 +198,6 @@ public class GeneralCollectionPage extends javax.swing.JPanel {
         formPanel1.add(xLookupField1);
 
         xTextField1.setCaption("Paid By");
-        xTextField1.setCaptionWidth(75);
         xTextField1.setFont(new java.awt.Font("Arial", 0, 12));
         xTextField1.setName("entity.info.paidby");
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 19));
@@ -204,20 +205,34 @@ public class GeneralCollectionPage extends javax.swing.JPanel {
         formPanel1.add(xTextField1);
 
         xTextField2.setCaption("Address");
-        xTextField2.setCaptionWidth(75);
         xTextField2.setFont(new java.awt.Font("Arial", 0, 12));
         xTextField2.setName("entity.info.paidbyaddress");
         xTextField2.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField2.setRequired(true);
         formPanel1.add(xTextField2);
 
+        formPanel3.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        formPanel3.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        formPanel3.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel3.setShowCaption(false);
         xDateField1.setCaption("Txn Date ");
         xDateField1.setCaptionWidth(75);
         xDateField1.setDepends(new String[] {"af"});
         xDateField1.setFont(new java.awt.Font("Arial", 0, 12));
         xDateField1.setName("entity.info.txndate");
-        xDateField1.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel1.add(xDateField1);
+        xDateField1.setPreferredSize(new java.awt.Dimension(120, 19));
+        formPanel3.add(xDateField1);
+
+        xLookupField2.setCaption("Collection Group");
+        xLookupField2.setCaptionWidth(100);
+        xLookupField2.setCellPadding(new java.awt.Insets(0, 15, 0, 0));
+        xLookupField2.setHandler("collectionGroupLookup");
+        xLookupField2.setName("collectionGroup");
+        xLookupField2.setPreferredSize(new java.awt.Dimension(200, 19));
+        xLookupField2.setTranserFocusOnSelect(false);
+        formPanel3.add(xLookupField2);
+
+        formPanel1.add(formPanel3);
 
         jPanel5.add(formPanel1, java.awt.BorderLayout.NORTH);
 
@@ -282,6 +297,7 @@ public class GeneralCollectionPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.util.FormPanel formPanel2;
+    private com.rameses.rcp.util.FormPanel formPanel3;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -304,6 +320,7 @@ public class GeneralCollectionPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XLookupField xLookupField1;
+    private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XNumberField xNumberField3;

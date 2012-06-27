@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     
-    <invoker folderid="/menu/rpt/master" action="init" caption="Cancel TD Reasons" index="5" permission="canceltdreasons.view" />
-    <invoker type="quick_launcher" code="CFR01" action="init" caption="Cancel TD Reasons" index="5" permission="canceltdreasons.view" />
-    <invoker type="rpt.master" action="init"  caption="Cancel TD Reasons" index="14" permission="canceltdreasons.view" />
-        
+    <invokers>
+        <invoker folderid="/menu/rpt/master" action="init" caption="Cancel TD Reasons" index="5" permission="canceltdreasons.view" />
+        <invoker folderid="/txn/rpt/master" action="init" caption="Cancel TD Reasons" index="5" permission="canceltdreasons.view" />
+        <invoker type="quick_launcher" code="CFR01" action="init" caption="Cancel TD Reasons" index="5" permission="canceltdreasons.view" />
+        <invoker type="rpt.master" action="init"  caption="Cancel TD Reasons" index="14" permission="canceltdreasons.view" />
+
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="canceltdreasons.create" />
         <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null }" immediate="true" caption="Edit" mnemonic="e" icon="images/doc-edit.png" permission="canceltdreasons.edit"/>
         <invoker type="formActions" action="save" shortcut="ctrl S" visibleWhen="#{mode != 'view'}" caption="Save" mnemonic="s" icon="images/doc-save.png" />
         <invoker type="formActions" action="cancel" visibleWhen="#{mode != 'view'}"  immediate="true" caption="Cancel" mnemonic="c" icon="images/doc-cancel.png" />
         <invoker type="formActions" action="delete" shortcut="ctrl D" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Delete" mnemonic="d" icon="images/delete24.png" permission="canceltdreasons.delete" />
+    </invokers>
     
     <code lang="groovy">
         <![CDATA[

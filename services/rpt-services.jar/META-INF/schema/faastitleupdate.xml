@@ -1,0 +1,17 @@
+<schema>
+	<element name="faastitleupdate" tablename="faastitleupdate">
+		<field name="objid" primary="true"/>
+		<field name="txnno"/>
+		<field name="state" />
+		<field name="tdno" />
+		<field name="titleno" />
+		<field name="titledate" />
+		<field name="remarks" />
+		<field name="lastmodifiedby" />
+		<field name="dtlastmodified" />
+		<field name="approvedby" />
+		<field name="dtapproved" />
+		<field name="faasid" />
+		<complex name="faas" serializer="default"/>
+	</element>
+</schema>

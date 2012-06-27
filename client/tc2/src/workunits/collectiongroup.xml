@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/tc/master" caption="Collection Groups" permission="collectiongroup.view"/>
+        <invoker type="quick_launcher" code="colgrps" caption="Collection Groups" permission="collectiongroup.view"/>
+        
+        <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"  permission="collectiongroup.create"/>
+        <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null}" caption="Edit" mnemonic="s" icon="images/edit.png" permission="collectiongroup.edit"/>
+        <invoker type="formActions" action="save" shortcut="ctrl S" visibleWhen="#{mode != 'view'}" caption="Save" mnemonic="s" icon="images/save.png"/>
+        <invoker type="formActions" action="cancel" visibleWhen="#{mode != 'view'}"  immediate="true" caption="Cancel" mnemonic="c" icon="images/doc-cancel.png"/>
+        <invoker type="formActions" action="delete" shortcut="ctrl D" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Delete" mnemonic="d" icon="images/doc-delete.png" permission="collectiongroup.delete" />
+    </invokers>
+    <code lang="groovy">
+        <![CDATA[
+        
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        
+        public class CollectionGroupController 
+        {
+            @Service('CollectionGroupService')
+            def svc
+            
+            @Binding
+            def binding
+            
+            def selectedGroup
+            def entity = [:]
+            def mode = 'view'
+            def searchText
+            
+            def incomeAccountLookup = InvokerUtil.lookupOpener('incomeacct:lookup', [:]);
+            
+            void create() {
+                entity = [:]
+                entity.objid = "CG" + new java.rmi.server.UID()
+                entity.items = []
+                mode = 'create'
+                incomeAcctHandler.load()
+            }
+            
+            void edit() {
+                mode = 'edit'
+                incomeAcctHandler.load()
+            }
+            
+            void cancel() {
+                mode = 'view'
+                listHandler.refresh()
+            }
+            
+            void save() {
+                entity = svc.save( entity )
+                mode = 'view'
+                listHandler.refresh()
+            }
+            
+            void delete() {
+                if(!MsgBox.confirm('Are you sure you want to delete this entry?')) return
+                svc.remove( entity )
+                listHandler.refresh()
+            }
+            
+            void setSelectedGroup( g ) {
+                if( mode != 'view' ) return;
+                
+                this.entity = g
+                this.selectedGroup = g;
+                binding.refresh('entity.name|formActions')
+                incomeAcctHandler.load()
+            }
+            
+            void setIncomeAccount( ia ) {
+                if( !ia ) return;
+                
+                def item = [groupid: entity.objid, incomeaccountid: ia.objid, accttitle: ia.accttitle]
+                if( mode == 'create' ) {
+                    def old = entity.items.find { it.incomeaccountid == ia.objid }
+                    if( old ) return;
+                    entity.items.add( item )
+                }
+                else {
+                    svc.addItem( item )
+                }
+                incomeAcctHandler.load()
+            }
+            
+            def listHandler = [
+                getRows: { 20 },
+                getColumns: {
+                    return [
+                        new Column(name:"name", caption:"Collection Group")
+                    ]
+                },
+                fetchList: { p ->
+                    p.searchText = searchText
+                    return svc.getList( p )
+                }
+            ] as PageListModel
+            
+            def incomeAcctHandler = [
+                getColumns: {
+                    return [
+                        new Column(name:"accttitle", caption:"Account Title")
+                    ]
+                },
+                fetchList: { p ->
+                    if( !entity ) return []                    
+                    if( mode == 'create' ) return entity.items
+                    return svc.getItems( entity )
+                },
+                onRemoveItem: { o ->
+                    if(!MsgBox.confirm('Are you sure you want to delete this entry?')) return
+                    if( mode == 'create' )
+                        entity.items.remove( o )
+                    else
+                        svc.removeItem( o )
+                }
+            ] as SubListModel
+        }
+        
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.tc.collection.group.CollectionGroupPage"/>
+    </pages>
+</workunit>

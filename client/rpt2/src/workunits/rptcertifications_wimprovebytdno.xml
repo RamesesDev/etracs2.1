@@ -3,7 +3,9 @@
     <invokers>
         <invoker type="rptcertifications" caption="Land with Improvement by TD No." target="window" index="8" permission="wimprovebytdno.open" />
         <invoker type="wimprovebytdno.view"  caption="Land with Improvement by TD No." index="8" action="doPreview" permission="wimprovebytdno.view" />
-        <invoker folderid="/menu/rpt/cert" action="init" caption="Land with Improvement by TD No." target="window" index="3" permission="wimprovebytdno.open" />
+        
+        <invoker folderid="/menu/rpt/cert" caption="Land with Improvement by TD No." target="window" index="3" permission="wimprovebytdno.open" />
+        <invoker folderid="/txn/rpt/cert" caption="Land with Improvement by TD No." target="window" index="3" permission="wimprovebytdno.open" />
         
         <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />

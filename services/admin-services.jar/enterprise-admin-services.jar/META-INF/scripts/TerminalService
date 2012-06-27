@@ -25,6 +25,7 @@ class TerminalService {
 	@ProxyMethod
     public def getList( param ) {
         def qry = em.sqlContext.createNamedQuery("terminal:list.sql").setParameters(param);
+		qry.setPagingKeys("terminalid");
 		if( param._start ) qry.setFirstResult(param._start);
 		if( param._limit ) qry.setMaxResults(param._limit);
 		return qry.resultList;

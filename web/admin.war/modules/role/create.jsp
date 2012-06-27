@@ -25,14 +25,12 @@
 					this.role = roleSvc.create( this.role );
 					if(this.saveHandler) this.saveHandler( this.role );
 					this.mode = 'edit';
+					return '_close';
 				}
 				
 				this.update = function() {
 					this.role = roleSvc.update( this.role );
-				}
-				
-				this.viewPermissions = function() {
-					return this.permissionHandler( this.role.name );
+					return '_close';
 				}
 				
 				this.propertyChangeListener = {
@@ -48,7 +46,6 @@
 	<jsp:attribute name="leftactions">
 		<ui:button context="create_role" action="save" caption="Save" visibleWhen="#{mode == 'create'}"/>
 		<ui:button context="create_role" action="update" caption="Save" visibleWhen="#{mode != 'create'}"/>
-		<ui:button context="create_role" action="viewPermissions" caption="Permissions" visibleWhen="#{mode != 'create'}"/>
 	</jsp:attribute>
 	
 	<jsp:body>

@@ -13,6 +13,9 @@ public class DesktopLoginInterceptor
 	@Service("JobPermissionService")
 	def jobpermSvc;
 	
+	@Service("OrgunitService")
+	def orgSvc;
+	
 	
 	@Before(pattern="LoginService.login.*", eval="env.CLIENTTYPE=='desktop'")
 	public void validateTerminal( evt ) 
@@ -36,23 +39,27 @@ public class DesktopLoginInterceptor
 		
 		def perms = [];
 		def jobtitle;
-		def job = jobpermSvc.getUserJobposition([:]);
-		if( job ) {		
-			if( job.permissions && job.orgunitid == env.CLIENTCODE ) {
-				perms.addAll(job.permissions);
-				jobtitle = job.title;
-			}
-			
-			job.others.each {
-				if( it.objid == job.objid ) return;
-				if( it.orgunitid != env.CLIENTCODE ) return;
-				
-				def j = jobpermSvc.getUserJobposition([jobid: it.objid]);
-				if( j.permissions ) {
-					perms.addAll(j.permissions);
-					if( !jobtitle ) jobtitle = j.title;
+		def client = orgSvc.readByCode( env.CLIENTCODE );
+		
+		if( client ) {
+			def job = jobpermSvc.getUserJobposition([:]);
+			if( job ) {
+				if( job.permissions && job.orgunitid == client.objid ) {
+					perms.addAll(job.permissions);
+					jobtitle = job.title;
 				}
-			};
+				
+				job.others.each {
+					if( it.objid == job.objid ) return;
+					if( it.orgunitid != client.objid ) return;
+					
+					def j = jobpermSvc.getUserJobposition([jobid: it.objid]);
+					if( j.permissions ) {
+						perms.addAll(j.permissions);
+						if( !jobtitle ) jobtitle = j.title;
+					}
+				};
+			}
 		}
 		
 		profile.env = [
@@ -67,6 +74,7 @@ public class DesktopLoginInterceptor
 			USERNAME            : profile.lastname + ', ' + profile.firstname + (profile.middlename? ' ' + profile.middlename : ''),
 			USERFORMALNAME      : profile.firstname + (profile.middlename? ' ' + profile.middlename : '') + ' ' + profile.lastname,
 			JOBTITLE			: jobtitle,
+			CLIENT				: client,
 		];
 		
 		//load permissions

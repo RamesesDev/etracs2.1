@@ -6,6 +6,6 @@
     enabled:false;
 }
 
-"afcontrol.qtyreceived|afcontrol.endseries" [ true == true ] {
+"afcontrol.endseries" [ true == true ] {
     enabled:false;
 }

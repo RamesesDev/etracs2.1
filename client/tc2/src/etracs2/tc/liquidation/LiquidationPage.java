@@ -90,9 +90,7 @@ public class LiquidationPage extends javax.swing.JPanel {
         xDateField1.setCaptionFont(new java.awt.Font("Arial", 0, 14));
         xDateField1.setCaptionWidth(130);
         xDateField1.setFont(new java.awt.Font("Arial", 0, 14));
-        xDateField1.setInputFormat("MM-dd-yyyy");
         xDateField1.setName("entity.info.txndate");
-        xDateField1.setOutputFormat("MM-dd-yyyy");
         xDateField1.setPreferredSize(new java.awt.Dimension(100, 21));
         xDateField1.setReadonly(true);
         formPanel3.add(xDateField1);

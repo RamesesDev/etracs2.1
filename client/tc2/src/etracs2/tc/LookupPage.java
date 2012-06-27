@@ -32,7 +32,6 @@ public class LookupPage extends javax.swing.JPanel {
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
         setFocusable(false);
-        setPreferredSize(new java.awt.Dimension(610, 381));
         xButton1.setMnemonic('c');
         xButton1.setText("Cancel");
         xButton1.setName("_close");
@@ -66,7 +65,7 @@ public class LookupPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)

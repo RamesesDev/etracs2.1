@@ -1,0 +1,62 @@
+<!--
+// author    : jzamora
+// copyright : Rameses Systems Inc
+// date      : 17 july 2011
+-->
+<workunit>
+    <invokers>
+        <invoker type="realproperty:lookup" caption="Real Propety Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+    <![CDATA[
+
+    import com.rameses.rcp.common.*
+    import com.rameses.rcp.annotations.*
+
+    class RealPropertyLookupController extends LookupModel 
+    {
+        @Service("RealPropertyUpdateService")
+        def svc
+
+        def onselect
+        def selected
+        def docstate
+
+        def ok() {
+            search = null
+            if( onselect ) onselect( selected )
+            return select()
+        }
+
+        def getListHandler() {
+            return this
+        }
+
+        int getRows() { return 20 }
+
+        Column[] getColumns() {
+            return [
+                new Column(name:"pin", caption:"PIN"),
+                new Column(name:"cadastrallotno", caption:"Cadastral Lot No."),
+                new Column(name:"blockno", caption:"Block No."),
+                new Column(name:"surveyno", caption:"Survey No."),
+
+            ]
+        }
+
+        List fetchList( Map params ) { 
+            params.searchText = search
+            return svc.lookupRealProperties( params )
+        }
+    }  
+
+    ]]>
+
+    </code>
+    
+    <pages>
+        <page template="etracs2.common.LookupPage"/>
+    </pages>
+</workunit>

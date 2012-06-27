@@ -13,6 +13,8 @@ class JobpositionService
 	@ProxyMethod
 	public def getList(def params) {
 		def qry = em.sqlContext.createNamedQuery( "jobposition:list" );
+		qry.setPagingKeys("jp.code");
+		
 		if(params) {
 			if(params._start) qry.setFirstResult( params._start );
 			if(params._limit) qry.setMaxResults( params._limit );
@@ -72,52 +74,4 @@ class JobpositionService
 		return x;
 	}
 	
-	/*	
-	@Service("RoleclassService")
-	def roleclassSvc;
-	
-	@Service("RoleService")
-	def roleSvc;
-
-	@ProxyMethod
-	public def getPermissions(def o) {
-		def jobpos = em.read( "jobposition", o );
-		def m = [:];
-		m.modules = roleSvc.getRoleModulePermissions(jobpos.role);
-		m.excluded = (jobpos.excluded) ? jobpos.excluded : [];
-		return m;
-	}
-	
-	@ProxyMethod
-	public def updatePermissions(def o) {
-		def jobpos = em.read( "jobposition", o );
-		jobpos.excluded = o.excluded;
-		em.update( "jobposition", jobpos );	
-	}
-
-	@ProxyMethod
-	public def getJobPermissions( jobid ) {
-		return em.sqlContext.createNamedQuery('jobposition:get-job-permissions')
-			     .setParameter('jobid', jobid)
-				 .singleResult;
-	}
-
-	@ProxyMethod
-	public def getTags( param ) {
-		def qry = em.sqlContext.createNamedQuery('jobposition:get-tags').setParameters([jobid:param.objid]);
-		if(param._start) qry.setFirstResult(param._start);
-		if(param._limit) qry.setMaxResults(param._limit);
-		return qry.resultList;
-	}
-	
-	@ProxyMethod
-	public def getAvailableTags( job ) {
-		if( !job ) return null;
-		
-		if( !job.roleclass )
-			job = em.read("jobposition", job);
-		
-		return roleclassSvc.getAvailableTags([name: job.roleclass]);
-	}
-	*/
 }

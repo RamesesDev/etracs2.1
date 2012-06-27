@@ -1,16 +1,14 @@
-"entity.tax.*" [entity.info.mode=="ONLINE"] {
-    enabled: false;
-}
+"entity.tax.*" [entity.info.mode!="CAPTURE"] { enabled: false; }
+"entity.tax.*" [entity.info.mode=="CAPTURE"] { enabled: true; }
 
-"entity.tax.*" [entity.info.mode!="ONLINE"] {
-    enabled: true;
-}
+"entity.info.payer.entity(name|address)" [taxpayer!=null] { enabled: false; }
+"entity.info.payer.entity(name|address)" [taxpayer==null] { enabled: true; }
 
-"entity.info.payer.entity(name|address)" [taxpayer!=null] {
-    enabled: false;
-}
+"entity.additional_remarks" [entity.additional==true] { readonly:false; }
+"entity.additional_remarks" [entity.additional!=true] { readonly:true; text: ""; }
 
-"entity.info.payer.entity(name|address)" [taxpayer==null] {
-    enabled: true;
-}
+"calculate" [entity.info.mode!="CAPTURE"] { visible: true; }
+"calculate" [entity.info.mode=="CAPTURE"] { visible: false; }
 
+"acceptTaxDue" [entity.info.mode!="CAPTURE"] { visible: false; }
+"acceptTaxDue" [entity.info.mode=="CAPTURE"] { visible: true; }

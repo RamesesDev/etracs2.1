@@ -3,9 +3,6 @@
 <Form version="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
     <Property name="focusable" type="boolean" value="false"/>
-    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[610, 381]"/>
-    </Property>
   </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
@@ -36,7 +33,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xDataTable1" pref="330" max="32767" attributes="0"/>
+              <Component id="xDataTable1" pref="417" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="xButton1" alignment="3" min="-2" max="-2" attributes="0"/>

@@ -333,6 +333,10 @@ public class LiquidationMultiCashierController {
         if( ! selectedRcd ) return false;
         return true;
     }
+    
+    def getCashierlist() {
+        return userService.getCashierList(null, null)
+    }
 }
 
 ]]>

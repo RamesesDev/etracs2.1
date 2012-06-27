@@ -8,8 +8,22 @@
         </folder>
     </folder>
     
-    <folder id="report" caption="Reports">
+    <folder id="report">
         <folder id="assessor" caption="Assessor"/>
+        <folder id="landtax" caption="Land Tax"/>
+    </folder>
+    
+    <folder id="txn">
+        <folder id="rpt" caption="Real Property Assessment">
+            <folder id="master" caption="Master Files"/>
+            <folder id="ry" caption="Revesion Year Settings"/>
+            <folder id="txn" caption="Transactions"/>
+            <folder id="subdivision" caption="Subdivision"/>
+            <folder id="consolidation" caption="Consolidation"/>
+            <folder id="cert" caption="Certifications"/>
+            <folder id="rpupdate" caption="Real Property Update"/>
+            <folder id="titleupdate" caption="Title Update"/>
+        </folder>
         <folder id="landtax" caption="Land Tax"/>
     </folder>
 </folders>

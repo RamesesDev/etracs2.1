@@ -263,6 +263,7 @@
             </Component>
             <Container class="com.rameses.rcp.control.XSubFormPanel" name="xSubFormPanel1">
               <Properties>
+                <Property name="caption" type="java.lang.String" value="Assessment Info"/>
                 <Property name="dynamic" type="boolean" value="true"/>
                 <Property name="handler" type="java.lang.String" value="infoHandler"/>
               </Properties>

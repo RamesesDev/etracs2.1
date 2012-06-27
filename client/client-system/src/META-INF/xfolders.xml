@@ -3,7 +3,11 @@
     <folder id="menu">
         <folder id="system" caption="System" index="-1"/>
         <folder id="mgmt" caption="Management" index="5"/>
+        <folder id="explorer" caption="Explorers" index="6"/>
         <folder id="help" caption="Help" index="9999"/>
     </folder>
+    
     <folder id="report" caption="Reports"/>
+    
+    <folder id="txn" caption="Transactions"/>
 </folders>

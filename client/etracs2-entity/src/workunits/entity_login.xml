@@ -1,0 +1,43 @@
+<workunit>
+    <invokers>
+        <invoker type="entity:login" caption="Login Info" target="popup" />
+    </invokers>
+    <code>
+        <![CDATA[
+
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+
+        class EntityLoginController {
+        
+            @Binding
+            def binding
+            
+            @Service("UserAccountService")
+            def usrSvc;
+            
+            def saveHandler;
+            def mode = "create";
+            def acct;
+            
+            def save() {
+                if( acct.pwd != acct.confirmpwd )
+                    throw new Exception( "Password must be equal with the confirm password");
+                if( mode == "create" ) {    
+                    def u = usrSvc.createLoginAccount( acct );
+                    if(this.saveHandler) this.saveHandler( u );
+                }
+                return "_close";
+            }
+            
+            
+            
+        }
+
+        ]]>
+    </code>
+    <pages>
+        <page template="etracs2.entity.EntityLoginAccountPage"/>
+    </pages>
+</workunit>

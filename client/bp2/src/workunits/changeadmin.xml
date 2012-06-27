@@ -2,8 +2,10 @@
 <workunit>
     
     <invokers>
-        <invoker type="bptransaction" folderid="/menu/bp" action="createBPAdmin" caption="Change Administrator" permission="bpadmin.changeadministrator" index="252"  target="window" />
-        <invoker type="bptransaction.createBPAdmin"              action="createBPAdmin" caption="Change Administrator" target="window" />
+        <invoker folderid="/menu/bp/txn" action="createBPAdmin" caption="Change Administrator" permission="bpadmin.changeadministrator" index="252"  target="window" />
+        <invoker folderid="/txn/bp/txn" action="createBPAdmin" caption="Change Administrator" permission="bpadmin.changeadministrator" index="252"  target="window" />
+        <invoker type="bptransaction" action="createBPAdmin" caption="Change Administrator" permission="bpadmin.changeadministrator" index="252"  target="window" />
+        <invoker type="bptransaction.createBPAdmin" action="createBPAdmin" caption="Change Administrator" target="window" />
         
         <invoker type="formActions" action="close" immediate="true" caption="Close" icon="images/cancel.png"/>
         <invoker type="formActions" action="createBPAdmin" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"/>

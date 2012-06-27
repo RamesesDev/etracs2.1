@@ -26,55 +26,85 @@ public class IssuedReceiptPage extends javax.swing.JPanel {
     private void initComponents() {
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
         jPanel3 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        xActionTextField1 = new com.rameses.rcp.control.XActionTextField();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        xActionTextField1 = new com.rameses.rcp.control.XActionTextField();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
 
-        setLayout(new java.awt.BorderLayout());
-
+        xActionBar1.setBorder(new com.rameses.rcp.control.border.XUnderlineBorder());
         xActionBar1.setDepends(new String[] {"selectedItem"});
         xActionBar1.setDynamic(true);
         xActionBar1.setName("formActions");
-        add(xActionBar1, java.awt.BorderLayout.NORTH);
-
-        jPanel3.setLayout(new java.awt.BorderLayout());
+        xActionBar1.setPreferredSize(new java.awt.Dimension(61, 32));
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("List of Issued Receipts");
         jPanel3.setBorder(xTitledBorder1);
-        jPanel4.setLayout(new java.awt.BorderLayout());
+        xDataTable1.setHandler("listHandler");
+        xDataTable1.setName("selectedItem");
 
-        jPanel2.setLayout(new java.awt.BorderLayout());
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 5, 5, 1));
         xActionTextField1.setActionName("search");
         xActionTextField1.setHint("Search");
         xActionTextField1.setIndex(-10);
         xActionTextField1.setName("searchText");
         xActionTextField1.setPreferredSize(new java.awt.Dimension(250, 19));
-        jPanel2.add(xActionTextField1, java.awt.BorderLayout.WEST);
 
-        jPanel4.add(jPanel2, java.awt.BorderLayout.NORTH);
+        xComboBox1.setAllowNull(false);
+        xComboBox1.setImmediate(true);
+        xComboBox1.setItems("docstateList");
+        xComboBox1.setName("docstate");
 
-        xDataTable1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 5, 5));
-        xDataTable1.setHandler("listHandler");
-        xDataTable1.setName("selectedItem");
-        jPanel4.add(xDataTable1, java.awt.BorderLayout.CENTER);
+        org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 581, Short.MAX_VALUE)
+                    .add(jPanel3Layout.createSequentialGroup()
+                        .add(xActionTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 230, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(xComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 147, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(xActionTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 22, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(xComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
-        jPanel3.add(jPanel4, java.awt.BorderLayout.CENTER);
-
-        add(jPanel3, java.awt.BorderLayout.CENTER);
-
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(xActionBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE)
+            .add(layout.createSequentialGroup()
+                .add(10, 10, 10)
+                .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(10, 10, 10))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .add(xActionBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XActionTextField xActionTextField1;
+    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     // End of variables declaration//GEN-END:variables
     

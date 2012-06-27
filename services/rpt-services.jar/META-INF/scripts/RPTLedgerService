@@ -134,10 +134,11 @@ class RPTLedgerService
 	@ProxyMethod
     public void post( faasid ) {
         def faas = openFaas( faasid )
-        if( faas.datacapture == true ) postNewLedger( faas, PENDING_STATE )
-        else if( 'TR/TRE/RE/CE/CC/CT'.indexOf( faas.txntype ) >= 0 ) postLedgerItem( faas ) 
-        else if( 'ND/MC'.indexOf( faas.txntype ) >= 0 ) postNewLedger( faas, APPROVED_STATE )
-        else throw new Exception('RPTLedgerService.post: Posting of TxnType ' + faas.txntype + ' is not yet supported.')        
+		
+		if( faas.datacapture == true ) postNewLedger( faas, PENDING_STATE )
+		else if( 'TR/TRE/RE/CE/CC/CT'.indexOf( faas.txntype ) >= 0 ) postLedgerItem( faas ) 
+		else if( 'ND/MC'.indexOf( faas.txntype ) >= 0 ) postNewLedger( faas, APPROVED_STATE )
+		else throw new Exception('RPTLedgerService.post: Posting of TxnType ' + faas.txntype + ' is not yet supported.')
     }
     
     @ProxyMethod
@@ -201,7 +202,13 @@ class RPTLedgerService
     /*-------------------------------------------------------------------
     * Support Methods 
     -------------------------------------------------------------------*/
-    void postNewLedger( faas, state ) { 
+    void postNewLedger( faas, state ) {
+		//this might happen when the faas state is already APPROVED and was changed to FOR_APPROVAL
+		if( faas.ledgerid ) {
+			updateLedger( faas );
+			return;
+		}
+		
         def ledger = createLedger( faas, state)
         def ledgeritem = createLedgerItem( ledger )
         em.validate( ledger.schemaname, ledger ) 

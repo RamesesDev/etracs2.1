@@ -29,16 +29,17 @@ public class PreviewPage extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
+        setPreferredSize(new java.awt.Dimension(771, 439));
         xReportPanel1.setName("report");
         org.jdesktop.layout.GroupLayout xReportPanel1Layout = new org.jdesktop.layout.GroupLayout(xReportPanel1);
         xReportPanel1.setLayout(xReportPanel1Layout);
         xReportPanel1Layout.setHorizontalGroup(
             xReportPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 400, Short.MAX_VALUE)
+            .add(0, 771, Short.MAX_VALUE)
         );
         xReportPanel1Layout.setVerticalGroup(
             xReportPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 278, Short.MAX_VALUE)
+            .add(0, 417, Short.MAX_VALUE)
         );
         add(xReportPanel1, java.awt.BorderLayout.CENTER);
 

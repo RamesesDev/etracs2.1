@@ -1,0 +1,49 @@
+<workunit>
+    <invokers>
+        <invoker type="ctcassessment:rulecondition" caption="CTC Fact" action="init" index="3"/>
+    </invokers>
+
+    <code>
+        <![CDATA[
+
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import rulemgmt.*;
+
+        class CTCRuleBarangayFact extends FactConditionHandler {
+        
+            @Binding
+            def binding
+            
+            public String getFactname() {
+                return "CTCFact";
+            }
+            
+            public FactField[] getFields() {
+                return [
+                    new FactField( "barangayid", "Barangay", "string", null, "barangay" ),
+                    new FactField( "year", "Year", "integer"),
+                    new FactField( "qtr", "Quarter", "integer"),
+                    new FactField( "month", "Month", "integer"),
+                    new FactField( "day", "Day", "integer"),
+                    new FactField( "additional", "Is Additional?", "boolean"),
+                    new FactField( "basictax", "Basic Tax", "decimal"),
+                    new FactField( "salarytax", "Annual Salary Tax", "decimal"),
+                    new FactField( "businessgrosstax", "Business Gross Tax", "decimal"),
+                    new FactField( "propertyincometax", "Property Income Tax", "decimal"),
+                    new FactField( "additionaltax", "Additional Tax", "decimal"),
+                    new FactField( "amtdue", "Amount Due", "decimal"),
+
+                ] as FactField[];
+            }
+        }
+
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="rulemgmt.support.FactConditionPage" />
+    </pages>
+    
+</workunit>

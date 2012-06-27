@@ -1,0 +1,32 @@
+<workunit>
+    <invokers>
+        <invoker type="value_handler:orgtype" />
+    </invokers>
+    
+    <code>
+        <![CDATA[
+
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import rulemgmt.*;
+
+        public class OrgtypeValueHandler extends LookupValueHandler {
+        
+            public ValueHandlerLookupModel getHandler() {
+                return [
+                    getItemObjid: { it },
+                    getItemName:  { it },
+                    getLookupOpenerName:  { 'orgtype.lookup' },
+                    getSelectHandlerName: { 'onselect' }
+                ] as ValueHandlerLookupModel
+            }
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="rulemgmt.support.LookupValuePage"/> 
+    </pages>
+    
+</workunit>

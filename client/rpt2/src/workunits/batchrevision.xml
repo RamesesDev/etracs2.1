@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="menu/rpt/txn" action="init" caption="Batch General Revision"  mnemonic="b" permission="batchgr.create"/>
+        <invoker folderid="/menu/rpt/txn" action="init" caption="Batch General Revision"  mnemonic="b" permission="batchgr.create"/>
+        <invoker folderid="/txn/rpt/txn" action="init" caption="Batch General Revision"  mnemonic="b" permission="batchgr.create"/>
         <invoker type="quick_launcher" code="BGR01" action="init" caption="Batch General Revision"  mnemonic="b" permission="batchgr.create"/>
     </invokers>
     <code lang="groovy">

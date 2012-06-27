@@ -1,0 +1,10 @@
+"rpinfo" [mode=='create'] { enabled: true; }
+"rpinfo" [mode!='create'] { enabled: false; }
+
+"entity.(cadast.*|block.*|survey.*|house.*|street|purok|north|east|south|west)" [entity.pin!=null && mode!='view'] {
+    enabled: true;
+}
+
+"entity.(cadast.*|block.*|survey.*|house.*|street|purok|north|east|south|west)" [entity.pin==null || mode=='view'] {
+    enabled: false;
+}

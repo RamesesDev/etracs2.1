@@ -7,6 +7,7 @@
     <invokers>
         <invoker type="home.action" caption="Annotation Management" mnemonic="f" permission="annotationmgmt.view" icon="images/folder.png" index="5" target="window" />
         <invoker folderid="/menu/mgmt" caption="Annotation Management" mnemonic="f" permission="annotationmgmt.view" index="130" target="window" />
+        <invoker folderid="/txn/rpt" caption="Annotation Management" mnemonic="f" permission="annotationmgmt.view" index="130" target="window" />
         <invoker type="quick_launcher" code="FA00" caption="Annotation Management" mnemonic="f" permission="annotationmgmt.view" icon="images/folder.png" index="5" target="window" />
         <!-- <invoker type="formActions" action="createMortgage" immediate="true" caption="New Mortgage" mnemonic="m" icon="images/doc-new.png" permission="mortgage.create" /> -->
         <invoker type="formActions" action="createAnnotation" immediate="true" caption="New Annotation" mnemonic="b" icon="images/doc-new.png" permission="bailbond.create" />

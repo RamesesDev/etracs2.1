@@ -43,8 +43,8 @@
                     ];
                 },
 
-                fetchList : { 
-                    return svc.getList( searchText, OsirisContext.env );
+                fetchList : { params ->
+                    return svc.getList( searchText, params );
                 }
 
             ] as PageListModel;

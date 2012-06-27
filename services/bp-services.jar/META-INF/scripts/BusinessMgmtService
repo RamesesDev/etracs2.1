@@ -16,6 +16,9 @@ class BusinessMgmtService{
 	@Service('NumberService')
 	def numSvc
 	
+	@Service('Var')
+	def sysvar;
+	
 	@PersistenceContext('main')
 	def em;
 
@@ -201,7 +204,18 @@ class BusinessMgmtService{
 	
 	private def getNextPermitSeries(){
 		def year = new java.text.SimpleDateFormat('yyyy').format( new Date() );
-		return year + sequenceSvc.getNextFormattedSeriesA( 'PERMIT'+year, 5 );
+		def seq = sequenceSvc.getNextFormattedSeriesA( 'PERMIT'+year, 5 );
+		
+		def format = year + seq;
+		if( sysvar.bp_permit_format ) {
+			def expr = sysvar.bp_permit_format;
+			expr = expr.replace('${YEAR}', '{0}')
+			           .replace('${TXNNO}', '{1}')
+			def formatter = new java.text.MessageFormat( expr )
+			format = formatter.format( [year, seq] as Object[] )
+		}
+		
+		return format;
 	}
 	
 	@ProxyMethod

@@ -33,9 +33,11 @@ public class ChangePwdPage extends javax.swing.JPanel {
         jSeparator1 = new javax.swing.JSeparator();
 
         formPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
-        formPanel1.setCaptionWidth(150);
+        formPanel1.setCaptionWidth(110);
         xPasswordField3.setText("xPasswordField1");
         xPasswordField3.setCaption("Old Password");
+        xPasswordField3.setCellPadding(new java.awt.Insets(0, 0, 10, 0));
+        xPasswordField3.setHint("Type your current password");
         xPasswordField3.setName("oldpwd");
         xPasswordField3.setPreferredSize(new java.awt.Dimension(0, 24));
         xPasswordField3.setRequired(true);
@@ -43,6 +45,7 @@ public class ChangePwdPage extends javax.swing.JPanel {
 
         xPasswordField1.setText("xPasswordField1");
         xPasswordField1.setCaption("New Password");
+        xPasswordField1.setHint("Type your new password");
         xPasswordField1.setName("newpwd");
         xPasswordField1.setPreferredSize(new java.awt.Dimension(0, 24));
         xPasswordField1.setRequired(true);
@@ -50,6 +53,7 @@ public class ChangePwdPage extends javax.swing.JPanel {
 
         xPasswordField2.setText("xPasswordField1");
         xPasswordField2.setCaption("Confirm");
+        xPasswordField2.setHint("Confirm your new password");
         xPasswordField2.setName("confirmpwd");
         xPasswordField2.setPreferredSize(new java.awt.Dimension(0, 24));
         xPasswordField2.setRequired(true);
@@ -69,21 +73,22 @@ public class ChangePwdPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(layout.createSequentialGroup()
-                        .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 62, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 337, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 337, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(21, 21, 21))
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(225, Short.MAX_VALUE)
+                .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 62, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 41, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 31, Short.MAX_VALUE)
                 .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)

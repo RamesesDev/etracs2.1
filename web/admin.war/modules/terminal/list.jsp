@@ -14,7 +14,7 @@
 					this.selectedItem;
 		
 					this.listModel = {
-						rows: 10,
+						rows: 15,
 						fetchList: function(o) {
 							return svc.getList( o );	
 						}
