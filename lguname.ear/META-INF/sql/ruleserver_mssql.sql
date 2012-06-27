@@ -29,4 +29,4 @@ and rulegroup=$P{rulegroup}
 [get-facts]
 select * from rule_package 
 where ruleset=$P{ruleset} 
-and `type`='facts' 
+and [type]='facts' 
