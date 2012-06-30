@@ -6,6 +6,8 @@
 <workunit>
     <invokers>
         <invoker folderid="/menu/mgmt" caption="Subdivision Management" mnemonic="s" permission="subdivisionmgt.view" index="110"/>
+        <invoker folderid="/txn/rpt" caption="Subdivision Management" mnemonic="s" permission="subdivisionmgt.view" index="110"/>
+        
         <invoker type="home.action" caption="Subdivision Management" mnemonic="s" permission="subdivisionmgt.view" index="3" icon="images/folder.png" target="window" />
         
         <!-- 

@@ -2,6 +2,7 @@
     <invokers>
         <invoker type="tc.master" action="init" caption="Accountable Form" permission="af.viewlist" target="window" icon="images/folder.png" index="12"/>
         <invoker folderid="/menu/tc/master" action="init" caption="Accountable Form" permission="af.viewlist" target="window"/>
+        <invoker folderid="/txn/tc/master" action="init" caption="Accountable Form" permission="af.viewlist" target="window" index="1"/>
         
         <invoker type="quick_launcher" code="AF" action="init" caption="Accountable Form" permission="af.viewlist" />
         

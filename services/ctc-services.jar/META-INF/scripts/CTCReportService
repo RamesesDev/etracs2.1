@@ -1,186 +1,55 @@
-import com.rameses.scripting.annotations.*;
-import com.rameses.etracs.tc.ctc.*;
-import com.rameses.etracs.tc.ctc.setting.*;
-import com.rameses.tracs.common.DateUtil;
-import com.rameses.org.Assignee;
+import com.rameses.annotations.*;
+
 
 public class CTCReportService
 {
-	@Resource("defaultPU")
+	@PersistenceContext("main")
 	def em;
 	
-	@ProxyMethod
-	public List buildCtcBarangayShare(int year, int month) {
-		try {
-		println "buildCtcBarangayShare";
-		Date fromDate = getFirstDayOfMonth( year, month );
-		Date toDate = getFirstDayOfNextMonth( year, month );
-		
-		def remittanceIds = getRemittanceIdsByLiquidationDate("IndividualCTCReceipt", fromDate, toDate);
-		if( remittanceIds.size()  == 0 ) throw new Exception("No Collection for the specified period.");
-		
-		def setting = em.createQuery("SELECT o FROM " + IndividualCTCSetting.class.simpleName + " o ").singleResult;
-		if (!setting)
-			setting = new IndividualCTCSetting();
-		
-		def brgyAccts = em.createQuery('''
-									SELECT ba.account FROM IndividualCTCSetting o, IN(o.barangayAccounts) ba 
-									WHERE ba.account IS NOT NULL 
-							''').resultList;
-		def brgyInterestAccts = em.createQuery('''
-					SELECT ba.interestAccount FROM IndividualCTCSetting o, IN(o.barangayAccounts) ba
-					WHERE ba.interestAccount IS NOT NULL
-				''').resultList;
-		if( brgyAccts.size() == 0) {
-			throw new Exception("No Barangay Account defined in the setting.");
-		}
-							
-		def shares = em.createQuery( ''' 
-								SELECT new map( o.barangay.name as brgyName, SUM( i.amount ) as brgyShare )
-								FROM IndividualCTCReceipt o, IN(o.items) i
-								WHERE o.remittanceId IN ( :ids ) AND i.account IN ( :brgyAccts ) AND o.voidId IS NULL 
-								  AND o.barangay IS NOT NULL
-								GROUP BY o.barangay.name '''
-						).setParameter("ids", remittanceIds)
-						 .setParameter("brgyAccts", brgyAccts)
-						 .resultList;
-						 
-		def interestShares = em.createQuery('''
-					SELECT new map(o.barangay.name as brgyName, SUM( i.amount) as brgyInterestShare)
-					FROM IndividualCTCReceipt o, IN(o.items) i
-					WHERE o.remittanceId IN ( :ids ) AND i.account IN ( :brgyInterestAccts ) AND o.voidId IS NULL
-					AND o.barangay IS NOT NULL
-					GROUP BY o.barangay.name
-				''').setParameter("ids", remittanceIds)
-				 .setParameter("brgyInterestAccts", brgyInterestAccts)
-				 .resultList;
-						 
-		def collections = em.createQuery( ''' 
-						SELECT new map( o.barangay.name as brgyName, SUM( i.amount ) as collection )
-						FROM IndividualCTCReceipt o, IN(o.items) i
-						WHERE o.remittanceId IN ( :ids ) AND o.voidId IS NULL 
-						  AND o.barangay IS NOT NULL
-						  AND i.account = :account
-						GROUP BY o.barangay.name '''
-				).setParameter("ids", remittanceIds)
-				 .setParameter("account", setting.account)
-				 .resultList;
-				 
-		def collectionInterests = em.createQuery( ''' 
-						SELECT new map( o.barangay.name as brgyName, SUM( i.amount ) as collection )
-						FROM IndividualCTCReceipt o, IN(o.items) i
-						WHERE o.remittanceId IN ( :ids )
-						AND i.account = :interestAccount
-						 AND o.voidId IS NULL 
-						  AND o.barangay IS NOT NULL
-						GROUP BY o.barangay.name '''
-				).setParameter("ids", remittanceIds)
-				 .setParameter("interestAccount", setting.interestAccount)
-				 .resultList;
-		
-		for( int i = 0; i < collections.size(); i++ ) {
-			//collections[i].brgyShare = (shares[i]) ? shares[i].brgyShare : 0.00;
-			setBrgyShare(shares, collections[i]);
-			//collections[i].brgyInterestShare = (interestShares[i]) ? interestShares[i].brgyInterestShare : 0.00;
-			setBrgyInterestShare(interestShares, collections[i]);
-			//collections[i].interest = (collectionInterests[i]) ? collectionInterests[i].collection : 0.00;
-			setInterest(collectionInterests, collections[i]);
-		}
-		
-		em.createQuery("SELECT o FROM Barangay o ORDER BY o.name").resultList.each { brgy ->
-			def item = collections.find { it.brgyName == brgy.name };
-			if( item == null ) {
-				collections.add([ 'brgyName':brgy.name, 'collection':0.0, 'brgyShare':0.0, 'interest':0.0, 'brgyInterestShare':0.0]);
-			}
-		}
-		
-		collections.sort { item1, item2 -> return item1.brgyName.compareTo(item2.brgyName); };
-		return collections;
-		} catch (ex) {ex.printStackTrace();}
-		return null;
-	}
-	
-	private void setBrgyShare(def shares, def collection) {
-		for (share in shares) {
-			if (share.brgyName == collection.brgyName) {
-				collection.brgyShare = share.brgyShare;
-				return;
-			}
-		}
-		collection.brgyShare = 0.0;
-	}
-	
-	private void setBrgyInterestShare(def interestShares, def collection) {
-		for (share in interestShares) {
-			if (share.brgyName == collection.brgyName) {
-				collection.brgyInterestShare = share.brgyInterestShare;
-				return;
-			}
-		}
-		collection.brgyInterestShare = 0.0;
-	}
-	
-	private void setInterest(def interests, def collection) {
-		for (interest in interests) {
-			if (interest.brgyName == collection.brgyName) {
-				collection.interest = interest.collection;
-				return;
-			}
-		}
-		collection.interest = 0.0;
-	}
-	
 	
 	@ProxyMethod
-	public List buildAbstractCtc0016( def collector, def remittanceNo ) {
-		def ejbql = '''
-			SELECT new map(
-				o.remittanceNo as remittanceNo,
-				o.remittanceDate as remittanceDate,
-				o.serialno as serialNo,
-				CASE WHEN o.voidId IS NULL THEN o.payername ELSE '*** VOID ***' END as taxpayerName,
-				CASE WHEN o.voidId IS NULL THEN o.basicTax ELSE 0 END as basicTax,
-				CASE WHEN o.voidId IS NULL THEN o.totalAdditionalTax ELSE 0 END as additionalTax,
-				CASE WHEN o.voidId IS NULL THEN o.interest ELSE 0 END as penalty,
-				CASE WHEN o.voidId IS NULL THEN o.amount ELSE 0 END as total,
-				o.collectorName as collectorName,
-				o.collectorTitle as collectorTitle
-			)
-			FROM IndividualCTCReceipt o
-			WHERE o.remittanceNo = :remittanceNo 
-			ORDER BY o.serialno 
+	public List buildAbstractCtc0016( remittanceid ) {
+		def sql = '''
+			SELECT
+				rl.remittanceno,
+				rl.remittancedate,
+				rl.serialno,
+				rl.collectorname,
+				rl.collectortitle,
+				rl.voided,
+				rl.payorname,
+				rl.amount as total,
+				r.extended
+			FROM receiptlist rl
+			INNER JOIN receipt r ON r.objid = rl.objid
+			WHERE rl.remittanceid = ? and r.doctype='CTCI'
+			ORDER BY rl.serialno 
 		''';
 		
-		def list = em.createQuery(ejbql).setParameter("remittanceNo", remittanceNo).resultList;
+		def list = em.sqlContext.createQuery(sql).setParameter(1, remittanceid).resultList.each {
+			def ext = em.serializer.read( it.extended )
+			
+			if( it.voided == 1 ) {
+				it.payorname = '*** VOID ***'
+				it.basictax = 0.00
+				it.additionaltax = 0.00
+				it.penalty = 0.00
+				it.total = 0.00
+			}
+			else {
+				it.basictax = ext.tax.basic
+				it.penalty = ext.tax.interest
+				it.additionaltax = 0.00
+				if( ext.tax.property ) it.additionaltax += ext.tax.property
+				if( ext.tax.business ) it.additionaltax += ext.tax.business
+				if( ext.tax.salary )   it.additionaltax += ext.tax.salary
+			}
+		};
+		
 		if( list.size() == 0) {
-			throw new Exception("No collection for Remittance No. $remittanceNo.");
+			throw new Exception("No CTC-Individual collection found for the specified remittance.");
 		}
 		return list;
-	}
-	
-	
-	private def getFirstDayOfMonth( int year, int month ) {
-		return DateUtil.toDate(year, month, 1);
-	}
-	
-	private def getFirstDayOfNextMonth( int year, int month ) {
-		Calendar cal = Calendar.getInstance();
-        cal.setTime(DateUtil.getMonthEndDate(getFirstDayOfMonth(year, month)));
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-        return cal.getTime();
-	}
-	
-	private def getRemittanceIdsByLiquidationDate( def sourceType, def fromDate, def toDate ) {
-		print "FROM -> $fromDate   TO -> $toDate";
-		//get all remittanceid from revenue where liquidation is between fromDate and toDate
-		String ejbql = '''
-						SELECT DISTINCT o.remittanceId FROM Revenue o
-						WHERE o.sourceType = :source AND o.liquidationDate >= :fromdate AND o.liquidationDate < :todate AND voided = 0
-		''';
-		return em.createQuery(ejbql).setParameter("source", sourceType)
-									.setParameter("fromdate", fromDate)
-									.setParameter("todate", toDate).resultList;
-		
 	}
 	
 }

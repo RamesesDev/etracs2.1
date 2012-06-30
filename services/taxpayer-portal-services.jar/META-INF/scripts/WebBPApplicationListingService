@@ -61,7 +61,7 @@ class WebBPApplicationListingService
 		else {
 			qry.setVars([filter:'']);
 		}
-		
+
 		return qry.setParameters( criteria )
 				  .setFirstResult( params._start )
 				  .setMaxResults( params._limit )
@@ -71,12 +71,12 @@ class WebBPApplicationListingService
 	@ProxyMethod
 	public def getPendingList(searchText, params) {
 		if( ! searchText ) 
-			return getListByQuery('bpapplication:getList', [:], params)
+			return getListByQuery('webbplisting:getList', [:], params)
 		
 		def criteria = [ tradename:searchText +'%', txnno:searchText+'%']
 		def result = []
-		if( (result = getListByQuery('bpapplication:getListByTradename', criteria, params)) ) return result
-		if( (result = getListByQuery('bpapplication:getListByTxnno', criteria, params)) ) return result
+		if( (result = getListByQuery('webbplisting:getListByTradename', criteria, params)) ) return result
+		if( (result = getListByQuery('webbplisting:getListByTxnno', criteria, params)) ) return result
 		return result 
 	}
 	

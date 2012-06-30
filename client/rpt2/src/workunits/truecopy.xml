@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     
-    <invoker folderid="/menu/rpt/faas" action="init" caption="Certified True Copy" index="100" permission="truecopy.view" />
+    <invokers>
+        <invoker folderid="/menu/rpt/faas" action="init" caption="Certified True Copy" index="100" permission="truecopy.view" />
+        <invoker folderid="/txn/rpt/txn" action="init" caption="Certified True Copy" index="100" permission="truecopy.view" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="truecopy.create" />
         <invoker type="formActions" action="saveTrueCopy" shortcut="ctrl S" visibleWhen="#{mode != 'view'}" caption="Save" mnemonic="s" icon="images/save.png" />
         <invoker type="formActions" action="cancel" visibleWhen="#{mode != 'view'}"  immediate="true" caption="Cancel" mnemonic="c" icon="images/cancel.png" />
         <invoker type="formActions" action="viewReport" shortcut="ctrl w" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="View" mnemonic="w" icon="images/doc-view.png" permission="truecopy.viewReport" />
-    
+    </invokers>
+        
     <code lang="groovy">
         <![CDATA[
         

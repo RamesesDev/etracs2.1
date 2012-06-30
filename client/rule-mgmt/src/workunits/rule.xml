@@ -5,7 +5,7 @@
         <invoker type="xrule_open" action="open" caption="XRule Information" target="popup" />
         
         <invoker type="formActions" action="create" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' }" icon="images/doc-new.png"/>
-        <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" shortcut="ctrl C" visibleWhen="#{mode == 'edit' }" icon="images/cancel.png"/>
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" shortcut="ctrl C" visibleWhen="#{mode == 'edit' }" icon="images/cancel.png"/>
         <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" visibleWhen="#{mode == 'view' and rule.docstate != 'DEPLOYED'}" icon="images/edit.png"/>
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode != 'view' }" icon="images/save.png"/>
         <invoker type="formActions" action="deploy" caption="Deploy" mnemonic="d" shortcut="ctrl D" visibleWhen="#{mode == 'view'  and rule.docstate != 'DEPLOYED'}" icon="images/deploy.png"/>
@@ -83,8 +83,6 @@
             
             public void edit() {
                 mode = 'edit'
-                selectedCondition = null;
-                selectedAction = null;
                 conditionListHandler.load();
                 actionListHandler.load();
             }

@@ -55,42 +55,4 @@ class PermissionService {
 		}
 	}
 	
-	/*
-	@ProxyMethod	
-	public def getPermissions( def roleclass,def included, def excluded ) {
-		def perms = [];
-		def list = em.sqlContext.createNamedQuery("permission:module-permissions").setParameters( [roleclass: roleclass] ).resultList;
-		list.each {
-			def modname = it.modulename;
-			def modtitle = it.moduletitle;
-			if( it.permissions ) {
-				em.serializer.read( it.permissions ).each { z->
-					def x = [:];
-					x.id = modname +":"+z.action;
-					x.action = z.action; 
-					x.title = (z.title) ? z.title: z.action;
-					x.moduletitle = modtitle;
-					x.modulename = modname;
-					x.object = (z.action.indexOf(".")>0)? z.action.substring( 0, z.action.indexOf(".")) : "";
-					boolean addit = false;
-					//check first if included or excluded
-					if( !included || included.find{ii-> x.id.matches(ii) } ) {
-						addit = true;
-					}	
-					if( addit ) {
-						if( excluded && excluded.find{ii->x.id.matches(ii) } ) addit = false; 
-						if(addit) perms.add( x );
-					}
-				}
-			}
-		}
-		return perms;
-	}
-	
-	@ProxyMethod( local=true )	
-	public def getAllPermissions( def roleclass,def included, def excluded ) {
-		def list = getPermissions( roleclass, included, excluded );
-		return list*.id;
-	}
-	*/
 }

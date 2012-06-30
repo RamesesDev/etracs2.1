@@ -47,7 +47,7 @@ class EditLandAdjustmentParamController
 
     def convertParamValue( param ) {
         if( param.datatype == 'decimal' ) {
-            return Double.parseDouble( param.paramvalue )
+            return parseDouble( param.paramvalue )
         }
         else if( param.datatype == 'range_decimal' ) {
             def decvalue = parseDouble( param.paramvalue )
@@ -68,7 +68,7 @@ class EditLandAdjustmentParamController
     
     def parseDouble( value ) {
         try {
-            return Double.parseDouble( value )
+            return Double.parseDouble( value ? value+'' : '0.00' )
         }
         catch( e ) {
             throw new Exception('Invalid parameter value.')
@@ -77,7 +77,7 @@ class EditLandAdjustmentParamController
     
     def parseInt( value ) {
         try {
-            return Integer.parseInt( value )
+            return Integer.parseInt( value ? value+'' : '0' )
         }
         catch( e ) {
             throw new Exception('Invalid parameter value.')

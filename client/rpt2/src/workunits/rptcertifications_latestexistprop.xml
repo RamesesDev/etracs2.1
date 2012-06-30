@@ -4,7 +4,8 @@
         <invoker type="rptcertifications" caption="Latest And Existing Property" target="window" index="6" permission="latestexistproperty.open" />
         <invoker type="latestexistproperty.view"  caption="Latest And Existing Property" index="6" action="doPreview" permission="latestexistproperty.view" />
         
-        <invoker folderid="/menu/rpt/cert" action="init" caption="Latest And Existing Property" target="window" index="50" permission="latestexistproperty.open" />
+        <invoker folderid="/menu/rpt/cert" caption="Latest And Existing Propery" target="window" index="50" permission="latestexistproperty.open" />
+        <invoker folderid="/txn/rpt/cert" caption="Latest And Existing Propery" target="window" index="50" permission="latestexistproperty.open" />
         
        <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />

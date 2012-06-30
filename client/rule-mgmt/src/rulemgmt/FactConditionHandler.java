@@ -172,14 +172,16 @@ public abstract class FactConditionHandler extends RuleConditionHandler {
         Map cond = (Map) super.getCondition();
         List list = (List) cond.get("constraints");
         boolean first = true;
-        for(Object o : list) {
-            Map m = (Map) o;
-            if( !first ) 
-                sb.append(", ");
-            else
-                first = false;
-            
-            sb.append(m.get("displaytext"));
+        if( list != null ) {
+            for(Object o : list) {
+                Map m = (Map) o;
+                if( !first ) 
+                    sb.append(", ");
+                else
+                    first = false;
+
+                sb.append(m.get("displaytext"));
+            }
         }
         sb.append(")");
         

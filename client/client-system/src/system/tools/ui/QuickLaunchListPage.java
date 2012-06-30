@@ -33,6 +33,7 @@ public class QuickLaunchListPage extends javax.swing.JPanel {
         xActionTextField1.setHint("Type your search keyword here");
         xActionTextField1.setName("searchtext");
 
+        xButton2.setMnemonic('l');
         xButton2.setText("Launch");
         xButton2.setName("launch");
 

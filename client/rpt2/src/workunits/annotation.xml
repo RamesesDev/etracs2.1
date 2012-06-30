@@ -3,6 +3,7 @@
     <invokers>
         <invoker type="rpttransaction" action="initAnnotation" caption="Annotations" target="window" index="353" permission="other.create" />
         <invoker folderid="/menu/rpt/faas" action="initAnnotation" caption="Annotation" target="window" index="40" permission="other.create" />
+        <invoker folderid="/txn/rpt/txn" action="initAnnotation" caption="Annotations" target="window" index="353" permission="other.create" />
         <invoker type="quick_laucher" code="FA01" action="initAnnotation" caption="Annotations" target="window" index="353" permission="other.create" />
         
         <!-- 

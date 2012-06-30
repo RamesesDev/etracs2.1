@@ -3,7 +3,8 @@ import com.rameses.eserver.*;
 import com.rameses.common.*;
 import java.rmi.server.UID;
 
-class RPTSettingService{
+class RPTSettingService
+{
 	@PersistenceContext('main')
 	def em
 	

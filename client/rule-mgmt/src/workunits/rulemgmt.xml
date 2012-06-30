@@ -1,6 +1,8 @@
 <workunit>
     <invokers>
-        <invoker folderid="menu/mgmt" action="init" caption="Rule Management" permission="system:rulemgmt.view"/>
+        <invoker folderid="menu/mgmt" action="init" caption="Rule Management" permission="rulemgmt.view"/>
+        <invoker folderid="/txn" action="init" caption="Rule Management" permission="rulemgmt.view" icon="images/gear.gif"/>
+        <invoker type="quick_launcher" code="rules" action="init" caption="Rule Management" permission="rulemgmt.view"/>
         
         <invoker type="formActions" action="create" caption="New" mnemonic="n" shortcut="ctrl N" icon="images/doc-new.png"/>
         <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" visibleWhen="#{selectedItem != null}" icon="images/open.png"/>
@@ -25,7 +27,17 @@
                 def ruleset;
                 def rule = [:];
                 
+                def stateList = ['DRAFT', 'DEPLOYED'];
+                
                 def mode = "view";
+                def state;
+                
+                void setState( s ) {
+                    if( s != this.state ) {
+                        this.state = s;
+                        listHandler.load()
+                    }
+                }
                 
                 def getFormActions() {
                     return InvokerUtil.lookupActions(ruleset + ":formActions");
@@ -45,12 +57,18 @@
                             new Column(name:'salience', caption:'Salience', maxWidth:80 ),
                         ]
                     },
-                    fetchList : { return svc.getList( ruleset, searchText, it ) },
+                    fetchList : { 
+                        it.state = state
+                        return svc.getList( ruleset, searchText, it ) 
+                    },
                     onOpenItem : {item, colname -> open() }
                 ] as PageListModel
     
+                def rulesets;
+                
                 def getRulesets() {
-                    return InvokerUtil.lookupOpeners('ruleset', null)
+                    if( this.rulesets ) return this.rulesets
+                    return ( this.rulesets = InvokerUtil.lookupOpeners('ruleset', null) )
                 }
                 
                 def getHtml() {

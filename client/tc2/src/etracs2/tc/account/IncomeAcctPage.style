@@ -14,15 +14,6 @@
     enabled:false;
 }
 
-
-"entity.defaultvalue" [ entity.amounttype != null  ] {
-    enabled:true;
-}
-
-"entity.defaultvalue" [ entity.amounttype == null ] {
-    enabled:false;
-}
-
 "entity.accttitle" [entity.docstate == 'APPROVED'] {
     readonly:true;
 }

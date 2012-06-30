@@ -1,14 +1,14 @@
 [list]
 SELECT objid, docstate, agendagroup, rulename, description, author, salience   
 FROM rule 
-WHERE ruleset = $P{ruleset}
+WHERE ruleset = $P{ruleset} ${filter}
 ORDER BY agendagroup, rulename  
 
 [list-byname]
 SELECT objid, docstate, agendagroup, rulename, description, author, salience   
 FROM rule 
 WHERE ruleset = $P{ruleset} 
-  AND rulename LIKE $P{name} 
+  AND rulename LIKE $P{name} ${filter} 
 ORDER BY agendagroup, rulename  
 
 [check-duplicate]

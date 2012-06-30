@@ -1,6 +1,8 @@
 <workunit>
     <invokers>
-        <invoker folderid="menu/tc" action="init" caption="Activate AF Control" permission="afcontrol.activate" />
+        <invoker folderid="/menu/tc/txn" action="init" caption="Activate AF Control" permission="afcontrol.activate" index="2" />
+        <invoker folderid="/txn/tc/txn" action="init" caption="Activate AF Control" permission="afcontrol.activate" index="2" />
+        
         <invoker type="afcontrol:activate" caption="Activate AF Control" target="popup" permission="afcontrol.activate" />
         
         <invoker type="quick_launcher" code="AFC02" action="init" caption="Activate AF Control" permission="afcontrol.activate" />

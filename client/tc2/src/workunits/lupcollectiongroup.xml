@@ -1,0 +1,54 @@
+<workunit>
+    <invokers>
+        <invoker type="collectiongroup:lookup" caption="Income Account Lookup" target="popup" />
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+
+class CollectionGroupLookupController extends LookupModel 
+{
+    @Service("CollectionGroupService")
+    def svc
+    
+    def onselect
+    def selected
+    
+    
+    def ok() {
+        search = null
+        if( onselect ) onselect( selected )
+        return select()
+    }
+    
+    def getListHandler() {
+        return this
+    }
+    
+    int getRows() { return 20 }
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"name", caption:"Collection Group")
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        params.searchText = search
+        return svc.getList( params )
+    }
+}  
+
+
+]]>
+
+    </code>
+    
+    <pages>
+        <page template="etracs2.tc.LookupPage"/>
+    </pages>
+</workunit>

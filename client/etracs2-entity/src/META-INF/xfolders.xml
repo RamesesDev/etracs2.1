@@ -1,0 +1,9 @@
+<folders>
+    <folder id="menu">
+        <folder id="mgmt" caption="Management"/>
+    </folder>    
+    <folder id="txn">
+        <folder id="entity" caption="Entity" />
+    </folder>    
+
+</folders>

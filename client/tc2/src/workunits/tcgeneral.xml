@@ -191,7 +191,31 @@
                 return 1 
             }
         }
-
+        
+        /*-------------------------------------------
+         *  COLLECTION GROUP SUPPORT
+         *-------------------------------------------*/
+         
+         @Service('CollectionGroupService')
+         def colgroupSvc
+         
+         def collectionGroupLookup = InvokerUtil.lookupOpener('collectiongroup:lookup', [:])
+         
+         void setCollectionGroup( cg ) {
+            def items = colgroupSvc.getIncomeAccounts( cg )
+            if( items ) {
+                items.each { 
+                    println "account: $it"
+                    def rctitem = [:]
+                    rctitem.acct = it
+                    updateIncomeAcctInfo( rctitem )
+                    rctitem.amount = rctitem.amount ? rctitem.amount : 0.00 
+                    entity.items.add( rctitem )
+                }
+            }
+            updateItemInfo()
+            listHandler.refresh()
+         }
 
     }
 ]]>        

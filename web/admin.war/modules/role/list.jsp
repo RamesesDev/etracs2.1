@@ -37,6 +37,10 @@
 					var refreshList = function() {
 						self.listModel.refresh(true);	
 					}
+					
+					var reloadList = function() {
+						self.listModel.load();
+					}
 			
 					this.add = function() {
 						return new PopupOpener( "role:create", {saveHandler:refreshList,permissionHandler:permissionHandler} );
@@ -68,7 +72,7 @@
 			
 					this.propertyChangeListener = {
 						"roleClass" : function(o) {
-							refreshList();
+							reloadList();
 						}
 					}
 					
@@ -99,12 +103,17 @@
 				<ui:col caption="Role Class" name="roleclass"/>
 				<ui:col caption="Description" name="description"/>
 				<ui:col width="10">
-					<a r:context="rolelist" r:name="edit">
-						<img src="${pageContext.servletContext.contextPath}/img/edit.gif"/>
+					<a r:context="rolelist" r:name="viewPermissions">
+						Permissions
 					</a>
 				</ui:col>
 				<ui:col width="10">
-					<a r:context="rolelist" r:name="removeRole" title="Remove Role">
+					<a r:context="rolelist" r:name="edit" r:visibleWhen="#{item.system != 1}">
+						<img src="${pageContext.servletContext.contextPath}/img/edit.gif"/>
+					</a>
+				</ui:col>
+				<ui:col width="10" rtexpression="true">
+					<a r:context="rolelist" r:name="removeRole" title="Remove Role" r:visibleWhen="#{item.system != 1}">
 						<img src="${pageContext.servletContext.contextPath}/img/trash.gif"/>
 					</a>
 				</ui:col>

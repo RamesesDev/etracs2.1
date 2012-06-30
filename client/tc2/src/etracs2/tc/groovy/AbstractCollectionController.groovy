@@ -133,7 +133,8 @@ abstract class AbstractCollectionController
             ReportUtil.print( report.report, true )
         }
         catch( e ) {
-            MsgBox.alert( e.message )
+            e.printStackTrace()
+            MsgBox.err(e)
         }
     }
     

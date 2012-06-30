@@ -1,11 +1,25 @@
 <workunit>
     <invokers>
-        <invoker type="home.action" category="Business" folderid="/menu/bp/txn" action="initApplication" caption="Approved Applications" permission="bppermit.approvedapplications" id="approvedapplications" target="window" icon="images/folder.png"/>
-        <invoker type="home.action" category="Business" folderid="/menu/bp/txn" action="initReleasePermit" caption="For Release Permits" permission="bppermit.forreleasepermits" id="forreleasepermits" target="window" icon="images/folder.png"/>
-        <invoker type="home.action" category="Business" folderid="/menu/bp/txn" action="initForRenewalPermit" caption="For Renewal Application" permission="bppermit.forrenewapplications" id="bppermit.forrewalapplications" target="window" icon="images/folder.png"/>
-        <invoker type="home.action" category="Business" folderid="/menu/bp/txn" action="initActivePermit" caption="Active Permits" permission="bppermit.activepermits" id="activepermits" target="window" icon="images/folder.png"/>
-        <invoker type="home.action" category="Business" folderid="/menu/bp/txn" caption="Retired Application" permission="bppermit.retire" id="retiredapplications" target="window" icon="images/folder.png"/>
-
+        <invoker folderid="/menu/bp/txn" action="initApplication" caption="Approved Applications" permission="bppermit.approvedapplications" id="approvedapplications" target="window"/>
+        <invoker folderid="/menu/bp/txn" action="initReleasePermit" caption="For Release Permits" permission="bppermit.forreleasepermits" id="forreleasepermits" target="window"/>
+        <invoker folderid="/menu/bp/txn" action="initForRenewalPermit" caption="For Renewal Application" permission="bppermit.forrenewapplications" id="bppermit.forrewalapplications" target="window"/>
+        <invoker folderid="/menu/bp/txn" action="initActivePermit" caption="Active Permits" permission="bppermit.activepermits" id="activepermits" target="window"/>
+        <invoker folderid="/menu/bp/txn" caption="Retired Application" permission="bppermit.retire" id="retiredapplications" target="window"/>
+        
+        <invoker folderid="/txn/bp/apps" action="initApplication" caption="Approved Applications" permission="bppermit.approvedapplications" id="approvedapplications" target="window"/>
+        <invoker folderid="/txn/bp/apps" action="initReleasePermit" caption="For Release Permits" permission="bppermit.forreleasepermits" id="forreleasepermits" target="window"/>
+        <invoker folderid="/txn/bp/apps" action="initForRenewalPermit" caption="For Renewal Application" permission="bppermit.forrenewapplications" id="bppermit.forrewalapplications" target="window"/>
+        <invoker folderid="/txn/bp/apps" action="initActivePermit" caption="Active Permits" permission="bppermit.activepermits" id="activepermits" target="window"/>
+        <invoker folderid="/txn/bp/apps" caption="Retired Application" permission="bppermit.retire" id="retiredapplications" target="window"/>
+        
+        <!--
+        <invoker type="home.action" category="Business" action="initApplication" caption="Approved Applications" permission="bppermit.approvedapplications" id="approvedapplications" target="window" icon="images/folder.png"/>
+        <invoker type="home.action" category="Business" action="initReleasePermit" caption="For Release Permits" permission="bppermit.forreleasepermits" id="forreleasepermits" target="window" icon="images/folder.png"/>
+        <invoker type="home.action" category="Business" action="initForRenewalPermit" caption="For Renewal Application" permission="bppermit.forrenewapplications" id="bppermit.forrewalapplications" target="window" icon="images/folder.png"/>
+        <invoker type="home.action" category="Business" action="initActivePermit" caption="Active Permits" permission="bppermit.activepermits" id="activepermits" target="window" icon="images/folder.png"/>
+        <invoker type="home.action" category="Business" caption="Retired Application" permission="bppermit.retire" id="retiredapplications" target="window" icon="images/folder.png"/>
+        -->
+        
         <invoker type="formActions" action="previewApplication" mnemonic="p" shortcut="ctrl P" caption="View Application" visibleWhen="#{selectedItem != null}" icon="images/doc-view.png"/>
         <invoker type="formActions" action="previewAssessment"  mnemonic="v" shortcut="ctrl V" caption="View Assessment" visibleWhen="#{selectedItem != null}" icon="images/doc-view.png"/>
         <invoker type="formActions" action="open" caption="Open"   mnemonic="o" shortcut="ctrl O" visibleWhen="#{selectedItem != null}" icon="images/open.png"/>

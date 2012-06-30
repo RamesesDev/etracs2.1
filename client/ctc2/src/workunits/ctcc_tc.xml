@@ -6,6 +6,7 @@
 -->
 <workunit>
     <invokers>
+        <invoker type="collection" caption="CTC-Corporate" afid="907" appcode="ctc_corporate" permission="collection_ctc_corporate.create"/>
         <invoker type="collection" caption="CTC-Corporate" afid="0017" appcode="ctc_corporate" permission="collection_ctc_corporate.create"/>
         <invoker type="tc:ctc_corporate" action="init" caption="CTC-Corporate" afid="0016" permission="collection_ctc_corporate.create"/>
         
@@ -47,10 +48,13 @@
             
             @Service('ReportParameterService')
             def paramsSvc;
+            
+            @Service('CTCReceiptHtmlService')
+            def htmlSvc;
         
             def collectiontitle = 'COMMUNITY TAX CERTIFICATE (CORPORATE)'
             def taxpayer
-            def taxpayerLookup = InvokerUtil.lookupOpener("entity.lookup", [:])
+            def taxpayerLookup = InvokerUtil.lookupOpener("entity\\.lookup", [:])
             
             def next() {
                 if(taxpayer && taxpayer.entitytype != 'juridical') {
@@ -99,8 +103,17 @@
                 entity.items = result.items;
             }
             
+            void acceptTaxDue() {
+                def total = 0.00;
+                if( entity.tax.business ) total += entity.tax.business;
+                if( entity.tax.basic )    total += entity.tax.basic;
+                if( entity.tax.property ) total += entity.tax.property;
+                if( entity.tax.interest ) total += entity.tax.interest;
+                entity.info.amount = total;
+            }
+            
             def getService() { return svc }
-            def getHtmlService() {}
+            def getHtmlService() { return htmlSvc }
             def getCollectionTitle() { return collectiontitle }
             
             def getParameters() { 

@@ -25,15 +25,19 @@
 					}
 		
 					this.reloadList = function() {
-						self.listModel.refresh(true);	
+						self.listModel.load();	
+					}
+					
+					var refreshList = function() {
+						self.listModel.refresh(true);
 					}
 		
 					this.add = function() {
-						return new PopupOpener( "personnel:create", {mode:"create", saveHandler: self.reloadList });
+						return new PopupOpener( "personnel:create", {mode:"create", saveHandler: refreshList });
 					}
 
 					this.edit = function() {
-						return new PopupOpener( "personnel:info", {saveHandler:self.reloadList, personnel:this.selectedItem, mode:"edit" } );
+						return new PopupOpener( "personnel:info", {saveHandler: refreshList, personnel:this.selectedItem, mode:"edit" } );
 					}
 		
 					this.propertyChangeListener = {

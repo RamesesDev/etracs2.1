@@ -6,6 +6,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/menu/mgmt" caption="Cancel FAAS Management" permission="cancelfaasmgt.view" index="150"/>
+        <invoker folderid="/menu/mgmt" caption="Cancel FAAS Management" permission="cancelfaasmgt.view" index="150"/>
         <invoker type="quick_launcher" code="CF00" caption="Cancel FAAS Management" permission="cancelfaasmgt.view"/>
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="cancelfaasmgt.create" />

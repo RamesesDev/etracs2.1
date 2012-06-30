@@ -29,10 +29,23 @@ public class RuleTextBuilderService
 			if( constraint.fieldvar ) s += constraint.fieldvar + ':' 
 			s += constraint.field.name
 			if( constraint.operator ) s += ' ' + constraint.operator.name 
-			if( constraint.operator && constraint.operator.name != 'matches' && constraint.value ) s += ' ' + constraint.value 
-			else if( constraint.operator && constraint.operator.name == 'matches' && constraint.value ) s += ' "' + constraint.value.objid.join('|') + '"'
+			if( constraint.operator && constraint.operator.name != 'matches' && constraint.value!=null ) s += ' ' + constraint.value 
+			else if( constraint.operator && constraint.operator.name == 'matches' && constraint.value!=null ) s += ' "' + constraint.value.objid.join('|') + '"'
 		}
         return s 
+	}
+	
+	@ProxyMethod
+	public List getAllVariableNames( rule ) {
+		def list = []
+		for( c in rule.conditions ) {
+			if( c.factvar ) list.add( c.factvar )
+			def items = c.constraints.findAll{ it.fieldvar }.collect{ it.fieldvar }
+            list.addAll( items )
+        }
+		
+		list.unique()
+		return list
 	}
 
 }

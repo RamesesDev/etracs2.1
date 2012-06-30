@@ -1,8 +1,12 @@
 <workunit>
     <invokers>
-        <invoker folderid="menu/tc" action="initOnline" caption="Online Collection" permission="collection.create_online"/>
-        <invoker folderid="menu/tc" action="initOffline" caption="Offline Collection" permission="collection.create_offline"/>
-        <invoker folderid="menu/tc" action="initCapture" caption="Capture Collection" permission="collection.create_capture"/>
+        <invoker folderid="menu/tc/coll" action="initOnline" caption="Online Collection" permission="collection.create_online" index="1"/>
+        <invoker folderid="menu/tc/coll" action="initOffline" caption="Offline Collection" permission="collection.create_offline" index="2"/>
+        <invoker folderid="menu/tc/coll" action="initCapture" caption="Capture Collection" permission="collection.create_capture" index="3"/>
+        
+        <invoker folderid="txn/tc/coll" action="initOnline" caption="Online Collection" permission="collection.create_online" index="1" />
+        <invoker folderid="txn/tc/coll" action="initOffline" caption="Offline Collection" permission="collection.create_offline" index="2"/>
+        <invoker folderid="txn/tc/coll" action="initCapture" caption="Capture Collection" permission="collection.create_capture" index="3" />
         
         <invoker type="quick_launcher" code="RCT01" action="initOnline" caption="Online Collection" permission="collection.create_online"/>
         <invoker type="quick_launcher" code="RCT02" action="initOffline" caption="Offline Collection" permission="collection.create_offline"/>

@@ -2,8 +2,10 @@
 <workunit>
     
     <invokers>
-        <invoker type="bptransaction" folderid="/menu/bp" action="changePermittee" caption="Change Permittee" permission="bpadmin.changepermittee" index="253"  target="window" />
-        <invoker type="bptransaction.changePermittee"              action="changePermittee" caption="Change Permittee" target="window" />
+        <invoker folderid="/menu/bp/txn" action="changePermittee" caption="Change Permittee" permission="bpadmin.changepermittee" index="253"  target="window" />
+        <invoker folderid="/txn/bp/txn" action="changePermittee" caption="Change Permittee" permission="bpadmin.changepermittee" index="253"  target="window" />
+        <invoker type="bptransaction" action="changePermittee" caption="Change Permittee" permission="bpadmin.changepermittee" index="253"  target="window" />
+        <invoker type="bptransaction.changePermittee" action="changePermittee" caption="Change Permittee" target="window" />
         
         <invoker type="formActions" action="close" immediate="true" caption="Close" icon="images/cancel.png"/>
         <invoker type="formActions" action="changePermittee" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" permission="bpadmin.changepermittee" icon="images/doc-new.png"/>

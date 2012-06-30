@@ -7,23 +7,29 @@
 import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
+import com.rameses.util.*
 
-class RuleInfoController 
+class BPRuleInfoController 
 {
-    @Service('BPRuleHtmlService')
-    def svc 
+    @Service('RuleService')
+    def svc
     
     def rulename
     
-    
     def getHtml() {
-        return svc.getHtmlByRuleName( rulename )
+        try {
+            def rule = svc.openByName( rulename )
+            return (String)TemplateProvider.getInstance().getResult( "templates/ruletext.gtpl", [rule: rule] )
+        }
+        catch(e) {
+            e.printStackTrace()
+        }
     }
 }
         
         
     </code>
     <pages>
-        <page template="etracs2.rule.RuleHtmlInfoPage"/>
+        <page template="rulemgmt.ui.RuleHtmlInfoPage"/>
     </pages>
 </workunit>

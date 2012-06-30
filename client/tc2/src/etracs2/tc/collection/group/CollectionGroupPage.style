@@ -1,0 +1,8 @@
+"selectedGroup|searchText" [mode=='view'] { enabled: true; }
+"selectedGroup|searchText" [mode!='view'] { enabled: false; }
+
+"entity.*|incomeAccount" [mode=='view'] { enabled: false; }
+"entity.*|incomeAccount" [mode!='view'] { enabled: true; }
+
+"selectedIncomeAcct" [mode=='view'] { readonly: true; }
+"selectedIncomeAcct" [mode!='view'] { readonly: false; }

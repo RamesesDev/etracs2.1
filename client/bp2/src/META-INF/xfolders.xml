@@ -6,7 +6,16 @@
         </folder>
     </folder>
     
-    <folder id="report" caption="Reports">
+    <folder id="report">
         <folder id="bp" caption="Business"/>
+    </folder>
+    
+    <folder id="txn">
+        <folder id="bp" caption="Permits/Licensing">
+            <folder id="master" caption="Master Files"/>
+            <folder id="apps" caption="Business Applications/Permits"/>
+            <folder id="txn" caption="Business Transactions"/>
+            <folder id="collection" caption="Collection"/>
+        </folder>
     </folder>
 </folders>

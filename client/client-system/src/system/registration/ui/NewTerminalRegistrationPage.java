@@ -47,7 +47,7 @@ public class NewTerminalRegistrationPage extends javax.swing.JPanel {
         xTextField1.setRequired(true);
         formPanel1.add(xTextField1);
 
-        xTextField3.setCaption("Your Name");
+        xTextField3.setCaption("Registered By");
         xTextField3.setName("name");
         xTextField3.setPreferredSize(new java.awt.Dimension(200, 24));
         xTextField3.setRequired(true);

@@ -1,0 +1,75 @@
+<workunit>
+    <invokers>
+        <invoker type="loader" index="10000" action="init"/>
+    </invokers>
+    
+    <code>
+        <![CDATA[
+        
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import java.net.*
+        import java.io.*
+        
+        public class HomeController 
+        {
+            @Binding
+            def binding
+            
+            @Service("Var")
+            def var;
+            
+            def formActions = InvokerUtil.lookupActions("home.action");
+            def image;
+            
+            void init() {
+                Thread.start {
+                    downloadLogo()
+                }
+            }
+            
+            def getImageUrl() {
+                return image
+            }
+            
+            void downloadLogo() {
+                try {
+                    def u = new URL(var.url_logo_lgu)
+                    def is;
+                    def out;
+                    try {
+                        is = u.openStream()
+                        image = new File(System.getProperty('user.dir') + '/osiris2/logo.cache')
+                        if( !image.parentFile.exists() ) image.parentFile.mkdirs();
+                        out = new FileOutputStream(image)
+                        int i = -1
+                        while( (i=is.read()) != -1 ) {
+                            out.write(i)
+                        }
+                        out.flush()
+                    }
+                    catch(e){}
+                    finally {
+                        try { is.close(); }catch(e){}
+                        try { out.close(); }catch(e){}
+                    }
+                    binding.refresh('imageUrl')
+                }
+                catch(e) {
+                    e.printStackTrace()
+                    image = null
+                    binding.refresh('imageUrl')
+                }
+            }
+        }
+        
+        
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.home.HomePage"/>
+    </pages>
+</workunit>

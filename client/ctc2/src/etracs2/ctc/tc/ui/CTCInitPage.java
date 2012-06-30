@@ -6,10 +6,14 @@
 
 package etracs2.ctc.tc.ui;
 
+import com.rameses.rcp.ui.annotations.StyleSheet;
+
 /**
  *
  * @author  JAYROME VERGARA
  */
+
+@StyleSheet
 public class CTCInitPage extends javax.swing.JPanel {
     
     /** Creates new form IndividualPage */
@@ -28,6 +32,7 @@ public class CTCInitPage extends javax.swing.JPanel {
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xLabel2 = new com.rameses.rcp.control.XLabel();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
         xButton1 = new com.rameses.rcp.control.XButton();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
@@ -36,11 +41,12 @@ public class CTCInitPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Taxpayer Information");
         jPanel1.setBorder(xTitledBorder1);
 
+        formPanel1.setCaptionWidth(120);
         xLookupField1.setCaption("Taxpayer");
         xLookupField1.setExpression("#{entityname}");
         xLookupField1.setHandler("taxpayerLookup");
         xLookupField1.setName("taxpayer");
-        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 19));
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 21));
         formPanel1.add(xLookupField1);
 
         xLabel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -48,8 +54,15 @@ public class CTCInitPage extends javax.swing.JPanel {
         xLabel2.setDepends(new String[] {"taxpayer"});
         xLabel2.setFont(new java.awt.Font("Arial", 1, 11));
         xLabel2.setName("taxpayer.entityaddress");
-        xLabel2.setPreferredSize(new java.awt.Dimension(0, 19));
+        xLabel2.setPreferredSize(new java.awt.Dimension(0, 21));
         formPanel1.add(xLabel2);
+
+        xDateField1.setCaption("Transaction Date");
+        xDateField1.setFont(new java.awt.Font("Arial", 1, 11));
+        xDateField1.setName("entity.info.txndate");
+        xDateField1.setPreferredSize(new java.awt.Dimension(100, 21));
+        xDateField1.setRequired(true);
+        formPanel1.add(xDateField1);
 
         xButton1.setMnemonic('n');
         xButton1.setText("Next");
@@ -59,19 +72,19 @@ public class CTCInitPage extends javax.swing.JPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
+                    .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 76, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 37, Short.MAX_VALUE)
-                .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 25, Short.MAX_VALUE)
+                .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 32, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -92,7 +105,7 @@ public class CTCInitPage extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(107, Short.MAX_VALUE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -102,7 +115,7 @@ public class CTCInitPage extends javax.swing.JPanel {
                 .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(131, Short.MAX_VALUE))
+                .addContainerGap(107, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -112,6 +125,7 @@ public class CTCInitPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField1;

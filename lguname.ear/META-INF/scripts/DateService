@@ -9,7 +9,7 @@ class DateService {
 
 	@ProxyMethod(local=true)
 	public def getServerDate() {
-		def val = db.createQuery( "select now() as dt" ).singleResult;
+		def val = db.createNamedQuery("date:get-current").singleResult;
 		return val.dt; 
 	}
 	

@@ -26,6 +26,11 @@ class OrgunitService {
 	public def read(def o) {
 		return em.read( "orgunit", o );
 	}
+	
+	@ProxyMethod
+	public def readByCode( code ) {
+		return em.sqlContext.createNamedQuery('orgunit:read-by-code').setParameter('code', code).singleResult;
+	}
 
 	@ProxyMethod
 	public def update(def o) {

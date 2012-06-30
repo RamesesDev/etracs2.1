@@ -1,6 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc" caption="Receipt Inquiry" permission="receipt.inquire"/>
+        <invoker folderid="/menu/tc/coll" caption="Receipt Inquiry" permission="receipt.inquire" index="40"/>
+        <invoker folderid="/txn/tc/coll" caption="Receipt Inquiry" permission="receipt.inquire" index="40"/>
     </invokers>
     <code>
 <![CDATA[
@@ -16,27 +17,29 @@ class ReceiptInquiryController
     
     def searchText
     def selectedItem
+    def formActions
+    def opener
     
-    def getOpener() {
-        println 'selecteditem -> ' + selectedItem?.doctype  + ' - ' + selectedItem?.opener 
+    void setSelectedItem( item ) {
+        selectedItem = item
+        opener = null
+        formActions = null
         if( selectedItem ) {
-            def opener  =InvokerUtil.lookupOpener('inquiry:' + selectedItem.opener, [entity:selectedItem])
-            println 'opener -> ' + opener 
-            return opener 
+            opener  =InvokerUtil.lookupOpener('inquiry:' + selectedItem.opener, [entity:selectedItem])
+            formActions = InvokerUtil.lookupActions('receipt.actions:' + item.opener, [entity:selectedItem])
+            formActions = formActions.findAll { it.name == 'doPrint' || it.name == 'doPrintDetail' }
         }
-        return null
     }
-    
     
     def listHandler = [
         getRows    : { return 25 },
         getColumns : {
             return [
-                new Column(name:'afid', caption:'AF No.', maxWidth:50),
-                new Column(name:'serialno', caption:'Serial No.', maxWidth:80),
-                new Column(name:'payorname', caption:'Payor'),
-                new Column(name:'collectiontype', caption:'Collection Type'),
-                new Column(name:'amount', caption:'Amount', type:'decimal', maxWidth:100),
+                new Column(name:'afid', caption:'AF No.', width:50),
+                new Column(name:'serialno', caption:'Serial No.', width:80),
+                new Column(name:'payorname', caption:'Payor', width:150),
+                new Column(name:'collectiontype', caption:'Collection Type', width:100),
+                new Column(name:'amount', caption:'Amount', type:'decimal', width:100),
             ]
         }, 
         fetchList : { 

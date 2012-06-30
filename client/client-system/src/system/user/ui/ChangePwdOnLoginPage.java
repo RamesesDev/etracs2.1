@@ -32,6 +32,7 @@ public class ChangePwdOnLoginPage extends javax.swing.JPanel {
         formPanel1.setCaptionWidth(120);
         xPasswordField1.setText("xPasswordField1");
         xPasswordField1.setCaption("New Password");
+        xPasswordField1.setHint("Type your new password");
         xPasswordField1.setName("newpwd");
         xPasswordField1.setPreferredSize(new java.awt.Dimension(200, 24));
         xPasswordField1.setRequired(true);
@@ -39,6 +40,7 @@ public class ChangePwdOnLoginPage extends javax.swing.JPanel {
 
         xPasswordField2.setText("xPasswordField1");
         xPasswordField2.setCaption("Confirm");
+        xPasswordField2.setHint("Confirm your new password");
         xPasswordField2.setName("confirmpwd");
         xPasswordField2.setPreferredSize(new java.awt.Dimension(200, 24));
         xPasswordField2.setRequired(true);

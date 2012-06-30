@@ -59,21 +59,34 @@ class TDReportService
 				td.fullpin = pin[0 .. pin.lastIndexOf('-')] + '(' + pin[-2..-1] + ')' + '-' + td.suffix 
 			}
 		}
-    	   
+		
+		if( faas.info.txntype == 'MC' ) {
+			//for migrated data, claimno might be null
+			if( !faas.claimno ) {
+				def result = em.sqlContext.createQuery('select claimno from faaslist where objid=?').setParameter(1, faas.objid).singleResult
+				faas.claimno = result.claimno
+			}
+			td.fullpin += ' M' + faas.claimno
+		}
+    	
 		if( faas.rpu.rputype == 'land' ) {
-			if( var.td_report_item_format && var.td_report_item_format == 'BLGF' ) {
+			if( var.td_report_item_format == 'BLGF' ) {
 				td.lands = buildStandardItemSummary( faas.rpu )
-				//
-				//determine if multiple area, if so set mixedarea = 1 otherwise = 0
-				//in the report display sqm for the total area in cases of mixedarea = 1
-				def uniqueareatypelist = td.lands.areatype.unique()
-				if( uniqueareatypelist.size() > 1 ) {
-					td.lands.each{ it.mixedarea = 1 }
-				}
 			}
 			else {
 				td.lands = getLandDetails( faas.rpu )
 				td.plants = getPlantTreeDetails( faas.rpu )
+			}
+			
+			//
+			//determine if multiple area, if so set mixedarea = 1 otherwise = 0
+			//in the report display sqm for the total area in cases of mixedarea = 1
+			def uniqueareatypelist = td.lands.areatype.unique()
+			if( uniqueareatypelist.size() > 1 ) {
+				td.lands.each{ it.mixedarea = 1 }
+			}
+			else {
+				td.lands.each{ it.mixedarea = 0 }
 			}
 		}
     	else if( faas.rpu.rputype == 'bldg' ) {
@@ -216,6 +229,9 @@ class TDReportService
 				actualuse 		: it.actualusename,
 				specificclass 	: it.specificclassname,
 				area			: it.area,
+				areasqm			: it.areasqm,
+				areaha			: it.areaha,
+				areatype		: it.areatype,
 				assesslevel		: it.assesslevel,
 				marketvalue		: it.marketvalue,
 				assessedvalue	: it.assessedvalue

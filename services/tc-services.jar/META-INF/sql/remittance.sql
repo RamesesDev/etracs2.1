@@ -175,6 +175,7 @@ SELECT
 	ri.remarks AS remarks, 
 	CASE WHEN rl.voided = 0 THEN rl.paidby ELSE '***VOIDED***' END AS payer, 
 	CASE WHEN rl.voided = 0 THEN ri.accttitle ELSE '***VOIDED***' END AS particulars, 
+	CASE WHEN rl.voided = 0 THEN rl.paidbyaddress ELSE '' END AS payeraddress, 
 	CASE WHEN rl.voided = 0 THEN ri.amount ELSE 0.0 END AS amount 
 FROM receiptlist rl, receiptitem ri 
 WHERE rl.objid = ri.receiptid 
@@ -190,6 +191,7 @@ SELECT
 	ri.remarks AS remarks, 
 	CASE WHEN rl.voided = 0 THEN rl.paidby ELSE '***VOIDED***' END AS payer, 
 	CASE WHEN rl.voided = 0 THEN ri.accttitle ELSE '***VOIDED***' END AS particulars, 
+	CASE WHEN rl.voided = 0 THEN rl.paidbyaddress ELSE '' END AS payeraddress, 
 	CASE WHEN rl.voided = 0 THEN ri.amount ELSE 0.0 END AS amount 
 FROM receiptlist rl, receiptitem ri 
 WHERE rl.objid = ri.receiptid 

@@ -1,7 +1,9 @@
 <workunit>
     <invokers>
         <invoker type="home.action" caption="Deposit" permission="deposit.create" icon="images/folder.png" target="window" index="131"/>
-        <invoker folderid="/menu/tc" caption="Deposit" permission="deposit.create" target="window" index="131"/>
+        
+        <invoker folderid="/menu/tc/coll" caption="Deposit" permission="deposit.create" target="window" index="30"/>
+        <invoker folderid="/txn/tc/coll" caption="Deposit" permission="deposit.create" target="window" index="30"/>
         
         <invoker type="quick_launcher" code="DEP01" caption="Deposit" permission="deposit.create" target="window" index="131"/>
         

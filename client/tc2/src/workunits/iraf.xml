@@ -1,7 +1,8 @@
 <workunit>
     <invokers>
         <invoker type="home.action" action="init" caption="IRAF" permission="iraf.viewlist" icon="images/folder.png" target="window"/>
-        <invoker folderid="/menu/tc" action="init" caption="IRAF" permission="iraf.viewlist" target="window"/>
+        <invoker folderid="/menu/tc/txn" action="init" caption="IRAF" permission="iraf.viewlist" target="window" index="10"/>
+        <invoker folderid="/txn/tc/txn" action="init" caption="IRAF" permission="iraf.viewlist" target="window" index="10"/>
         
         <invoker type="quick_launcher" code="IRAF01" action="init" caption="IRAF" permission="iraf.viewlist" target="window"/>
         
@@ -192,6 +193,9 @@ class IRAFController
             if( selectedItem?.objid ){
                 this.entity = svc.open( selectedItem?.objid );
                 riv = [txnno:entity.rivno]
+            }
+            else {
+                this.entity = [:]
             }
         }
     }

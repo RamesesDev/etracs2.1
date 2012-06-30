@@ -7,6 +7,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/menu/rpt/faas" action="initConsolidation" caption="Consolidation" target="window" permission="consolidation.view" index="30"/>
+        <invoker folderid="/txn/rpt/txn" action="initConsolidation" caption="Consolidation" target="window" permission="consolidation.view" index="30"/>
         <invoker type="rpttransaction" action="initConsolidation" caption="Consolidation" target="window" permission="consolidation.view" index="30"/>
         <invoker type="quick_launcher" code="CS01" action="initConsolidation" caption="Consolidation" target="window" permission="consolidation.view" index="302"/>
         <invoker type="rpttransaction.initConsolidation" action="initConsolidation" caption="Consolidation" target="window" />

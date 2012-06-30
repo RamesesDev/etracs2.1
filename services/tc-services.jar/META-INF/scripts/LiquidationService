@@ -34,9 +34,17 @@ class LiquidationService {
 	
 	@ProxyMethod
 	public def getList( searchText, params ) {
-		if ( !searchText )
-			return em.sqlContext.createNamedQuery( "liquidation:getList" ).resultList;
-		return [];
+		if ( !searchText ) {
+			if( !params ) params = [:];
+			if( !params._start ) params._start = 0;
+			if( !params._limit ) params._limit = 50;
+			return em.sqlContext.createNamedQuery( "liquidation:getList" )
+			         .setFirstResult(params._start)
+					 .setMaxResults(params._limit)
+					 .resultList;
+		}
+		
+		return em.sqlContext.createNamedQuery( "liquidation:getListByTxnno" ).setParameter('txnno', searchText).resultList;
 	}
 	
 	@ProxyMethod
@@ -112,7 +120,7 @@ class LiquidationService {
 		}
 		
 		//check if there are no new remittances not included in the liquidation 
-		def openremittances = getOpenRemittances( liq.info.liquidatingofficerid )
+		def openremittances = getOpenRemittances( liq )
 		if (liq.remittances.size() != openremittances.size() ) {
 			throw new Exception( "There are new remittances not included in this liquidation.\nPlease close and process the liquidation again." );
 		}
@@ -318,9 +326,9 @@ class LiquidationService {
 		liq.info.treasurertitle = var.get('treasurer_title');
 		liq.info.denominations = [] 
 		
-		liq.remittances   	= getOpenRemittances( liq.info.liquidatingofficerid )
-		liq.otherpayments	= getOpenNonCashPayments( liq.info.liquidatingofficerid ) 
-		liq.rcds			= getOpenRcdsByFund( liq.info.liquidatingofficerid )		
+		liq.remittances   	= getOpenRemittances( liq.info )
+		liq.otherpayments	= getOpenNonCashPayments( liq.info ) 
+		liq.rcds			= getOpenRcdsByFund( liq.info )		
 		updateLiquidationAmountInfo( liq )
 		
 		//check liquidation amount = total rcds amount 
@@ -338,16 +346,17 @@ class LiquidationService {
 		liq.info.treasurername = var.get('treasurer_name');
 		liq.info.treasurertitle = var.get('treasurer_title');
 		
-		liq.remittances   	= getOpenRemittances( liq.info.liquidatingofficerid )
-		liq.otherpayments	= getOpenNonCashPayments( liq.info.liquidatingofficerid ) 
-		liq.rcds			= getOpenRcdsByFund( liq.info.liquidatingofficerid )		
+		liq.remittances   	= getOpenRemittances( liq.info )
+		liq.otherpayments	= getOpenNonCashPayments( liq.info ) 
+		liq.rcds			= getOpenRcdsByFund( liq.info )		
 		updateLiquidationAmountInfo( liq )
 		return liq;
 	}
 	
-	List getOpenRemittances( lqofficerid ) {
+	List getOpenRemittances( liqinfo ) {
 		def remits = em.sqlContext.createNamedQuery( "liquidation:getUnliquidatedRemittanceByLiquidatingOfficer" )
-							.setParameter( "liquidatingofficerid", lqofficerid )
+							.setParameter( "liquidatingofficerid", liqinfo.liquidatingofficerid )
+							.setParameter( "txndate", liqinfo.txndate )
 							.resultList;
 							
 		if ( ! remits  ) {
@@ -356,15 +365,17 @@ class LiquidationService {
 		return remits
 	}
 	
-	List getOpenNonCashPayments( lqofficerid ) {
+	List getOpenNonCashPayments( liqinfo ) {
 		return em.sqlContext.createNamedQuery( "liquidation:getUnliquidatedRemittanceOtherPaymentsByLiquidatingOfficer" )
-								.setParameter( "liquidatingofficerid", lqofficerid )
+								.setParameter( "liquidatingofficerid", liqinfo.liquidatingofficerid )
+								.setParameter( "txndate", liqinfo.txndate )
 								.resultList;
 	}
 	
-	List getOpenRcdsByFund( lqofficerid ) {
+	List getOpenRcdsByFund( liqinfo ) {
 		def rcdlist = em.sqlContext.createNamedQuery( "liquidation:getOpenFundSummaries" )
-								.setParameter( "lqofficerid", lqofficerid )
+								.setParameter( "lqofficerid", liqinfo.liquidatingofficerid )
+								.setParameter( "txndate", liqinfo.txndate )
 								.resultList;
 		
 		//init denominations 
@@ -379,6 +390,7 @@ class LiquidationService {
 	void updateLiquidationAmountInfo( liq ) {
 		def reminfo = em.sqlContext.createNamedQuery( "liquidation:getUnliquidatedRemittanceInfoByLiquidatingOfficer" )
 								.setParameter( "liquidatingofficerid", liq.info.liquidatingofficerid ) 
+								.setParameter( "txndate", liq.info.txndate )
 								.singleResult;
 								
 		liq.info.amount 			= reminfo.totalamount;
@@ -413,6 +425,7 @@ class LiquidationService {
 	public def fetchOtherPayments( param ){
 		def sql_stmt = "getOtherPaymentsByLiquidation"
 		param.liquidationid = param.objid
+		if( param.info.txndate ) param.txndate = param.info.txndate
 		if( !param.objid )
 			sql_stmt = "getOtherPaymentNoLiq"
 		return em.sqlContext.createNamedQuery( "liquidation:" + sql_stmt ).setParameters( param ).resultList	
