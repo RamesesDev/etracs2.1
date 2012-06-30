@@ -102,6 +102,7 @@ public class CancelFAASPage extends javax.swing.JPanel {
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 100));
         xTextArea1.setColumns(20);
+        xTextArea1.setLineWrap(true);
         xTextArea1.setRows(5);
         xTextArea1.setWrapStyleWord(true);
         xTextArea1.setCaption("Remarks");

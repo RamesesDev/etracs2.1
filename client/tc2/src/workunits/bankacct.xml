@@ -2,6 +2,7 @@
     <invokers>
         <invoker type="tc.master" action="init" caption="Bank Account" permission="bankacct.view" target="window" icon="images/folder.png" index="11"/>
         <invoker folderid="/menu/tc/master" action="init" caption="Bank Account" permission="bankacct.view" target="window" index="5"/>
+        <invoker folderid="/txn/tc/master" action="init" caption="Bank Account" permission="bankacct.view" target="window" index="35"/>
         
         <invoker type="quick_launcher" code="BANKACCT" action="init" caption="Bank Account" permission="bankacct.view" index="5"/>
         

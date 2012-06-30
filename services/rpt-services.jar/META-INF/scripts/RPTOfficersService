@@ -25,6 +25,7 @@ class RPTOfficersService
 		params.searchText = searchText;
 		return userSvc.getUsersByTagid( officerType, params ).each{
 			it.title = it.remove('jobtitle');
+			it.name = it.formalname 
 		};
     }
 	

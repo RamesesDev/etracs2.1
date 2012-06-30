@@ -2,8 +2,8 @@
 <workunit>
     
     <invokers>
-        <invoker type="home.action" action="init" caption="Batch Capture Management" icon="images/folder.png" target="window" index="132" permission="batchcapturemgmt.view" />
         <invoker folderid="/menu/mgmt" action="init" caption="Batch Capture Management" target="window" index="132" permission="batchcapturemgmt.view" />
+        <invoker folderid="/txn/tc" action="init" caption="Batch Captures" target="window" index="2" permission="batchcapturemgmt.view" />
         
         <invoker type="quick_launcher" code="BATCHCOL00" action="init" caption="Batch Capture Management" target="window" index="132" permission="batchcapturemgmt.view" />
         

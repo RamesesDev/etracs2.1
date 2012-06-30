@@ -4,7 +4,9 @@
     <invokers>
         <invoker type="liquidation.multi" action="open" caption="Liquidate (Multi-Cashier): Open" permission="liquidationmulti.create" index="121" icon="images/cash.png" target="window"/>
         <invoker type="home.action" action="create" caption="Liquidate (Multi-Cashier)" permission="liquidationmulti.create" index="121" icon="images/folder.png" target="window"/>
-        <invoker folderid="/menu/tc" action="create" caption="Liquidate (Multi-Cashier)" permission="liquidationmulti.create" index="122"/>
+        
+        <invoker folderid="/menu/tc/coll" action="create" caption="Liquidate (Multi-Cashier)" permission="liquidationmulti.create" index="26"/>
+        <invoker folderid="/txn/tc/coll" action="create" caption="Liquidate (Multi-Cashier)" permission="liquidationmulti.create" index="26"/>
         
         <invoker type="quick_launcher" code="LIQ02" action="create" caption="Liquidate (Multi-Cashier)" permission="liquidationmulti.create" index="122"/>
         

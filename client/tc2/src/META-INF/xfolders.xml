@@ -2,11 +2,20 @@
     <folder id="menu">
         <folder id="tc" caption="Tax Collection" mnemonic="t">
             <folder id="master" caption="Master" mnemonic="m"/>
+            <folder id="coll" caption="Collection" mnemonic="c"/>
             <folder id="txn" caption="Transaction" mnemonic="t"/>
         </folder>
     </folder>
     
     <folder id="report" caption="Reports">
         <folder id="tc" caption="Tax Collection"/>
+    </folder>
+    
+    <folder id="txn">
+        <folder id="tc" caption="Treasury">
+            <folder id="master" caption="Master Files"/>
+            <folder id="coll" caption="Collection"/>
+            <folder id="txn" caption="Transactions"/>
+        </folder>
     </folder>
 </folders>
