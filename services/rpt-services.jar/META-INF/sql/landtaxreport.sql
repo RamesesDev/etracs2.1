@@ -1,9 +1,9 @@
 [getClassificationList] 
-SELECT objid AS classid, propertydesc AS classname, special   
+SELECT objid AS classid, propertydesc AS classname, special, propertycode AS classcode    
 FROM propertyclassification  ORDER BY orderno  
 
 [getExemptionList]
-SELECT objid AS classid, exemptdesc AS classname, 0 AS special 
+SELECT objid AS classid, exemptdesc AS classname, 0 AS special, exemptcode AS classcode  
 FROM exemptiontype ORDER BY orderno  
 
 [getBarangayList]
@@ -189,20 +189,20 @@ ORDER BY rp.barangay
 
 [getOnlineRPTC]
 SELECT  
-	rl.classid,
-	CASE WHEN rd.revtype IN ('current', 'advance') THEN rd.basic ELSE 0.0 END AS basiccurrent,
+	rl.classcode,
+	SUM( CASE WHEN rd.revtype IN ('current', 'advance') THEN rd.basic ELSE 0.0 END) AS  basiccurrent,
 	SUM(rd.basicdisc) AS basicdisc,
-	CASE WHEN rd.revtype IN ('previous', 'prior') THEN rd.basic ELSE 0.0 END AS basicprev,
-	CASE WHEN rd.revtype IN ('current', 'advance') THEN rd.basicint ELSE 0.0 END AS basiccurrentint,
-	CASE WHEN rd.revtype IN ('previous', 'prior') THEN rd.basicint ELSE 0.0 END AS basicprevint,
+	SUM( CASE WHEN rd.revtype IN ('previous', 'prior') THEN rd.basic ELSE 0.0 END) AS  basicprev,
+	SUM( CASE WHEN rd.revtype IN ('current', 'advance') THEN rd.basicint ELSE 0.0 END) AS  basiccurrentint,
+	SUM( CASE WHEN rd.revtype IN ('previous', 'prior') THEN rd.basicint ELSE 0.0 END) AS  basicprevint,
 	SUM( rd.basic + rd.basicint) AS basicgross,
 	SUM( rd.basic + rd.basicint - rd.basicdisc ) AS basicnet,
 
-	CASE WHEN rd.revtype IN ('current', 'advance') THEN rd.sef ELSE 0.0 END AS sefcurrent,
+	SUM( CASE WHEN rd.revtype IN ('current', 'advance') THEN rd.sef ELSE 0.0 END) AS  sefcurrent,
 	SUM(rd.sefdisc) AS sefdisc,
-	CASE WHEN rd.revtype IN ('previous', 'prior') THEN rd.sef ELSE 0.0 END AS sefprev,
-	CASE WHEN rd.revtype IN ('current', 'advance') THEN rd.sefint ELSE 0.0 END AS sefcurrentint,
-	CASE WHEN rd.revtype IN ('previous', 'prior') THEN rd.sefint ELSE 0.0 END AS sefprevint,
+	SUM( CASE WHEN rd.revtype IN ('previous', 'prior') THEN rd.sef ELSE 0.0 END) AS  sefprev,
+	SUM( CASE WHEN rd.revtype IN ('current', 'advance') THEN rd.sefint ELSE 0.0 END) AS  sefcurrentint,
+	SUM( CASE WHEN rd.revtype IN ('previous', 'prior') THEN rd.sefint ELSE 0.0 END) AS  sefprevint,
 	SUM( rd.sef + rd.sefint) AS sefgross,
 	SUM( rd.sef + rd.sefint - rd.sefdisc ) AS sefnet,
 	
@@ -216,12 +216,12 @@ FROM liquidationlist lq
 WHERE lq.txntimestamp LIKE $P{txntimestamp} 
   AND r.doctype = 'RPT'  
   AND r.voided = 0  
-GROUP BY rl.classid 
+GROUP BY rl.classcode  
 
 
 [getManualRPTC]
 SELECT 
-	pc.objid AS classid, 
+	pc.propertycode AS classcode, 
 	SUM(rp.basic) AS basiccurrent, 
 	SUM(rp.basicdisc) AS basicdisc, 
 	SUM(rp.basicprev + rp.basicprior) AS basicprev, 
@@ -252,4 +252,4 @@ FROM liquidationlist lq
 WHERE lq.txntimestamp LIKE $P{txntimestamp} 
   AND r.doctype = 'RPT' 
   AND r.voided = 0 
-GROUP BY pc.objid    
+GROUP BY pc.propertycode    

@@ -179,10 +179,26 @@ class LandTaxReportService
 			addupPayments( brgy, manualpayments )
 			
 			//calculate shares
-			brgy.basiccurrentshare  = numSvc.round( brgy.basiccurrent * rptc.brgy_basicshare / 100.0 )
-			brgy.basicpreviousshare = numSvc.round( brgy.basicprevious * rptc.brgy_basicshare / 100.0 )
-			brgy.totalshare			= brgy.basiccurrentshare + brgy.basicpreviousshare 
+			brgy.basiccurrentshare  = numSvc.round( brgy.basiccurrent * rptc.brgy_basicshare  )
+			brgy.totalshare         = numSvc.round( brgy.basictotal * rptc.brgy_basicshare  )
+			brgy.basicpreviousshare = numSvc.round( brgy.totalshare - brgy.basiccurrentshare )
 		}
+		
+		//adjust rounding-off discrepancies
+		def rawtotal   = numSvc.round( brgyshares.basictotal.sum() * rptc.brgy_basicshare )
+		def totalshare = brgyshares.totalshare.sum() 
+		def totaldiff  = rawtotal - totalshare
+
+		//adjust last barangay previous share 
+		for(int i=brgyshares.size() - 1; i>=0; i--) {
+			if( brgyshares[i].totalshare > 0 ) {
+				brgyshares[i].totalshare += totaldiff 
+				brgyshares[i].basicpreviousshare += totaldiff  
+				println brgyshares[i]
+				break;
+			}
+		}
+		
 		
 		return [
 			period 	: 'For the month of ' + getMonthName( month ) + ', ' + year ,
@@ -214,7 +230,7 @@ class LandTaxReportService
 	}
 	
 	def summarizeRPTCollection = { item, collectionlist ->
-		def collection = collectionlist.find{ it.classid == item.classid }
+		def collection = collectionlist.find{ it.classid == item.classid || it.classcode == item.classcode  }
 		if( collection ) {
 			item.keySet().each{ key ->
 				if( ! (item[key] instanceof String) ) {
@@ -234,7 +250,7 @@ class LandTaxReportService
 		
 		//add manualrptcs to onlinerptcs 
 		manualrptcs.each{ manual ->
-			def online = onlinerptcs.find{ it.classid == manual.classid }
+			def online = onlinerptcs.find{ it.classid == item.classid || it.classcode == manual.classcode }
 			if( online ) {
 				online.keySet().each{ key -> 
 					if( online[key] instanceof String )
@@ -289,7 +305,7 @@ class LandTaxReportService
 	}
 	
 	def buildDispositionAdjust( classname, items, dispositions ) {
-		return [
+		def adjusted = [
 			classname 		: classname,
 			basiccurrent	: numSvc.round( items.basiccurrent.sum() - dispositions.basiccurrent.sum()),
 			basicdisc		: numSvc.round( items.basicdisc.sum() - dispositions.basicdisc.sum() ),
@@ -310,6 +326,23 @@ class LandTaxReportService
 			grandtotal		: numSvc.round( items.grandtotal.sum() - dispositions.grandtotal.sum() ),
 			netgrandtotal	: numSvc.round( items.netgrandtotal.sum() - dispositions.netgrandtotal.sum() ),
 		]
+		//zero out negative values 
+		if( adjusted.basiccurrent < 0.0 ) adjusted.basiccurrent = 0.0;
+		if( adjusted.basicdisc < 0.0 ) adjusted.basicdisc = 0.0;
+		if( adjusted.basicprev < 0.0 ) adjusted.basicprev = 0.0;
+		if( adjusted.basiccurrentint < 0.0 ) adjusted.basiccurrentint = 0.0;
+		if( adjusted.basicprevint < 0.0 ) adjusted.basicprevint = 0.0;
+		if( adjusted.basicgross < 0.0 ) adjusted.basicgross = 0.0;
+		if( adjusted.basicnet < 0.0 ) adjusted.basicnet = 0.0;
+		
+		if( adjusted.sefcurrent < 0.0 ) adjusted.sefcurrent = 0.0;
+		if( adjusted.sefdisc < 0.0 ) adjusted.sefdisc = 0.0;
+		if( adjusted.sefprev < 0.0 ) adjusted.sefprev = 0.0;
+		if( adjusted.sefcurrentint < 0.0 ) adjusted.sefcurrentint = 0.0;
+		if( adjusted.sefprevint < 0.0 ) adjusted.sefprevint = 0.0;
+		if( adjusted.sefgross < 0.0 ) adjusted.sefgross = 0.0;
+		if( adjusted.sefnet < 0.0 ) adjusted.sefnet = 0.0;
+		return adjusted 
 	}
 	
 	def buildDispositions( items, rptc ){
