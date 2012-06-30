@@ -39,12 +39,14 @@ public class BusinessMmgtPage extends javax.swing.JPanel {
         setLayout(new java.awt.BorderLayout());
 
         setPreferredSize(new java.awt.Dimension(748, 396));
-        jSplitPane1.setDividerLocation(400);
+        jSplitPane1.setDividerLocation(200);
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Listing");
         jPanel1.setBorder(xTitledBorder1);
+        jPanel1.setPreferredSize(new java.awt.Dimension(204, 100));
         jPanel3.setLayout(new java.awt.BorderLayout());
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 1, 3, 5));

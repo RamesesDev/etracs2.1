@@ -62,8 +62,9 @@ class BusinessMgmtList
         getRows: { return 25; },
         getColumns : {
             return [
-                new Column(name:'docstate', caption:'Status'),
-                new Column(name:'txnno', caption:'Application No.'),
+                new Column(name:'docstate', caption:'Status', maxWidth:100),
+                new Column(name:'txnno', caption:'Application No.', maxWidth:160),
+                new Column(name:'permitno', caption:'Permit No.', maxWidth:160),
                 new Column(name:'tradename', caption:'Trade Name'),
                 new Column(name:'businessaddress', caption:'Business Address' ),
                 new Column(name:'taxpayername', caption:'Payer Name'),
