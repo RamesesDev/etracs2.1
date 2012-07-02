@@ -13,6 +13,9 @@ class RPTCertificationsService
 	@Service('SequenceService')
 	def seqSvc;
 	
+	@Service('NumberService')
+	def numSvc
+	
 	def SEQUENCE_KEY = 'RPTCERTIFICATION';
 	def SCHEMA_VERSION = '1.0';
 	def SCHEMA_NAME = 'rptcertification';
@@ -87,7 +90,7 @@ class RPTCertificationsService
 		param.title = 'NO_PROPERTY'
 		param.putAll( fetchItemHeaders(param) );
 		param.taxpayerName = param.taxpayername
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
+		
 		
         return param;
     }
@@ -106,7 +109,6 @@ class RPTCertificationsService
 		/** header **/
 		param.opener = 'landholding';
 		param.title = 'LAND_HOLDING';
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		param.taxpayerName = param.taxpayername;
 		param.putAll( fetchItemHeaders(param) );
 		
@@ -148,7 +150,6 @@ class RPTCertificationsService
 		/** header **/
 		param.opener = 'multipleproperty';
 		param.title = 'MULTIPLE_PROPERTY';
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		param.taxpayerName = param.taxpayername;
 		param.putAll( fetchItemHeaders(param) );
 				
@@ -190,7 +191,6 @@ class RPTCertificationsService
 		/** header **/
 		param.opener = 'noimprovement';
 		param.title = 'NO_IMPROVEMENT';
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		param.taxpayerName = param.taxpayername;
 		param.putAll( fetchItemHeaders(param) );
 		
@@ -238,7 +238,6 @@ class RPTCertificationsService
 		param.opener = 'noimprovementbytdno';
 		param.title = 'NO_IMPROVEMENT_TDNO';
 		param.faasid = param.objid;
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		param.putAll( fetchDataHeaders(param) );
 
 		return param;
@@ -272,7 +271,6 @@ class RPTCertificationsService
 		certification.opener = 'noencumbrance';
 		certification.title = 'NO_ENCUMBRANCE';
 		certification.faasid = certification.objid;
-		certification.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		return certification;
 	}
 	
@@ -295,7 +293,6 @@ class RPTCertificationsService
 		param.title = 'LATEST_EXIST_PROPERTY';
 		param.faasid = param.objid;
 		param.taxpayerName = param.taxpayername;
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		param.putAll( fetchDataHeaders(param) );
 		
 		return param;
@@ -316,7 +313,6 @@ class RPTCertificationsService
 	    /** header**/
 		param.opener = 'withimproveland';
 		param.title = 'WITH_IMPROVEMENT_LAND';
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		param.taxpayerName = param.taxpayername;
 		param.putAll( fetchItemHeaders(param) );
 		
@@ -371,14 +367,39 @@ class RPTCertificationsService
 		return param;
 	}
 	
+	@ProxyMethod
+	public def createOwnership(certification) {
+		validateState( certification )
+		validateOrDate( certification )
+		if( certification.rputype != 'land' ) throw new Exception('Tax Declaration is not for a land property.')
+		
+		
+		certification.opener = 'ownership';
+		certification.title  = 'OWNERSHIP';
+		
+		//build area in words by areatype 
+		if( certification.classcode == 'AGR' || certification.classcode == 'A') {
+			certification.areainwords = numSvc.format( '#,##0.000000', certification.totalareaha ) 
+			certification.areatype = 'ha'
+		}
+		else {
+			certification.areainwords = numSvc.convertLong( certification.totalareasqm.longValue() ).toUpperCase()
+			certification.areainwords += ' (' + numSvc.format( '#,##0', certification.totalareasqm ) + ')'
+			certification.areatype = 'square meter'
+		}
+		return doSave( certification )
+	}
+	
     @ProxyMethod
     public def doSave( def certification ){
         certification.objid = 'C' + new java.rmi.server.UID();
         certification.schemaname = SCHEMA_NAME;
         certification.schemaversion = SCHEMA_VERSION;
+		certification.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		
 		em.validate( 'rptcertification', certification );
         em.create( 'rptcertification', certification );
+		return certification
     }
 	
 	@ProxyMethod
