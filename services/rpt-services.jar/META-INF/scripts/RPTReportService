@@ -54,6 +54,13 @@ class RPTReportService
 			total			: item.total 
 		]
 	}
+	
+	@ProxyMethod 
+	public List generateMasterList( year ) {
+		return em.sqlContext.createNamedQuery('rptreport:getMasterList')
+					.setParameter('currentyear', dateSvc.serverYear )
+					.resultList 
+	}
     
     @ProxyMethod
 	public def generateNotice( notice ) {

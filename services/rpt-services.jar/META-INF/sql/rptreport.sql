@@ -666,3 +666,29 @@ WHERE f.txntimestamp < $P{endingtimestamp}
   AND f.taxable = 0   
 GROUP BY e.objid, e.exemptdesc 
 ORDER BY e.orderno  
+
+
+
+[getMasterList]
+SELECT t.* FROM (  
+	SELECT 
+		docstate, ownername, fullpin, tdno, titleno, cadastrallotno,  
+		rputype, classcode, totalareaha, totalareasqm, totalmv, totalav, effectivityyear, 
+		prevtdno, prevowner, prevmv, prevav, 
+		null as cancelledbytdnos, null as cancelreason, canceldate 
+	FROM faaslist 
+	WHERE docstate = 'CURRENT'  
+
+	UNION 
+
+	SELECT 
+		docstate, ownername, fullpin, tdno, titleno, cadastrallotno,   
+		rputype, classcode, totalareaha, totalareasqm, totalmv, totalav, effectivityyear,  
+		prevtdno, prevowner, prevmv, prevav, 
+		cancelledbytdnos, cancelreason, canceldate 
+	FROM faaslist  
+	WHERE docstate = 'CANCELLED'   
+	  AND YEAR(canceldate) = $P{currentyear}  
+) t
+ORDER BY t.fullpin 
+

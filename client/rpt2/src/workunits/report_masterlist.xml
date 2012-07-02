@@ -1,0 +1,75 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/report/assessor" action="init" caption="Master List" target="window" index="0" permission="rptreport.masterlist"/>
+        
+        <invoker type="formActions"     action="_close" caption="Close" mnemonic="c" shortcut="ctrl + W" icon="images/cancel.png"/>
+        <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png"/>
+        <invoker type="formActions"     action="preview" caption="Preview" mnemonic="v"             icon="images/doc-view.png"/>
+        
+        <invoker type="previewActions"  action="back" caption="Back" icon="images/back.png" immediate="true" />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class MasterListReportController
+{
+    @Binding
+    def binding
+    
+    @Service("ReportParameterService")
+    def svcParams;
+    
+    @Service('RPTReportService') 
+    def svc 
+    
+    @Service('DateService')
+    def dateSvc
+    
+    def year 
+    def reportdata
+    def readonly = true 
+    
+    void init() {
+        year = dateSvc.serverYear 
+    }
+    
+    def preview() {
+        generateReport()
+        return 'preview' 
+    }
+    
+    void generateReport() {
+        reportdata = svc.generateMasterList( year )
+        report.viewReport()
+    }
+    
+    void print(){
+        generateReport()
+        ReportUtil.print( report.report, true )
+    }
+    
+    def report = [
+        getReportName : { return 'masterlist' },
+        getReportData : { return reportdata },
+        getParameters : { 
+            return svcParams.getStandardParameter( OsirisContext.env.USERNAME )
+        }
+    ] as ServerReportModel;
+        
+    def back() {
+        return 'default' 
+    }
+}
+]]>        
+        
+    </code>
+    <pages>
+        <page template="etracs2.rpt.report.RPTYearInitPage" />
+        <page name="preview" template="etracs2.common.PreviewPage" />
+    </pages>
+</workunit>

@@ -333,7 +333,7 @@ public class FAASController
         String sparcel = parcel+''
         if( ! sparcel ) throw new Exception('Parcel is required.')
         def parcellength = ( faas.rp.pintype == 'new' ? 2 : 3 )
-        if( sparcel.length() > parcellength ) throw new Exception('Parcel must be ' +  sectionlength +' digits long.')
+        if( sparcel.length() > parcellength ) throw new Exception('Parcel must be ' +  parcellength +' digits long.')
         faas.rp.parcel = sparcel.padLeft( parcellength, '0' )
     }
     
