@@ -249,7 +249,7 @@ SELECT
 	objid, docstate, ry, tdno, fullpin, rputype, txntype, 
 	taxpayerid, taxpayername, taxpayeraddress, ownername, owneraddress, 
 	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
-	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha, munidistrict 
+	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha, munidistrict, annotated 
 FROM faaslist 
 WHERE docstate LIKE $P{docstate} 
 
@@ -258,7 +258,7 @@ SELECT
 	objid, docstate, ry, tdno, fullpin, rputype, txntype, 
 	taxpayerid, taxpayername, taxpayeraddress, ownername, owneraddress, 
 	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
-	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict 
+	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict , annotated 
 FROM  faaslist 
 WHERE tdno = $P{tdno} 
   AND docstate LIKE $P{docstate} 
@@ -268,7 +268,7 @@ SELECT
 	objid, docstate, ry, tdno, fullpin, rputype, txntype, 
 	taxpayerid, taxpayername, taxpayeraddress, ownername, owneraddress, 
 	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
-	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict 
+	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict , annotated 
 FROM  faaslist 
 WHERE taxpayername LIKE $P{taxpayername} 
   AND docstate LIKE $P{docstate} 
@@ -278,7 +278,7 @@ SELECT
 	objid, docstate, ry, tdno, fullpin, rputype, txntype, 
 	taxpayerid, taxpayername, taxpayeraddress, ownername, owneraddress, 
 	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
-	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict 
+	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict , annotated 
 FROM  faaslist 
 WHERE pin LIKE $P{pin} 
   AND docstate LIKE $P{docstate} 
@@ -288,7 +288,7 @@ SELECT
 	objid, docstate, ry, tdno, fullpin, rputype, txntype, 
 	taxpayerid, taxpayername, ownername, owneraddress, 
 	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
-	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict 
+	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict , annotated 
 FROM  faaslist 
 WHERE barangay = $P{barangay}  
   AND docstate LIKE $P{docstate} 
@@ -299,7 +299,7 @@ SELECT
 	objid, docstate, ry, tdno, fullpin, rputype, txntype, 
 	taxpayerid, taxpayername, taxpayeraddress, ownername, owneraddress, 
 	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
-	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict 
+	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict , annotated 
 FROM  faaslist 
 WHERE cadastrallotno LIKE $P{cadastrallotno}  
   AND docstate LIKE $P{docstate} 
@@ -309,7 +309,7 @@ SELECT
 	objid, docstate, ry, tdno, fullpin, rputype, txntype, 
 	taxpayerid, taxpayername, taxpayeraddress, ownername, owneraddress, 
 	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
-	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict 
+	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict , annotated 
 FROM  faaslist 
 WHERE surveyno LIKE $P{surveyno} 
   AND docstate LIKE $P{docstate} 
@@ -319,7 +319,7 @@ SELECT
 	objid, docstate, ry, tdno, fullpin, rputype, txntype, 
 	taxpayerid, taxpayername, taxpayeraddress, ownername, owneraddress, 
 	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
-	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict 
+	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict , annotated 
 FROM  faaslist 
 WHERE blockno LIKE $P{blockno} 
   AND docstate LIKE $P{docstate} 
@@ -329,7 +329,7 @@ SELECT
 	objid, docstate, ry, tdno, fullpin, rputype, txntype, 
 	taxpayerid, taxpayername, taxpayeraddress, ownername, owneraddress, 
 	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
-	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict 
+	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict , annotated 
 FROM  faaslist  
 ${whereclause}   
   

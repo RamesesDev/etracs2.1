@@ -4,8 +4,8 @@
         <invoker type="rptcertifications" caption="No Encumbrance by TD No." target="window" index="5" permission="noencumbrance.open" />
         <invoker type="noencumbrance.view"  caption="No Encumbrance by TD No." index="5" action="doPreview" permission="noencumbrance.view"/>
         
-        <invoker folderid="/menu/rpt/cert" caption="No Encumbrance by TD No." target="window" index="60" permission="noencumbrance.open" />
-        <invoker folderid="/txn/rpt/cert" caption="No Encumbrance by TD No." target="window" index="60" permission="noencumbrance.open" />
+        <invoker folderid="/menu/rpt/cert" action="init" caption="No Encumbrance by TD No." target="window" index="60" permission="noencumbrance.open" />
+        <invoker folderid="/txn/rpt/cert" action="init" caption="No Encumbrance by TD No." target="window" index="60" permission="noencumbrance.open" />
         
        <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />
@@ -53,17 +53,18 @@
                 certification.caption = 'No Encumbrance by TD No.'
             }
             
-            void setFaas( faas ){
-                if( faas ){
-                    this.faas = faas;
-                    certification.putAll( faas );
-                    certification.requestedby = faas.taxpayername;
-                    binding.refresh("certification.*");
-                }
+            def onselectFaas = { faas ->
+                if( faas.docstate != 'CURRENT') throw new Exception('TD No. is not current.')
+                if( faas.annotated == 1 ) throw new Exception('TD No. is currently annotated.')
+
+                this.faas = faas;
+                certification.putAll( faas );
+                certification.requestedby = faas.taxpayername;
+                binding.refresh("certification.*");
             }
             
             def getLookupFaas(){
-                return InvokerUtil.lookupOpener("faas.lookup", [:] );
+                return InvokerUtil.lookupOpener("faas.lookup", [onselect:onselectFaas] );
             }
             
             public void setOfficialuse( o ){
@@ -79,13 +80,13 @@
             }
             
             def report =[
-                    getReportName : { "rpt/td/certification/NoEncumbranceByTDCertification" },
+                    getReportName : { "rptcertifications/noencumbrance" },
                     getReportData : { return certification; },
                     getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ); }
                 ] as ServerReportModel;
             
             public def doPreview(){
-                certification.putAll( svc.fetchDataNoEncumbranceTDNo(certification) );
+                //certification.putAll( svc.fetchDataNoEncumbranceTDNo(certification) );
                 report.viewReport();
                 mode = '_default'
                 return "preview";
