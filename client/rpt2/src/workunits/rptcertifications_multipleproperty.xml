@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" caption="Multiple Property" target="window" index="2" permission="multipleproperty.open" />
+        <invoker type="rptcertifications" action="init" caption="Multiple Property" target="window" index="2" permission="multipleproperty.open" />
         <invoker type="multipleproperty.view"  caption="Multiple Property" index="2" action="doPreview" permission="multipleproperty.view" />
         
-        <invoker folderid="/menu/rpt/cert" caption="Multiple Property" target="window" index="10" permission="multipleproperty.open" />
-        <invoker folderid="/txn/rpt/cert" caption="Multiple Property" target="window" index="10" permission="multipleproperty.open" />
+        <invoker folderid="/menu/rpt/cert" action="init" caption="Multiple Property" target="window" index="10" permission="multipleproperty.create" />
+        <invoker folderid="/txn/rpt/cert" action="init" caption="Multiple Property" target="window" index="10" permission="multipleproperty.create" />
+        <invoker type="quick_launcher" action="init" code="RCMP" caption="Multiple Property" target="window" index="10" permission="multipleproperty.create" />
+        
         
        <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />
@@ -88,24 +90,23 @@
                 ] as ServerReportModel;
           
             public def doPreview(){
-                certification.putAll( svc.fetchDataMultipleProperty(certification) );
                 report.viewReport();
                 mode = '_default';
-                
                 return "preview";
             }
             
-            public void doSave(){
+            public def doSave(){
                 certification.putAll( svc.fetchDataMultipleProperty(certification) );
-                svc.doSave( certification );
-                mode = 'certified';
+                certification.putAll( svc.doSave( certification ) )
+                return doPreview()
             }
             
+            @Close
             public def doClose(){
                 mode = '_default';
                 certification = [:];
                 taxpayer = null;
-                
+                init()
                 return '_close';
             }
         }

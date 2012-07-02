@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" caption="Ownership" target="window" index="5" permission="ownership.open" />
+        <invoker type="rptcertifications" action="init" caption="Ownership" target="window" index="5" permission="ownership.open" />
         <invoker type="noencumbrance.view"  caption="Ownership" index="6" action="doPreview" permission="ownership.view"/>
         
-        <invoker folderid="/menu/rpt/cert" action="init" caption="Ownership" target="window" index="60" permission="ownership.open" />
-        <invoker folderid="/txn/rpt/cert" action="init" caption="Ownership" target="window" index="60" permission="ownership.open" />
+        <invoker folderid="/menu/rpt/cert" action="init" caption="Ownership" target="window" index="60" permission="ownership.create" />
+        <invoker folderid="/txn/rpt/cert" action="init" caption="Ownership" target="window" index="60" permission="ownership.create" />
+        <invoker type="quick_launcher" code="RCOW" action="init" caption="Ownership" target="window" index="60" permission="ownership.create" />
         
        <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />
@@ -95,11 +96,12 @@
                 return doPreview()
             }
             
+            @Close
             public def doClose(){
                 mode = '_default';
                 certification = [:];
                 td = null;
-                
+                init()
                 return '_close';
             }
         }

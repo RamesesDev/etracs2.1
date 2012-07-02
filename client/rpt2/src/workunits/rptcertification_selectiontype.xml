@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="home.action" caption="Certifications" index="502" target="window" icon="images/folder.png"  permission="xrptcertifications.open" />
+        <invoker folderid="/menu/rpt/cert" caption="Certifications" mnemonic="C" permission="rptcertifications.open" index="101" />
+        <invoker folderid="/txn/rpt/cert" caption="Certifications" mnemonic="C" permission="rptcertifications.open" index="101" />
+        <invoker type="quick_launcher" code="RPTC01" caption="Certifications" mnemonic="C" permission="rptcertifications.open" index="101" />
         
         <invoker type="formActions" action="doNext" caption="Next"    shorcut="n" mnemonic="n"  index="1"  icon="images/next.png" />
         <invoker type="formActions" action="_close" caption="Cancel"  shortcut="c" mnemonic="c"  index="0"  icon="images/cancel.png" />

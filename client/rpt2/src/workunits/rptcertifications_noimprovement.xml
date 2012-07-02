@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" caption="Land with No Improvement" target="window" index="3" permission="noimprovement.open" />
-        <invoker type="noimprovement.view"  caption="Land with No Improvement" index="3" action="doPreview" permission="noimprovement.view" />
+        <invoker type="rptcertifications" action="init" caption="Land with No Improvements" target="window" index="3" permission="noimprovement.open" />
+        <invoker type="noimprovement.view"  caption="Land with No Improvements" index="3" action="doPreview" permission="noimprovement.view" />
         
-        <invoker folderid="/menu/rpt/cert" caption="Land with No Improvement" target="window" index="4" permission="noimprovement.open" />
-        <invoker folderid="/txn/rpt/cert" caption="Land with No Improvement" target="window" index="4" permission="noimprovement.open" />
+        <invoker folderid="/menu/rpt/cert" action="init"  caption="Land with No Improvements" target="window" index="4" permission="noimprovement.create" />
+        <invoker folderid="/txn/rpt/cert" action="init" caption="Land with No Improvements" target="window" index="4" permission="noimprovement.create" />
+        <invoker type="quick_launcher" action="init" code="RCNI02" caption="Land with No Improvements" target="window" index="4" permission="noimprovement.create" />
         
         <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />
@@ -88,23 +89,23 @@
                 ] as ServerReportModel;
             
             public def doPreview(){
-                certification.putAll( svc.fetchDataNoImprovement(certification) );
                 report.viewReport();
                 mode = '_default';
                 return "preview";
             }
             
-            public void doSave(){
+            public def doSave(){
                 certification.putAll( svc.fetchDataNoImprovement(certification) );
-                svc.doSave( certification );
-                mode = 'certified'
+                certification.putAll( svc.doSave( certification ))
+                return doPreview()
             }
             
+            @Close
             public def doClose(){
                 mode = '_default';
                 certification = [:];
                 taxpayer = null;
-                
+                init()
                 return '_close';
             }
         }
