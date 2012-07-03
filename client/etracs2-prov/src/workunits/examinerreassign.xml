@@ -1,12 +1,12 @@
 <workunit>
     <invokers>
-        <invoker type="home.action" caption="Re-Assign" target="window" permission="examinerreassign.view" icon="images/assign.png" />
+        <invoker type="home.action" action="init" caption="Re-Assign" target="window" permission="examinerreassign.view" icon="images/assign.png" />
         
-        <invoker type="formActions" tooltip="New" action="create" immediate="true"  permission="examinerreassign.create" visibleWhen="#{mode == 'read'}" mnemonic="n" icon="images/addnew24.png"/>
-        <invoker type="formActions" tooltip="Edit" action="edit" immediate="true"  permission="examinerreassign.edit" visibleWhen="#{mode == 'read' and entity.objid != null and entity.state == 'DRAFT'}"  mnemonic="e" icon="images/edit24.png"/>
-        <invoker type="formActions" tooltip="Cancel" action="cancel" immediate="true" visibleWhen="#{mode != 'read'}" mnemonic="c" icon="images/cancel24.png"/>
-        <invoker type="formActions" tooltip="Save" action="save"  visibleWhen="#{mode != 'read'}" mnemonic="s" shortcut="ctrl S" icon="images/save24.png"/>
-        <invoker type="formActions" tooltip="Approve" action="approve"  permission="examinerreassign.approve" visibleWhen="#{mode == 'read' and entity.objid != null and entity.state == 'DRAFT'}" mnemonic="a" icon="images/approve24.png"/>
+        <invoker type="formActions" tooltip="New" action="create" immediate="true"  permission="examinerreassign.create" visibleWhen="#{mode == 'view'}" mnemonic="n" icon="images/doc-new.png"/>
+        <invoker type="formActions" tooltip="Edit" action="edit" immediate="true"  permission="examinerreassign.edit" visibleWhen="#{mode == 'view' and entity.objid != null and entity.state == 'DRAFT'}"  mnemonic="e" icon="images/doc-edit.png"/>
+        <invoker type="formActions" tooltip="Cancel" action="cancel" immediate="true" visibleWhen="#{mode != 'view'}" mnemonic="c" icon="images/doc-cancel.png"/>
+        <invoker type="formActions" tooltip="Save" action="save"  visibleWhen="#{mode != 'view'}" mnemonic="s" shortcut="ctrl S" icon="images/doc-save.png"/>
+        <invoker type="formActions" tooltip="Approve" action="approve"  permission="examinerreassign.approve" visibleWhen="#{mode == 'view' and entity.objid != null and entity.state == 'DRAFT'}" mnemonic="a" icon="images/doc-approve.png"/>
     </invokers>
     
     <code>
@@ -27,28 +27,32 @@ public class ReassignLGUController
     
     def title = "Re-Assign LGU"
     def entity = createEntity();
-    def mode = "read";
+    def mode = "view";
     def selectedItem;
     def selectedMunicipality;
     def searchText;
     
+    void init() {
+        mode = 'view' 
+    }
+    
     void create() {
-        init( "create" );
+        initStatus( "create" );
         entity = createEntity();
     }
     
     void edit() {
-        init( "edit" );
+        initStatus( "edit" );
     }
 
     void cancel() {
-        init( "read" );
+        initStatus( "view" );
     }
     
     void approve() {
         if( MsgBox.confirm("Approve record?")) {
             entity = svc.approve( entity.objid );
-            init("read");
+            initStatus("view");
         }
     }
     
@@ -92,7 +96,7 @@ public class ReassignLGUController
         else {
             svc.updateReassign( entity );
         }
-        init( "read" );
+        initStatus( "view" );
     }
 
     void setSelectedItem( selected ) {
@@ -133,7 +137,7 @@ public class ReassignLGUController
         listHandler.load();
     }
     
-    void init( status ) {
+    void initStatus( status ) {
         mode = status;
         binding.refresh();
     }

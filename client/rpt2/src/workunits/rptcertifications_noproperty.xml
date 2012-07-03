@@ -35,6 +35,9 @@
             
             @Service("ETRACSUserService")
             def userSvc
+            
+            @Service('DateService')
+            def dtSvc;
         
             @Binding 
             def binding;
@@ -45,6 +48,15 @@
             def oramt = 0.0;
             def stampamt = 0.0;
             def taxpayer;
+            
+            void init() {
+                certification.certifiedby = svcParams.getStandardParameter( OsirisContext.env.USERNAME ).ASSESSORNAME;
+                certification.certifiedbytitle = svcParams.getStandardParameter( OsirisContext.env.USERNAME ).ASSESSORTITLE;
+                certification.byauthority = svcParams.getStandardParameter( OsirisContext.env.USERNAME ).ASSESSOROFFICETITLE
+                certification.purpose = "whatever legal purposes it may serve him/her"; 
+                certification.serverDate = new java.sql.Date( dtSvc.serverDate.getTime() );
+                certification.caption = 'No Property'
+            }
             
             def getLookupEntity(){
                 return InvokerUtil.lookupOpener("entity.lookup", [:] );

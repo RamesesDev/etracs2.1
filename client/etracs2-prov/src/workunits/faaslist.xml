@@ -103,7 +103,7 @@ public class FAASListController
     }
 
     private def doOpen( item ) {
-        return InvokerUtil.lookupOpener("faas.open", [ faas: item, listRefreshHandler:refreshHandler] )
+        return InvokerUtil.lookupOpener("provfaas.open", [ faas: item, listRefreshHandler:refreshHandler] )
     }
 
     def ontimer = {
@@ -146,7 +146,7 @@ class RefreshTimerTask extends com.rameses.rcp.common.Task {
     public void execute() {
         while( !ended && !cancelled ) {
             try {
-                Thread.sleep( 5000 )
+                Thread.sleep( 20000 )
             }
             catch( e ) {
                 // ignore 

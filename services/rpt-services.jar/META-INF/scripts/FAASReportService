@@ -81,7 +81,7 @@ class FaasReportService
 			def item = [
 				classification	: rpu.classname,
 				subclass		: it.specificclassname + '  (' + it.subclassname + ')',
-				actualuse 		: it.actualusename,
+				actualuse 		: it.assesslevelname,
 				area			: ( it.areatype == 'HA' ? it.areaha : it.areasqm ),
 				unitvalue		: it.unitvalue,
 				basemarketvalue	: it.basemarketvalue,
@@ -211,7 +211,7 @@ class FaasReportService
 		landdetails?.each{
 			item = [
 				classification	: rpu.classname,
-				actualuse 		: it.actualusename,
+				actualuse 		: it.assesslevelname,
 				marketvalue		: it.marketvalue,
 				assesslevel		: it.assesslevel,
 				assessedvalue	: it.assessedvalue

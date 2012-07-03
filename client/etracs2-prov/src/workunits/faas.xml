@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="faas.open" action="open" target="window" caption="FAAS Information"/>
+        <invoker type="provfaas.open" action="open" target="window" caption="FAAS Information"/>
         
         <invoker type="formActions" action="doReturn" permission="faas.return" caption="Return" mnemonic="r" visibleWhen="#{faas.docstate == 'FORAPPROVAL'}" icon="images/return24.png"/>
         <invoker type="formActions" action="submit" permission="faas.submit" caption="Submit" mnemonic="s" visibleWhen="#{faas.docstate == 'FORPROVAPPROVAL'}" icon="images/submit24.png" />
@@ -133,7 +133,7 @@
             
             def viewAttachments() {
                 attachments = svc.getAttachments( faas.objid )
-                return 'attachment'
+                return InvokerUtil.lookupOpener('faasattachment.view', [faas:faas])
             }
             
             void setSelectedItem( selectedItem ) {

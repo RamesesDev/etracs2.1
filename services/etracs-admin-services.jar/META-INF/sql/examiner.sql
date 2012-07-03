@@ -1,25 +1,37 @@
 [getList]
-SELECT u.objid, u.uid, u.lastname, u.firstname, eu.jobtitle, CONCAT(u.lastname, ', ', u.firstname) AS name 
-FROM user u, etracsuser eu, examiner ex  
-WHERE u.objid = eu.objid 
-  AND u.objid = ex.objid 
-ORDER BY u.uid  
+SELECT p.objid, p.staffno, p.lastname, p.firstname, 
+	(SELECT MIN(title) FROM jobposition WHERE assigneeid = p.objid ) AS jobtitle, 
+	CASE WHEN p.middlename IS NULL 
+	THEN CONCAT(p.lastname, ', ', p.firstname) 
+	ELSE  CONCAT(p.lastname, ', ', p.firstname, '  ', p.middlename) 
+	END AS name 
+FROM examiner ex, personnel p 
+WHERE ex.objid = p.objid  
+ORDER BY p.lastname, p.firstname 
 
-[findByUid]
-SELECT u.objid, u.uid, u.lastname, u.firstname, eu.jobtitle, CONCAT(u.lastname, ', ', u.firstname) AS name  
-FROM user u, etracsuser eu, examiner ex  
-WHERE u.objid = eu.objid 
-  AND u.objid = ex.objid 
-  AND u.uid LIKE $P{uid}
-ORDER BY u.uid  
+[findById]
+SELECT p.objid, p.staffno, p.lastname, p.firstname, 
+	(SELECT MIN(title) FROM jobposition WHERE assigneeid = p.objid ) AS jobtitle, 
+	CASE WHEN p.middlename IS NULL 
+	THEN CONCAT(p.lastname, ', ', p.firstname) 
+	ELSE  CONCAT(p.lastname, ', ', p.firstname, '  ', p.middlename) 
+	END AS name 
+FROM examiner ex, personnel p 
+WHERE ex.objid = p.objid  
+  AND ex.objid = $P{objid} 
+ORDER BY p.lastname, p.firstname 
 
 [findByLastName]
-SELECT u.objid, u.uid, u.lastname, u.firstname, eu.jobtitle , CONCAT(u.lastname, ', ', u.firstname) AS name 
-FROM user u, etracsuser eu, examiner ex  
-WHERE u.objid = eu.objid 
-  AND u.objid = ex.objid 
-  AND u.lastname LIKE $P{lastname} 
-ORDER BY u.uid  
+SELECT p.objid, p.staffno, p.lastname, p.firstname, 
+	(SELECT MIN(title) FROM jobposition WHERE assigneeid = p.objid ) AS jobtitle, 
+	CASE WHEN p.middlename IS NULL 
+	THEN CONCAT(p.lastname, ', ', p.firstname) 
+	ELSE  CONCAT(p.lastname, ', ', p.firstname, '  ', p.middlename) 
+	END AS name 
+FROM examiner ex, personnel p 
+WHERE ex.objid = p.objid  
+  AND p.lastname LIKE $P{lastname}  
+ORDER BY p.lastname, p.firstname 
 
 
 

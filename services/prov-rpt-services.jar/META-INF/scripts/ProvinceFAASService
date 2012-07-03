@@ -23,6 +23,11 @@ class ProvinceFAASService
 	
 	@Service('MessengerService')
 	def msgSvc
+	
+	@Service('RPTLedgerService')
+    def ledgerSvc 
+	
+	
 
 	def FORPROVAPPROVAL_STATE = 'FORPROVAPPROVAL'
 	def FORAPPROVAL_STATE = 'FORAPPROVAL'
@@ -116,7 +121,12 @@ class ProvinceFAASService
         em.update( faas.schemaname, faas )
         updateFaasListState( faasid, CURRENT_STATE )
         em.sqlContext.createNamedExecutor('faas:updateListTdNo').setParameters([tdno:faas.info.tdno, objid:faas.objid]).execute()
-        createPIN( faas ) 
+        
+		createPIN( faas ) 
+		createEntity( faas )
+		ledgerSvc.post( faas.objid )
+		
+		
         sendToOutbox( faas, 'faas.approve', [
 			faasid		: faas.objid,
 			docstate	: faas.docstate,
@@ -128,6 +138,34 @@ class ProvinceFAASService
 			fullpin			: faas.rpu.fullpin, 
 		])
 		return faas
+	}
+	
+	void createEntity( faas ) {
+		def entity = em.sqlContext.createNamedQuery('entity:getListByNo')
+						.setParameter('entityno', faas.info.taxpayerno)
+						.singleResult
+						
+		println 'entity -> ' + entity 
+		if( ! entity ) {
+			entity = [
+				objid 		: faas.info.taxpayerid,
+				schemaname 	: 'entity',
+				schemaversion: '1.0',
+				entityno	: faas.info.taxpayerno,
+				entityname  : faas.info.taxpayername, 
+				entityaddress: faas.info.taxpayeraddress,
+				mailingaddress: null,
+				entitytype : 'individual',
+				info       : [:],
+			]
+			println 'entity -> ' + entity 
+			try {
+				em.create( entity.schemaname, entity )
+			}
+			catch( e) {
+				println 'createEntity [Error]: ' + e.message 
+			}
+		}
 	}
     
     @ProxyMethod

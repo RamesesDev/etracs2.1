@@ -1,0 +1,21 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+
+class RecoveryTask
+{
+	@PersistenceContext('system')
+    def em 
+	
+	@Service('TaskSchedulerService')
+	def taskSvc 
+	
+	@ProxyMethod
+	public void recoverError( task ) {
+		def errorlist = em.sqlContext.createQuery('SELECT t.* FROM sys_task t INNER JOIN sys_task_error e ON t.id = e.id').resultList 
+		errorlist.each{ errortask ->
+			println 'Restarting task -> ' + errortask.service 
+			taskSvc.resumeError( errortask )
+		}
+	}
+	
+}

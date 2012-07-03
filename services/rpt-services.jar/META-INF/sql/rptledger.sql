@@ -100,3 +100,18 @@ UPDATE faaslist SET ledgerid = $P{ledgerid} WHERE objid = $P{objid}
 [updateLastYearQtrPaid]
 UPDATE rptledger SET lastyearpaid = $P{lastyearpaid}, lastqtrpaid = $P{lastqtrpaid} WHERE objid = $P{objid} 
 
+
+#------------------------------------
+# PROVINCE LEDGER SUPPORT
+#------------------------------------
+[deleteProvinceRPTLedger]
+DELETE FROM rptledger WHERE faasid = $P{faasid} 
+
+[deleteProvinceRPTLedgerItem]
+DELETE FROM rptledgeritem WHERE faasid = $P{faasid} 
+
+[updateFAASLedgerReference]
+UPDATE faas SET ledgerid = $P{ledgerid} WHERE objid = $P{objid} 
+
+[updateFAASListLedgerReference]
+UPDATE faaslist SET ledgerid = $P{ledgerid} WHERE objid = $P{objid} 

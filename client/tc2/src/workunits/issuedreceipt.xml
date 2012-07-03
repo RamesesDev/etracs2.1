@@ -1,6 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc/txn" action="init" caption="Issued Receipt" permission="receipt.viewissued" />
+        <invoker folderid="/menu/tc/coll" action="init" caption="Issued Receipt" permission="receipt.viewissued" index="35"/>
+        <invoker folderid="/txn/tc/coll" action="init" caption="Issued Receipt" permission="receipt.viewissued" index="35"/>
         
         <invoker type="quick_launcher" code="ISSUEDRCT" action="init" caption="Issued Receipt" permission="receipt.viewissued" />
         

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
+        <!--
         <invoker type="home.action" caption="Business Reports" index="501" icon="images/folder.png" target="window" permission="bpreportmgmt.open" />
+        -->
     </invokers>
     
     <code lang="groovy">

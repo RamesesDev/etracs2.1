@@ -12,7 +12,6 @@ class ExaminerService
 	public def getList( searchText, params ) {
 		if( ! searchText ) return getListByName("examiner:getList", [:], params);
 		def result = [];
-		if( (result = getListByName("examiner:findByUid", [uid:searchText], params)) ) return result;
 		if( (result = getListByName("examiner:findByLastName", [lastname:searchText], params)) ) return result;
 		return result;
 	}
@@ -21,7 +20,7 @@ class ExaminerService
     public def open( objid ) {
         def examiner = em.read("examiner:examiner", [objid:objid]);
 		if( ! examiner ) throw new Exception("User is not an examiner.");
-        examiner = examiner + em.sqlContext.createNamedQuery("examiner:findByUid").setParameter("uid", examiner.uid).singleResult;
+        examiner = examiner + em.sqlContext.createNamedQuery("examiner:findById").setParameter("objid", examiner.objid).singleResult;
         return examiner;
     }
     

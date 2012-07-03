@@ -39,7 +39,7 @@ class Form60Service{
 	}
 	
 	List buildForm60Report( form60setup, timestamp ) {
-		def acctsummarylist = em.sqlContext.createNamedQuery('form60:getDepositedSummary')
+		def acctsummarylist = em.sqlContext.createNamedQuery('form60:getLiquidatedSummary')
 						.setParameter('timestamp', timestamp )
 						.resultList 
 						

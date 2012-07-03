@@ -2,6 +2,7 @@
     <invokers>
         <invoker type="tc.master" action="init" caption="Fund" permission="fund.viewlist" icon="images/folder.png" target="window" index="2"/>
         <invoker folderid="/menu/tc/master" action="init" caption="Fund" permission="fund.viewlist" target="window" index="3"/>
+        <invoker folderid="/txn/tc/master" action="init" caption="Fund" permission="fund.viewlist" target="window" index="5"/>
         
         <invoker type="quick_launcher" code="FUND" action="init" permission="fund.viewlist" />
         

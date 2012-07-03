@@ -671,31 +671,15 @@
 			</band>
 			</groupFooter>
 		</group>
-		<group  name="DETAIL" >
+		<group  name="LOTNO" >
 			<groupExpression><![CDATA[]]></groupExpression>
 			<groupHeader>
-			<band height="138"  isSplitAllowed="true" >
-				<staticText>
-					<reportElement
-						x="0"
-						y="0"
-						width="541"
-						height="138"
-						forecolor="#CCCCCC"
-						key="staticText-118">
-							<printWhenExpression><![CDATA[new Boolean($F{docstate}.equals("CANCELLED"))]]></printWhenExpression>
-						</reportElement>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial Black" size="64"/>
-					</textElement>
-				<text><![CDATA[CANCELLED]]></text>
-				</staticText>
+			<band height="12"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="3"
+						y="0"
 						width="81"
 						height="11"
 						forecolor="#000000"
@@ -715,7 +699,7 @@
 					<reportElement
 						mode="Transparent"
 						x="283"
-						y="3"
+						y="0"
 						width="48"
 						height="11"
 						forecolor="#000000"
@@ -731,11 +715,62 @@
 					</textElement>
 				<text><![CDATA[Lot No. :]]></text>
 				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="81"
+						y="0"
+						width="194"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField"/>
+					<box leftPadding="4">					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{cct}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="331"
+						y="0"
+						width="210"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField"/>
+					<box leftPadding="4">					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{cadastrallotno}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="DETAIL" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="122"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="15"
+						y="1"
 						width="81"
 						height="11"
 						forecolor="#000000"
@@ -755,7 +790,7 @@
 					<reportElement
 						mode="Transparent"
 						x="283"
-						y="15"
+						y="1"
 						width="48"
 						height="11"
 						forecolor="#000000"
@@ -775,7 +810,7 @@
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="31"
+						y="17"
 						width="49"
 						height="11"
 						forecolor="#000000"
@@ -795,7 +830,7 @@
 					<reportElement
 						mode="Transparent"
 						x="51"
-						y="31"
+						y="17"
 						width="28"
 						height="11"
 						forecolor="#000000"
@@ -815,7 +850,7 @@
 					<reportElement
 						mode="Transparent"
 						x="51"
-						y="43"
+						y="29"
 						width="28"
 						height="11"
 						forecolor="#000000"
@@ -835,7 +870,7 @@
 					<reportElement
 						mode="Transparent"
 						x="51"
-						y="55"
+						y="41"
 						width="28"
 						height="11"
 						forecolor="#000000"
@@ -855,7 +890,7 @@
 					<reportElement
 						mode="Transparent"
 						x="51"
-						y="67"
+						y="53"
 						width="28"
 						height="11"
 						forecolor="#000000"
@@ -875,7 +910,7 @@
 					<reportElement
 						mode="Opaque"
 						x="0"
-						y="82"
+						y="68"
 						width="540"
 						height="0"
 						forecolor="#000000"
@@ -885,51 +920,11 @@
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 </graphicElement>
 				</line>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Transparent"
-						x="81"
-						y="3"
-						width="194"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="textField"/>
-					<box leftPadding="4">					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{cct}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						mode="Transparent"
-						x="331"
-						y="3"
-						width="210"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="textField"/>
-					<box leftPadding="4">					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{cadastrallotno}]]></textFieldExpression>
-				</textField>
 				<textField isStretchWithOverflow="false" pattern="yyyy-MM-dd" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="81"
-						y="15"
+						y="1"
 						width="194"
 						height="11"
 						forecolor="#000000"
@@ -949,7 +944,7 @@
 					<reportElement
 						mode="Transparent"
 						x="331"
-						y="15"
+						y="1"
 						width="210"
 						height="11"
 						forecolor="#000000"
@@ -969,7 +964,7 @@
 					<reportElement
 						mode="Transparent"
 						x="81"
-						y="31"
+						y="17"
 						width="460"
 						height="11"
 						forecolor="#000000"
@@ -989,7 +984,7 @@
 					<reportElement
 						mode="Transparent"
 						x="81"
-						y="55"
+						y="41"
 						width="460"
 						height="11"
 						forecolor="#000000"
@@ -1009,7 +1004,7 @@
 					<reportElement
 						mode="Transparent"
 						x="81"
-						y="43"
+						y="29"
 						width="460"
 						height="11"
 						forecolor="#000000"
@@ -1029,7 +1024,7 @@
 					<reportElement
 						mode="Transparent"
 						x="81"
-						y="67"
+						y="53"
 						width="460"
 						height="11"
 						forecolor="#000000"
@@ -1049,7 +1044,7 @@
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="85"
+						y="71"
 						width="132"
 						height="11"
 						forecolor="#000000"
@@ -1069,7 +1064,7 @@
 					<reportElement
 						mode="Transparent"
 						x="30"
-						y="99"
+						y="85"
 						width="41"
 						height="11"
 						forecolor="#000000"
@@ -1089,7 +1084,7 @@
 					<reportElement
 						mode="Transparent"
 						x="30"
-						y="113"
+						y="99"
 						width="41"
 						height="11"
 						forecolor="#000000"
@@ -1109,7 +1104,7 @@
 					<reportElement
 						mode="Transparent"
 						x="318"
-						y="98"
+						y="84"
 						width="46"
 						height="11"
 						forecolor="#000000"
@@ -1129,7 +1124,7 @@
 					<reportElement
 						mode="Transparent"
 						x="318"
-						y="113"
+						y="99"
 						width="46"
 						height="11"
 						forecolor="#000000"
@@ -1149,7 +1144,7 @@
 					<reportElement
 						mode="Transparent"
 						x="74"
-						y="113"
+						y="99"
 						width="68"
 						height="11"
 						forecolor="#000000"
@@ -1169,7 +1164,7 @@
 					<reportElement
 						mode="Transparent"
 						x="74"
-						y="124"
+						y="110"
 						width="68"
 						height="11"
 						forecolor="#000000"
@@ -1189,7 +1184,7 @@
 					<reportElement
 						mode="Transparent"
 						x="17"
-						y="99"
+						y="85"
 						width="10"
 						height="11"
 						forecolor="#000000"
@@ -1211,7 +1206,7 @@
 					<reportElement
 						mode="Transparent"
 						x="17"
-						y="113"
+						y="99"
 						width="10"
 						height="11"
 						forecolor="#000000"
@@ -1233,7 +1228,7 @@
 					<reportElement
 						mode="Transparent"
 						x="305"
-						y="113"
+						y="99"
 						width="10"
 						height="11"
 						forecolor="#000000"
@@ -1255,7 +1250,7 @@
 					<reportElement
 						mode="Transparent"
 						x="305"
-						y="99"
+						y="85"
 						width="10"
 						height="11"
 						forecolor="#000000"
@@ -1277,7 +1272,7 @@
 					<reportElement
 						mode="Transparent"
 						x="365"
-						y="113"
+						y="99"
 						width="66"
 						height="11"
 						forecolor="#000000"
@@ -1297,7 +1292,7 @@
 					<reportElement
 						mode="Transparent"
 						x="365"
-						y="98"
+						y="84"
 						width="66"
 						height="11"
 						forecolor="#000000"
@@ -1317,7 +1312,7 @@
 					<reportElement
 						mode="Transparent"
 						x="17"
-						y="99"
+						y="85"
 						width="10"
 						height="11"
 						forecolor="#000000"
@@ -1337,7 +1332,7 @@
 					<reportElement
 						mode="Transparent"
 						x="17"
-						y="113"
+						y="99"
 						width="10"
 						height="11"
 						forecolor="#000000"
@@ -1357,7 +1352,7 @@
 					<reportElement
 						mode="Transparent"
 						x="305"
-						y="99"
+						y="85"
 						width="10"
 						height="11"
 						forecolor="#000000"
@@ -1377,7 +1372,7 @@
 					<reportElement
 						mode="Transparent"
 						x="305"
-						y="113"
+						y="99"
 						width="10"
 						height="11"
 						forecolor="#000000"
@@ -1397,7 +1392,7 @@
 					<reportElement
 						mode="Transparent"
 						x="142"
-						y="124"
+						y="110"
 						width="158"
 						height="11"
 						forecolor="#000000"
@@ -1417,7 +1412,7 @@
 					<reportElement
 						mode="Transparent"
 						x="431"
-						y="98"
+						y="84"
 						width="110"
 						height="11"
 						forecolor="#000000"
@@ -1437,7 +1432,7 @@
 					<reportElement
 						mode="Transparent"
 						x="431"
-						y="113"
+						y="99"
 						width="110"
 						height="11"
 						forecolor="#000000"
@@ -1457,7 +1452,7 @@
 					<reportElement
 						mode="Transparent"
 						x="142"
-						y="113"
+						y="99"
 						width="158"
 						height="11"
 						forecolor="#000000"
