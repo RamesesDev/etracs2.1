@@ -18,41 +18,35 @@ class OutboundMessageTask
     
     def OUTBOX_SCHEMA = 'message:outbox'
     def PROCESSEDOUTBOX_SCHEMA = 'message:processedoutbox'
-	
+		
 	@ProxyMethod
 	public def deliverMessage( task ) {
-        def msg = getOutboxMessage()
-        if( msg )  {
-            try {
-                println 'Sending message to remote -> ' + msg.receivername 
-                def retval = invokerSvc.invokeRemoteService( 'RemoteInboxService', 'receive', [msg] as Object[])
-                if( retval.status == 'ok' ) {
+        def messageIds = getOutboxMessages()
+		println 'Receive ' + messageIds.size() + ' message(s) for delivery.'
+		messageIds.each{ msg ->
+			println 'Packaging message ' + msg.objid 
+			msg =  em.read( OUTBOX_SCHEMA, msg )
+			try {
+				println 'Sending message to remote -> ' + msg.receivername 
+				def retval = invokerSvc.invokeRemoteService( 'RemoteInboxService', 'receive', [msg] as Object[])
+				if( retval.status == 'ok' ) {
 					msg.message = 'Successfully processed.'
 					msg.status = [iserror:false, errormsg:'', date:new Date()]
-                    moveMessageToProcessedOutbox( msg )
-                }
-                else {
+					moveMessageToProcessedOutbox( msg )
+				}
+				else {
 					msgSvc.errorProcessing( msg, status.msg )
-                    // em.update( OUTBOX_SCHEMA, msg )
-                }
-            }
-            catch( e ) {
+				}
+			}
+			catch( e ) {
 				logMessage( msg, e.message )
-            }
-        }
-        else {
-             println 'No outbound messages for delivery...'
-        }
+			}
+		}
         return true
 	}
     
-    def getOutboxMessage() {
-        //return the first available msg from the inbox 
-        def msg = em.sqlContext.createNamedQuery('messenger:getOutboxMessageId').setMaxResults(1).singleResult
-        if( msg ) {
-            return em.read( OUTBOX_SCHEMA, msg )
-        }
-        return null
+    def getOutboxMessages() {
+        return em.sqlContext.createNamedQuery('messenger:getOutboxMessageId').resultList 
     }
 	
     void moveMessageToProcessedOutbox( msg ) {
@@ -61,7 +55,7 @@ class OutboundMessageTask
     }
 	
 	void logMessage( msg, errorMsg ) {
-        msg.message = createMessage( errorMsg )
+		em.message = errorMsg 
         em.update( msg.schemaname, msg )
     }
 }

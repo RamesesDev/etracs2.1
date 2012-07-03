@@ -45,6 +45,7 @@ class EntityLookupController extends LookupModel
             new Column(name:"entityno", caption:"Account No.", maxWidth:90),
             new Column(name:"entityname", caption:"Account Name"),
             new Column(name:"entityaddress", caption:"Address"),
+            new Column(name:"lguname", caption:"LGU"),
         ]
     }
     

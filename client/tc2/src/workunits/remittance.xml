@@ -2,7 +2,9 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/tc" action="create" caption="Remit" permission="remittance.create"/>
+        <invoker folderid="/menu/tc/coll" action="create" caption="Remit" permission="remittance.create" index="20" />
+        <invoker folderid="/txn/tc/coll" action="create" caption="Remit" permission="remittance.create" index="20" />
+        
         <invoker type="home.action" action="create" caption="Remit" permission="remittance.create" index="110" icon="images/folder.png" target="window"/>
         
         <invoker type="quick_launcher" code="REMIT01" action="create" caption="Remit" permission="remittance.create"/>

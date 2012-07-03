@@ -67,7 +67,7 @@ public class JuridicalPage extends javax.swing.JPanel {
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel1.add(xLabel1);
 
-        xTextField1.setCaption("Company Name");
+        xTextField1.setCaption("Juridical Name");
         xTextField1.setCaptionWidth(115);
         xTextField1.setIndex(-10);
         xTextField1.setName("entity.entityname");

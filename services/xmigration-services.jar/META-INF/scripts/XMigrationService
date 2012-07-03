@@ -1,0 +1,135 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+
+public class XMigrationService
+{
+	@PersistenceContext('main')
+	def em
+	
+	@ProxyMethod
+	public void fixRuleOpener() {
+		def ruleIds = em.sqlContext.createQuery('SELECT objid FROM rule ORDER BY ruleset, rulename ').resultList 
+		ruleIds.each{ ruleid ->
+			def rule = em.read('rule', ruleid )
+			if( rule ) {
+				println 'rule.ruleset -> ' + rule.ruleset
+				if( rule.ruleset == 'bpbilling' ) fixBPBillingRule( rule )
+				else if( rule.ruleset == 'rptbilling' ) fixRPTBillingRule( rule )
+				else if( rule.ruleset == 'bpassessment' ) fixBPAssessmentRule( rule )
+				em.update( rule.schemaname, rule ) 
+			}
+		}
+	}
+	
+	void fixBPAssessmentRule( rule ) {
+		rule.conditions.each{ cond ->
+			println 'cond.opener -> ' + cond.opener 
+			if( cond.opener == 'rulecondition.applicationtype' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_apptype'
+			else if( cond.opener == 'rulecondition.barangay' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_barangay'
+			else if( cond.opener == 'rulecondition.businessorg' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_businessorg'
+			else if( cond.opener == 'rulecondition.lob' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_lob'
+			else if( cond.opener == 'rulecondition.lobtype' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_lobapptype'
+			else if( cond.opener == 'rulecondition.lobattribute' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_lobattribute'
+			else if( cond.opener == 'rulecondition.lobclassification' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_lobclassification'
+			else if( cond.opener == 'rulecondition.officetype' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_officetype'
+			else if( cond.opener == 'rulecondition.summary' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_summary'
+			else if( cond.opener == 'rulecondition.taxfee' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_taxfee'
+			else if( cond.opener == 'rulecondition.variable' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_variable'
+		}
+		
+		rule.actions.each{ action ->
+			println 'action.opener -> ' + action.opener
+			if( action.opener == 'ruleaction.requireinfo') { 
+				action.opener = 'bp-rule-mgmt:bpassessment_action_requireinfo'
+				action.actiontype = 'requireinfo'
+			}
+			else if( action.opener == 'ruleaction.taxfeecharge') {
+				action.opener = 'bp-rule-mgmt:bpassessment_action_taxfeecharge'
+				action.actiontype = 'taxfeecharge'
+			}
+			else if( action.opener == 'ruleaction.updatetaxfee') {
+				action.opener = 'bp-rule-mgmt:bpassessment_action_updatetaxfee'
+				action.actiontype = 'updatetaxfee' 
+			}
+		}
+	}
+	
+	
+	void fixBPBillingRule( rule ) {
+		rule.conditions.each{ cond ->
+			println 'cond.fact.name-> ' + cond.fact.name
+			if( cond.fact.name == 'CurrentYearFact' )
+				cond.opener = 'bp-rule-mgmt:bpbilling_condition_currentyearfact'
+			else if( cond.fact.name == 'BPLedgerFact' )
+				cond.opener = 'bp-rule-mgmt:bpbilling_condition_ledgerfact'
+			else if( cond.fact.name == 'TaxFeeFact' )
+				cond.opener = 'bp-rule-mgmt:bpbilling_condition_taxfeefact'
+		}
+		
+		rule.actions.each{ action ->
+			println 'action.actiontype -> ' + action.actiontype
+			if( action.actiontype == 'calcDiscount')
+				action.opener = 'bp-rule-mgmt:bpbilling_action_discount'
+			else if( action.actiontype == 'calcInterest')
+				action.opener = 'bp-rule-mgmt:bpbilling_action_interest'
+			else if( action.actiontype == 'calcSurcharge')
+				action.opener = 'bp-rule-mgmt:bpbilling_action_surcharge'
+		}
+	}
+	
+	void fixRPTBillingRule( rule ) {
+		rule.conditions.each{ cond ->
+			println 'cond.fact.name -> ' + cond.fact.name
+			if( cond.fact.name == 'CurrentYearFact' ) 
+				cond.opener = 'rpt-rule-mgmt:rptbilling_condition_currentyearfact'
+			else if( cond.fact.name == 'AssessedValueFact' ) 
+				cond.opener = 'rpt-rule-mgmt:rptbilling_condition_avfact'
+			else if( cond.fact.name == 'RPTLedgerFact' ) 
+				cond.opener = 'rpt-rule-mgmt:rptbilling_condition_ledgerfact'
+		}
+		
+		rule.actions.each{ action -> 
+			println 'action.actiontype -> ' + action.actiontype
+			if( action.actiontype == 'calcBasic' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basic'
+			else if( action.actiontype == 'calcBasicDisc' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basic_discount'
+			else if( action.actiontype == 'calcBasicInt' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basic_interest'
+			else if( action.actiontype == 'calcBasicPrevInt' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basic_prev_interest'
+			else if( action.actiontype == 'calcBasicPriorInt' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basic_prior_interest'
+			else if( action.actiontype == 'calcBasicPrev' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basicprev'
+			else if( action.actiontype == 'calcBasicPrior' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basicprior'
+			else if( action.actiontype == 'calcSef' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef'
+			else if( action.actiontype == 'calcSefDisc' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_discount'
+			else if( action.actiontype == 'calcSefInt' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_interest'
+			else if( action.actiontype == 'calcSefPrev' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_prev'
+			else if( action.actiontype == 'calcSefPrevInt' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_prev_interest'
+			else if( action.actiontype == 'calcSefPrior' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_prior'
+			else if( action.actiontype == 'calcSefPriorInt' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_prior_interest'
+		}
+	}
+	
+}

@@ -2,6 +2,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/menu/tc/master" action="init" caption="Form 60 Setup" permission="form60.setup"/>
+        <invoker folderid="/txn/tc/master" action="init" caption="Form 60 Setup" permission="form60.setup" index="45"/>
     </invokers>
     <code lang="groovy">
 

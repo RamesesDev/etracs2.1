@@ -32,9 +32,6 @@ public class BrgyShareInitPage extends javax.swing.JPanel {
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
-        xSeparator1 = new com.rameses.rcp.control.XSeparator();
-        xNumberField2 = new com.rameses.rcp.control.XNumberField();
-        xNumberField3 = new com.rameses.rcp.control.XNumberField();
 
         setPreferredSize(new java.awt.Dimension(603, 291));
         xActionBar1.setBorder(new com.rameses.rcp.control.border.XUnderlineBorder());
@@ -60,37 +57,6 @@ public class BrgyShareInitPage extends javax.swing.JPanel {
         xComboBox2.setPreferredSize(new java.awt.Dimension(125, 22));
         xComboBox2.setRequired(true);
         formPanel1.add(xComboBox2);
-
-        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
-        org.jdesktop.layout.GroupLayout xSeparator1Layout = new org.jdesktop.layout.GroupLayout(xSeparator1);
-        xSeparator1.setLayout(xSeparator1Layout);
-        xSeparator1Layout.setHorizontalGroup(
-            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 314, Short.MAX_VALUE)
-        );
-        xSeparator1Layout.setVerticalGroup(
-            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 20, Short.MAX_VALUE)
-        );
-        formPanel1.add(xSeparator1);
-
-        xNumberField2.setCaption("Current Rate (%)");
-        xNumberField2.setCaptionWidth(120);
-        xNumberField2.setFieldType(BigDecimal.class);
-        xNumberField2.setName("currentrate");
-        xNumberField2.setPattern("#,##0");
-        xNumberField2.setPreferredSize(new java.awt.Dimension(80, 19));
-        xNumberField2.setRequired(true);
-        formPanel1.add(xNumberField2);
-
-        xNumberField3.setCaption("Previous Rate (%)");
-        xNumberField3.setCaptionWidth(120);
-        xNumberField3.setFieldType(BigDecimal.class);
-        xNumberField3.setName("previousrate");
-        xNumberField3.setPattern("#,##0");
-        xNumberField3.setPreferredSize(new java.awt.Dimension(80, 19));
-        xNumberField3.setRequired(true);
-        formPanel1.add(xNumberField3);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -118,9 +84,6 @@ public class BrgyShareInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XNumberField xNumberField1;
-    private com.rameses.rcp.control.XNumberField xNumberField2;
-    private com.rameses.rcp.control.XNumberField xNumberField3;
-    private com.rameses.rcp.control.XSeparator xSeparator1;
     // End of variables declaration//GEN-END:variables
     
 }

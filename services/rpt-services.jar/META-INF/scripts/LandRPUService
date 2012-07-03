@@ -368,12 +368,13 @@ class LandRPUService
 		adjustment.adjustment = 0.0
         def result = [landvalueadjustment:0.0]
 		def adjustall = TO_BOOLEAN( varSvc.landrpu_calculate_landvalueadjustment_all )
-        landdetails.each {
+		landdetails.each {
 			//apply adjustment only if actualuseid matches the adjustment.classid 
 			//this is a transition to deprecate the actual use adjustment button.
 			//if classid is null, allow the addition to retain previous behaviour
 			def classid = adjustment.adj.classid 
-			if( !classid || classid == it.actualuseid || adjustall == true ) {
+			
+			if( !classid || classid == it.actualuseid || classid == it.actualusecode || adjustall == true ) {
 				// evaluate the expr
 				def binding = buildFieldBindings( it )  
 				binding += buildParamBindings( adjustment )

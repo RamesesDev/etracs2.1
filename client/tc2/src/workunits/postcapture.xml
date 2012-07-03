@@ -1,6 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="menu/tc/txn" action="init" caption="Post Captured Receipt" permission="postcapturereceipt.create" />
+        <invoker folderid="menu/tc/coll" action="init" caption="Post Captured Receipt" permission="postcapturereceipt.create" index="15"/>
+        <invoker folderid="txn/tc/coll" action="init" caption="Post Captured Receipt" permission="postcapturereceipt.create" index="15"/>
         
         <invoker type="quick_launcher" code="POSTCAPTURE01" action="init" caption="Post Captured Receipt" permission="postcapturereceipt.create" />
         

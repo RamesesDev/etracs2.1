@@ -7,6 +7,7 @@
 package etracs2.rpt.certification;
 
 import com.rameses.rcp.ui.annotations.StyleSheet;
+import java.math.BigDecimal;
 
 /**
  *
@@ -188,22 +189,18 @@ public class RPTCertificationByTDNoPage extends javax.swing.JPanel {
 
         xNumberField1.setCaption("O.R. Amount");
         xNumberField1.setCaptionWidth(117);
-        xNumberField1.setDepends(new String[] {"officialuse"});
-        xNumberField1.setFieldType(java.math.BigDecimal.class);
+        xNumberField1.setFieldType(BigDecimal.class);
         xNumberField1.setName("certification.oramount");
-        xNumberField1.setPattern("#, ##0.0");
+        xNumberField1.setPattern("#,##0.00");
         xNumberField1.setPreferredSize(new java.awt.Dimension(150, 21));
-        xNumberField1.setRequired(true);
         formPanel2.add(xNumberField1);
 
         xNumberField2.setCaption("Stamp Amount");
         xNumberField2.setCaptionWidth(117);
-        xNumberField2.setDepends(new String[] {"officialuse"});
-        xNumberField2.setFieldType(java.math.BigDecimal.class);
+        xNumberField2.setFieldType(BigDecimal.class);
         xNumberField2.setName("certification.stampamount");
-        xNumberField2.setPattern("#, ##0.0");
+        xNumberField2.setPattern("#,##0.00");
         xNumberField2.setPreferredSize(new java.awt.Dimension(150, 21));
-        xNumberField2.setRequired(true);
         formPanel2.add(xNumberField2);
 
         xPanel1.add(formPanel2);

@@ -17,15 +17,13 @@ class LandTaxReportService
 	@Service('Var')
 	def var 
 	
-	@Service('ETRACSUserService')
-	def userSvc;
-	
 	@Env
 	def env
 	
 	@ProxyMethod 
 	public def getLguType() {
-		return var.lgu_type 
+		if( ! var.lgu_type  ) throw new Exception('LGU Type is not set.')
+		return var.lgu_type.toLowerCase() 
 	}
 
 	@ProxyMethod 
@@ -146,10 +144,7 @@ class LandTaxReportService
 	public def generateBarangayShare( year, month, currentrate, previousrate ) {
 		def parsedate = dateSvc.parseCurrentDate()		
 		if( year > parsedate.year ) throw new Exception('Year must not exceed current year.')
-		if( !currentrate || currentrate < 0.0 ) throw new Exception('Current Rate must not be negative.')
-		if( !currentrate || currentrate > 100.0 ) throw new Exception('Current Rate must not exceed 100 percent.')
-		if( !previousrate || previousrate < 0.0 ) throw new Exception('Previous Rate must not be negative.')
-		if( !previousrate || previousrate > 100.0 ) throw new Exception('Previous Rate must not exceed 100 percent.')
+		def rptc = loadRPTCShares()
 		
 		def onlinepayments = em.sqlContext.createNamedQuery('landtaxreport:getBasicSummaryByMonth')
 								.setParameters( [iyear:year, imonth:month ] )
@@ -160,7 +155,7 @@ class LandTaxReportService
 		
 		def brgyshares = em.sqlContext.createNamedQuery('landtaxreport:getBarangayList').resultList 
 		
-		def initbrgybasicamt = { brgy ->
+		def initBrgyBasicAmt = { brgy ->
 			brgy.basiccurrent 	= 0.0
 			brgy.basicprevious 	= 0.0
 			brgy.basictotal		= 0.0
@@ -179,13 +174,13 @@ class LandTaxReportService
 		}
 		
 		brgyshares.each{ brgy ->
-			initbrgybasicamt( brgy )
+			initBrgyBasicAmt( brgy )
 			addupPayments( brgy, onlinepayments )
 			addupPayments( brgy, manualpayments )
 			
 			//calculate shares
-			brgy.basiccurrentshare  = numSvc.round( brgy.basiccurrent * currentrate / 100.0 )
-			brgy.basicpreviousshare = numSvc.round( brgy.basicprevious * previousrate / 100.0 )
+			brgy.basiccurrentshare  = numSvc.round( brgy.basiccurrent * rptc.brgy_basicshare / 100.0 )
+			brgy.basicpreviousshare = numSvc.round( brgy.basicprevious * rptc.brgy_basicshare / 100.0 )
 			brgy.totalshare			= brgy.basiccurrentshare + brgy.basicpreviousshare 
 		}
 		
@@ -230,13 +225,8 @@ class LandTaxReportService
 	}
 		
 	@ProxyMethod
-	public Map generateRPTCReport( lgutype, year, month, provrate, munirate, brgyrate, cityrate, citybrgyrate ) 
-	{
-		provrate = provrate / 100 
-		munirate = munirate / 100
-		brgyrate = brgyrate / 100
-		cityrate = cityrate / 100 
-		citybrgyrate = citybrgyrate / 100 
+	public def generateRPTCollectionReport( year, month ) {
+		def rptc = loadRPTCShares()
 		
 		def txntimestamp = resolveTimeStamp( year, month.qtr, month.month, null )
 		def onlinerptcs = em.sqlContext.createNamedQuery('landtaxreport:getOnlineRPTC').setParameter('txntimestamp', txntimestamp).resultList 
@@ -271,115 +261,30 @@ class LandTaxReportService
 			municipality : (var.lgu_type == 'city' ? null : var.lgu_name ),
 			brgycount	 : getBrgyCount(),
 			items 		 : taxablelist,
-			dispositions : buildRPTCDispositions( taxablelist, lgutype, provrate, munirate, brgyrate, cityrate, citybrgyrate  ),
-		]
-	}
-	
-	@ProxyMethod
-	public Map generateRPTCReport2( lgutype, year, month, provrate, munirate, brgyrate, cityrate, citybrgyrate ) 
-	{
-		provrate = provrate / 100 
-		munirate = munirate / 100
-		brgyrate = brgyrate / 100
-		cityrate = cityrate / 100 
-		citybrgyrate = citybrgyrate / 100 
-		
-		def txntimestamp = resolveTimeStamp( year, month.qtr, month.month, null )
-		def onlinerptcs = em.sqlContext.createNamedQuery('landtaxreport:getOnlineRPTC').setParameter('txntimestamp', txntimestamp).resultList 
-		def manualrptcs = em.sqlContext.createNamedQuery('landtaxreport:getManualRPTC').setParameter('txntimestamp', txntimestamp).resultList 
-		
-		//add manualrptcs to onlinerptcs 
-		manualrptcs.each{ manual ->
-			def online = onlinerptcs.find{ it.classid == manual.classid }
-			if( online ) {
-				online.keySet().each{ key -> 
-					if( online[key] instanceof String )
-						online[key] = manual[key]
-					else 
-						online[key] += manual[key]
-				}
-			}
-			else {
-				onlinerptcs.add( manual )
-			}
-		}
-		
-		def taxablelist = getTaxableList( initCollectionHandler )
-		taxablelist.each{ 
-			summarizeRPTCollection( it, onlinerptcs )
-		}
-		
-		def reportdata = [
-			title 		 : 'MONTHLY REAL PROPERTY TAX COLLECTION',
-			period 		 : 'FOR THE MONTH OF ' + getMonthName( month.month ) + ', ' + year,
-			periodtype 	 : 'MONTH',
-			provcity     : (var.lgu_type == 'city' ? var.lgu_name : var.parent_lgu_name ),
-			municipality : (var.lgu_type == 'city' ? null : var.lgu_name ),
-			brgycount	 : getBrgyCount(),
-			items 		 : taxablelist,
+			dispositions : buildDispositions( taxablelist, rptc ),
 		]
 		
-		buildDisposition2( reportdata, lgutype, taxablelist, provrate, munirate, brgyrate, cityrate, citybrgyrate )
-		return reportdata 
 	}
 	
-	void buildDisposition2( reportdata, lgutype, taxablelist, provrate, munirate, brgyrate, cityrate, citybrgyrate ) {
-		def totalbasic = taxablelist.basicnet.sum()
-		def totalsef  = taxablelist.sefnet.sum()
-		
-		reportdata.provcitybasicshare 	= 0.0
-		reportdata.munibasicshare		= 0.0
-		reportdata.brgybasicshare		= 0.0
-		reportdata.provcitysefshare		= 0.0
-		reportdata.munisefshare			= 0.0
-		reportdata.brgysefshare			= 0.0
-		reportdata.provcityshare		= 0.0
-		reportdata.munishare			= 0.0
-		reportdata.brgyshares			= 0.0
-		
-		if( lgutype == 'city' ) {
-			reportdata.provcitybasicshare	= numSvc.round( totalbasic * cityrate )
-			reportdata.brgybasicshare		= totalbasic - reportdata.provcitybasicshare
-			reportdata.provcitysefshare	= numSvc.round( totalsef * cityrate )
-			
-			reportdata.brgysefshare		= totalsef - reportdata.provcitysefshare
-			reportdata.provcityshare	= reportdata.provcitybasicshare + reportdata.provcitysefshare
-			reportdata.brgyshare		= reportdata.brgybasicshare + reportdata.brgysefshare 
-		}
-		else {
-			reportdata.provcitybasicshare	= numSvc.round( totalbasic * provrate)
-			reportdata.munibasicshare		= numSvc.round( totalbasic * munirate)
-			reportdata.brgybasicshare		= totalbasic - reportdata.provcitybasicshare - reportdata.munibasicshare 
-			
-			reportdata.provcitysefshare	= numSvc.round( totalsef * provrate )
-			reportdata.munisefshare		= numSvc.round( totalsef * munirate)
-			reportdata.brgysefshare		= totalsef  - reportdata.provcitysefshare - reportdata.munisefshare 
-			
-			reportdata.provcityshare	= reportdata.provcitybasicshare + reportdata.provcitysefshare
-			reportdata.munishare		= reportdata.munibasicshare + reportdata.munisefshare
-			reportdata.brgyshare		= reportdata.brgybasicshare + reportdata.brgysefshare 
-		}
-	}
-	
-	def buildDisposition( classname, items, rate ) {
+	def doBuildDisposition( classname, items, basicshare, sefshare ) {
 		return [
 			classname 		: classname,
-			basiccurrent	: numSvc.round( items.basiccurrent.sum() * rate ),
-			basicdisc		: numSvc.round( items.basicdisc.sum() * rate ),
-			basicprev		: numSvc.round( items.basicprev.sum() * rate ),
-			basiccurrentint	: numSvc.round( items.basiccurrentint.sum() * rate ),
-			basicprevint	: numSvc.round( items.basicprevint.sum() * rate ),
-			basicgross		: numSvc.round( items.basicgross.sum() * rate ),
-			basicnet		: numSvc.round( items.basicnet.sum() * rate ),
-			sefcurrent		: numSvc.round( items.sefcurrent.sum() * rate ),
-			sefdisc			: numSvc.round( items.sefdisc.sum() * rate ),
-			sefprev			: numSvc.round( items.sefprev.sum() * rate ),
-			sefcurrentint	: numSvc.round( items.sefcurrentint.sum() * rate ),
-			sefprevint		: numSvc.round( items.sefprevint.sum() * rate ),
-			sefgross		: numSvc.round( items.sefgross.sum() * rate ),
-			sefnet			: numSvc.round( items.sefnet.sum() * rate ),
-			grandtotal		: numSvc.round( items.grandtotal.sum() * rate ),
-			netgrandtotal	: numSvc.round( items.netgrandtotal.sum() * rate ),
+			basiccurrent	: numSvc.round( items.basiccurrent.sum() * basicshare ),
+			basicdisc		: numSvc.round( items.basicdisc.sum() * basicshare ),
+			basicprev		: numSvc.round( items.basicprev.sum() * basicshare ),
+			basiccurrentint	: numSvc.round( items.basiccurrentint.sum() * basicshare ),
+			basicprevint	: numSvc.round( items.basicprevint.sum() * basicshare ),
+			basicgross		: numSvc.round( items.basicgross.sum() * basicshare ),
+			basicnet		: numSvc.round( items.basicnet.sum() * basicshare ),
+			sefcurrent		: numSvc.round( items.sefcurrent.sum() * sefshare ),
+			sefdisc			: numSvc.round( items.sefdisc.sum() * sefshare ),
+			sefprev			: numSvc.round( items.sefprev.sum() * sefshare ),
+			sefcurrentint	: numSvc.round( items.sefcurrentint.sum() * sefshare ),
+			sefprevint		: numSvc.round( items.sefprevint.sum() * sefshare ),
+			sefgross		: numSvc.round( items.sefgross.sum() * sefshare ),
+			sefnet			: numSvc.round( items.sefnet.sum() * sefshare ),
+			grandtotal		: numSvc.round( items.basicgross.sum() * basicshare + items.sefgross.sum() * sefshare ),
+			netgrandtotal	: numSvc.round( items.basicnet.sum() * basicshare + items.sefnet.sum() * sefshare),
 		]
 	}
 	
@@ -407,20 +312,19 @@ class LandTaxReportService
 		]
 	}
 	
-	def buildRPTCDispositions( items, lgutype, provrate, munirate, brgyrate, cityrate, citybrgyrate  ) {
+	def buildDispositions( items, rptc ){
 		def dispositionlist = []
-		if( lgutype == 'city') {
-			dispositionlist.add( buildDisposition( 'CITY', items, cityrate ) )
+		if( lguType == 'city') {
+			dispositionlist.add( doBuildDisposition( 'CITY', items, rptc.city_basicshare, rptc.city_sefshare ) )
 			dispositionlist.add( buildDispositionAdjust( 'BARANGAY', items, dispositionlist ) )
 		}
 		else {
-			dispositionlist.add( buildDisposition( 'PROVINCE', items, provrate ) )
-			dispositionlist.add( buildDisposition( 'MUNICIPALITY', items, munirate ) )
+			dispositionlist.add( doBuildDisposition( 'PROVINCE', items, rptc.prov_basicshare, rptc.prov_sefshare ) )
+			dispositionlist.add( doBuildDisposition( 'MUNICIPALITY', items, rptc.muni_basicshare, rptc.muni_sefshare ) )
 			dispositionlist.add( buildDispositionAdjust( 'BARANGAY', items, dispositionlist ) )
 		}
 		return dispositionlist
 	}
-	
 	
 	@ProxyMethod
 	public List getNumDays( year, month ) {
@@ -466,7 +370,7 @@ class LandTaxReportService
 	
 	@ProxyMethod
 	public List getCollectorList() {
-		return userSvc.getCollectorList().collect{[collectorid: it.objid, collectorname: it.name, collectortitle: it.jobtitle]};
+		return em.sqlContext.createNamedQuery('landtaxreport:getCollectorList').resultList 
 	}
 	
 	
@@ -574,6 +478,66 @@ class LandTaxReportService
 		else if( snum.endsWith('2') ) return snum + 'ND'
 		else if( snum.endsWith('3') ) return snum + 'RD'
 		else return snum + 'TH' 
+	}
+	
+	
+	def loadRPTCShares() {
+		def prov_basicshare = 0.0
+		def prov_sefshare   = 0.0
+		def muni_basicshare = 0.0
+		def muni_sefshare   = 0.0
+		def city_basicshare = 0.0
+		def city_sefshare   = 0.0
+		def brgy_basicshare = 0.0
+		def brgy_sefshare   = 0.0
+		
+		if( ! var.rptc_barangay_basic_rate ) throw new Exception('Barangay Basic Rate is not set.')
+		if( ! var.rptc_barangay_sef_rate ) throw new Exception('Barangay SEF Rate is not set.')
+		brgy_basicshare = toDecimal( 'Barangay Basic Rate', var.rptc_barangay_basic_rate )
+		brgy_sefshare = toDecimal( 'Barangay SEF Rate', var.rptc_barangay_sef_rate )
+		
+		if( lguType == 'city' ) {
+			if( ! var.rptc_city_basic_rate ) throw new Exception('City Basic Rate is not set.')
+			if( ! var.rptc_city_sef_rate ) throw new Exception('City SEF  Rate is not set.')
+			city_basicshare = toDecimal( 'City Basic Rate', var.rptc_city_basic_rate )
+			city_sefshare   = toDecimal( 'City SEF Rate', var.rptc_city_sef_rate )
+			
+			if( city_basicshare + brgy_basicshare != 100 ) throw new Exception('Basic Share rate total must be equal to 100 percent.')
+			if( city_sefshare + brgy_sefshare != 100 ) throw new Exception('SEF Share rate total must be equal to 100 percent.')
+		}
+		else {
+			if( ! var.rptc_province_basic_rate ) throw new Exception('Province Basic Rate is not set.')
+			if( ! var.rptc_province_sef_rate ) throw new Exception('Province SEF Rate is not set.')
+			if( ! var.rptc_municipality_basic_rate ) throw new Exception('Municipal Basic Rate is not set.')
+			if( ! var.rptc_municipality_sef_rate ) throw new Exception('Municipal SEF Rate is not set.')
+			
+			prov_basicshare = toDecimal( 'Province Basic Rate', var.rptc_province_basic_rate )
+			prov_sefshare = toDecimal( 'Province SEF Rate', var.rptc_province_sef_rate )
+			muni_basicshare = toDecimal( 'Municipality Basic Rate', var.rptc_municipality_basic_rate )
+			muni_sefshare = toDecimal( 'Municipality SEF Rate', var.rptc_municipality_sef_rate )
+			
+			if( prov_basicshare + muni_basicshare + brgy_basicshare  != 100 ) throw new Exception('Basic Share rate total must be equal to 100 percent.')
+			if( prov_sefshare + muni_sefshare + brgy_sefshare != 100 ) throw new Exception('SEF Share rate total must be equal to 100 percent.')
+		}
+		return [
+			prov_basicshare : prov_basicshare / 100.0,
+			prov_sefshare   : prov_sefshare / 100.0,
+			muni_basicshare : muni_basicshare / 100.0,
+			muni_sefshare   : muni_sefshare / 100.0,
+			city_basicshare : city_basicshare / 100.0,
+			city_sefshare   : city_sefshare / 100.0,
+			brgy_basicshare : brgy_basicshare / 100.0,
+			brgy_sefshare   : brgy_sefshare / 100.0,
+		]
+	}
+	
+	def toDecimal( sharename, val ) {
+		try {
+			return new BigDecimal( val )
+		}
+		catch( e) {
+			throw new Exception('Invalid ' + sharename + ' value.')
+		}
 	}
 	
 }	

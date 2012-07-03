@@ -363,7 +363,8 @@ SELECT
 	SUM(CASE WHEN voided =0 THEN amount ELSE 0 END ) AS amount 
 FROM receiptlist 
 WHERE remittanceid = $P{remittanceid} 
-GROUP BY afid, stubno 
+GROUP BY afid, afcontrolid 
+ORDER BY afid, fromserialno 
 
 [fetchOtherPayments]
 SELECT  
@@ -468,6 +469,7 @@ SELECT
 	rl.taxpayername, 
 	rl.tdno, 
 	r.serialno AS orno, 
+	rl.municityname, 
 	rl.barangay, 
 	rl.classcode AS classification, 
 	IFNULL((SELECT SUM( basic ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ), 0.0) AS currentyear, 
@@ -482,7 +484,7 @@ FROM remittancelist rem
 WHERE rem.objid = $P{objid}
   AND r.doctype = 'RPT'  
   AND r.voided = 0  
-ORDER BY r.serialno, rl.tdno    
+ORDER BY rl.municityname, r.serialno, rl.tdno    
 
 
 [getAbstractCollectionSEF]
@@ -493,6 +495,7 @@ SELECT
 	rl.taxpayername, 
 	rl.tdno, 
 	r.serialno AS orno, 
+	rl.municityname, 
 	rl.barangay, 
 	rl.classcode AS classification, 
 	IFNULL((SELECT SUM( sef ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ),0.0) AS currentyear, 
@@ -507,7 +510,7 @@ FROM remittancelist rem
 WHERE rem.objid = $P{objid}
   AND r.doctype = 'RPT'  
   AND r.voided = 0  
-ORDER BY r.serialno, rl.tdno 
+ORDER BY rl.municityname, r.serialno, rl.tdno 
 
 
 [getAbstractCollectionManualBASIC]
@@ -518,6 +521,7 @@ SELECT
 	rp.taxpayername,
 	rp.tdno,
 	r.serialno AS orno,
+	rp.municityname,
 	rp.barangay,
 	rp.classcode AS classification, 
 	rp.basic AS currentyear, 
@@ -531,7 +535,7 @@ FROM remittancelist rem
 WHERE rem.objid = $P{objid} 
   AND r.doctype = 'RPT' 
   AND r.voided = 0 
-ORDER BY r.serialno   
+ORDER BY rp.municityname, r.serialno   
   
   
 
@@ -544,6 +548,7 @@ SELECT
 	rp.taxpayername,
 	rp.tdno,
 	r.serialno AS orno,
+	rp.municityname,
 	rp.barangay,
 	rp.classcode AS classification, 
 	rp.sef AS currentyear, 
@@ -557,7 +562,7 @@ FROM remittancelist rem
 WHERE rem.objid = $P{objid} 
   AND r.doctype = 'RPT' 
   AND r.voided = 0  
-ORDER BY r.serialno   
+ORDER BY rp.municityname, r.serialno   
 
 [getFundName]
 SELECT objid, fundname FROM fund ORDER BY fundname 

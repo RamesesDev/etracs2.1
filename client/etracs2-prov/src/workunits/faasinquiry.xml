@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="home.action" action="init" caption="Inquire" permission="faasinquiry.view" target="window" icon="images/inquiry.png"  />
+        <invoker type="home.action" action="init" caption="FAAS Inquiry" permission="faasinquiry.view" target="window" icon="images/inquiry.png"  />
     </invokers>
     
     <code>

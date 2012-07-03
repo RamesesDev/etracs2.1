@@ -46,9 +46,6 @@ class InboundMessageTask
             }
         }
         catch ( e ) {
-			println '='*50
-			e.printStackTrace()
-			println '='*50
 			println 'Cannot connect to remote outbox of ' + var.remote_lgu_name 
         }
         return true

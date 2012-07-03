@@ -2,6 +2,7 @@
     <invokers>
         <invoker type="tc.master" action="init" caption="Collection Type" permission="collectiontype.viewlist" target="window" icon="images/folder.png" index="4"/>
         <invoker folderid="/menu/tc/master" action="init" caption="Collection Type" permission="collectiontype.viewlist" target="window" index="2"/>
+        <invoker folderid="/txn/tc/master" action="init" caption="Collection Type" permission="collectiontype.viewlist" target="window" index="2"/>
         
         <invoker type="quick_launcher" code="COLTYPE" action="init" caption="Collection Type" permission="collectiontype.viewlist" index="2"/>
         

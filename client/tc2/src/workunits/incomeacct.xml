@@ -2,6 +2,7 @@
     <invokers>
         <invoker type="tc.master" action="init" caption="Income Accounts" permission="incomeacct.viewlist" icon="images/folder.png" target="window" index="3"/>
         <invoker folderid="/menu/tc/master" action="init" caption="Income Accounts" permission="incomeacct.viewlist" target="window"/>
+        <invoker folderid="/txn/tc/master" action="init" caption="Income Accounts" permission="incomeacct.viewlist" target="window" index="15"/>
         
         <invoker type="quick_launcher" code="ACCT" action="init" caption="Income Accounts" permission="incomeacct.viewlist"/>
         

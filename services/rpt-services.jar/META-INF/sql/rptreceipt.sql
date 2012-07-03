@@ -75,3 +75,13 @@ SELECT domainid, domainname FROM domain ORDER BY domainname
 
 [getEntityMappings]
 SELECT entityid, entityname, entityaddress FROM entitymapping  WHERE parentid = $P{parentid} AND domainid = $P{domainid} 
+
+
+
+[getSenderInfo]
+SELECT 
+	CONCAT(provcityindex, '-', munidistrictindex) as senderid, 
+	munidistrict AS sendername    
+FROM rptledger rl  
+INNER JOIN faaslist fl ON rl.faasid = fl.objid   
+WHERE rl.objid = $P{ledgerid} 
