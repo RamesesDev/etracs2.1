@@ -318,20 +318,33 @@ class TDReportService
     	def data = [];
     	
     	def machuses = rpu.info.machuses;
-			
+		
 		machuses.each { mu ->
-			mu.machdetails.each {
-				def item = [
+			
+			if( var.td_show_machine_details == null || IS_TRUE(var.td_show_machine_details) ) {
+				mu.machdetails.each {
+					def item = [
+						classification		: rpu.classname,
+						machine				: it.machinename,
+						actualuse			: mu.actualuse.actualusename,
+						depreciation		: it.depreciation,
+						marketvalue			: it.marketvalue,
+						assesslevel			: it.assesslevel,
+						assessedvalue		: it.assessedvalue
+					];
+					
+					data.add( item );
+				}
+			}
+			else {
+				data << [
 					classification		: rpu.classname,
-					machine				: it.machinename,
 					actualuse			: mu.actualuse.actualusename,
-					depreciation		: it.depreciation,
-					marketvalue			: it.marketvalue,
-					assesslevel			: it.assesslevel,
-					assessedvalue		: it.assessedvalue
+					marketvalue			: mu.marketvalue,
+					assesslevel			: mu.assesslevel,
+					assessedvalue		: mu.assessedvalue,
+					area				: 0.00,
 				];
-				
-				data.add( item );
 			}
 		}
     	
