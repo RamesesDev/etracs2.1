@@ -461,21 +461,6 @@ select
 from etracs_lguname.bldgassesslevel a ;
 
 
-
-insert into lguname_etracs.bldgtype 
-(
-	objid, bldgrysettingid, code, name, basevaluetype, residualrate, multistoreyadjustments, depreciations, previd
-)
-select 
-	objid, bldgrysettingid, code, description, 
-	(select basevaluetype from bldgkindbucc where bldgtypeid=bt.objid limit 1) as basevaluetype, 
-	residualvalue, 
-	'[]' as multistoreyadjustments, 
-	'[]' as depreciations, 
-	previd
-from etracs_lguname.bldgtype bt
-
-
 insert into lguname_etracs.bldgkindbucc 
 	(objid, bldgrysettingid, bldgtypeid, bldgkindid, bldgkindcode, 
 	bldgkindname, 
@@ -512,6 +497,21 @@ from etracs_lguname.bldgtypeclassification btc
 	inner join etracs_lguname.bldgkind bk on btc.bldgkindid = bk.objid ;
 
 
+
+insert into lguname_etracs.bldgtype 
+(
+	objid, bldgrysettingid, code, name, basevaluetype, residualrate, multistoreyadjustments, depreciations, previd
+)
+select 
+	objid, bldgrysettingid, code, description, 
+	(select basevaluetype from lguname_etracs.bldgkindbucc where bldgtypeid=bt.objid limit 1) as basevaluetype, 
+	residualvalue, 
+	'[]' as multistoreyadjustments, 
+	'[]' as depreciations, 
+	previd
+from etracs_lguname.bldgtype bt
+	
+	
 
 insert into lguname_etracs.bldgadditionalitem 
 	(objid, bldgrysettingid, code, name, unit, expr, previd

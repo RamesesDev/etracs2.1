@@ -1,6 +1,6 @@
 import tester.*
 
-System.setProperty("app.host", "192.168.0.4:8080")
+System.setProperty("app.host", "localhost:8080")
 System.setProperty("app.context", "sancarlos")
 def proxy = new TestProxy([:]);
 
@@ -25,5 +25,4 @@ ssa.execute('''
 
 ''')
 println 'done'
-
 

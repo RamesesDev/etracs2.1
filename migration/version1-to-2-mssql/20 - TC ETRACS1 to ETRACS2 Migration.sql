@@ -107,6 +107,9 @@ where parentid is not null;
 * INCOME ACCOUNT
 *
 ********************************************************************* */
+alter table bayombong_etracs..incomeaccount alter column ngastitle varchar(255);
+alter table bayombong_etracs..incomeaccount alter column sretitle varchar(255);
+
 insert into bayombong_etracs..incomeaccount 
 	("objid", schemaname, 
 	schemaversion, 
@@ -128,7 +131,6 @@ insert into bayombong_etracs..incomeaccount
 	fundname, 
 	amounttype
 	)
-	
 SELECT
 	ia."objid" as objid, 
 	'incomeacct:incomeacct' AS schemaname, 
@@ -569,6 +571,10 @@ SELECT
 		 WHEN r.dtype = 'LargeCattleOwnershipReceipt' THEN 'CATTLE_OWNERSHIP'
 		 WHEN r.dtype = 'MiscReceipt' THEN 'MISC'
 		 WHEN r.dtype = 'RPTReceipt' THEN 'RPT'
+		 WHEN r.dtype = 'BurialPermitFeeReceipt' THEN 'BURIAL_PERMIT'
+		 WHEN r.dtype = 'CashTicketReceipt' THEN 'CASHTICKET'
+		 WHEN r.dtype = 'LargeCattleTransferReceipt' THEN 'CATTLE_TRANSFER'
+		 WHEN r.dtype = 'MarriageLicenseFeeReceipt' THEN 'MARRIAGE'
 	END as doctype, 
 	
 	CASE WHEN r.dtype = 'BPReceipt' THEN 'tc:business_tax'
@@ -577,16 +583,20 @@ SELECT
 		 WHEN r.dtype = 'LargeCattleOwnershipReceipt' THEN 'tc:cattle_ownership'
 		 WHEN r.dtype = 'MiscReceipt' THEN 'tc:general_collection'
 		 WHEN r.dtype = 'RPTReceipt' THEN 'tc:real_property'
+		 WHEN r.dtype = 'BurialPermitFeeReceipt' THEN 'tc:burial_permit'
+		 WHEN r.dtype = 'CashTicketReceipt' THEN 'tc:cash_ticket'
+		 WHEN r.dtype = 'LargeCattleTransferReceipt' THEN 'tc:cattle_transfer'
+		 WHEN r.dtype = 'MarriageLicenseFeeReceipt' THEN 'tc:marriage_license'
 	END as opener, 
 	
 	r.collectorid, 
 	r.remittanceid, 
 	rem.docno as remittanceno, 
 	rem.dateposted as remittancedate, 
-	null AS info, 
-	null AS items, 
-	NULL AS payments, 
-	NULL AS extended, 
+	'' AS info, 
+	'' AS items, 
+	'' AS payments, 
+	'' AS extended, 
 	CASE WHEN vr."objid" IS NULL THEN 0 ELSE 1 END AS voided, 
 	vr.reason AS voidreason 
 FROM etracs_bayombong..receipt r
@@ -658,12 +668,15 @@ SELECT
 	p."objid", 
 	p.parentid AS receiptid, 
 	'CHECK' AS paytype, 
-	CONCAT('CHECK NO.: ', p.checkno, '  DATE: ', p.checkdate, '  BANK: ', b.code ) AS particulars, 
+	('CHECK NO.: '+ p.checkno+ '  DATE: '+ 
+	REPLACE(CONVERT(varchar(10), p.checkdate, 102), '.', '-')+ '  BANK: '+ b.code ) AS particulars, 
 	amount, 
-	CONCAT('[', 'bank:', '"', b.code,'",checkdate:"', p.checkdate, '",checkno:"', p.checkno, '"]') AS extended
+	('['+ 'bank:'+ '"'+ b.code+'",checkdate:"'+ 
+	REPLACE(CONVERT(varchar(10), p.checkdate, 102), '.', '-')+ '",checkno:"'+ p.checkno+ '"]') AS extended
 FROM etracs_bayombong..paymentmethod p
 	left join etracs_bayombong..bank b on p.bankid = b."objid" 
 where p.dtype = 'CheckPaymentMethod';
+
 
 
 
@@ -685,12 +698,21 @@ create table bayombong_etracs..xbpreceiptextended
 	businessid varchar(50)
 );
 
+
+
 INSERT INTO bayombong_etracs..xbpreceiptextended (
-	receiptid, qtr, applicationid, businessaddress, tradename, applicationlastmodified, year, businessid 
+	receiptid, 
+	qtr, 
+	applicationid, 
+	businessaddress, 
+	tradename, 
+	applicationlastmodified, 
+	[year], 
+	businessid 
 )
 SELECT 
 	r."objid" AS receiptid,
-	CASE WHEN ba.type = 'NEW' THEN QUARTER( a.dtapplied  ) ELSE 4 END AS qtr,
+	CASE WHEN ba.type = 'NEW' THEN datepart(qq, a.dtapplied)  ELSE 4 END AS qtr,
 	a."objid" AS applicationid,
 	b.businessaddress,
 	b.tradename,
@@ -704,14 +726,18 @@ FROM etracs_bayombong..receipt r
 WHERE r.dtype = 'BPReceipt';
 
 
-UPDATE bayombong_etracs..receipt r, bayombong_etracs..xbpreceiptextended e SET
-	r.extended = CONCAT( '[qtr:', e.qtr, ',applicationid:"', e.applicationid, '",',
-				'businessaddress:"', e.businessaddress, '",',
-				'tradename:"', e.tradename, '",',
-				'applicationlastmodified:"', IFNULL(e.applicationlastmodified,''), '",',
-				'year:', e.year, ',',
-				'businessid:"', e.businessid, '"]' 
-	) 
+
+UPDATE bayombong_etracs..receipt 
+	SET
+	bayombong_etracs..receipt.extended = '[qtr:'+ convert(varchar(4),e.qtr)+ ',applicationid:"'
+				+ e.applicationid+ '",'+
+				'businessaddress:"'+ e.businessaddress+ '",'+
+				'tradename:"'+ e.tradename+ '",'+
+				'applicationlastmodified:"'+ ISNULL(e.applicationlastmodified,'')+ '",'+
+				'year:'+ REPLACE(CONVERT(varchar(10),  e.year, 102), '.', '-')+ ','+
+				'businessid:"'+ e.businessid+ '"]' 
+FROM bayombong_etracs..receipt r, 
+	bayombong_etracs..xbpreceiptextended e 
 WHERE r."objid" = e.receiptid AND r.doctype = 'BUSINESS_TAX';
 
 DROP TABLE bayombong_etracs..xbpreceiptextended;
@@ -723,8 +749,13 @@ DROP TABLE bayombong_etracs..xbpreceiptextended;
 * RECEIPT LIST 
 *
 ********************************************************************* */
-alter table bayombong_etracs..receiptlist change column payoraddress payoraddress varchar(200) null;
-alter table bayombong_etracs..receiptlist change column paidbyaddress paidbyaddress varchar(200) null;
+alter table bayombong_etracs..receiptlist alter column payorname varchar(800);
+alter table bayombong_etracs..receiptlist alter column paidby varchar(800);
+alter table bayombong_etracs..receiptlist alter column payoraddress varchar(255) null;
+alter table bayombong_etracs..receiptlist alter column paidbyaddress varchar(255) null;
+alter table bayombong_etracs..receiptlist alter column serialno varchar(255);
+alter table bayombong_etracs..receiptlist alter column voidreason varchar(255);
+
 
 INSERT INTO bayombong_etracs..receiptlist 
 	("objid", docstate, doctype, opener, remittanceid, remittanceno, 
@@ -761,12 +792,17 @@ SELECT
 	r1."objid", 
 	CASE WHEN r1.remittanceid IS NOT NULL THEN 'CLOSED' ELSE 'OPEN' END AS docstate, 
 	
+	
 	CASE WHEN r1.dtype = 'BPReceipt' THEN 'BUSINESS_TAX'
-		 WHEN r1.dtype = 'CorporateCTCReceipt' THEN 'CTCC'
+	     WHEN r1.dtype = 'CorporateCTCReceipt' THEN 'CTCC'
 		 WHEN r1.dtype = 'IndividualCTCReceipt' THEN 'CTCI'
 		 WHEN r1.dtype = 'LargeCattleOwnershipReceipt' THEN 'CATTLE_OWNERSHIP'
 		 WHEN r1.dtype = 'MiscReceipt' THEN 'MISC'
 		 WHEN r1.dtype = 'RPTReceipt' THEN 'RPT'
+		 WHEN r1.dtype = 'BurialPermitFeeReceipt' THEN 'BURIAL_PERMIT'
+		 WHEN r1.dtype = 'CashTicketReceipt' THEN 'CASHTICKET'
+		 WHEN r1.dtype = 'LargeCattleTransferReceipt' THEN 'CATTLE_TRANSFER'
+		 WHEN r1.dtype = 'MarriageLicenseFeeReceipt' THEN 'MARRIAGE'
 	END as doctype, 
 	
 	CASE WHEN r1.dtype = 'BPReceipt' THEN 'tc:business_tax'
@@ -775,6 +811,10 @@ SELECT
 		 WHEN r1.dtype = 'LargeCattleOwnershipReceipt' THEN 'tc:cattle_ownership'
 		 WHEN r1.dtype = 'MiscReceipt' THEN 'tc:general_collection'
 		 WHEN r1.dtype = 'RPTReceipt' THEN 'tc:real_property'
+		 WHEN r1.dtype = 'BurialPermitFeeReceipt' THEN 'tc:burial_permit'
+		 WHEN r1.dtype = 'CashTicketReceipt' THEN 'tc:cash_ticket'
+		 WHEN r1.dtype = 'LargeCattleTransferReceipt' THEN 'tc:cattle_transfer'
+		 WHEN r1.dtype = 'MarriageLicenseFeeReceipt' THEN 'tc:marriage_license'
 	END as opener, 
 	
 	r1.remittanceid, 
@@ -783,30 +823,30 @@ SELECT
 	r1.txndate, 
 	r1.dtposted, 
 	YEAR( r1.txndate) AS iyear, 
-	QUARTER( r1.txndate) AS iqtr, 
+	datepart(qq, r1.txndate ) AS iqtr, 
 	MONTH( r1.txndate ) AS imonth, 
 	DAY( r1.txndate ) AS iday, 
 	'ONLINE' AS mode, 
 	a.af_objid as afid, 
 	a."objid" AS afcontrolid, 
 	r1.serialno, 
-	IFNULL(a.stub,'-') AS stubno, 
+	ISNULL(a.stub,'-') AS stubno, 
 	r1.collectiontypeid, 
 	ct.name AS collectiontype, 
 	r1.collectorid as collectorid, 
 	case when u.middlename is null 
-		then concat(u.lastname, ', ', u.firstname) 
-		else concat(u.lastname, ', ', u.firstname, ' ', u.middlename ) 
+		then u.lastname+ ', '+ u.firstname 
+		else u.lastname+ ', '+ u.firstname+ ' '+ u.middlename
 	end as collectorname, 
 	r1.collectortitle, 
 	r1.payerid AS payorid, 
 	r1.payername AS payorname, 
 	r1.payeraddress AS payoraddress, 
-	IFNULL(r1.paidby, r1.payername) AS paidby, 
-	IFNULL(r1.payeraddress, r1.payeraddress) AS paidbyaddress, 
+	ISNULL(r1.paidby, r1.payername) AS paidby, 
+	r1.payeraddress AS paidbyaddress, 
 	r1.amount, 
-	IFNULL((SELECT SUM(p.amount) FROM etracs_bayombong..paymentmethod p WHERE dtype = 'CashPaymentMethod' and parentid = r1."objid" ),0.0) AS cash, 
-	IFNULL((SELECT SUM(p.amount) FROM etracs_bayombong..paymentmethod p WHERE dtype = 'CheckPaymentMethod' and parentid = r1."objid" ),0.0) AS otherpayment,
+	ISNULL((SELECT SUM(p.amount) FROM etracs_bayombong..paymentmethod p WHERE dtype = 'CashPaymentMethod' and parentid = r1."objid" ),0.0) AS cash, 
+	ISNULL((SELECT SUM(p.amount) FROM etracs_bayombong..paymentmethod p WHERE dtype = 'CheckPaymentMethod' and parentid = r1."objid" ),0.0) AS otherpayment,
 	CASE WHEN vr."objid" IS NULL THEN 0 ELSE 1 END voided, 
 	vr.reason AS voidreason, 
 	null AS postcaptureid
@@ -818,8 +858,6 @@ FROM etracs_bayombong..receipt r1
 	left join etracs_bayombong..sys_user u on a.collectorid = u."objid" ;
 
 
-
-	
 
 
 /* *********************************************************************
@@ -851,6 +889,42 @@ FROM etracs_bayombong..collectionremittance r
 	left join etracs_bayombong..liquidation l on r.liquidationid = l."objid" ;
 
 
+
+	
+
+
+/* *********************************************************************
+*
+* REMITTANCE
+*
+********************************************************************* */
+
+insert into bayombong_etracs..remittance 
+	("objid", schemaname, schemaversion, info, docstate, dtposted, 
+	liquidationid, 
+	liquidationno, 
+	liquidationdate, 
+	liquidatingofficerid, 
+	collectorid
+	)
+SELECT
+	r."objid", 
+	'remittance:remittance' AS schemaname, 
+	'1.0' AS schemaversion, 
+	'[:]' AS info, 
+	CASE WHEN r.liquidationid IS NULL THEN 'OPEN' ELSE 'CLOSED' END AS docstate, 
+	r.dateposted AS dtposted, 
+	r.liquidationid, 
+	l.docno as liquidationno, 
+	l.dtposted as liquidationdate, 
+	r.liquidatingofficerid as liquidatingofficerid, 
+	r.collectorid as collectorid
+FROM etracs_bayombong..collectionremittance r 
+	left join etracs_bayombong..liquidation l on r.liquidationid = l."objid" ;
+
+
+alter table bayombong_etracs..af alter column description varchar(255);
+alter table bayombong_etracs..af alter column aftype varchar(255);
 
 insert into bayombong_etracs..af (
 	"objid", 
@@ -923,8 +997,6 @@ FROM etracs_bayombong..remittedform r
 	INNER JOIN etracs_bayombong..afcontrol a ON r.afissuedid = a."objid";
 
 
-
-
 INSERT INTO bayombong_etracs..remittancelist 
 	("objid", docstate, txnno, txndate, collectorname, amount, 
 	collectorid, 
@@ -945,8 +1017,8 @@ SELECT
 	r.docno AS txnno, 
 	r.dateposted AS txndate, 
 	case when c.middlename is null 
-		then concat(c.firstname, ' ', c.lastname)
-		else concat(c.firstname, ' ', c.middlename, ' ', c.lastname )
+		then c.firstname+ ' '+ c.lastname
+		else c.firstname+ ' '+ c.middlename+ ' '+ c.lastname
 	end as 	collectorname, 
 	r.amount, 
 	r.collectorid as collectorid, 
@@ -954,25 +1026,28 @@ SELECT
 	r.amount - r.totalchecks AS totalcash, 
 	r.totalchecks AS totalotherpayment, 
 	r.liquidationid, 
-	CONCAT(YEAR(r.dateposted), 
-		QUARTER(r.dateposted), 
-		CASE WHEN MONTH(r.dateposted) < 10 THEN CONCAT('0',MONTH(r.dateposted)) ELSE MONTH(r.dateposted) END,
-		CASE WHEN DAY(r.dateposted) < 10 THEN CONCAT('0',DAY(r.dateposted)) ELSE DAY(r.dateposted) END
-	) AS txntimestamp, 
+	
+	CONVERT(varchar(4),YEAR(r.dateposted))+ 
+	CONVERT(varchar(1),datepart(qq, r.dateposted))+
+	CASE WHEN MONTH(r.dateposted) < 10 
+		THEN '0'+ CONVERT(varchar(1), MONTH(r.dateposted)) 
+		ELSE CONVERT(varchar(2), MONTH(r.dateposted)) END + 	
+	CASE WHEN DAY(r.dateposted) < 10
+		THEN '0' + CONVERT(varchar(1), DAY(r.dateposted)) 
+		ELSE CONVERT(varchar(2), DAY(r.dateposted)) END
+	AS txntimestamp, 	
 	l.docno as liquidationno, 
 	l.dtposted as liquidationdate, 
 	r.liquidatingofficerid as liquidatingofficerid, 
 	case when lq.middlename is null 
-		then concat(lq.firstname, ' ', lq.lastname)
-		else concat(lq.firstname, ' ', lq.middlename, ' ', lq.lastname )
+		then lq.firstname+ ' '+ lq.lastname
+		else lq.firstname+ ' '+ lq.middlename+ ' '+ lq.lastname
 	end as 	liquidatingofficername, 
 	l.liquidatingofficertitle as liquidatingofficertitle
 FROM etracs_bayombong..collectionremittance r
 	left join etracs_bayombong..liquidation l on r.liquidationid = l."objid" 
 	left join etracs_bayombong..sys_user c on r.collectorid = c."objid" 
 	left join etracs_bayombong..sys_user lq on r.liquidatingofficerid = lq."objid" ;
-
-	
 
 
 /**********************************************************************
@@ -984,7 +1059,8 @@ INSERT INTO bayombong_etracs..liquidation
 	("objid", schemaname, schemaversion, docstate, dtposted, 
 	info, 
 	depositid, 
-	dtdeposited
+	dtdeposited,
+	opener
 	)
 SELECT
 	"objid", 
@@ -994,12 +1070,13 @@ SELECT
 	dtposted, 
 	'[:]' AS info, 
 	NULL AS depositid, 
-	NULL AS dtdeposited
+	NULL AS dtdeposited,
+	'single' as opener
 FROM etracs_bayombong..liquidation ;	
 
 
 
-alter table bayombong_etracs..liquidationlist change column liquidatingofficertitle liquidatingofficertitle varchar(100) not null;
+alter table bayombong_etracs..liquidationlist alter column liquidatingofficertitle varchar(100) not null;
 
 INSERT INTO bayombong_etracs..liquidationlist 
 	("objid", docstate, txnno, txndate, iyear, iqtr, imonth, 
@@ -1015,7 +1092,8 @@ INSERT INTO bayombong_etracs..liquidationlist
 	dtdeposited, 
 	depositedbyid, 
 	depositedbyname, 
-	depositedbytitle
+	depositedbytitle,
+	opener
 	)
 SELECT
 	l."objid", 
@@ -1023,18 +1101,23 @@ SELECT
 	l.docno AS txnno, 
 	l.dtposted AS txndate, 
 	YEAR(l.dtposted) AS iyear, 
-	QUARTER(l.dtposted) AS iqtr, 
+	datepart(qq, l.dtposted) AS iqtr, 
 	MONTH(l.dtposted) AS imonth, 
 	DAY(l.dtposted) AS iday, 
-	CONCAT(YEAR(l.dtposted), 
-		QUARTER(l.dtposted), 
-		CASE WHEN MONTH(l.dtposted) < 10 THEN CONCAT('0',MONTH(l.dtposted)) ELSE MONTH(l.dtposted) END,
-		CASE WHEN DAY(l.dtposted) < 10 THEN CONCAT('0',DAY(l.dtposted)) ELSE DAY(l.dtposted) END
-	) AS txntimestamp, 
+	CONVERT( varchar(4), YEAR(l.dtposted)) +  
+	CONVERT( varchar(1), datepart(qq, l.dtposted)) + 
+	
+	CASE WHEN MONTH(l.dtposted) < 10 
+		THEN '0' + CONVERT(varchar(1), MONTH(l.dtposted)) 
+		ELSE CONVERT(varchar(2), MONTH(l.dtposted)) END +
+	CASE WHEN DAY(l.dtposted) < 10 
+		THEN '0' + CONVERT(varchar(1), DAY(l.dtposted)) 
+		ELSE CONVERT(varchar(2),DAY(l.dtposted)) END
+	 AS txntimestamp, 
 	l.liquidatingofficerid, 
 	case when U.middlename is null 
-		then concat(u.firstname, ' ', u.lastname)
-		else concat(u.firstname, ' ', u.middlename, ' ', u.lastname )
+		then u.firstname+ ' '+ u.lastname
+		else u.firstname+ ' '+ u.middlename+ ' '+ u.lastname
 	end as 	liquidatingofficername, 
 	l.liquidatingofficertitle, 
 	l.amount, 
@@ -1044,7 +1127,8 @@ SELECT
 	NULL AS dtdeposited, 
 	NULL AS depositedbyid, 
 	NULL AS depositedbyname, 
-	NULL AS depositedbytitle
+	NULL AS depositedbytitle,
+	'single' as opener
 FROM etracs_bayombong..liquidation l
 	inner join etracs_bayombong..sys_user u on l.liquidatingofficerid = u."objid" ;
 
@@ -1057,7 +1141,11 @@ FROM etracs_bayombong..liquidation l
 * REVENUE 
 *
 **********************************************************************/
-alter table bayombong_etracs..revenue change column collectortitle collectortitle varchar(50) not null;
+alter table bayombong_etracs..revenue alter column collectortitle varchar(50) not null;
+alter table bayombong_etracs..revenue alter column accttitle varchar(255);
+alter table bayombong_etracs..revenue alter column acctno varchar(255);
+alter table bayombong_etracs..revenue alter column payorname varchar(800);
+alter table bayombong_etracs..revenue alter column payoraddress varchar(255);
 
 
 INSERT INTO bayombong_etracs..revenue 
@@ -1104,19 +1192,30 @@ SELECT
 	rl.remittanceid, 
 	rl.remittanceno, 
 	rl.remittancedate, 
-	CONCAT(YEAR(rl.remittancedate), 
-		QUARTER(rl.remittancedate), 
-		CASE WHEN MONTH(rl.remittancedate) < 10 THEN CONCAT('0',MONTH(rl.remittancedate)) ELSE MONTH(rl.remittancedate) END,
-		CASE WHEN DAY(rl.remittancedate) < 10 THEN CONCAT('0',DAY(rl.remittancedate)) ELSE DAY(rl.remittancedate) END
-	) AS remittancetimestamp, 
+	CONVERT( varchar(4), YEAR(rl.remittancedate)) +  
+	CONVERT( varchar(1), datepart(qq, rl.remittancedate)) +  
+	CASE WHEN MONTH(rl.remittancedate) < 10 
+		THEN '0' + CONVERT(varchar(1), MONTH(rl.remittancedate)) 
+		ELSE CONVERT(varchar(2), MONTH(rl.remittancedate)) END +
+	CASE WHEN DAY(rl.remittancedate) < 10 
+		THEN '0' + CONVERT( VARCHAR(1), DAY(rl.remittancedate)) 
+		ELSE CONVERT( VARCHAR(2), DAY(rl.remittancedate))
+	END AS remittancetimestamp, 
+	
 	rem.liquidationid, 
 	rem.liquidationno, 
 	rem.liquidationdate, 
-	CONCAT(YEAR(rem.liquidationdate), 
-		QUARTER(rem.liquidationdate), 
-		CASE WHEN MONTH(rem.liquidationdate) < 10 THEN CONCAT('0',MONTH(rem.liquidationdate)) ELSE MONTH(rem.liquidationdate) END,
-		CASE WHEN DAY(rem.liquidationdate) < 10 THEN CONCAT('0',DAY(rem.liquidationdate)) ELSE DAY(rem.liquidationdate) END
-	) AS liquidationtimestamp, 
+	
+	CONVERT(varchar(4),  YEAR(rem.liquidationdate)) +  
+	CONVERT( varchar(1), datepart(qq, rem.liquidationdate)) + 
+	CASE WHEN MONTH(rem.liquidationdate) < 10 
+		THEN '0' + CONVERT( VARCHAR(1), MONTH(rem.liquidationdate)) 
+		ELSE CONVERT( VARCHAR(2), MONTH(rem.liquidationdate)) END + 
+	CASE WHEN DAY(rem.liquidationdate) < 10 
+		THEN '0' + CONVERT( varchar(1), DAY(rem.liquidationdate)) 
+		ELSE CONVERT( varchar(2),DAY(rem.liquidationdate)) END
+	AS liquidationtimestamp, 
+	
 	NULL AS depositid, 
 	NULL AS depositno, 
 	NULL AS depositdate, 
@@ -1150,6 +1249,7 @@ FROM bayombong_etracs..receiptlist rl
 	LEFT JOIN bayombong_etracs..incomeaccount ia on ri.acctid = ia."objid" 
 WHERE rl.remittanceid is not null	;
 	
+	
 
 insert into bayombong_etracs..fund 
 	("objid", schemaname, schemaversion, docstate, fund, subfund, 
@@ -1165,94 +1265,115 @@ select
 	name as fundname
 from etracs_bayombong..fund;
 
+update r  
+	set
+	info = '[' + 
+	'mode:"'+ isnull(rl.mode,'')+ '",'+
+	'afid:"'+ isnull(rl.afid,'')+ '",'+
+	'aftype:"serial",'+
+	'afcontrolid:"'+ isnull(rl.afcontrolid,'')+ '",'+
+	'series:'+ 
+	CASE WHEN rl.serialno is not null 
+		THEN
+			CONVERT(varchar(50), rl.serialno) + ',' 
+		ELSE
+			'null,' 
+	END +
+	'serialno:"'+ isnull(rl.serialno,'')+ '",'+
+	
+	'stubno:"'+ isnull(rl.stubno,'')+ '",'+
+	'collectiontypeid:"'+ isnull(rl.collectiontypeid,'')+ '",'+
+	'collectiontype:"'+ isnull(rl.collectiontype,'')+ '",'+
+	'payorrequired:0,'+
+	'collectorid:"'+ isnull(rl.collectorid,'')+ '",'+
+	'collectorname:"'+ isnull(rl.collectorname,'')+ '",'+
+	'collectortitle:"'+ isnull(rl.collectortitle,'')+ '",'+
+	
+	'amount:'+ convert( varchar(100), convert( decimal(10,2), rl.amount)) + ','+
+	'totalpayment:'+ convert( varchar(100), convert( decimal(10,2), rl.amount)) + ','+
+	'cash:'+ convert( varchar(100), convert( decimal(10,2), rl.cash)) + ','+
+	'otherpayment:'+ convert( varchar(100), convert( decimal(10,2), rl.otherpayment)) + ',' +
+	'change:0,'+
+	'paidby:"'+ rl.paidby+ '",'+
+	'paidbyaddress:"'+ rl.paidbyaddress+ '",'+ 
+	'dtposted:"'+ REPLACE(CONVERT(varchar(10), rl.dtposted, 102), '.', '-') + '",' +
+	'txndate:"'+ REPLACE(CONVERT(varchar(10), rl.txndate, 102), '.', '-')+ '",' +
+	'payorid:"'+ isnull(rl.payorid,'')+ '",' +
+	'payorname:"'+ isnull(rl.payorname,'')+ '",' +
+	'payoraddress:"'+ isnull(rl.payoraddress,'')+ '"]' 
+from 
+   bayombong_etracs..receipt r, 
+   bayombong_etracs..receiptlist rl 	
+where r.objid = rl.objid;
+  
 
-update bayombong_etracs..receipt r, bayombong_etracs..receiptlist rl set
-	r.info = concat('[',
-	'mode:"', ifnull(rl.mode,''), '",',
-	'afid:"', ifnull(rl.afid,''), '",',
-	'aftype:"serial",',
-	'afcontrolid:"', ifnull(rl.afcontrolid,''), '",',
-	'series:', CONVERT(rl.serialno, UNSIGNED) , ',',
-	'serialno:"', ifnull(rl.serialno,''), '",',
-	'stubno:"', ifnull(rl.stubno,''), '",',
-	'collectiontypeid:"', ifnull(rl.collectiontypeid,''), '",',
-	'collectiontype:"', ifnull(rl.collectiontype,''), '",',
-	'payorrequired:0,',
-	'collectorid:"', ifnull(rl.collectorid,''), '",',
-	'collectorname:"', ifnull(rl.collectorname,''), '",',
-	'collectortitle:"', ifnull(rl.collectortitle,''), '",',
-	'amount:', rl.amount, ',',
-	'totalpayment:', rl.amount, ',',
-	'cash:', rl.cash, ',',
-	'otherpayment:', rl.otherpayment,',', 
-	'change:0,',
-	'paidby:"', rl.paidby, '",',
-	'paidbyaddress:"', rl.paidbyaddress, '",', 
-	'dtposted:"', rl.dtposted, '",',
-	'txndate:"', rl.txndate, '",',
-	'payorid:"', ifnull(rl.payorid,''), '",',
-	'payorname:"', ifnull(rl.payorname,''), '",',
-	'payoraddress:"', ifnull(rl.payoraddress,''), '"]' )
-where r."objid" = rl."objid" ;
-  
- 
- 
-  
-update bayombong_etracs..receipt r, bayombong_etracs..paymentitem p set
-	r.payments = concat('[[paytype:"CASH",particulars:"CASH PAYMENT",amount:', p.amount, ']]' )
+update bayombong_etracs..receipt
+set payments = '[[paytype:"CASH",particulars:"CASH PAYMENT",amount:'+
+	CONVERT( varchar(100), convert(decimal(10,2), p.amount))
+	+  ']]'
+from 
+bayombong_etracs..receipt r, bayombong_etracs..paymentitem p     
 where r."objid" = p.receiptid  
-  and length( ifnull(r.payments,'') ) = 0 
+  and len( isnull( CONVERT(varchar(255), r.payments) ,'') ) = 0 
   and p.paytype = 'cash';
-    
 
 
-update bayombong_etracs..receipt r, bayombong_etracs..paymentitem p set
-	r.payments = concat('[[paytype:"CHECK",particulars:"', p.particulars, '",amount:', p.amount, ',',  replace(replace(p.extended,'[',''), ']',''), ']]' )
-where r."objid" = p.receiptid  
-  and length( ifnull(r.payments,'') ) = 0 
+update  bayombong_etracs..receipt 
+	set payments = 
+	'[[paytype:"CHECK",particulars:"' +
+	 p.particulars + '",amount:' +
+	 convert( varchar(100), convert( decimal(10,2), p.amount ) ) + 
+	 + ',' +  
+	 replace( replace( convert(varchar(8000), p.extended), '[',''), ']','') + ']]'
+from
+bayombong_etracs..receipt r, bayombong_etracs..paymentitem p
+where r."objid" = p.receiptid 
+  and len( isnull( CONVERT(varchar(255), r.payments) ,'') ) = 0 
   and p.paytype = 'check';
-
   
-  
+alter table bayombong_etracs..receipt alter column items text null;
 
-  
-set @@group_concat_max_len=32768;
-
-update bayombong_etracs..receipt r set 
-	r.items = concat('[', (
-			select 
-				group_concat('[',
+update bayombong_etracs..receipt 
+	set items =  '[' + 
+			stuff((
+				select
+				N', ' + 
+				'['+
 				'acct:null,', 
-				'acctid:"', ifnull(ri.acctid,''), '",', 
-				'acctno:null,', 
-				'accttitle:"', ifnull(ri.accttitle,''), '",', 
-				'fundid:"', ifnull(ri.fundid,''), '",', 
-				'fundname:"', ifnull(ri.fundname,''), '",', 
-				'amount:', ri.amount,']')
+				'acctid:"', isnull(ri.acctid,'') + '",' +
+				'acctno:null,' + 
+				'accttitle:"' + isnull(ri.accttitle,'') +  '",' + 
+				'fundid:"' + isnull(ri.fundid,'') +  '",' + 
+				'fundname:"' + isnull(ri.fundname,'') +  '",' + 
+				'amount:' + convert( varchar(100), convert(decimal(10,2), ri.amount))+']'
 			from bayombong_etracs..receiptitem ri
-			where receiptid = r."objid" 
-			group by ri.receiptid 
-	), ']');
+			where ri.receiptid = r."objid" 
+		    FOR XML PATH(''),TYPE).value('text()[1]','nvarchar(max)'),1,2,N''
+		    ) + ']'		    
+FROM bayombong_etracs..receipt  r 
 
 
 
 update bayombong_etracs..account set charttype = 'NGAS' where "objid" like 'NGAS%';
 
-update bayombong_etracs..incomeaccount a2, etracs_bayombong..incomeaccount a1 set
-	a2.acctcode = a1.acctno 
-where a2."objid" = a1."objid";
+update bayombong_etracs..incomeaccount 
+set
+	acctcode = a1.acctno 
+from	
+bayombong_etracs..incomeaccount a2, 
+etracs_bayombong..incomeaccount a1 	
+where a2."objid" = a1."objid"
+collate Latin1_General_CI_AS ;
 
+-- i dont know what to do this. arbitrary long number is used.
 update bayombong_etracs..account set 
-	pathbytitle = substring(pathbytitle,6) 
+	pathbytitle = substring(pathbytitle,6, 1000) 
 where pathbytitle like 'null/%';
+
   
 
 update bayombong_etracs..liquidation set opener = 'single';
   
-
-
-
-
 
 /*========================================================================================
 //
@@ -1266,6 +1387,11 @@ update bayombong_etracs..liquidation set opener = 'single';
 * that have no equivalent liquidationrcd entry which is possible
 * for liquidations before the "multi" type was implemented
 =========================================================================== */
+
+alter table bayombong_etracs..liquidationrcd alter column cashierid varchar(50) null;
+alter table bayombong_etracs..liquidationrcd alter column cashiername varchar(100) null;
+alter table bayombong_etracs..liquidationrcd alter column cashiertitle varchar(50) null;
+
 insert into bayombong_etracs..liquidationrcd (
 	"objid", 
 	docstate, 
@@ -1291,7 +1417,7 @@ insert into bayombong_etracs..liquidationrcd (
 	dtdeposited
 )
 select 
-	concat(ll."objid", '-', ia.fundname) as "objid", 
+	ll."objid" + '-' + ia.fundname as "objid", 
 	'CLOSED' as docstate, 
 	'liquidationrcd' as schemaname, 
 	'1.0' as schemaversion, 
@@ -1320,14 +1446,21 @@ from bayombong_etracs..liquidationlist ll
 	inner join bayombong_etracs..receiptitem ri on r."objid" = ri.receiptid
 	inner join bayombong_etracs..incomeaccount ia on ri.acctid = ia."objid" 
 where not exists(select * from bayombong_etracs..liquidationrcd where liquidationid = ll."objid" )
-group by ll."objid", ia.fundid;
+group by ll."objid", ia.fundid, ia.fundname, ll.txnno, ll.txndate,
+ll.liquidatingofficerid,ll.liquidatingofficername, ll.liquidatingofficertitle,
+ll.depositedbyid,ll.depositedbyname,ll.depositedbytitle,ll.depositid,ll.dtdeposited;
 
 
 /* ===========================================================================
 * update the receiptitem.liquidationrcdid field 
 =========================================================================== */
-update bayombong_etracs..receiptitem ri, bayombong_etracs..receiptlist r, bayombong_etracs..remittancelist rl, bayombong_etracs..incomeaccount ia set
-	ri.liquidationrcdid = concat(rl.liquidationid, '-', ia.fundname)
+update  bayombong_etracs..receiptitem
+set liquidationrcdid = rl.liquidationid +  '-' + ia.fundname	
+from 
+bayombong_etracs..receiptitem ri, 
+bayombong_etracs..receiptlist r, 
+bayombong_etracs..remittancelist rl, 
+bayombong_etracs..incomeaccount ia	
 where ri.receiptid = r."objid" 
   and ri.acctid = ia."objid" 
   and r.remittanceid = rl."objid" 
@@ -1335,11 +1468,14 @@ where ri.receiptid = r."objid"
   and rl.liquidationid is not null;
 
 
+
 /* ===========================================================================
 * update the revenue.liquidationrcdid field 
 =========================================================================== */
-update bayombong_etracs..revenue rev, bayombong_etracs..receiptitem ri set
-	rev.liquidationrcdid = ri.liquidationrcdid
+update bayombong_etracs..revenue
+set liquidationrcdid = ri.liquidationrcdid
+from	
+bayombong_etracs..revenue rev, bayombong_etracs..receiptitem ri 	
 where rev.receiptitemid = ri."objid" 
   and rev.liquidationrcdid is null ;
 
@@ -1347,8 +1483,9 @@ where rev.receiptitemid = ri."objid"
 /* ===========================================================================
 * update the revenue.liquidationrcdid field 
 =========================================================================== */
-update bayombong_etracs..liquidationlist ll set 
-	docstate = 'CLOSED'
+update bayombong_etracs..liquidationlist 
+set docstate = 'CLOSED'
+from bayombong_etracs..liquidationlist ll 	
 where ll."objid" in (
 	select a.liquidationid from 
 	( select lr.liquidationid, 
@@ -1361,24 +1498,34 @@ where ll."objid" in (
 	where a.itemcount = a.closeditemcount 
 );
 
-update bayombong_etracs..liquidation l, bayombong_etracs..liquidationlist lq set
-	l.docstate = lq.docstate
+update bayombong_etracs..liquidation
+set docstate = lq.docstate
+from bayombong_etracs..liquidation l, bayombong_etracs..liquidationlist lq 
 where l.docstate = 'open'
   and lq.docstate = 'closed';
+
 
   
 /* ===========================================================================
 * update renveue deposit related info  
 =========================================================================== */
-update bayombong_etracs..revenue rev, bayombong_etracs..liquidationrcd lr, bayombong_etracs..deposit d set
-	rev.depositid = d."objid",
-	rev.depositno = d.txnno,
-	rev.depositdate = lr.dtdeposited,
-	rev.deposittimestamp = concat( year(lr.dtdeposited), 
-		quarter(lr.dtdeposited), 
-		case when month(lr.dtdeposited) < 10 then concat('0', month(lr.dtdeposited)) else month(lr.dtdeposited) end,
-		case when day(lr.dtdeposited) < 10 then concat('0', day(lr.dtdeposited)) else day(lr.dtdeposited) end 
-	)
+update bayombong_etracs..revenue  
+set
+	depositid = d."objid",
+	depositno = d.txnno,
+	depositdate = lr.dtdeposited,
+	deposittimestamp = 
+		convert( varchar(4), year(lr.dtdeposited) ) +  
+		convert( varchar(1), datepart(qq, lr.dtdeposited)) + 
+		case when month(lr.dtdeposited) < 10 
+			then '0' + CONVERT( varchar(1),  month(lr.dtdeposited) ) 
+			else convert( varchar(2), month(lr.dtdeposited)) end + 
+		case when day(lr.dtdeposited) < 10 
+			then '0' + CONVERT( varchar(1), day(lr.dtdeposited) ) 
+			else CONVERT( varchar(2), day(lr.dtdeposited)) end 
+from bayombong_etracs..revenue rev, 
+bayombong_etracs..liquidationrcd lr, 
+bayombong_etracs..deposit d	
 where rev.liquidationrcdid = lr."objid" 
   and lr.depositid = d."objid" 
   and rev.liquidationrcdid is not null 
@@ -1386,7 +1533,9 @@ where rev.liquidationrcdid = lr."objid"
 
 
 /*========== update liquidationlist opener ===========*/
-update bayombong_etracs..liquidationlist ll, bayombong_etracs..liquidation l
-set ll.opener = l.opener
+update bayombong_etracs..liquidationlist
+set opener = l.opener
+from  bayombong_etracs..liquidationlist ll, bayombong_etracs..liquidation l
 where ll."objid" = l."objid"
+
 

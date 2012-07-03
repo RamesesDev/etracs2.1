@@ -31,12 +31,12 @@ class BPV1MigrationService
 		
 	@ProxyMethod
 	public void cleanupRuleConditions() {
-		sys_em.sqlContext.createExecutor("update rule set conditions = '[]' where ruleset='bpassessment'").execute()
+		sys_em.sqlContext.createExecutor("update [rule] set conditions = '[]' where ruleset='bpassessment'").execute()
 	}
 	
 	@ProxyMethod
 	public void migrateApplicationTypeConditions() {
-		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		def rulelist = sys_em.sqlContext.createQuery("SELECT [objid], rulename, conditions FROM [rule] ").resultList 
 		rulelist.each{ rule -> 
 			def typelist = em1.sqlContext.createQuery('''
 					select pa.types_name as apptype
@@ -66,7 +66,7 @@ class BPV1MigrationService
 	
 	@ProxyMethod
 	public void migrateLobClassificationConditions() {
-		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		def rulelist = sys_em.sqlContext.createQuery("SELECT [objid], rulename, conditions FROM [rule] ").resultList 
 		rulelist.each{ rule -> 
 			def list = em1.sqlContext.createQuery('''
 					select lc.objid, lc.name 
@@ -96,7 +96,7 @@ class BPV1MigrationService
 	
 	@ProxyMethod
 	public void migrateBusinessOrgConditions() {
-		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		def rulelist = sys_em.sqlContext.createQuery("SELECT [objid], rulename, conditions FROM [rule] ").resultList 
 		rulelist.each{ rule -> 
 			def list = em1.sqlContext.createQuery('''
 					select pt.organizationtypes_name as name 
@@ -125,7 +125,7 @@ class BPV1MigrationService
 	
 	@ProxyMethod
 	public void migrateOfficeTypeConditions() {
-		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		def rulelist = sys_em.sqlContext.createQuery("SELECT [objid], rulename, conditions FROM [rule] ").resultList 
 		rulelist.each{ rule -> 
 			def list = em1.sqlContext.createQuery('''
 					select pt.officetypes_name as name 
@@ -145,6 +145,7 @@ class BPV1MigrationService
 				opener				: 'bp-rule-mgmt:bpassessment_condition_officetype',
 				conditiontype		: 'officetype',
 				organizations		: list.name,
+				officetypes			: list.name,
 				displaytext			: 'Office Type is any of the following:  ' + list.name.join( ', ')
 			])
 			
@@ -155,7 +156,7 @@ class BPV1MigrationService
 	
 	@ProxyMethod
 	public void migrateBarangayConditions() {
-		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		def rulelist = sys_em.sqlContext.createQuery("SELECT [objid], rulename, conditions FROM [rule] ").resultList 
 		rulelist.each{ rule -> 
 			def list = em1.sqlContext.createQuery('''
 					select l.objid, l.name  as name 
@@ -186,7 +187,7 @@ class BPV1MigrationService
 	
 	@ProxyMethod
 	public void migrateLobConditions() {
-		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		def rulelist = sys_em.sqlContext.createQuery("SELECT [objid], rulename, conditions FROM [rule] ").resultList 
 		rulelist.each{ rule -> 
 			def list = em1.sqlContext.createQuery('''
 					select ct.includetype, l.objid, l.name 
@@ -219,13 +220,13 @@ class BPV1MigrationService
 	
 	@ProxyMethod
 	public void cleanupRuleAction() {
-		sys_em.sqlContext.createExecutor("update rule set actions = '[]' where ruleset='bpassessment'").execute()
+		sys_em.sqlContext.createExecutor("update [rule] set actions = '[]' where ruleset='bpassessment'").execute()
 	}
 	
 	
 	@ProxyMethod
 	public void migrateAskInfoAction() {
-		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, actions FROM rule ").resultList 
+		def rulelist = sys_em.sqlContext.createQuery("SELECT [objid], rulename, actions FROM [rule] ").resultList 
 		rulelist.each{ rule -> 
 			def list = em1.sqlContext.createQuery('''
 					select 
@@ -275,7 +276,7 @@ class BPV1MigrationService
 	
 	@ProxyMethod
 	public void migrateTaxFeeChargeFormulaModeAction() {
-		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, actions FROM rule ").resultList 
+		def rulelist = sys_em.sqlContext.createQuery("SELECT [objid], rulename, actions FROM [rule] ").resultList 
 		rulelist.each{ rule -> 
 			def list = em1.sqlContext.createQuery('''
 					select 
@@ -321,7 +322,7 @@ class BPV1MigrationService
 	
 	@ProxyMethod
 	public void migrateTaxFeeChargeRangeModeAction() {
-		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, actions FROM rule ").resultList 
+		def rulelist = sys_em.sqlContext.createQuery("SELECT [objid], rulename, actions FROM [rule] ").resultList 
 		rulelist.each{ rule -> 
 			def list = em1.sqlContext.createQuery('''
 					select 
@@ -372,12 +373,12 @@ class BPV1MigrationService
 	def loadRanges( objid ) {
 		return  em1.sqlContext.createQuery('''
 			select 
-				minvalue as `from`,
-				maxvalue as `to`, 
+				minvalue as [from],
+				maxvalue as [to], 
 				expression as expr
 			from taxfeerangeentry
 			where parentid = $P{objid}
-			order by `from` 
+			order by [from] 
 		''')
 		.setParameter('objid', objid )
 		.resultList
@@ -389,7 +390,7 @@ class BPV1MigrationService
 	
 	@ProxyMethod
 	public void migrateUpdateAmountDueAction() {
-		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, actions FROM rule ").resultList 
+		def rulelist = sys_em.sqlContext.createQuery("SELECT [objid], rulename, actions FROM [rule] ").resultList 
 		rulelist.each{ rule -> 
 			def list = em1.sqlContext.createQuery('''
 					select 
@@ -423,7 +424,7 @@ class BPV1MigrationService
 	
 	@ProxyMethod
 	public void migrateVariableConditions() {
-		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		def rulelist = sys_em.sqlContext.createQuery("SELECT [objid], rulename, conditions FROM [rule] ").resultList 
 		rulelist.each{ rule -> 
 			def list = em1.sqlContext.createQuery('''
 					select 
@@ -461,7 +462,7 @@ class BPV1MigrationService
 	
 	@ProxyMethod
 	public void migrateTaxFeeConditions() {
-		def rulelist = sys_em.sqlContext.createQuery("SELECT objid, rulename, conditions FROM rule ").resultList 
+		def rulelist = sys_em.sqlContext.createQuery("SELECT [objid], rulename, conditions FROM [rule] ").resultList 
 		rulelist.each{ rule -> 
 			def list = em1.sqlContext.createQuery('''
 					select ct.*, a.*
@@ -500,13 +501,13 @@ class BPV1MigrationService
 	
 	
 	void updateRuleConditions( rule ) {
-		sys_em.sqlContext.createExecutor('update rule set conditions = $P{conditions} where objid = $P{objid}')
+		sys_em.sqlContext.createExecutor('update [rule] set conditions = $P{conditions} where [objid] = $P{objid}')
 				.setParameters( [objid:rule.objid, conditions:sys_em.serializer.write(rule.conditions) ])
 				.execute()
 	}
 	
 	void updateRuleActions( rule ) {
-		sys_em.sqlContext.createExecutor('update rule set actions = $P{actions} where objid = $P{objid}')
+		sys_em.sqlContext.createExecutor('update [rule] set actions = $P{actions} where [objid] = $P{objid}')
 				.setParameters( [objid:rule.objid, actions:sys_em.serializer.write(rule.actions) ])
 				.execute()
 	}
@@ -543,13 +544,13 @@ class BPV1MigrationService
 				return;
 			}
 			
-			sys_em.sqlContext.createExecutor('update rule set docstate=? where objid=?')
+			sys_em.sqlContext.createExecutor('update [rule] set docstate=? where [objid]=?')
 			      .setParameter(1, 'DEPLOYED')
 				  .setParameter(2, rule.objid)
 				  .execute()
 		}
 		
-		def qry = em1.sqlContext.createQuery("select objid from abstractrule where state = 'deployed'")
+		def qry = em1.sqlContext.createQuery("select [objid] from abstractrule where state = 'deployed'")
 		qry.fetchHandler = new CustomFetchHandler( handler: fhandler )
 		qry.resultList
 		
@@ -589,8 +590,8 @@ class BPV1MigrationService
 					def qtramt = fixAmount( amt / 4 );
 					for(def i=1; i<=3; ++i) {
 						def b = [:]
-						if( i > 1 ) b.objid = b.objid + i
 						b.putAll( rcv )
+						if( i > 1 ) b.objid = b.objid + i
 						b.iqtr = i
 						b.amount = qtramt
 						b.amtpaid = (amtpaid > qtramt ? qtramt : amtpaid)
@@ -605,13 +606,13 @@ class BPV1MigrationService
 				bprcvlist << rcv
 			}
 			
-			em2.sqlContext.createExecutor('update bpapplication set receivables=? where objid=?')
+			em2.sqlContext.createExecutor('update bpapplication set receivables=? where [objid]=?')
 			   .setParameter(1, em2.serializer.write( bprcvlist ))
 			   .setParameter(2, app.objid)
 			   .execute()
 		}
 		
-		def qry = em1.sqlContext.createQuery('select objid from abstractbpapplication where amtpaid < amtdue')
+		def qry = em1.sqlContext.createQuery('select [objid] from abstractbpapplication where amtpaid < amtdue')
 		qry.fetchHandler = new CustomFetchHandler( handler: fhandler )
 		qry.resultList
 	}

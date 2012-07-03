@@ -1,7 +1,7 @@
 import tester.*
 
 int BATCHSIZE = 25
-int THREAD_COUNT = 20
+int THREAD_COUNT = 10
 def g_errorlist = []
 
 def getNextFAASBatch( faaslist, size) {
@@ -75,20 +75,19 @@ def proxy = new TestProxy([
 
 def svc = proxy.create('RPTV1MigrationService')
 
-/*
-svc.updateLandFaasIdInfo()
-println 'done svc.updateLandFaasIdInfo()...'
 
-executeAction2({  g_errorlist.addAll(svc.updateFAASInfo( it )); it.clear() }, svc.getFAASList(), 'faasinfo' )
-printDone( 'done svc.updateFAASInfo()...', g_errorlist )
+//svc.updateLandFaasIdInfo()
+//println 'done svc.updateLandFaasIdInfo()...'
 
-executeAction2({  g_errorlist.addAll(svc.updateFAASRealPropertyInfo( it )); it.clear() }, svc.getFAASList(), 'faas real property info' )
-printDone('done svc.updateFAASRealPropertyInfo()...', g_errorlist )
+//executeAction2({  g_errorlist.addAll(svc.updateFAASInfo( it )); it.clear() }, svc.getFAASList(), 'faasinfo' )
+//printDone( 'done svc.updateFAASInfo()...', g_errorlist )
+
+//executeAction2({  g_errorlist.addAll(svc.updateFAASRealPropertyInfo( it )); it.clear() }, svc.getFAASList(), 'faas real property info' )
+//printDone('done svc.updateFAASRealPropertyInfo()...', g_errorlist )
 
 executeAction2({  g_errorlist.addAll(svc.updateFAASLandRPUInfo( it )); it.clear() }, svc.getFAASListByType('land'), 'faas land rpu info' )
 printDone ('done svc.updateFAASLandRPUInfo()...', g_errorlist)
-
-
+/*
 executeAction2({  g_errorlist.addAll(svc.updateFAASBldgRPUInfo( it )); it.clear() }, svc.getFAASListByType('bldg'), 'faas bldg rpu info' )
 printDone('done svc.updateFAASBldgRPUInfo()...', g_errorlist)
 

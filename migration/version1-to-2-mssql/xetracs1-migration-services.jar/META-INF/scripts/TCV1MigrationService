@@ -18,12 +18,12 @@ class TCV1MigrationService
 			select 
 				l.*,
 				case when lq.middlename is null 
-					then concat(lq.firstname, ' ', lq.lastname)
-					else concat(lq.firstname, ' ', lq.middlename, ' ', lq.lastname)
+					then (lq.firstname + ' ' + lq.lastname)
+					else (lq.firstname + ' ' + lq.middlename + ' ' + lq.lastname)
 				end as liquidatingOfficerName,
-					case when t.middlename is null 
-					then concat(t.firstname, ' ', t.lastname)
-					else concat(t.firstname, ' ', t.middlename, ' ', t.lastname)
+				case when t.middlename is null 
+					then (t.firstname + ' ' + t.lastname)
+					else (t.firstname + ' ' + t.middlename + ' ' + t.lastname)
 				end as treasurerName
 			from liquidation l
 				inner join sys_user lq on l.liquidatingofficerid = lq.objid 
@@ -62,7 +62,7 @@ class TCV1MigrationService
                     [caption:"10.00"    ,denomination:10.00        ,qty:lq.d10qty        ,amount:lq.d10qty*10.0],
                     [caption:"Coins"    ,denomination:1.00        ,qty:lq.coins        ,amount:lq.coins]],
             ]
-            em2.sqlContext.createExecutor('UPDATE liquidation SET info = $P{info} WHERE objid = $P{objid}')
+            em2.sqlContext.createExecutor('UPDATE liquidation SET info = $P{info} WHERE [objid] = $P{objid}')
                     .setParameters([objid:lq.objid, info:em2.serializer.write( info) ]).execute() 
         }
     }
@@ -73,12 +73,12 @@ class TCV1MigrationService
 			select 
 				r.*,
 				case when lq.middlename is null 
-					then concat(lq.firstname, ' ', lq.lastname)
-					else concat(lq.firstname, ' ', lq.middlename, ' ', lq.lastname)
+					then (lq.firstname + ' ' + lq.lastname)
+					else (lq.firstname + ' ' + lq.middlename + ' ' + lq.lastname)
 				end as liquidatingOfficerName,
 				case when c.middlename is null 
-					then concat(c.firstname, ' ', c.lastname)
-					else concat(c.firstname, ' ', c.middlename, ' ', c.lastname)
+					then (c.firstname + ' ' + c.lastname)
+					else (c.firstname + ' ' + c.middlename + ' ' + c.lastname)
 				end as collectorName
 			from collectionremittance r
 				inner join sys_user lq on r.liquidatingofficerid = lq.objid 
@@ -105,7 +105,7 @@ class TCV1MigrationService
 					[caption:"10.00"	,denomination:10.00		,qty:rem.d10qty		,amount:rem.d10qty*10.0],
 					[caption:"Coins"	,denomination:1.00		,qty:rem.coins		,amount:rem.coins]],
 			]
-			em2.sqlContext.createExecutor('UPDATE remittance SET info = $P{info} WHERE objid = $P{objid}')
+			em2.sqlContext.createExecutor('UPDATE remittance SET info = $P{info} WHERE [objid] = $P{objid}')
 					.setParameters([objid:rem.objid, info:em2.serializer.write( info) ]).execute() 
 		}
 	}
@@ -115,9 +115,9 @@ class TCV1MigrationService
 	public void updateAccount( parentacct, level) {
 		def acctlist = []
 		if( ! parentacct )
-			acctlist = em2.sqlContext.createQuery('SELECT objid, accttitle FROM account WHERE parentid IS NULL').resultList
+			acctlist = em2.sqlContext.createQuery('SELECT [objid], accttitle FROM account WHERE parentid IS NULL').resultList
 		else 
-			acctlist = em2.sqlContext.createQuery('SELECT objid, accttitle FROM account WHERE parentid = $P{parentid}').setParameter('parentid', parentacct.objid).resultList
+			acctlist = em2.sqlContext.createQuery('SELECT [objid], accttitle FROM account WHERE parentid = $P{parentid}').setParameter('parentid', parentacct.objid).resultList
 			
 			
 		acctlist.each { acct -> 
@@ -143,7 +143,7 @@ class TCV1MigrationService
 			pathbyids 	: acct.pathbyids,
 			pathbytitle	: acct.pathbytitle,
 		]
-		em2.sqlContext.createExecutor('UPDATE account SET acctlevel = $P{level}, pathbyids=$P{pathbyids}, pathbytitle=$P{pathbytitle} WHERE objid = $P{objid}')
+		em2.sqlContext.createExecutor('UPDATE account SET acctlevel = $P{level}, pathbyids=$P{pathbyids}, pathbytitle=$P{pathbytitle} WHERE [objid] = $P{objid}')
 				.setParameters( params ).execute() 
 		
 		updateAccount( acct, level )

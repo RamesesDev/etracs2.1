@@ -14,7 +14,7 @@ set foreign_key_checks=0;
 *
 **********************************************************************/
 
-INSERT INTO lguname_etracs.propertyclassification 
+INSERT INTO bayombong_etracs..propertyclassification 
 	(objid, schemaname, schemaversion, propertycode, propertydesc, 
 	special, 
 	orderno
@@ -25,9 +25,9 @@ SELECT
 	'1.0' AS schemaversion, 
 	code AS propertycode, 
 	description AS propertydesc, 
-	case when special= true then 1 else 0 end, 
+	special, 
 	orderno
-FROM etracs_lguname.propertyclassification;
+FROM etracs_bayombong..propertyclassification;
 
 
 /**********************************************************************
@@ -36,7 +36,7 @@ FROM etracs_lguname.propertyclassification;
 *
 **********************************************************************/
 
-insert into lguname_etracs.exemptiontype 
+insert into bayombong_etracs..exemptiontype 
 	(objid, schemaname, schemaversion, exemptcode, exemptdesc, 
 	orderno
 	)
@@ -47,7 +47,7 @@ SELECT
 	code AS exemptcode, 
 	description AS exemptdesc, 
 	orderno
-FROM etracs_lguname.exemptiontype ;
+FROM etracs_bayombong..exemptiontype ;
 
 
 
@@ -56,7 +56,7 @@ FROM etracs_lguname.exemptiontype ;
 * REAL PROPERTY : KINDS OF BUILDING
 *
 **********************************************************************/
-insert into lguname_etracs.kindofbuilding 
+insert into bayombong_etracs..kindofbuilding 
 	(objid, schemaname, schemaversion, bldgcode, bldgkind
 	)
 SELECT
@@ -65,7 +65,7 @@ SELECT
 	'1.0' AS schemaversion, 
 	code AS bldgcode, 
 	description AS bldgkind
-FROM etracs_lguname.bldgkind ;
+FROM etracs_bayombong..bldgkind ;
 
 
 
@@ -75,7 +75,7 @@ FROM etracs_lguname.bldgkind ;
 * REAL PROPERTY : MATERIALS
 *
 **********************************************************************/
-insert into lguname_etracs.materials 
+insert into bayombong_etracs..materials 
 	(objid, schemaname, schemaversion, materialcode, materialdesc
 	)
 SELECT
@@ -84,7 +84,7 @@ SELECT
 	'1.0' AS schemaversion, 
 	code AS materialcode, 
 	description AS materialdesc
-FROM etracs_lguname.material;
+FROM etracs_bayombong..material;
 
 
 
@@ -95,7 +95,7 @@ FROM etracs_lguname.material;
 * REAL PROPERTY : STRUCTURES
 *
 **********************************************************************/
-insert into lguname_etracs.structures 
+insert into bayombong_etracs..structures 
 	(objid, schemaname, schemaversion, structurecode, structuredesc, 
 	materials
 	)
@@ -106,7 +106,7 @@ SELECT
 	code AS structurecode, 
 	description AS structuredesc, 
 	'[]' AS materials
-FROM etracs_lguname.structure;	
+FROM etracs_bayombong..structure;	
 
 
 
@@ -115,7 +115,7 @@ FROM etracs_lguname.structure;
 * REAL PROPERTY : MACHINERY
 *
 **********************************************************************/
-insert into lguname_etracs.machines 
+insert into bayombong_etracs..machines 
 	(objid, schemaname, schemaversion, machinecode, machinedesc, 
 	economiclife, 
 	residualrate
@@ -128,7 +128,7 @@ SELECT
 	description AS machinedesc, 
 	0 AS economiclife, 
 	0 as residualrate
-FROM etracs_lguname.machine ;	
+FROM etracs_bayombong..machine ;	
 
 
 
@@ -139,7 +139,7 @@ FROM etracs_lguname.machine ;
 *
 **********************************************************************/
 
-insert into lguname_etracs.plantsandtrees 
+insert into bayombong_etracs..plantsandtrees 
 	(objid, schemaname, schemaversion, planttreecode, planttreedesc
 	)
 SELECT
@@ -148,7 +148,7 @@ SELECT
 	'1.0' AS schemaversion, 
 	code AS planttreecode, 
 	description AS planttreedesc
-FROM etracs_lguname.tree;
+FROM etracs_bayombong..tree;
 
 
 
@@ -158,7 +158,7 @@ FROM etracs_lguname.tree;
 * REAL PROPERTY : CANCELTDREASON
 *
 **********************************************************************/
-insert into lguname_etracs.canceltdreason 
+insert into bayombong_etracs..canceltdreason 
 	(objid, schemaname, schemaversion, cancelcode, canceltitle, 
 	canceldesc
 	)
@@ -169,7 +169,7 @@ SELECT
 	code AS cancelcode, 
 	title AS canceltitle, 
 	description AS canceldesc	
-FROM etracs_lguname.canceltdreason;
+FROM etracs_bayombong..canceltdreason;
 
 
 
@@ -179,7 +179,7 @@ FROM etracs_lguname.canceltdreason;
 * REAL PROPERTY : RPTPARAMETER
 *
 **********************************************************************/
-insert into lguname_etracs.rptparameters 
+insert into bayombong_etracs..rptparameters 
 	(objid, schemaname, schemaversion, paramname, paramcaption, 
 	paramdesc, 
 	paramtype, 
@@ -199,7 +199,7 @@ SELECT
 	END AS paramtype, 
 	0 AS parammin, 
 	0 AS parammax
-FROM etracs_lguname.rptparameter;
+FROM etracs_bayombong..rptparameter;
 
 
 
@@ -208,7 +208,7 @@ FROM etracs_lguname.rptparameter;
 * REAL PROPERTY : RPTSETTING
 *
 **********************************************************************/
-insert into lguname_etracs.rptsetting 
+insert into bayombong_etracs..rptsetting 
 	(objid, 
 	schemaname, 
 	schemaversion, 
@@ -252,10 +252,10 @@ SELECT
 	allowreclasswithbalance, 
 	approvedmvbelow, 
 	agriculturalid , 
-	(SELECT description FROM etracs_lguname.propertyclassification WHERE objid = r.agriculturalid ) as agriculturaltitle, 
-	adjustplanttree, 
+	(SELECT description FROM etracs_bayombong..propertyclassification WHERE objid = r.agriculturalid ) as agriculturaltitle, 
+	ISNULL(adjustplanttree, 0), 
 	'[]' as propertyclassifications
-FROM etracs_lguname.rptsetting  r;
+FROM etracs_bayombong..rptsetting  r;
 
 
 
@@ -266,7 +266,7 @@ FROM etracs_lguname.rptsetting  r;
 *
 **********************************************************************/
 
-insert into lguname_etracs.landrysetting 
+insert into bayombong_etracs..landrysetting 
 	(objid, schemaname, schemaversion, ry, previd)
 select
 	objid, 
@@ -274,12 +274,12 @@ select
 	'1.0' as schemaversion, 
 	ry, 
 	previd
-from etracs_lguname.rysetting 
+from etracs_bayombong..rysetting 
 where dtype = 'LandRYSetting';
 
 
 
-insert into lguname_etracs.landassesslevel 
+insert into bayombong_etracs..landassesslevel 
 	(objid, classcode, classname, fixrate, rate, previd, 
 	landrysettingid, 
 	ranges
@@ -293,10 +293,10 @@ select
 	null as previd, 
 	rysettingid as landrysettingid, 
 	'[]' as ranges
-from etracs_lguname.landassesslevel ;
+from etracs_bayombong..landassesslevel ;
 
 
-insert into lguname_etracs.lcuv 
+insert into bayombong_etracs..lcuv 
 	(objid, classcode, classname, landrysettingid, previd
 	)
 select	
@@ -305,11 +305,11 @@ select
 	pc.description as classname, 
 	l.rysettingid as landrysettingid, 
 	l.previd
-from etracs_lguname.lcuv l
-	inner join etracs_lguname.propertyclassification pc on l.propertyclassificationid = pc.objid ;
+from etracs_bayombong..lcuv l
+	inner join etracs_bayombong..propertyclassification pc on l.propertyclassificationid = pc.objid ;
 
 
-insert into lguname_etracs.lcuvspecificclass 
+insert into bayombong_etracs..lcuvspecificclass 
 	(objid, classcode, classname, areatype, lcuvid, previd, 
 	landrysettingid
 	)
@@ -321,12 +321,12 @@ select
 	s.lcuvid, 
 	s.previd, 
 	l.rysettingid as landrysettingid
-from etracs_lguname.lcuvspecificclass s
-	inner join etracs_lguname.lcuv l on s.lcuvid = l.objid ;
+from etracs_bayombong..lcuvspecificclass s
+	inner join etracs_bayombong..lcuv l on s.lcuvid = l.objid ;
 
 
 
-insert into lguname_etracs.lcuvsubclass 
+insert into bayombong_etracs..lcuvsubclass 
 	(objid, subclasscode, subclassname, unitvalue, specificclassid, 
 	previd, 
 	landrysettingid
@@ -339,15 +339,15 @@ select
 	sb.specificclassid, 
 	sb.previd, 
 	l.rysettingid as landrysettingid
-from etracs_lguname.lcuv l
-	inner join etracs_lguname.lcuvspecificclass s on l.objid = s.lcuvid
-	inner join etracs_lguname.lcuvsubclass sb on s.objid = sb.specificclassid ;
+from etracs_bayombong..lcuv l
+	inner join etracs_bayombong..lcuvspecificclass s on l.objid = s.lcuvid
+	inner join etracs_bayombong..lcuvsubclass sb on s.objid = sb.specificclassid ;
 
 
 
 
 
-insert into lguname_etracs.lcuvstripping 
+insert into bayombong_etracs..lcuvstripping 
 	(objid, striplevel, rate, lcuvid, previd, landrysettingid
 	)
 select
@@ -357,12 +357,12 @@ select
 	s.lcuvid, 
 	s.previd, 
 	l.rysettingid as landrysettingid
-from etracs_lguname.lcuv l
-	inner join etracs_lguname.lcuvstripping s on l.objid = s.lcuvid ;
+from etracs_bayombong..lcuv l
+	inner join etracs_bayombong..lcuvstripping s on l.objid = s.lcuvid ;
 
 
 
-insert into lguname_etracs.landadjustment 
+insert into bayombong_etracs..landadjustment 
 	(objid, adjustmentcode, adjustmentname, classids, classifications, 
 	expression, 
 	landrysettingid, 
@@ -377,14 +377,15 @@ select
 	'[]' as classifications, 
 	CASE 
 		when expression like '%if%' then expression
-		else concat('SYS_BASE_MARKET_VALUE * ', expression / 100 )
+		else 'SYS_BASE_MARKET_VALUE * ' + 
+		  cast( convert(decimal(10,2), (convert(decimal(10,2),cast(expression as varchar)) / 100 )) as varchar)
 	END as expression, 
 	l.rysettingid landrysettingid, 
-	null as appliedto, 
+	'' as appliedto, 
 	null as previd
-from etracs_lguname.landadjustmenttype l;
+from etracs_bayombong..landadjustmenttype l;
 
-update  lguname_etracs.landadjustment set expression = replace(replace(replace( expression, '$F{', ''), '$P{',''),'}','');
+update  bayombong_etracs..landadjustment set expression = replace(replace(replace( expression, '$F{', ''), '$P{',''),'}','');
 
 
 
@@ -393,10 +394,11 @@ update  lguname_etracs.landadjustment set expression = replace(replace(replace( 
 * REAL PROPERTY : BLDG RY SETTING
 *
 **********************************************************************/
-insert into lguname_etracs.bldgrysetting 
+insert into bayombong_etracs..bldgrysetting 
 	(objid, schemaname, schemaversion, ry, predominant, depreciatecoreanditemseparately, 
 	computedepreciationbasedonschedule, 
-	previd
+	previd,
+	calcbldgagebasedondtoccupied
 	)
 select
 	r.objid, 
@@ -406,14 +408,15 @@ select
 	r.predominant, 
 	r.depreciateCoreAndItemsSeparately as depreciatecoreanditemseparately, 
 	r.autoComputeBldgDepreciation as computedepreciationbasedonschedule, 
-	r.previd
-from etracs_lguname.rysetting r
+	r.previd,
+	0
+from etracs_bayombong..rysetting r
 where dtype = 'BldgRYSetting';
 
 
 
 
-insert into lguname_etracs.bldgassesslevel 
+insert into bayombong_etracs..bldgassesslevel 
 	(objid, bldgrysettingid, code, name, fixrate, rate, previd, 
 	ranges
 	)
@@ -426,28 +429,11 @@ select
 	a.assesslevel as rate, 
 	a.previd, 
 	'[]' as ranges
-from etracs_lguname.bldgassesslevel a ;
+from etracs_bayombong..bldgassesslevel a ;
 
 
 
--- (22)
-insert into lguname_etracs.bldgassesslevel 
-	(objid, bldgrysettingid, code, name, fixrate, rate, previd, 
-	ranges
-	)
-select
-	a.objid, 
-	a.bldgrysettingid, 
-	a.code, 
-	a.description as name, 
-	a.special as fixrate, 
-	a.assesslevel as rate, 
-	a.previd, 
-	'[]' as ranges
-from etracs_lguname.bldgassesslevel a ;
-
-
-insert into lguname_etracs.bldgkindbucc 
+insert into bayombong_etracs..bldgkindbucc 
 	(objid, bldgrysettingid, bldgtypeid, bldgkindid, bldgkindcode, 
 	bldgkindname, 
 	basevaluetype, 
@@ -472,19 +458,34 @@ select
 	btc.basevalue, 
 	btc.minbasevalue, 
 	btc.maxbasevalue, 
-	btc.gapvalue, 
-	btc.minarea, 
-	btc.maxarea, 
-	btc.bldgclass, 
+	0.00, -- btc.gapvalue, 
+	0.00, -- btc.minarea, 
+	0.00, -- btc.maxarea, 
+	null, -- btc.bldgclass, 
 	btc.previd, 
 	'[:]' as extended
-from etracs_lguname.bldgtypeclassification btc 
-	inner join etracs_lguname.bldgtype bt on btc.bldgtypeid = bt.objid 
-	inner join etracs_lguname.bldgkind bk on btc.bldgkindid = bk.objid ;
+from etracs_bayombong..bldgtypeclassification btc 
+	inner join etracs_bayombong..bldgtype bt on btc.bldgtypeid = bt.objid 
+	inner join etracs_bayombong..bldgkind bk on btc.bldgkindid = bk.objid ;
+
+	
+insert into bayombong_etracs..bldgtype 
+(
+	objid, bldgrysettingid, code, name, basevaluetype, residualrate, multistoreyadjustments, depreciations, previd
+)
+select 
+	objid, bldgrysettingid, code, description, 
+	(select top 1 basevaluetype from bayombong_etracs..bldgkindbucc where bldgtypeid=bt.objid) as basevaluetype, 
+	residualvalue, 
+	'[]' as multistoreyadjustments, 
+	'[]' as depreciations, 
+	previd
+from etracs_bayombong..bldgtype bt
+
+	
 
 
-
-insert into lguname_etracs.bldgadditionalitem 
+insert into bayombong_etracs..bldgadditionalitem 
 	(objid, bldgrysettingid, code, name, unit, expr, previd
 	)
 select
@@ -495,7 +496,7 @@ select
 	bi.unit, 
 	replace(replace(replace(bi.expression, '$P{', ''), '}', ''), '$F{','') as expr, 
 	bi.previd
-from etracs_lguname.bldgadditionalitem bi ;
+from etracs_bayombong..bldgadditionalitem bi ;
 
 
 
@@ -506,7 +507,7 @@ from etracs_lguname.bldgadditionalitem bi ;
 *
 **********************************************************************/
 
-insert into lguname_etracs.machrysetting 
+insert into bayombong_etracs..machrysetting 
 	(objid, schemaname, schemaversion, ry, previd)
 select
 	objid, 
@@ -514,12 +515,12 @@ select
 	'1.0' as schemaversion, 
 	ry, 
 	previd
-from etracs_lguname.rysetting 
+from etracs_bayombong..rysetting 
 where dtype= 'MachRYSetting' ;	
 
 
 
-insert into lguname_etracs.machassesslevel 
+insert into bayombong_etracs..machassesslevel 
 	(objid, machrysettingid, code, name, fixrate, rate, previd, 
 	ranges
 	)
@@ -532,10 +533,10 @@ select
 	ma.assesslevel as rate, 
 	previd, 
 	'[]' as ranges
-from etracs_lguname.machassesslevel ma;
+from etracs_bayombong..machassesslevel ma;
 
 
-insert into lguname_etracs.machforex 
+insert into bayombong_etracs..machforex 
 	(objid, machrysettingid, iyear, forex, previd)
 select
 	f.objid, 
@@ -543,7 +544,7 @@ select
 	f.year as iyear, 
 	f.forex, 
 	f.previd
-from etracs_lguname.machforex f;	
+from etracs_bayombong..machforex f;	
 
 
 
@@ -555,7 +556,7 @@ from etracs_lguname.machforex f;
 *
 **********************************************************************/
 
-insert into lguname_etracs.planttreerysetting 
+insert into bayombong_etracs..planttreerysetting 
 	(objid, schemaname, schemaversion, ry, applyagriadjustment, 
 	previd, 
 	assesslevels, 
@@ -570,11 +571,11 @@ select
 	r.previd, 
 	'[]' as assesslevels, 
 	'[]' as planttreeunits
-from etracs_lguname.rysetting r
+from etracs_bayombong..rysetting r
 where dtype = 'TreeRYSetting' ;
 
 
-insert into lguname_etracs.planttreeunitvalue 
+insert into bayombong_etracs..planttreeunitvalue 
 	(objid, planttreerysettingid, planttreeid, planttreecode, 
 	planttreename, 
 	code, 
@@ -591,9 +592,9 @@ select
 	tuv.description as name, 
 	tuv.unitvalue, 
 	tuv.previd
-from etracs_lguname.treeunitvalue tuv 
-	inner join etracs_lguname.treeunit tu on tuv.treeunitid = tu.objid 
-	inner join etracs_lguname.tree t on tu.treeid = t.objid ;
+from etracs_bayombong..treeunitvalue tuv 
+	inner join etracs_bayombong..treeunit tu on tuv.treeunitid = tu.objid 
+	inner join etracs_bayombong..tree t on tu.treeid = t.objid ;
 
 
 
@@ -606,7 +607,13 @@ from etracs_lguname.treeunitvalue tuv
 * REAL PROPERTY : ENTITY 
 *
 **********************************************************************/
-insert into lguname_etracs.entity 
+alter table bayombong_etracs..entity alter column entityname varchar(1000);
+alter table bayombong_etracs..entity alter column entityaddress varchar(200);
+alter table bayombong_etracs..entity alter column mailingaddress varchar(200);
+alter table bayombong_etracs..entity alter column remarks varchar(200);
+alter table bayombong_etracs..entity alter column entityno varchar(50);
+
+insert into bayombong_etracs..entity 
 	(objid, schemaname, schemaversion, entityno, entityname, 
 	entityaddress, 
 	mailingaddress, 
@@ -633,12 +640,17 @@ select
 	null as sys_lastupdate, 
 	null as sys_lastupdateby, 
 	p.remarks
-from etracs_lguname.payer p ;
+from etracs_bayombong..payer p ;
 
 
 
+alter table bayombong_etracs..entitymember alter column taxpayername varchar(1000);
+alter table bayombong_etracs..entitymember alter column taxpayeraddress varchar(200);
+alter table bayombong_etracs..entitymember alter column remarks varchar(200);
+alter table bayombong_etracs..entitymember alter column prefix varchar(100);
+alter table bayombong_etracs..entitymember alter column suffix varchar(100);
 
-insert into lguname_etracs.entitymember 
+insert into bayombong_etracs..entitymember 
 	(objid, entityid, itemno, prefix, taxpayerid, taxpayername, 
 	taxpayeraddress, 
 	suffix, 
@@ -654,8 +666,8 @@ select
 	p.primaryaddress as taxpayeraddress, 
 	m.suffix, 
 	null as remarks
-from etracs_lguname.multipletaxpayermember m 
-	inner join etracs_lguname.payer p on m.taxpayerid = p.objid;
+from etracs_bayombong..multipletaxpayermember m 
+	inner join etracs_bayombong..payer p on m.taxpayerid = p.objid;
 
 
 
@@ -670,21 +682,21 @@ from etracs_lguname.multipletaxpayermember m
 * REAL PROPERTY : FAAS 
 *
 **********************************************************************/
-insert into lguname_etracs.pin 
+insert into bayombong_etracs..pin 
 	( pin, claimno, docstate )
 select distinct 
 	rp.pin,
 	case when rp.claimno = 0 then '-' else rp.claimno end as claimno,
 	rp.state as docstate 
-from etracs_lguname.realproperty rp
-	inner join etracs_lguname.rpu r on rp.objid = r.realpropertyid 
-	inner join etracs_lguname.taxdeclaration td on r.objid = td.rpuid 
+from etracs_bayombong..realproperty rp
+	inner join etracs_bayombong..rpu r on rp.objid = r.realpropertyid 
+	inner join etracs_bayombong..taxdeclaration td on r.objid = td.rpuid 
 where r.type = 'land' ;
-  
-create index ix_rptledger_tdid on etracs_lguname.rptledger( tdid);
+
+create index ix_rptledger_tdid on etracs_bayombong..rptledger( tdid);
 
 
-insert into lguname_etracs.faas (
+insert into bayombong_etracs..faas (
 	objid, 	schemaname, schemaversion, 
 	docstate, 
 	transmittalid, 
@@ -713,16 +725,36 @@ select
 	'[:]' as extended, 
 	null as message, 
 	null as sys_dtapproved, 
-	rl.objid as ledgerid, 
+	(select top 1 objid from etracs_bayombong..rptledger where tdid = td.objid) as ledgerid, 
 	'[]' as attachments
-from etracs_lguname.taxdeclaration td
-	left join etracs_lguname.rptledger rl on td.objid = rl.tdid ;
+from etracs_bayombong..taxdeclaration td;
 
 
 
+alter table bayombong_etracs..faaslist alter column tdno varchar(30);
+alter table bayombong_etracs..faaslist alter column taxpayerno varchar(50);
+alter table bayombong_etracs..faaslist alter column taxpayername varchar(1000);
+alter table bayombong_etracs..faaslist alter column taxpayeraddress varchar(200);
+alter table bayombong_etracs..faaslist alter column datacapture tinyint;
+alter table bayombong_etracs..faaslist alter column memoranda text;
+alter table bayombong_etracs..faaslist alter column prevtdno varchar(800);
+alter table bayombong_etracs..faaslist alter column titletype varchar(255);
+alter table bayombong_etracs..faaslist alter column administratorname varchar(255);
+alter table bayombong_etracs..faaslist alter column administratoraddress varchar(150);
+alter table bayombong_etracs..faaslist alter column appraisedbytitle varchar(75);
+alter table bayombong_etracs..faaslist alter column recommendedbytitle varchar(75);
+alter table bayombong_etracs..faaslist alter column approvedbytitle varchar(75);
+alter table bayombong_etracs..faaslist alter column rputype varchar(25);
+alter table bayombong_etracs..faaslist alter column classcode varchar(50);
+alter table bayombong_etracs..faaslist alter column pin varchar(30);
+alter table bayombong_etracs..faaslist alter column cadastrallotno varchar(300);
+alter table bayombong_etracs..faaslist alter column cancelreason varchar(50);
+alter table bayombong_etracs..faaslist alter column cancelledbytdnos varchar(800);
+alter table bayombong_etracs..faaslist alter column ownername varchar(800);
+alter table bayombong_etracs..faaslist alter column owneraddress varchar(150);
 
--- (35)
-insert into lguname_etracs.faaslist 
+
+insert into bayombong_etracs..faaslist 
 	(objid, schemaname, schemaversion, docstate, datacapture, 
 	autonumber, 
 	claimno, 
@@ -829,8 +861,8 @@ select
 	LOWER(rpu.type) as  rputype, 
 	rpu.ry, 
 	case 
-		when suffix = 0 then rp.pin 
-		else concat(rp.pin, '-', rpu.suffix)
+		when rpu.suffix = 0 then rp.pin 
+		else rp.pin + '-' + cast(rpu.suffix as varchar)
 	end as fullpin, 
 	rpu.classificationid as classid, 
 	rpu.classcode, 
@@ -853,14 +885,15 @@ select
 	td.cancelreason, 
 	td.canceldate, 
 	td.cancelledbytdno as cancelledbytdnos, 
-	rl.objid as ledgerid, 
+	-- rl.objid as ledgerid, 
+	(select top 1 objid from etracs_bayombong..rptledger where tdid = td.objid) as ledgerid,
 	rp.barangayid, 
 	td.taxpayername as ownername, 
 	td.taxpayeraddress as owneraddress, 
-	CONCAT(YEAR(td.issuedate), 
-		QUARTER(td.issuedate), 
-		CASE WHEN MONTH(td.issuedate) < 10 THEN CONCAT('0',MONTH(td.issuedate)) ELSE MONTH(td.issuedate) END,
-		CASE WHEN DAY(td.issuedate) < 10 THEN CONCAT('0',DAY(td.issuedate)) ELSE DAY(td.issuedate) END
+	(YEAR(td.issuedate) + 
+		datepart(qq, td.issuedate) +
+		CASE WHEN MONTH(td.issuedate) < 10 THEN ('0' + MONTH(td.issuedate)) ELSE MONTH(td.issuedate) END +
+		CASE WHEN DAY(td.issuedate) < 10 THEN ('0' + DAY(td.issuedate)) ELSE DAY(td.issuedate) END
 	) AS txntimestamp, 
 	rp.sectionno as section, 
 	rp.parcelno as parcel, 
@@ -870,43 +903,44 @@ select
 	td.annotated,
 	null as message,
 	null as restriction 
-from etracs_lguname.taxdeclaration td
-	inner join etracs_lguname.rpu rpu on td.rpuid = rpu.objid 
-	inner join etracs_lguname.realproperty rp on rpu.realpropertyid = rp.objid 
-	left join etracs_lguname.rptledger rl on td.objid = rl.tdid ;
+from etracs_bayombong..taxdeclaration td
+	inner join etracs_bayombong..rpu rpu on td.rpuid = rpu.objid 
+	inner join etracs_bayombong..realproperty rp on rpu.realpropertyid = rp.objid; 
 
 
-update lguname_etracs.faaslist fl set 
-	fl.provcity = (select lguname from lguname_etracs.lgu where indexno=fl.provcityindex);
+update fl set 
+	fl.provcity = isnull((select lguname from bayombong_etracs..lgu where indexno=fl.provcityindex), '-')
+from bayombong_etracs..faaslist fl;
 
 
 
+update fl set 
+	fl.munidistrict = isnull((select lguname from bayombong_etracs..lgu where indexno=fl.munidistrictindex), '-')
+from bayombong_etracs..faaslist fl;
 
-update lguname_etracs.faaslist fl set 
-	fl.munidistrict = (select lguname from lguname_etracs.lgu where indexno=fl.munidistrictindex);
 
-
-update lguname_etracs.faaslist set 
+update bayombong_etracs..faaslist set 
 	txntype = 'RE'
 where txntype in( 'CT','PC','CD','CC','PD' );
 
 
 
-update lguname_etracs.faaslist fl, lguname_etracs.faaslist fl2 set 
+update fl set 
 	fl.landfaasid = fl2.objid,
 	fl.landfaastaxpayerid = fl2.taxpayerid 
+from bayombong_etracs..faaslist fl, bayombong_etracs..faaslist fl2
 where fl.rputype <>'land' 
   and fl.landfaasid is null  
   and fl2.rputype = 'land' 
   and fl2.pin = fl.pin 
   and fl2.docstate <> 'CANCELLED';
 
-update lguname_etracs.faas set extended = '[txntimestamp:"201130819",transmitted:false,lgutype:"municipality"]' ;
+update bayombong_etracs..faas set extended = '[txntimestamp:"201130819",transmitted:false,lgutype:"municipality"]' ;
 
 
 
 
-insert into lguname_etracs.faasannotation 
+insert into bayombong_etracs..faasannotation 
 	(objid, schemaname, schemaversion, docstate, doctype, 
 	opener, 
 	docno, 
@@ -965,24 +999,30 @@ select
 	a.oramount, 
 	case 
 		when a.dtype='MortgageAnnotation' then 
-			concat('Mortgage for Php. ', a.loanamount, ' to the ', a.bank, '. This instrument executed on ', a.mortgagedate,
-				' by ', a.mortgageby, '. Ratified by ', a.signedby, '. ', a.signedbyposition, ' on ', a.signeddate, '.'
+			(
+				'Mortgage for Php. ' + a.loanamount + ' to the ' + a.bank + 
+				'. This instrument executed on ' + a.mortgagedate +
+				' by ' + a.mortgageby + '. Ratified by ' + a.signedby + '. ' + a.signedbyposition + 
+				' on ' + a.signeddate + '.'
 			)
 		else 
-			concat('Bail Bond: File under Case No. ', a.caseno, ' on ', a.branchno, ' between ', a.mortgageby )
+			('Bail Bond: File under Case No. ' + a.caseno + ' on ' + a.branchno + ' between ' + a.mortgageby )
 	end as details, 
 	case 
 		when a.dtype='MortgageAnnotation' then 
-			concat( '[mortgageby:"', a.mortgageby ,'",mortgagedate:"', a.mortgagedate, '",loanamount:', a.loanamount,',bank:"', a.bank, '",marketvalue:',fl.totalmv,',assessedvalue:', fl.totalav,']' ) 
+			( 
+				'[mortgageby:"' + a.mortgageby + '",mortgagedate:"' + a.mortgagedate + '",loanamount:' + a.loanamount + 
+				',bank:"' + a.bank + '",marketvalue:' + fl.totalmv + ',assessedvalue:' + fl.totalav + ']' 
+			) 
 		else 
-			concat( '[caseno:"', a.caseno, '",branchno:"', a.branchno,'",marketvalue:',fl.totalmv,',assessedvalue:', fl.totalav,']')
+			(
+				'[caseno:"' + a.caseno + '",branchno:"' + a.branchno + '",marketvalue:' + fl.totalmv + 
+				',assessedvalue:' + fl.totalav + ']'
+			)
 	end as extended
-from etracs_lguname.abstracttdannotation a
-	inner join lguname_etracs.faaslist fl on a.tdid = fl.objid ;
+from etracs_bayombong..abstracttdannotation a
+	inner join bayombong_etracs..faaslist fl on a.tdid = fl.objid ;
 
 
+update bayombong_etracs..faasannotation  set memoranda = details where details is not null;
 
-update lguname_etracs.faasannotation  set memoranda = details where details is not null;
-
-
-set foreign_key_checks=1;

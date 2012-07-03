@@ -1,46 +1,48 @@
 /*===  insert master files =========*/
 
-insert into sancarlos_etracs2.profession
-select * from etracs_sancarlos.profession;
+insert into bayombong_etracs..profession
+select * from etracs_bayombong..profession;
 
-insert into sancarlos_etracs2.citizenship
-select objid from etracs_sancarlos.citizenship;
+insert into bayombong_etracs..citizenship
+select objid from etracs_bayombong..citizenship;
 
 
 /*===  update extended fields =========*/
-update sancarlos_etracs2.receipt r2, etracs_sancarlos.receipt r1
-set r2.extended = concat(
-	'[',
-	' annualsalary:', r1.annualSalary,
-	',businessgross:', r1.businessGross,
-	',propertyincome:', r1.propertyIncome,
-	',additional:false',
-	',tax:[business:', r1.businessGrossTax,
-	',basic:', r1.basicTax,
-	',salary:', r1.annualSalaryTax,
-	',property:', r1.propertyIncomeTax,
-	',interest:', r1.interest,
+update r2 
+set r2.extended = (
+	'['+
+	' annualsalary:'+ cast(cast(r1.annualSalary as decimal(16, 2)) as varchar) +
+	',businessgross:'+ cast(cast(r1.businessGross as decimal(16, 2)) as varchar)+
+	',propertyincome:'+ cast(cast(r1.propertyIncome as decimal(16, 2)) as varchar)+
+	',additional:false'+
+	',tax:[business:'+ cast(cast(r1.businessGrossTax as decimal(16, 2)) as varchar)+
+	',basic:'+ cast(cast(r1.basicTax as decimal(16, 2)) as varchar)+
+	',salary:'+ cast(cast(r1.annualSalaryTax as decimal(16, 2)) as varchar)+
+	',property:'+ cast(cast(r1.propertyIncomeTax as decimal(16, 2)) as varchar)+
+	',interest:'+ cast(cast(r1.interest as decimal(16, 2)) as varchar)+
 	']]'
 )
-where r2.objid = r1.objid
-  and r1.dtype = 'IndividualCTCReceipt';
+from bayombong_etracs..receipt r2 
+inner join etracs_bayombong..receipt r1 on r2.objid = r1.objid  collate Latin1_General_CI_AS
+where r1.dtype = 'IndividualCTCRecept';
 
 
-update sancarlos_etracs2.receipt r2, etracs_sancarlos.receipt r1
-set r2.extended = concat(
-	'[',
-	' annualsalary: 0.00',
-	',businessgross:', r1.grossReceipt,
-	',propertyincome:', r1.realPropertyAV,
-	',additional:false',
-	',tax:[business:', r1.grossReceiptTax,
-	',basic:', r1.basicTax,
-	',salary: 0.00',
-	',property:', r1.propertyTax,
-	',interest:', r1.interest,
-	']]'
-)
-where r2.objid = r1.objid
-  and r1.dtype = 'CorporateCTCReceipt';
+update  r2 
+	set r2.extended = (
+		'[' +
+		' annualsalary: 0.00' +
+		',businessgross:' + cast(cast( r1.grossReceipt as decimal(16, 2)) as varchar) +
+		',propertyincome:' + cast(cast( r1.realPropertyAV as decimal(16, 2)) as varchar) +
+		',additional:false'+
+		',tax:[business:' + cast(cast( r1.grossReceiptTax as decimal(16, 2)) as varchar) +
+		',basic:' + cast(cast( r1.basicTax as decimal(16, 2)) as varchar) +
+		',salary: 0.00' +
+		',property:' + cast(cast( r1.propertyTax as decimal(16, 2)) as varchar)  +
+		',interest:' + cast(cast( r1.interest as decimal(16, 2)) as varchar) +
+		']]'
+	)
+from bayombong_etracs..receipt r2 
+inner join etracs_bayombong..receipt r1 on r2.objid = r1.objid  collate Latin1_General_CI_AS
+where r1.dtype = 'CorporateCTCReceipt';
 
 

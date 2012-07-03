@@ -815,6 +815,7 @@ class RPTV1MigrationService
 		
 		def qry = em2.sqlContext.createQuery('SELECT objid, expr FROM bldgadditionalitem')
 		qry.fetchHandler = new CustomFetchHandler( handler: fhandler );
+		qry.resultList
 	}
 	
 	

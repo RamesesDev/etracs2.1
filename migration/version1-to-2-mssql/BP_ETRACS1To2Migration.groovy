@@ -7,7 +7,8 @@ def proxy = new TestProxy([
 
 
 def svc = proxy.create('BPV1MigrationService')
-/*
+
+
 svc.cleanupRuleConditions()
 println 'done cleanupRuleConditions()'
 
@@ -49,13 +50,14 @@ println 'done migrateTaxFeeChargeRangeModeAction()'
 
 svc.migrateUpdateAmountDueAction()
 println 'done migrateUpdateAmountDueAction()'
-*/
+
+
 def messages = svc.deployRules()
 if( messages ) println( 'messages:\n' + messages.join('\n') )
-println 'don deploying deployed rules'
+println 'done deploying deployed rules'
 
-//svc.updateBPReceivables()
-//println 'don updating bp receivables'
 
+svc.updateBPReceivables()
+println 'done updating bp receivables'
 
 println 'finished'
