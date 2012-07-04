@@ -72,7 +72,7 @@
 							jobpossvc.assign( {objid: self.selectedItem.objid, assigneeid: x.objid } );
 							refreshList();
 						}
-						return new DropdownOpener( "personnel:lookup" , {selectHandler: h});
+						return new PopupOpener( "personnel:lookup" , {selectHandler: h});
 					}
 			
 					this.removeAssignee = function() {

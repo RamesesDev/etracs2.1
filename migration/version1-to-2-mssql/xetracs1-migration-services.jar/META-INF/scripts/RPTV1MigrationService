@@ -69,7 +69,7 @@ class RPTV1MigrationService
 						td.previousMarketValue as prevmv,
 						td.previousAssessedValue as prevav,
 						td.effectivityqtr,
-						trim(td.remarks) as memoranda,
+						ltrim(rtrim(cast(td.remarks as varchar))) as memoranda,
 						0 as autonumber,
 						0 as backtaxyrs,
 						rp.claimno as claimno,
@@ -88,27 +88,27 @@ class RPTV1MigrationService
 						td.tdno,
 						td.issuedate,
 						td.effectivityyear,
-						trim(td.previousTdNo) as prevtdno,
-						trim(td.previousPin) as prevpin,
-						trim(td.previousOwner) as prevowner,
+						ltrim(rtrim(td.previousTdNo)) as prevtdno,
+						ltrim(rtrim(td.previousPin)) as prevpin,
+						ltrim(rtrim(td.previousOwner)) as prevowner,
 						null as appraisedbyid,
-						trim(td.appraisedby) as appraisedby,
-						trim(td.appraisedbyposition) as appraisedbytitle,
+						ltrim(rtrim(td.appraisedby)) as appraisedby,
+						ltrim(rtrim(td.appraisedbyposition)) as appraisedbytitle,
 						td.issuedate as dtappraised,
 						null as recommendedbyid,
-						trim(td.recommendedby) as recommendedby,
-						trim(td.recommendedbyposition) as recommendedbytitle,
+						ltrim(rtrim(td.recommendedby)) as recommendedby,
+						ltrim(rtrim(td.recommendedbyposition)) as recommendedbytitle,
 						td.issuedate as dtrecommended,
 						null as approvedbyid,
-						trim(td.approvedby) as approvedby,
-						trim(td.approvedbyposition) as approvedbytitle,
+						ltrim(rtrim(td.approvedby)) as approvedby,
+						ltrim(rtrim(td.approvedbyposition)) as approvedbytitle,
 						td.issuedate as dtapproved,
-						trim(td.taxpayerid) as taxpayerid,
-						trim(p.taxpayerno) as taxpayerno,
-						trim(td.taxpayername) as taxpayername,
-						trim(td.taxpayeraddress) as taxpayeraddress,
-						trim(td.taxpayername) as ownername,
-						trim(td.taxpayeraddress) as owneraddress
+						ltrim(rtrim(td.taxpayerid)) as taxpayerid,
+						ltrim(rtrim(p.taxpayerno)) as taxpayerno,
+						ltrim(rtrim(td.taxpayername)) as taxpayername,
+						ltrim(rtrim(td.taxpayeraddress)) as taxpayeraddress,
+						ltrim(rtrim(td.taxpayername)) as ownername,
+						ltrim(rtrim(td.taxpayeraddress)) as owneraddress
 					from taxdeclaration td
 						inner join rpu rpu on td.rpuid = rpu.objid 
 						inner join realproperty rp on rpu.realpropertyid = rp.objid 
@@ -394,7 +394,7 @@ class RPTV1MigrationService
 	
 	void buildBldgInfo( faas, rpu ) {
 		def info = em1.sqlContext.createQuery('''
-					select 
+					select
 						br.totalarea,
 						br.depreciation,
 						0.0 as depreciationvalue,
@@ -410,14 +410,14 @@ class RPTV1MigrationService
 						1 as depreciatecoreanditemseparately,
 						0 as residualrate,
 						br.assesslevel,
-						br.percentcompleted,
+						0, --br.percentcompleted,
 						0 as useswornamount,
 						br.bldgassesslevelid as assesslevelid,
 						bal.code as assesslevelcode,
 						bal.description as assesslevelname,
 						br.dtbldgcompleted as dtcompleted,
 						br.dtbldgoccupied as dtoccupied ,
-						br.bldgclass,
+						null, -- br.bldgclass,
 						br.psic,
 						br.permitno,
 						br.permitdate,
@@ -650,11 +650,11 @@ class RPTV1MigrationService
 			select 
 				bk.code as bldgkindcode,
 				btc.maxbasevalue,
-				btc.minarea,
-				btc.maxarea,
+				0, -- btc.minarea,
+				0, -- btc.maxarea,
 				btc.basevalue,
 				bk.description as bldgkindname,
-				btc.gapvalue,
+				0, -- btc.gapvalue,
 				lower(btc.basevaluetype) as basevaluetype,
 				bk.objid as bldgkindid,
 				btc.minbasevalue,
@@ -939,7 +939,7 @@ class RPTV1MigrationService
 	
 	void buildLandInfo( faas, rpu ) {
 		def info = em1.sqlContext.createQuery('''
-					select 
+					select
 						case when rpu.taxable = 1 then 1 else 0 end as taxable,
 						rpu.totalmv as totalbmv,
 						rpu.totalamv as totalmv,
@@ -947,10 +947,18 @@ class RPTV1MigrationService
 						rpu.areainsqm as totalareasqm,
 						rpu.areainhec as totalareaha,
 						0 as useswornamount,
-						case when lr.idleland = true then 1 else 0 end as idleland,
+						case when lr.idleland = 1 then 1 else 0 end as idleland,
 						lr.totallandadjustment as landvalueadjustment,
-						concat('[areasqm:', totalareasqm , ',areaha:' , totalareahec , ',basemarketvalue:' , totallandmv , ',marketvalue:' , totallandamv , ',assessedvalue:' , totallandav , ',adjustment:' , totallandadjustment , ']') as landtotal,
-						concat('[bearing:' , totalplantbearing , ',nonbearing:' , totalplantnonbearing ,  ',basemarketvalue:' , totalplantmv ,  ',marketvalue:' , totalplantamv ,  ',assessedvalue:' , totalplantav ,  ']') as planttotal
+						(
+							'[areasqm:' + cast(totalareasqm as varchar) + ',areaha:' + cast(totalareahec as varchar) + ',basemarketvalue:' + cast(totallandmv as varchar) + 
+							',marketvalue:' + cast(totallandamv as varchar) + ',assessedvalue:' + cast(totallandav as varchar) + 
+							',adjustment:' + cast(totallandadjustment as varchar) + ']'
+						) as landtotal,
+						(
+							'[bearing:' + cast(totalplantbearing as varchar) + ',nonbearing:' + cast(totalplantnonbearing as varchar) +  
+							',basemarketvalue:' + cast(totalplantmv as varchar) +  ',marketvalue:' + cast(totalplantamv as varchar) + 
+							',assessedvalue:' + cast(totalplantav as varchar) +  ']'
+						) as planttotal
 					from taxdeclaration td 
 						inner join rpu rpu on td.rpuid = rpu.objid 
 						inner join landrpu lr on rpu.objid = lr.objid 
@@ -972,16 +980,20 @@ class RPTV1MigrationService
 	
 	def  buildLandAdjustments( faas, rpu, landdetails  ) {
 		def adjlist = em1.sqlContext.createQuery('''
-					select 
+					select
 						la.objid,
 						0.0 as adjustment,
 						la.landadjustmenttypeid as adjtypeid,
 						la.landadjustmenttypecode as adjtypecode,
 						la.landadjustmenttypetitle as adjtypename,
-						concat('SYS_BASE_MARKET_VALUE * ', 
-							case when la.expression like 'if%' then 
-								replace(replace(replace( la.expression, '$P', ''), '}', ''),'{','')
-							else la.expression / 100.00 end 
+						('SYS_BASE_MARKET_VALUE * ' +
+							CAST(
+							  (
+								case when la.expression like 'if%' then 
+									replace(replace(replace( la.expression, '$P', ''), '}', ''),'{','')
+								else la.expression / 100.00 end 
+							  ) as varchar
+							)
 						) as expr
 					from landadjustment la 
 					where rpuid = $P{rpuid} 
@@ -1046,9 +1058,9 @@ class RPTV1MigrationService
 					lp.treeassesslevelcode as assesslevelcode,
 					lp.treeassessleveltitle as assesslevelname,
 					0.0 as adjustmentrate,
-					concat('[assesslevelid:"', lp.treeassesslevelid,'", assesslevelcode:"', lp.treeassesslevelcode, '", assesslevelname:"', lp.treeassessleveltitle, '", assesslevel:', lp.assesslevel,']') as al,
-					concat('[planttreename:"', lp.treetitle, '", unitvaluecode:"', lp.treeunitvaluecode,  '", unitvalueid:"',  lp.treeunitvalueid,  
-						'", unitvalue:',  lp.unitvalue,  ', unitvaluename:"',  lp.treeunitvaluetitle,  '", planttreecode:"',  lp.treecode,  '", planttreeid:"', lp.treeid, '"]') as ptuv
+					('[assesslevelid:"'+ lp.treeassesslevelid+'", assesslevelcode:"'+ lp.treeassesslevelcode+ '", assesslevelname:"'+ lp.treeassessleveltitle+ '", assesslevel:'+ cast(lp.assesslevel as varchar)+']') as al,
+					('[planttreename:"'+ lp.treetitle+ '", unitvaluecode:"'+ lp.treeunitvaluecode+  '", unitvalueid:"'+  lp.treeunitvalueid+  
+						'", unitvalue:'+  cast(lp.unitvalue as varchar)+  ', unitvaluename:"'+  lp.treeunitvaluetitle+  '", planttreecode:"'+  lp.treecode+  '", planttreeid:"'+ lp.treeid+ '"]') as ptuv
 				from taxdeclaration td 
 					inner join rpu rpu on td.rpuid = rpu.objid 
 					inner join landrpu lr on rpu.objid = lr.objid 
@@ -1099,12 +1111,16 @@ class RPTV1MigrationService
 					ld.lcuvstrippingid as strippingid,
 					ld.striprate,
 					ld.area,
-					concat('[striplevel:"',  ld.striplevel,  '", striprate:',  ld.striprate, ', strippingid:"',  ld.lcuvstrippingid,  '"]') as stripping,
-					concat('[assesslevelcode:"',  ld.assesslevelclasscode, '", assesslevelid:"', ld.landassesslevelid, '", assesslevelname:"',  ld.assesslevelclasstitle, '"]') as al,
-					concat('[specificclasscode:"',  ld.specificclasscode, '", subclassid:"', ld.lcuvsubclassid, '", areatype:"', 
-						case when ld.areatype = 'HEC' then 'HA' else 'SQM' end, '", specificclassname:"',  ld.specificclasstitle, 
-						'", subclassname:"', ld.subclasstitle, '", subclasscode:"',  ld.subclasscode,  '", actualusecode:"',  ld.actualusecode,  '", actualusename:"', 
-						ld.actualusetitle, '", basevalue:',  ld.basevalue,  ', actualuseid:"',  ld.actualuseid,  '", specificclassid:"',  ld.specificclassid,  '"]') as subclass 
+					(
+						'[striplevel:"'+  ld.striplevel+  '", striprate:'+  cast(ld.striprate as varchar)+ ', strippingid:"'+  ld.lcuvstrippingid+  '"]'
+					) as stripping,
+					('[assesslevelcode:"'+  ld.assesslevelclasscode+ '", assesslevelid:"'+ ld.landassesslevelid+ '", assesslevelname:"'+  ld.assesslevelclasstitle+ '"]') as al,
+					(
+						'[specificclasscode:"'+  ld.specificclasscode+ '", subclassid:"'+ ld.lcuvsubclassid+ '", areatype:"'+ 
+						case when ld.areatype = 'HEC' then 'HA' else 'SQM' end+ '", specificclassname:"'+  ld.specificclasstitle+ 
+						'", subclassname:"'+ ld.subclasstitle+ '", subclasscode:"'+  ld.subclasscode+  '", actualusecode:"'+  ld.actualusecode+  '", actualusename:"'+ 
+						ld.actualusetitle+ '", basevalue:'+  cast(ld.basevalue as varchar)+  ', actualuseid:"'+  ld.actualuseid+  '", specificclassid:"'+  ld.specificclassid+  '"]'
+					) as subclass 
 				from taxdeclaration td 
 					inner join rpu rpu on td.rpuid = rpu.objid 
 					inner join landrpu lr on rpu.objid = lr.objid 
@@ -1235,7 +1251,7 @@ class RPTV1MigrationService
 					rl.state AS docstate, 
 					case when r.suffix = 0 
 						then rp.pin 
-						else concat(rp.pin, '-', r.suffix) 
+						else (rp.pin + '-' + cast(r.suffix as varchar))
 					end as fullpin, 
 					rp.claimno as claimno, 
 					td.objid as faasid, 
@@ -1246,7 +1262,7 @@ class RPTV1MigrationService
 					r.classCode as  actualusecode, 
 					td.tdno,
 					td.previousTdNo as  prevtdno, 
-					ifnull(rp.cadastralLotNo,'-') as  cadastrallotno, 
+					isnull(rp.cadastralLotNo,'-') as  cadastrallotno, 
 					rp.blockNo as  blockno, 
 					rp.location as  barangay, 
 					td.txnType as  txntype, 
@@ -1301,7 +1317,7 @@ class RPTV1MigrationService
 		println 'processing -> ' + itemlist[0] 
 		itemlist.each{ item ->
 			def iteminfo = em1.sqlContext.createQuery('''
-				SELECT
+				SELECT top 50
 					rli.objid, 
 					'rptledger:rptledgeritem' as schemaname, 
 					'1.0' as schemaversion, 
@@ -1321,9 +1337,9 @@ class RPTV1MigrationService
 					rli.assessedValue as  assessedvalue, 
 					rli.systemCreated as  systemcreated 
 				FROM RPTLedger rl
-					INNER JOIN etracs_sancarlos.RPTLedgerItem rli ON rl.objid = rli.parentid 
-					LEFT JOIN etracs_sancarlos.TaxDeclaration td ON rli.tdno  = td.tdno 
-					LEFT JOIN etracs_sancarlos.RPU r ON td.rpuid = r.objid
+					INNER JOIN RPTLedgerItem rli ON rl.objid = rli.parentid 
+					LEFT JOIN TaxDeclaration td ON rli.tdno  = td.tdno 
+					LEFT JOIN RPU r ON td.rpuid = r.objid
 				WHERE rli.objid = $P{objid} 
 			''')
 			.setParameter('objid', item.objid )

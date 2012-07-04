@@ -32,7 +32,7 @@
 	<jsp:body>
 		<ui:form context="personnellookup">
 			<ui:suggest caption="Enter Last Name : " suggestName="selectedItem" 
-				name="myname" suggestExpression="#{lastname}, #{firstname}" suggest="lookupName"/>
+				name="myname" suggestExpression="#{lastname}, #{firstname}" suggest="lookupName" size="25"/>
 		</ui:form>
 	</jsp:body>
 </t:popup>

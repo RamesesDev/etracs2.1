@@ -857,39 +857,6 @@ FROM etracs_bayombong..receipt r1
 	left JOIN etracs_bayombong..collectiontype ct on r1.collectiontypeid = ct."objid" 
 	left join etracs_bayombong..sys_user u on a.collectorid = u."objid" ;
 
-
-
-
-/* *********************************************************************
-*
-* REMITTANCE 
-*
-********************************************************************* */
-insert into bayombong_etracs..remittance 
-	("objid", schemaname, schemaversion, info, docstate, dtposted, 
-	liquidationid, 
-	liquidationno, 
-	liquidationdate, 
-	liquidatingofficerid, 
-	collectorid
-	)
-SELECT
-	r."objid", 
-	'remittance:remittance' AS schemaname, 
-	'1.0' AS schemaversion, 
-	'[:]' AS info, 
-	CASE WHEN r.liquidationid IS NULL THEN 'OPEN' ELSE 'CLOSED' END AS docstate, 
-	r.dateposted AS dtposted, 
-	r.liquidationid, 
-	l.docno as liquidationno, 
-	l.dtposted as liquidationdate, 
-	r.liquidatingofficerid as liquidatingofficerid, 
-	r.collectorid as collectorid
-FROM etracs_bayombong..collectionremittance r 
-	left join etracs_bayombong..liquidation l on r.liquidationid = l."objid" ;
-
-
-
 	
 
 

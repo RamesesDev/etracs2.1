@@ -85,23 +85,22 @@ def svc = proxy.create('RPTV1MigrationService')
 //executeAction2({  g_errorlist.addAll(svc.updateFAASRealPropertyInfo( it )); it.clear() }, svc.getFAASList(), 'faas real property info' )
 //printDone('done svc.updateFAASRealPropertyInfo()...', g_errorlist )
 
-executeAction2({  g_errorlist.addAll(svc.updateFAASLandRPUInfo( it )); it.clear() }, svc.getFAASListByType('land'), 'faas land rpu info' )
-printDone ('done svc.updateFAASLandRPUInfo()...', g_errorlist)
-/*
-executeAction2({  g_errorlist.addAll(svc.updateFAASBldgRPUInfo( it )); it.clear() }, svc.getFAASListByType('bldg'), 'faas bldg rpu info' )
-printDone('done svc.updateFAASBldgRPUInfo()...', g_errorlist)
+//executeAction2({  g_errorlist.addAll(svc.updateFAASLandRPUInfo( it )); it.clear() }, svc.getFAASListByType('land'), 'faas land rpu info' )
+//printDone ('done svc.updateFAASLandRPUInfo()...', g_errorlist)
+
+//executeAction2({  g_errorlist.addAll(svc.updateFAASBldgRPUInfo( it )); it.clear() }, svc.getFAASListByType('bldg'), 'faas bldg rpu info' )
+//printDone('done svc.updateFAASBldgRPUInfo()...', g_errorlist)
+
+//executeAction2({  g_errorlist.addAll(svc.updateFAASMachRPUInfo( it )); it.clear() }, svc.getFAASListByType('mach'), 'faas mach rpu info' )
+//printDone('done svc.updateFAASMachRPUInfo()...', g_errorlist)
 
 
-executeAction2({  g_errorlist.addAll(svc.updateFAASMachRPUInfo( it )); it.clear() }, svc.getFAASListByType('mach'), 'faas mach rpu info' )
-printDone('done svc.updateFAASMachRPUInfo()...', g_errorlist)
+//svc.updateMachAssessLevelRanges()
+//println 'done svc.updateMachAssessLevelRanges()...'
 
 
-svc.updateMachAssessLevelRanges()
-println 'done svc.updateMachAssessLevelRanges()...'
-
-
-svc.updateMultipleEntityInfo()
-println 'done svc.updateMultipleEntityInfo()...'
+//svc.updateMultipleEntityInfo()
+//println 'done svc.updateMultipleEntityInfo()...'
 
 
 executeAction2(
@@ -115,7 +114,7 @@ executeAction2(
 println 'done svc.updateIndividualEntityInfo()...'
 
 
-
+/*
 svc.loadPlantTreeRYSettingInfos()
 println 'done svc.loadPlantTreeRYSettingInfos()...'
 
