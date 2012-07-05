@@ -59,7 +59,7 @@ class LiquidationService {
 			em.validate( SCHEMANAME, liq );
 			em.create( SCHEMANAME, liq );
 			createListingItem( liq );
-			postLiquidationRcd( liq )
+			postLiquidationRcdMulti( liq )
 			return liq;
 		} 
 		catch (ex) { 
@@ -82,7 +82,7 @@ class LiquidationService {
 			em.validate( SCHEMANAME, liq );
 			em.create( SCHEMANAME, liq );
 			createListingItem( liq );
-			postLiquidationRcd2( liq )
+			postLiquidationRcd( liq )
 			return liq;
 		} 
 		catch (ex) { 
@@ -120,7 +120,7 @@ class LiquidationService {
 		}
 		
 		//check if there are no new remittances not included in the liquidation 
-		def openremittances = getOpenRemittances( liq )
+		def openremittances = getOpenRemittances( liq.info )
 		if (liq.remittances.size() != openremittances.size() ) {
 			throw new Exception( "There are new remittances not included in this liquidation.\nPlease close and process the liquidation again." );
 		}
@@ -147,7 +147,7 @@ class LiquidationService {
 		}
 	}
 	
-	void postLiquidationRcd2( liq ) {
+	void postLiquidationRcdMulti( liq ) {
 		liq.rcds.each{ rcd ->
 			rcd.objid 			= 'LR' + new UID()
 			rcd.schemaname 		= 'liquidationrcd'
@@ -211,12 +211,24 @@ class LiquidationService {
 	
 	
 	void updateCashierInfo( liq ) {
+		/*
+		@Jessie : bugs kaau ni
+		
 		def cashiers = usrsvc.getUsersByRole( CASHIER_ROLE )
 		if( ! cashiers ) throw new Exception('Cashier is not defined.')
 		def cashier = cashiers[0]
-		liq.info.depositedbyid 		= cashier.objid 
-		liq.info.depositedbyname 	= cashier.formalname 
-		liq.info.depositedbytitle 	= cashier.jobtitle 
+		*/
+		
+		liq.info.depositedbyid 		= '-'
+		liq.info.depositedbyname 	= '-'
+		liq.info.depositedbytitle 	= '-'
+		
+		if( liq.cashier ) {
+			liq.info.depositedbyid 		= liq.cashier.objid 
+			liq.info.depositedbyname 	= liq.cashier.formalname 
+			liq.info.depositedbytitle 	= liq.cashier.jobtitle 
+		}
+		
 	}
 	
 	@ProxyMethod  
