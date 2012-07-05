@@ -6,6 +6,9 @@ public class XMigrationService
 	@PersistenceContext('main')
 	def em
 	
+	@Service('NumberService')
+	def numSvc 
+	
 	@ProxyMethod
 	public void fixRuleOpener() {
 		def ruleIds = em.sqlContext.createQuery('SELECT objid FROM rule ORDER BY ruleset, rulename ').resultList 
@@ -19,6 +22,87 @@ public class XMigrationService
 				em.update( rule.schemaname, rule ) 
 			}
 		}
+	}
+	
+	@ProxyMethod
+	public List  getFAASList() {
+		return em.sqlContext.createQuery("SELECT objid FROM faaslist ").resultList 
+	}
+	
+	@ProxyMethod
+	public List roundFaasMarketValues( faaslist ) {
+		def errorlist = []
+		faaslist.each{ faas ->
+			println 'processing faasid -> ' + faas.objid 
+			def rpu = em.sqlContext.createQuery('SELECT rpu FROM faas WHERE objid = $P{objid}')
+							.setParameters( faas ).singleResult 
+			if( rpu ) {
+				try {
+					rpu = em.serializer.read( rpu.rpu )
+					def roundListItems = { list ->
+						list.each{ it.marketvalue = numSvc.roundToTen( it.marketvalue ) }
+					}
+					
+					if( rpu.rputype == 'land') {
+						roundListItems( rpu.info.landdetails )
+						roundListItems( rpu.info.planttrees )
+					}
+					else if( rpu.rputype == 'bldg' ) {
+						println 'round bldg...'
+						roundListItems( rpu.info.bldguses)
+					}
+					else if( rpu.rputype == 'mach' ) {
+						println 'round mach...'
+						roundListItems(rpu.info.machuses)
+					}
+					else if( rpu.rputype == 'planttree' ) {
+						println 'round plant/tree...'
+						roundListItems(rpu.info.planttreedetails)
+					}
+					
+					rpu.totalmv = numSvc.roundToTen( rpu.totalmv )
+					
+					// update records 
+					em.sqlContext.createExecutor('UPDATE faaslist SET totalmv = $P{totalmv} WHERE objid = $P{objid}')
+						.setParameters([objid:faas.objid,
+						totalmv:rpu.totalmv])
+						.execute()
+						
+					em.sqlContext.createExecutor('UPDATE faas SET rpu = $P{rpu} WHERE objid = $P{objid}')
+						.setParameters([objid:faas.objid, rpu:em.serializer.write(rpu)])
+						.execute()
+				}
+				catch( e ) {
+					println e.message 
+					errorlist.add( 'FAASID ' + faas.objid + ' -> ' + e.message )
+				}
+			}
+		}
+		return errorlist
+	}
+	
+	@ProxyMethod 
+	public List updateFaasPreviousInfo( faaslist ) {
+		def errorlist = []
+		faaslist.each{ faas ->
+			println 'processing faasid -> ' + faas.objid 
+			def info = em.sqlContext.createQuery('SELECT info FROM faas WHERE objid = $P{objid}')
+							.setParameters( faas ).singleResult 
+			if( info ) {
+				info = em.serializer.read( info.info  )
+				info.objid = faas.objid 
+				em.sqlContext.createExecutor('''
+					UPDATE faaslist SET 
+						prevtdno = $P{prevtdno}, 
+						prevowner = $P{prevowner}, prevpin = $P{prevpin},
+						prevmv = $P{prevmv},       prevav = $P{prevav}
+					WHERE objid = $P{objid} 
+				''')
+				.setParameters(info)
+				.execute()
+			}
+		}
+		return errorlist
 	}
 	
 	void fixBPAssessmentRule( rule ) {
@@ -131,5 +215,6 @@ public class XMigrationService
 				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_prior_interest'
 		}
 	}
+	
 	
 }

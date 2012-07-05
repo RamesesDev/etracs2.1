@@ -23,6 +23,7 @@ public class XPatchService01
 				info.objid = faas.objid 
 				em.sqlContext.createExecutor('''
 					UPDATE faaslist SET 
+						prevtdno  = $P{prevtdno}, 
 						prevowner = $P{prevowner}, prevpin = $P{prevpin},
 						prevmv = $P{prevmv},       prevav = $P{prevav}
 					WHERE objid = $P{objid} 
