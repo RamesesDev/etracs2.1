@@ -23,7 +23,7 @@ class IRAFService
 		def list = [];
 		if( !searchText ) return getListByQueryName( list, "iraf:getList", param );
 		if( getListByQueryName( list, "iraf:getListByRivno", param + [rivno: searchText] ) ) return list;
-		if( getListByQueryName( list, "iraf:getListByRequestedBy", param + [ requestedby: searchText ] ) ) return list;
+		if( getListByQueryName( list, "iraf:getListByRequestedBy", param + [ requestedby: searchText+'%' ] ) ) return list;
 		return list;
 	}
 	
@@ -227,7 +227,7 @@ class IRAFService
 		def year = dateService.parseDate( dateService.serverDate, null ).year;
 		def prefix = "IRAF-" + rivtype[0];
 		def sequenceKey = "IRAF-" + rivtype[0] + year;
-		return prefix + seqService.getNextFormattedSeriesA( sequenceKey, 6) + year;
+		return year + seqService.getNextFormattedSeriesA( sequenceKey, 6);
 	}
 	
 	private void checkIRAFItems( def iraf ){

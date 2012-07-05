@@ -33,7 +33,7 @@ class RIVService
 		if( ! search.searchText ) return getListByQuery("riv:getListByState", [:], params);
 		def result = [];
 		if((result = getListByQuery("riv:getListByTxnnoOpen", [txnno:search.searchText], params))) return result;
-		if((result = getListByQuery("riv:getListByRequesterOpen", [requestedby:search.searchText+"%"], params))) return result;
+		if((result = getListByQuery("riv:getListByRequesterOpen", [requestedby:"%"+search.searchText+"%"], params))) return result;
 		return result;
 	}
 	

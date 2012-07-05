@@ -1,5 +1,5 @@
 [getList]
-SELECT o.* FROM iraf o WHERE docstate = 'DRAFT' ORDER BY o.txnno 
+SELECT o.* FROM iraf o ORDER BY o.txndate  DESC 
 
 [getListByRivno] 
 SELECT o.* FROM iraf o WHERE o.rivno LIKE $P{rivno} 
