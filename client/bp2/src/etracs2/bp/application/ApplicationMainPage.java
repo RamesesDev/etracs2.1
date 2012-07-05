@@ -258,6 +258,7 @@ public class ApplicationMainPage extends javax.swing.JPanel {
         xLookupField1.setHandler("lookupLob");
         xLookupField1.setHint("Search Line of Business");
         xLookupField1.setName("lobSearch");
+        xLookupField1.setTranserFocusOnSelect(false);
         jPanel4.add(xLookupField1);
         xLookupField1.setBounds(5, 30, 580, 19);
 

@@ -378,7 +378,7 @@ select
 	CASE 
 		when expression like '%if%' then expression
 		else 'SYS_BASE_MARKET_VALUE * ' + 
-		  cast( convert(decimal(10,2), (convert(decimal(10,2),cast(expression as varchar)) / 100 )) as varchar)
+		  cast( convert(decimal(10,2), (convert(decimal(10,2),cast(expression as varchar(1000))) / 100 )) as varchar(1000))
 	END as expression, 
 	l.rysettingid landrysettingid, 
 	'' as appliedto, 
@@ -862,7 +862,7 @@ select
 	rpu.ry, 
 	case 
 		when rpu.suffix = 0 then rp.pin 
-		else rp.pin + '-' + cast(rpu.suffix as varchar)
+		else rp.pin + '-' + cast(rpu.suffix as varchar(255))
 	end as fullpin, 
 	rpu.classificationid as classid, 
 	rpu.classcode, 

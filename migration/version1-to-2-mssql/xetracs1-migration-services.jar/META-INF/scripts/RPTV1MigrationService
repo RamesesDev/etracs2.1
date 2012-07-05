@@ -27,34 +27,44 @@ class RPTV1MigrationService
 	------------------------------------------------------------------*/
 	@ProxyMethod 
 	public void updateLandFaasIdInfo() {
+		def execsvc = java.util.concurrent.Executors.newFixedThreadPool(50);
+		def tasks = [];
+		
 		println "--- updateLandFaasIdInfo ---"
 		def fhandler = { improvement ->
-			println "processing: ${improvement.pin}"
-			
-			def faasland = em2.sqlContext.createQuery('''
-						SELECT objid as landfaasid, taxpayerid as landfaastaxpayerid 
-						FROM faaslist 
-						WHERE pin = $P{pin} AND rputype = 'LAND'
-			''')
-			.setParameters( [pin:improvement.pin, rputype:'LAND' ] )
-			.singleResult
-			
-			if( faasland ) {
-				em2.sqlContext.createExecutor('''
-					UPDATE faas SET info = $P{info} WHERE objid = $P{objid}
+			tasks << execsvc.submit(
+			{
+				println "processing: ${improvement.pin}"
+				
+				def faasland = em2.sqlContext.createQuery('''
+							SELECT objid as landfaasid, taxpayerid as landfaastaxpayerid 
+							FROM faaslist 
+							WHERE pin = $P{pin} AND rputype = 'LAND'
 				''')
-				.setParameters( [objid:improvement.objid, info:em2.serializer.write(faasland) ] )
-				.execute()
-			}			
+				.setParameters( [pin:improvement.pin, rputype:'LAND' ] )
+				.singleResult
+				
+				if( faasland ) {
+					em2.sqlContext.createExecutor('''
+						UPDATE faas SET info = $P{info} WHERE objid = $P{objid}
+					''')
+					.setParameters( [objid:improvement.objid, info:em2.serializer.write(faasland) ] )
+					.execute()
+				}
+			} as Runnable);
 		};
 		
 		def qry = em2.sqlContext.createQuery("""
 						SELECT objid, pin 
 						FROM faaslist 
-						WHERE rputype <>'land' 
+						WHERE rputype <>'land'
 					""")
 		qry.fetchHandler = new CustomFetchHandler( handler: fhandler );
 		qry.resultList
+		
+		//wait
+		tasks.each{ it.get() }
+		try{ execsvc.shutdown(); }catch(e){}
 	}
 	
 	
@@ -69,7 +79,7 @@ class RPTV1MigrationService
 						td.previousMarketValue as prevmv,
 						td.previousAssessedValue as prevav,
 						td.effectivityqtr,
-						ltrim(rtrim(cast(td.remarks as varchar))) as memoranda,
+						ltrim(rtrim(cast(td.remarks as varchar(2000)))) as memoranda,
 						0 as autonumber,
 						0 as backtaxyrs,
 						rp.claimno as claimno,
@@ -675,12 +685,12 @@ class RPTV1MigrationService
 	
 	@ProxyMethod
 	public List  getFAASList() {
-		return em2.sqlContext.createQuery("SELECT objid FROM faaslist ").resultList 
+		return em2.sqlContext.createQuery("SELECT top 10 objid FROM faaslist ").resultList 
 	}
 	
 	@ProxyMethod
 	public List  getFAASListByType( rputype ) {
-		return em2.sqlContext.createQuery('SELECT objid FROM faaslist WHERE rputype=$P{rputype}')
+		return em2.sqlContext.createQuery('SELECT top 10 objid FROM faaslist WHERE rputype=$P{rputype}')
 					.setParameter('rputype', rputype)
 					.resultList 
 	}
@@ -950,14 +960,14 @@ class RPTV1MigrationService
 						case when lr.idleland = 1 then 1 else 0 end as idleland,
 						lr.totallandadjustment as landvalueadjustment,
 						(
-							'[areasqm:' + cast(totalareasqm as varchar) + ',areaha:' + cast(totalareahec as varchar) + ',basemarketvalue:' + cast(totallandmv as varchar) + 
-							',marketvalue:' + cast(totallandamv as varchar) + ',assessedvalue:' + cast(totallandav as varchar) + 
-							',adjustment:' + cast(totallandadjustment as varchar) + ']'
+							'[areasqm:' + cast(totalareasqm as varchar(255)) + ',areaha:' + cast(totalareahec as varchar(255)) + ',basemarketvalue:' + cast(totallandmv as varchar(255)) + 
+							',marketvalue:' + cast(totallandamv as varchar(255)) + ',assessedvalue:' + cast(totallandav as varchar(255)) + 
+							',adjustment:' + cast(totallandadjustment as varchar(255)) + ']'
 						) as landtotal,
 						(
-							'[bearing:' + cast(totalplantbearing as varchar) + ',nonbearing:' + cast(totalplantnonbearing as varchar) +  
-							',basemarketvalue:' + cast(totalplantmv as varchar) +  ',marketvalue:' + cast(totalplantamv as varchar) + 
-							',assessedvalue:' + cast(totalplantav as varchar) +  ']'
+							'[bearing:' + cast(totalplantbearing as varchar(255)) + ',nonbearing:' + cast(totalplantnonbearing as varchar(255)) +  
+							',basemarketvalue:' + cast(totalplantmv as varchar(255)) +  ',marketvalue:' + cast(totalplantamv as varchar(255)) + 
+							',assessedvalue:' + cast(totalplantav as varchar(255)) +  ']'
 						) as planttotal
 					from taxdeclaration td 
 						inner join rpu rpu on td.rpuid = rpu.objid 
@@ -992,7 +1002,7 @@ class RPTV1MigrationService
 								case when la.expression like 'if%' then 
 									replace(replace(replace( la.expression, '$P', ''), '}', ''),'{','')
 								else la.expression / 100.00 end 
-							  ) as varchar
+							  ) as varchar(1000)
 							)
 						) as expr
 					from landadjustment la 
@@ -1058,9 +1068,9 @@ class RPTV1MigrationService
 					lp.treeassesslevelcode as assesslevelcode,
 					lp.treeassessleveltitle as assesslevelname,
 					0.0 as adjustmentrate,
-					('[assesslevelid:"'+ lp.treeassesslevelid+'", assesslevelcode:"'+ lp.treeassesslevelcode+ '", assesslevelname:"'+ lp.treeassessleveltitle+ '", assesslevel:'+ cast(lp.assesslevel as varchar)+']') as al,
+					('[assesslevelid:"'+ lp.treeassesslevelid+'", assesslevelcode:"'+ lp.treeassesslevelcode+ '", assesslevelname:"'+ lp.treeassessleveltitle+ '", assesslevel:'+ cast(lp.assesslevel as varchar(255))+']') as al,
 					('[planttreename:"'+ lp.treetitle+ '", unitvaluecode:"'+ lp.treeunitvaluecode+  '", unitvalueid:"'+  lp.treeunitvalueid+  
-						'", unitvalue:'+  cast(lp.unitvalue as varchar)+  ', unitvaluename:"'+  lp.treeunitvaluetitle+  '", planttreecode:"'+  lp.treecode+  '", planttreeid:"'+ lp.treeid+ '"]') as ptuv
+						'", unitvalue:'+  cast(lp.unitvalue as varchar(255))+  ', unitvaluename:"'+  lp.treeunitvaluetitle+  '", planttreecode:"'+  lp.treecode+  '", planttreeid:"'+ lp.treeid+ '"]') as ptuv
 				from taxdeclaration td 
 					inner join rpu rpu on td.rpuid = rpu.objid 
 					inner join landrpu lr on rpu.objid = lr.objid 
@@ -1112,14 +1122,14 @@ class RPTV1MigrationService
 					ld.striprate,
 					ld.area,
 					(
-						'[striplevel:"'+  ld.striplevel+  '", striprate:'+  cast(ld.striprate as varchar)+ ', strippingid:"'+  ld.lcuvstrippingid+  '"]'
+						'[striplevel:"'+  ld.striplevel+  '", striprate:'+  cast(ld.striprate as varchar(255))+ ', strippingid:"'+  ld.lcuvstrippingid+  '"]'
 					) as stripping,
 					('[assesslevelcode:"'+  ld.assesslevelclasscode+ '", assesslevelid:"'+ ld.landassesslevelid+ '", assesslevelname:"'+  ld.assesslevelclasstitle+ '"]') as al,
 					(
 						'[specificclasscode:"'+  ld.specificclasscode+ '", subclassid:"'+ ld.lcuvsubclassid+ '", areatype:"'+ 
 						case when ld.areatype = 'HEC' then 'HA' else 'SQM' end+ '", specificclassname:"'+  ld.specificclasstitle+ 
 						'", subclassname:"'+ ld.subclasstitle+ '", subclasscode:"'+  ld.subclasscode+  '", actualusecode:"'+  ld.actualusecode+  '", actualusename:"'+ 
-						ld.actualusetitle+ '", basevalue:'+  cast(ld.basevalue as varchar)+  ', actualuseid:"'+  ld.actualuseid+  '", specificclassid:"'+  ld.specificclassid+  '"]'
+						ld.actualusetitle+ '", basevalue:'+  cast(ld.basevalue as varchar(255))+  ', actualuseid:"'+  ld.actualuseid+  '", specificclassid:"'+  ld.specificclassid+  '"]'
 					) as subclass 
 				from taxdeclaration td 
 					inner join rpu rpu on td.rpuid = rpu.objid 
@@ -1243,55 +1253,64 @@ class RPTV1MigrationService
 		def errorlist = []
 		ledgerlist.each{ ledger ->
 			println 'processing ledger -> ' + ledger.objid 
-			def ledgerinfo = em1.sqlContext.createQuery('''
-				SELECT
-					rl.objid, 
-					'rptledger' AS schemaname, 
-					'1.0' AS schemaversion, 
-					rl.state AS docstate, 
-					case when r.suffix = 0 
-						then rp.pin 
-						else (rp.pin + '-' + cast(r.suffix as varchar))
-					end as fullpin, 
-					rp.claimno as claimno, 
-					td.objid as faasid, 
-					lower(r.type ) as  rputype, 
-					r.classificationId as  classid, 
-					r.classCode as classcode , 
-					r.classificationId as  actualuseid, 
-					r.classCode as  actualusecode, 
-					td.tdno,
-					td.previousTdNo as  prevtdno, 
-					isnull(rp.cadastralLotNo,'-') as  cadastrallotno, 
-					rp.blockNo as  blockno, 
-					rp.location as  barangay, 
-					td.txnType as  txntype, 
-					r.taxable as  taxable, 
-					r.totalAV as  assessedvalue, 
-					td.taxpayerId as taxpayerid, 
-					p.taxpayerno as  taxpayerno, 
-					td.taxpayerName as taxpayername, 
-					td.taxpayerAddress as taxpayeraddress, 
-					td.administratorId as administratorid, 
-					null as  administratorno, 
-					td.administratorName as administratorname, 
-					td.administratorAddress as  administratoraddress, 
-					rl.lastYearPaid as lastyearpaid, 
-					rl.lastQtrPaid as lastqtrpaid, 
-					0 as partialbasic, 
-					0 as partialsef, 
-					0 as firstqtrpaidontime, 
-					0 as partialbasicint, 
-					0 as partialsefint
-				FROM RPTLedger rl
-					INNER JOIN TaxDeclaration td ON rl.tdid = td.objid 
-					INNER JOIN RPU r ON td.rpuid = r.objid 
-					INNER JOIN RealProperty rp ON r.realpropertyid= rp.objid
-					INNER JOIN payer p on td.taxpayerId = p.objid 
-				WHERE rl.objid = $P{ledgerid}
-			''')
-			.setParameter( 'ledgerid', ledger.objid )
-			.singleResult 
+			
+			def ledgerinfo;
+			
+			try 
+			{
+				ledgerinfo = em1.sqlContext.createQuery('''
+					SELECT
+						rl.objid, 
+						'rptledger' AS schemaname, 
+						'1.0' AS schemaversion, 
+						rl.state AS docstate, 
+						case when r.suffix = 0 
+							then rp.pin 
+							else (rp.pin + '-' + cast(r.suffix as varchar(255)))
+						end as fullpin, 
+						rp.claimno as claimno, 
+						td.objid as faasid, 
+						lower(r.type ) as  rputype, 
+						r.classificationId as  classid, 
+						r.classCode as classcode , 
+						r.classificationId as  actualuseid, 
+						r.classCode as  actualusecode, 
+						td.tdno,
+						td.previousTdNo as  prevtdno, 
+						isnull(rp.cadastralLotNo,'-') as  cadastrallotno, 
+						rp.blockNo as  blockno, 
+						rp.location as  barangay, 
+						td.txnType as  txntype, 
+						r.taxable as  taxable, 
+						r.totalAV as  assessedvalue, 
+						td.taxpayerId as taxpayerid, 
+						p.taxpayerno as  taxpayerno, 
+						td.taxpayerName as taxpayername, 
+						td.taxpayerAddress as taxpayeraddress, 
+						td.administratorId as administratorid, 
+						null as  administratorno, 
+						td.administratorName as administratorname, 
+						td.administratorAddress as  administratoraddress, 
+						rl.lastYearPaid as lastyearpaid, 
+						rl.lastQtrPaid as lastqtrpaid, 
+						0 as partialbasic, 
+						0 as partialsef, 
+						0 as firstqtrpaidontime, 
+						0 as partialbasicint, 
+						0 as partialsefint
+					FROM RPTLedger rl
+						INNER JOIN TaxDeclaration td ON rl.tdid = td.objid 
+						INNER JOIN RPU r ON td.rpuid = r.objid 
+						INNER JOIN RealProperty rp ON r.realpropertyid= rp.objid
+						INNER JOIN payer p on td.taxpayerId = p.objid 
+					WHERE rl.objid = $P{ledgerid}
+				''')
+				.setParameter( 'ledgerid', ledger.objid )
+				.singleResult
+			}
+			catch(e) {
+				println "error loading ledger info: $ledger.objid,  Error: $e.message"  
+			}
 			
 			if( ledgerinfo ) {
 				try {
@@ -1317,7 +1336,7 @@ class RPTV1MigrationService
 		println 'processing -> ' + itemlist[0] 
 		itemlist.each{ item ->
 			def iteminfo = em1.sqlContext.createQuery('''
-				SELECT top 50
+				SELECT
 					rli.objid, 
 					'rptledger:rptledgeritem' as schemaname, 
 					'1.0' as schemaversion, 

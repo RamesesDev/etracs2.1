@@ -14,7 +14,7 @@ class Var {
 
 	@ProxyMethod(local=true)
 	public def get( String name ) {
-		def val = em.sqlContext.createNamedQuery( "sys_var:get").setParameter(1,name).singleResult;
+		def val = em.sqlContext.createNamedQuery( "sys_var:get").setParameter('name',name).singleResult;
 		if(!val) return AppContext.getProperty( name );
 		if( val.type == "object" )
 			return em.serializer.read( val.value );
@@ -24,7 +24,7 @@ class Var {
 
 	@ProxyMethod(local=true)
 	public def set( String name, def value ) {
-		em.sqlContext.createNamedExecutor( "sys_var:set").setParameter(1,value).setParameter(2,name).execute();
+		em.sqlContext.createNamedExecutor( "sys_var:set").setParameters([value:value, name:name]).execute();
 	}
 
 	@ProxyMethod(local=true)
@@ -46,8 +46,11 @@ class Var {
 		
 		if( param?._start ) qry.setFirstResult( param._start );
 		if( param?._limit ) qry.setMaxResults( param._limit );
-		if( param.category ) qry.setParameter( 1, param.category );
-		return qry.resultList;
+		if( param.category ) qry.setParameter( 'category', param.category );
+		
+		def list = qry.resultList;
+
+		return list
    }
 
    @ProxyMethod(local=true)

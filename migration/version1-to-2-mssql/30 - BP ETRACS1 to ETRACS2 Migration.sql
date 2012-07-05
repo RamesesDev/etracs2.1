@@ -121,8 +121,8 @@ select
 	v.description, 
 	case 
 		when v.arrayvalue is null then null 
-		when cast( v.arrayvalue as varchar) = '' then '[]'
-		else '["' + replace(cast( v.arrayValue as varchar),',', '","') + '"]'
+		when cast( v.arrayvalue as varchar(255)) = '' then '[]'
+		else '["' + replace(cast( v.arrayValue as varchar(1000)),',', '","') + '"]'
 	end  as arrayvalues
 from etracs_bayombong..abstractvariable v;
 
@@ -293,7 +293,7 @@ SELECT
 	case 
 		when binfo.stringvalue is not null then binfo.stringvalue 
 		when binfo.doublevalue is not null then convert( varchar(100), convert(decimal(16, 2), binfo.doublevalue ) )
-		when binfo.integervalue is not null then cast(binfo.integervalue as varchar) 
+		when binfo.integervalue is not null then cast(binfo.integervalue as varchar(255)) 
 	end as value, 
 	'[]' as arrayvalues, 
 	binfo.beforeprint as  requiredbeforeprint
@@ -357,16 +357,16 @@ update xba  set
 							+ 'requiredbeforeprint:' + case when info.beforeprint = 1 then 'true' else 'false' end 
 							+ ',lobname:"'+ isnull(l.name,'') + '",' 
 							+ 'objid:"' + info.objid + '",'  
-							+ 'arrayvalues:' + case when v.arrayvalue is null then '[]' else ('["' + replace(cast( v.arrayvalue as varchar) , ',', '","') + '"]' ) end 
+							+ 'arrayvalues:' + case when v.arrayvalue is null then '[]' else ('["' + replace(cast( v.arrayvalue as varchar(255)) , ',', '","') + '"]' ) end 
 							+ ',rulename:"' + '-",' 
 							+ 'datatype:"' + lower(v.datatype) + '",'
 							+ 'category:"' + isnull(l.name,'') + '",'
 							+ 'caption:"' + isnull(v.caption,'') + '",'
 							+ 'varcaption:"' + isnull(v.caption,'') + '",'  
-							+ 'items:' + case when v.arrayvalue is null then '[]' else ('["' + replace( cast( v.arrayvalue as varchar) , ',', '","') + '"]') end 
+							+ 'items:' + case when v.arrayvalue is null then '[]' else ('["' + replace( cast( v.arrayvalue as varchar(255)) , ',', '","') + '"]') end 
 							+ ',value:' + case when info.stringvalue is not null then ('"' + info.stringvalue + '"')
 									   when info.doublevalue is not null then convert( varchar(100), convert(decimal(16, 2), info.doublevalue ) )
-									   when info.integervalue is not null then cast(info.integervalue as varchar) 
+								when info.integervalue is not null then cast(info.integervalue as varchar(255)) 
 								end, ']' 
 						from etracs_bayombong..bpapplicationinfo info 
 							left join etracs_bayombong..lob l on info.lobid = l."objid" 
@@ -416,9 +416,9 @@ update xba set
 						'accttitle:"' + btf.accounttitle + '",' + 
 						'systype:"' + btf.accttype + '",' + 
 						'rulename:"-",' + 
-						'assessedvalue:' + cast( cast(btf.assessedvalue as decimal(16, 2)) as varchar) + ',' + 
-						'amountdue:' +  cast( cast(btf.amtdue as decimal(16, 2)) as varchar) + ',' + 
-						'amtdue:' +  cast( cast(btf.amtdue as decimal(16, 2)) as varchar) + ']'
+						'assessedvalue:' + cast( cast(btf.assessedvalue as decimal(16, 2)) as varchar(255)) + ',' + 
+						'amountdue:' +  cast( cast(btf.amtdue as decimal(16, 2)) as varchar(255)) + ',' + 
+						'amtdue:' +  cast( cast(btf.amtdue as decimal(16, 2)) as varchar(255)) + ']'
 					from etracs_bayombong..abstractbpapplication aba
 					inner join etracs_bayombong..bptaxfee btf on aba."objid" = btf.parentid 
 					where aba.objid = b.objid  collate SQL_Latin1_General_CP1_CI_AS
@@ -441,15 +441,15 @@ update  xba set
 						'applicationid:"' + aba.objid + '",' +
 						'applicationtype:"' + br.applicationtype + '",' + 
 						'appno:"' + aba.appno + '",' + 
-						'iyear:' + cast( aba.year as varchar) + ',' + 
+						'iyear:' + cast( aba.year as varchar(255)) + ',' + 
 						'iqtr:1,' + 
 						'lobid:' + case when btf.lobid is null then 'null' else ('"' + btf.lobid + '"') end + ',' + 
 						'lobname:', case when btf.lobid is null then 'null' else ('"' + btf.lobname + '"') end + ',' + 
 						'acctid:"' +  btf.acctid + '",' + 
 						'acctno:"' + isnull(btf.accountno,'') + '",' + 
 						'accttitle:"' + btf.accounttitle, '",' + 
-						'amount:' + cast( cast(br.amount as decimal(16, 2)) as varchar) + ',' + 
-						'amtpaid:' + cast( cast(br.amtpaid as decimal(16, 2)) as varchar) + ']'
+						'amount:' + cast( cast(br.amount as decimal(16, 2)) as varchar(255)) + ',' + 
+						'amtpaid:' + cast( cast(br.amtpaid as decimal(16, 2)) as varchar(255)) + ']'
 					from etracs_bayombong..abstractbpapplication aba
 					inner join etracs_bayombong..bptaxfee btf on aba."objid" = btf.parentid 
 					inner join etracs_bayombong..bpreceivable br on btf."objid" = br.taxfeeid 
@@ -474,10 +474,10 @@ update xba set
 							'reftype:"' + case when bcr.capturepaymentid is null then 'ONLINE' else 'CAPTURE' end + '",' + 
 							'refno:"' + case when bcr.capturepaymentid is null then bcr.receiptno else cp.orno end + '",' + 
 							'refdate:"' + case when bcr.capturepaymentid is null then CONVERT(varchar(19), bcr.receiptdate, 120) else CONVERT(varchar(19), cp.ordate, 120) end + '",' + 
-							'amount:' + cast(bcr.amount as varchar) +  ',' + 
-							'surcharge:' + cast(bcr.surcharge as varchar) + ',' + 
-							'interest:' +  cast(bcr.interest as varchar)  + ',' + 
-							'discount:' + CAST(bcr.discount as varchar) + ']'
+							'amount:' + cast(bcr.amount as varchar(255)) +  ',' + 
+							'surcharge:' + cast(bcr.surcharge as varchar(255)) + ',' + 
+							'interest:' +  cast(bcr.interest as varchar(255))  + ',' + 
+							'discount:' + CAST(bcr.discount as varchar(255)) + ']'
 						from etracs_bayombong..abstractbpapplication aba
 						inner join etracs_bayombong..bptaxfee btf on aba."objid" = btf.parentid 
 						inner join etracs_bayombong..bpreceivable br on btf."objid" = br.taxfeeid 
@@ -505,10 +505,10 @@ update xba set
 							'reftype:"' + xcr.reftype + '",' +
 							'refdate:"' + CONVERT(varchar(19), xcr.refdate, 120) + '",' + 
 							'qtr:' + CONVERT(varchar(19), xcr.lastqtrpaid, 120) + ',' + 
-							'year:' +  cast( xcr.year as varchar) + ',' + 
-							'lastyearpaid:' + cast(xcr.year as varchar) + ',' + 
-							'lastqtrpaid:' + cast(xcr.lastqtrpaid as varchar) + ',' + 
-							'amount:' + CAST( cast(xcr.amount as decimal( 16, 2)) as varchar) + ',' + 
+							'year:' +  cast( xcr.year as varchar(255)) + ',' + 
+							'lastyearpaid:' + cast(xcr.year as varchar(255)) + ',' + 
+							'lastqtrpaid:' + cast(xcr.lastqtrpaid as varchar(255)) + ',' + 
+							'amount:' + CAST( cast(xcr.amount as decimal( 16, 2)) as varchar(255)) + ',' + 
 							'head:null ]'
 						from (
 								select 
@@ -631,7 +631,7 @@ update xba set
 							' name:"' + isnull(l.name,'') + '",' + 
 							'assessmenttype:"' + ba.type + '",' +
 							'classificationid:"' + isnull(l.classificationid,'') + '",' + 
-							'iyear:' + cast( b.iyear as varchar) + ']'  
+							'iyear:' + cast( b.iyear as varchar(255)) + ']'  
 					from etracs_bayombong..bpapplication ba
 					inner join etracs_bayombong..bpapplication_lob bl on ba."objid" = bl.bpapplication_objid
 					inner join etracs_bayombong..lob l on bl.lines_objid = l."objid" 

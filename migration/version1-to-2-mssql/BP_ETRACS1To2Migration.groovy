@@ -51,13 +51,13 @@ println 'done migrateTaxFeeChargeRangeModeAction()'
 svc.migrateUpdateAmountDueAction()
 println 'done migrateUpdateAmountDueAction()'
 
-
 def messages = svc.deployRules()
 if( messages ) println( 'messages:\n' + messages.join('\n') )
 println 'done deploying deployed rules'
 
 
+/*
 svc.updateBPReceivables()
 println 'done updating bp receivables'
-
+*/
 println 'finished'

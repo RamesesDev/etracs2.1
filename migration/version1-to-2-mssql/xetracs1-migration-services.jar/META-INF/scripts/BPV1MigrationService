@@ -2,6 +2,7 @@ import com.rameses.annotations.*
 import com.rameses.common.*
 import com.rameses.sql.*
 import java.sql.*
+import java.util.concurrent.*
 
 
 class BPV1MigrationService
@@ -204,12 +205,14 @@ class BPV1MigrationService
 			if( ! list ) return 
 			rule.conditions = sys_em.serializer.read( rule.conditions )
 			
+			def includetype = ( list[0].includetype == 0  ? 'INCLUDE' : 'EXCLUDE' )
+			
 			rule.conditions.add([
 				opener				: 'bp-rule-mgmt:bpassessment_condition_lob',
 				conditiontype		: 'lob',
-				includetype			: ( list[0].includetype == 0  ? 'INCLUDE' : 'EXCLUDE' ),
+				includetype			: includetype,
 				lobs				: list.collect{ [objid:it.objid, name:it.name ]}, 
-				displaytext			: 'Line of Business includes the following: ' + list.name.join( ', ')
+				displaytext			: 'Line of Business ' + includetype.toLowerCase() + 's the following: ' + list.name.join( ', ')
 			])
 			
 			updateRuleConditions( rule ) 
@@ -535,7 +538,7 @@ class BPV1MigrationService
 			
 			try 
 			{
-				ruleMgmt.addRulePackage( rule.ruleset, '', rule.packagename, rule.ruletext, false );
+				ruleMgmt.addRulePackage( rule.ruleset, '', rule.packagename, rule.ruletext, true );
 			}
 			catch(e) {
 				messages <<  "---- ERROR : " + rule.rulename + " -------\n" + 
@@ -554,67 +557,76 @@ class BPV1MigrationService
 		qry.fetchHandler = new CustomFetchHandler( handler: fhandler )
 		qry.resultList
 		
-		ruleMgmt.redeployAll()
 		return messages
 	}
 	
 	@ProxyMethod
 	public void updateBPReceivables() {
+		def execsvc = Executors.newFixedThreadPool(50);
+		def tasks = []
+		
 		def fhandler = { app ->
-			println "processing bp application: ${app.objid}"
-			
-			def rcvlist = em1.sqlContext.createQuery('''
-				select 
-				  br.objid, br.businessid, 
-				  ab.objid as appid,
-				  br.applicationtype as apptype,
-				  ab.appno as appno,
-				  ab.year as iyear,
-				  btf.lobid, btf.lobname,
-				  btf.acctid, btf.accountno as acctno, btf.accounttitle as accttitle, btf.accttype,
-				  br.amount, br.amtpaid
-				from  bptaxfee btf, bpreceivable br, abstractbpapplication ab
-				where ab.objid = btf.parentid
-				  and btf.objid = br.taxfeeid 
-				  and ab.objid = ?
-			''')
-			.setParameter(1, app.objid)
-			.resultList
-			
-			def bprcvlist = []
-			rcvlist.each { rcv ->
-				rcv.iqtr = 1
-				if( rcv.accttype == 'BUSINESS_TAX' ) {
-					def amt = rcv.amount
-					def amtpaid = rcv.amtpaid
-					def qtramt = fixAmount( amt / 4 );
-					for(def i=1; i<=3; ++i) {
-						def b = [:]
-						b.putAll( rcv )
-						if( i > 1 ) b.objid = b.objid + i
-						b.iqtr = i
-						b.amount = qtramt
-						b.amtpaid = (amtpaid > qtramt ? qtramt : amtpaid)
-						amtpaid -= b.amtpaid
-						bprcvlist << b
+			tasks << execsvc.submit(
+			{
+				println "processing bp application: ${app.objid}"
+				
+				def rcvlist = em1.sqlContext.createQuery('''
+					select 
+					  br.objid, br.businessid, 
+					  ab.objid as appid,
+					  br.applicationtype as apptype,
+					  ab.appno as appno,
+					  ab.year as iyear,
+					  btf.lobid, btf.lobname,
+					  btf.acctid, btf.accountno as acctno, btf.accounttitle as accttitle, btf.accttype,
+					  br.amount, br.amtpaid
+					from  bptaxfee btf, bpreceivable br, abstractbpapplication ab
+					where ab.objid = btf.parentid
+					  and btf.objid = br.taxfeeid 
+					  and ab.objid = ?
+				''')
+				.setParameter(1, app.objid)
+				.resultList
+				
+				def bprcvlist = []
+				rcvlist.each { rcv ->
+					rcv.iqtr = 1
+					if( rcv.accttype == 'BUSINESS_TAX' ) {
+						def amt = rcv.amount
+						def amtpaid = rcv.amtpaid
+						def qtramt = fixAmount( amt / 4 );
+						for(def i=1; i<=3; ++i) {
+							def b = [:]
+							b.putAll( rcv )
+							if( i > 1 ) b.objid = b.objid + i
+							b.iqtr = i
+							b.amount = qtramt
+							b.amtpaid = (amtpaid > qtramt ? qtramt : amtpaid)
+							amtpaid -= b.amtpaid
+							bprcvlist << b
+						}
+						rcv.amtpaid = amtpaid
+						rcv.iqtr = 4
+						rcv.amount = amt - (qtramt * 3)
 					}
-					rcv.amtpaid = amtpaid
-					rcv.iqtr = 4
-					rcv.amount = amt - (qtramt * 3)
+					
+					bprcvlist << rcv
 				}
 				
-				bprcvlist << rcv
-			}
-			
-			em2.sqlContext.createExecutor('update bpapplication set receivables=? where [objid]=?')
-			   .setParameter(1, em2.serializer.write( bprcvlist ))
-			   .setParameter(2, app.objid)
-			   .execute()
+				em2.sqlContext.createExecutor('update bpapplication set receivables=? where [objid]=?')
+				   .setParameter(1, em2.serializer.write( bprcvlist ))
+				   .setParameter(2, app.objid)
+				   .execute()
+			} as Runnable);
 		}
 		
 		def qry = em1.sqlContext.createQuery('select [objid] from abstractbpapplication where amtpaid < amtdue')
 		qry.fetchHandler = new CustomFetchHandler( handler: fhandler )
 		qry.resultList
+		
+		//wait for the tasks to be completed
+		tasks.each { it.get() }
+		try { execsvc.shutdown(); }catch(e){}
 	}
 	
 	private def createRCV( info ) {

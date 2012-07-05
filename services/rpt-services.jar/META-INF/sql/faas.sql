@@ -331,7 +331,7 @@ SELECT
 	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
 	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict 
 FROM  faaslist  
-${whereclause}   
+WHERE ${whereclause}   
   
 
 [getFaasFilters]

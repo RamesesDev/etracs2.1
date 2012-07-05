@@ -35,10 +35,9 @@ class EntityLookupController
                 new Column(name:"entityaddress", caption:"Address"),
             ]
         },
-        fetchList : { 
-                def list = svc.getList(searchText, null);
-                if( list ) return list;
-                throw new Exception("Record not found.");
+        fetchList : { p ->
+                def list = svc.getList(searchText, p);
+                return list;
 	},
     ] as SubListModel;
     

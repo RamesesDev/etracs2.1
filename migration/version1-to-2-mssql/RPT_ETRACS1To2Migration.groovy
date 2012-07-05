@@ -102,7 +102,7 @@ def svc = proxy.create('RPTV1MigrationService')
 //svc.updateMultipleEntityInfo()
 //println 'done svc.updateMultipleEntityInfo()...'
 
-
+/*
 executeAction2(
     { 
         svc.updateIndividualEntityInfo( it )
@@ -112,43 +112,43 @@ executeAction2(
     'individual entity info'
 )
 println 'done svc.updateIndividualEntityInfo()...'
-
-
-/*
-svc.loadPlantTreeRYSettingInfos()
-println 'done svc.loadPlantTreeRYSettingInfos()...'
-
-
-svc.updateBldgAdditionalItemExpr()
-println 'done svc.updateBldgAdditionalItemExpr()...'
-
-
-svc.loadBldgDepreciationSchedules()
-println 'done svc.loadBldgDepreciationSchedules()...'
-
-
-svc.updateBldgKindBuccExtended()
-println 'done svc.updateBldgKindBuccExtended()...'
-
-
-svc.updateBldgAssessLevelRanges()
-println 'done svc.updateBldgAssessLevelRanges()...'
-
-
-svc.updateLandAssessLevelRanges()
-println 'done svc.updateLandAssessLevelRanges()...'
-
-
-svc.updateStructureMaterials()
-println 'done svc.updateStructureMaterials()...'
-
-
-executeAction2( { g_errorlist.addAll( svc.insertRPTLedger( it )) ; it.clear() }, svc.getLedgerList(), 'insert rpt ledger' )
-printDone( 'done svc.insertRPTLedger()...', g_errorlist )
-
-
-executeAction2({ g_errorlist.addAll(svc.insertRPTLedgerItem( it )); it.clear() }, svc.getLedgerItemList(), 'insert rpt ledger item' )
-printDone( 'done svc.insertRPTLedgerItem()...', g_errorlist )
 */
+
+
+//svc.loadPlantTreeRYSettingInfos()
+//println 'done svc.loadPlantTreeRYSettingInfos()...'
+
+
+//svc.updateBldgAdditionalItemExpr()
+//println 'done svc.updateBldgAdditionalItemExpr()...'
+
+
+//svc.loadBldgDepreciationSchedules()
+//println 'done svc.loadBldgDepreciationSchedules()...'
+
+
+//svc.updateBldgKindBuccExtended()
+//println 'done svc.updateBldgKindBuccExtended()...'
+
+
+//svc.updateBldgAssessLevelRanges()
+//println 'done svc.updateBldgAssessLevelRanges()...'
+
+
+//svc.updateLandAssessLevelRanges()
+//println 'done svc.updateLandAssessLevelRanges()...'
+
+
+//svc.updateStructureMaterials()
+//println 'done svc.updateStructureMaterials()...'
+
+
+//executeAction2( { g_errorlist.addAll( svc.insertRPTLedger( it )) ; it.clear() }, svc.getLedgerList(), 'insert rpt ledger' )
+//printDone( 'done svc.insertRPTLedger()...', g_errorlist )
+
+
+//executeAction2({ g_errorlist.addAll(svc.insertRPTLedgerItem( it )); it.clear() }, svc.getLedgerItemList(), 'insert rpt ledger item' )
+//printDone( 'done svc.insertRPTLedgerItem()...', g_errorlist )
+
 
 println 'done' 

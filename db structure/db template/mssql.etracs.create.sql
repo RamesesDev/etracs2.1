@@ -1063,6 +1063,7 @@ CREATE TABLE "entity" (
   "sys_lastupdateby" varchar(50) default NULL,
   "remarks" varchar(100) default NULL,
   "contactno" varchar(20) default NULL,
+  "lguname" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
   -- KEY "ux_entity_no" ("entityno"),
   -- KEY "ix_entity_name" ("entityname"),
@@ -3143,35 +3144,76 @@ CREATE TABLE "wf_task_actor" (
   -- CONSTRAINT "FK_wf_task_actor" FOREIGN KEY ("taskid") REFERENCES "wf_task" ("objid")
 );
 
-/*Table structure for table "individualentity" */
 
 
-
-/*!50001 DROP VIEW IF EXISTS "individualentity" */;
-/*!50001 
-
-/*!50001 CREATE TABLE "individualentity" (
+CREATE TABLE "collectiongroup" (
   "objid" varchar(50) NOT NULL,
-  "schemaname" varchar(100) NOT NULL,
-  "schemaversion" varchar(10) NOT NULL,
-  "entityno" varchar(10) NOT NULL,
-  "entityname" varchar(500) NOT NULL,
-  "entityaddress" varchar(100) NOT NULL,
-  "mailingaddress" varchar(100) default NULL,
-  "entitytype" varchar(25) NOT NULL,
-  "info" text NOT NULL,
-  "sys_lastupdate" varchar(25) default NULL,
-  "sys_lastupdateby" varchar(50) default NULL,
-  "remarks" varchar(100) default NULL,
-  "contactno" varchar(20) default NULL
-) */;
+  "name" varchar(100) default NULL,
+  PRIMARY KEY  ("objid")
+);
 
-/*View structure for view individualentity */
 
-/*!50001 
-/*!50001 DROP VIEW IF EXISTS "individualentity" */;
+CREATE TABLE "collectiongroup_incomeaccount" (
+  "groupid" varchar(50) NOT NULL,
+  "incomeaccountid" varchar(50) NOT NULL,
+  PRIMARY KEY  ("groupid","incomeaccountid"),
+  CONSTRAINT "FK_collectiongroup_incomeaccount" FOREIGN KEY ("groupid") REFERENCES "collectiongroup" ("objid")
+);
 
-/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER="root"@"localhost" SQL SECURITY DEFINER VIEW "individualentity" AS select "entity"."objid" AS "objid","entity"."schemaname" AS "schemaname","entity"."schemaversion" AS "schemaversion","entity"."entityno" AS "entityno","entity"."entityname" AS "entityname","entity"."entityaddress" AS "entityaddress","entity"."mailingaddress" AS "mailingaddress","entity"."entitytype" AS "entitytype","entity"."info" AS "info","entity"."sys_lastupdate" AS "sys_lastupdate","entity"."sys_lastupdateby" AS "sys_lastupdateby","entity"."remarks" AS "remarks","entity"."contactno" AS "contactno" from "entity" where ("entity"."entitytype" = _latin1'individual') order by "entity"."entityname" */;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+CREATE TABLE "realpropertyupdate" (
+  "objid" varchar(50) NOT NULL,
+  "state" varchar(20) default NULL,
+  "txnno" varchar(15) NOT NULL,
+  "pin" varchar(50) default NULL,
+  "arpno" varchar(25) default NULL,
+  "cadastrallotno" varchar(255) default NULL,
+  "surveyno" varchar(30) default NULL,
+  "houseno" varchar(25) default NULL,
+  "street" varchar(100) default NULL,
+  "purok" varchar(25) default NULL,
+  "north" varchar(255) NOT NULL,
+  "south" varchar(255) NOT NULL,
+  "east" varchar(255) NOT NULL,
+  "west" varchar(255) NOT NULL,
+  "blockno" varchar(255) default NULL,
+  "prevarpno" varchar(25) default NULL,
+  "prevcadastrallotno" varchar(255) default NULL,
+  "prevsurveyno" varchar(30) default NULL,
+  "prevhouseno" varchar(25) default NULL,
+  "prevstreet" varchar(100) default NULL,
+  "prevpurok" varchar(25) default NULL,
+  "prevnorth" varchar(255) NOT NULL,
+  "prevsouth" varchar(255) NOT NULL,
+  "preveast" varchar(255) NOT NULL,
+  "prevwest" varchar(255) NOT NULL,
+  "prevblockno" varchar(255) default NULL,
+  "lastmodifiedby" varchar(255) default NULL,
+  "dtlastmodified" datetime default NULL,
+  "approvedby" varchar(255) default NULL,
+  "dtapproved" datetime default NULL,
+  PRIMARY KEY  ("objid")
+);
+
+
+CREATE TABLE "faastitleupdate" (
+  "objid" varchar(50) NOT NULL,
+  "txnno" varchar(50) NOT NULL,
+  "state" varchar(255) default NULL,
+  "tdno" varchar(50) NOT NULL,
+  "titleno" varchar(50) NOT NULL,
+  "titledate" date NOT NULL,
+  "remarks" varchar(150) NOT NULL,
+  "lastmodifiedby" varchar(50) NOT NULL,
+  "dtlastmodified" datetime NOT NULL,
+  "approvedby" varchar(50) default NULL,
+  "dtapproved" datetime default NULL,
+  "faasid" varchar(50) NOT NULL,
+  "faas" text,
+  PRIMARY KEY  ("objid")
+);
+
+create index "ix_faasid" on faastitleupdate ("faasid");
+
+
+

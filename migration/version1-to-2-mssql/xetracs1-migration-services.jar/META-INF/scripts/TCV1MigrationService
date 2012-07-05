@@ -13,7 +13,10 @@ class TCV1MigrationService
     def numSvc
     
     @ProxyMethod
-    public void updateLiquidationInfo() {
+    public void updateLiquidationInfo() 
+	{
+		println "updateLiquidationInfo"
+		
         def lqlist = em1.sqlContext.createQuery('''
 			select 
 				l.*,
@@ -62,13 +65,19 @@ class TCV1MigrationService
                     [caption:"10.00"    ,denomination:10.00        ,qty:lq.d10qty        ,amount:lq.d10qty*10.0],
                     [caption:"Coins"    ,denomination:1.00        ,qty:lq.coins        ,amount:lq.coins]],
             ]
+			
+			println "updating liquidation: $lq.objid"
+			
             em2.sqlContext.createExecutor('UPDATE liquidation SET info = $P{info} WHERE [objid] = $P{objid}')
                     .setParameters([objid:lq.objid, info:em2.serializer.write( info) ]).execute() 
         }
     }
 	
     @ProxyMethod
-	public void updateRemittanceInfo() {
+	public void updateRemittanceInfo() 
+	{
+		println "updateRemittanceInfo"
+		
 		def remittancelist = em1.sqlContext.createQuery('''
 			select 
 				r.*,
@@ -105,6 +114,9 @@ class TCV1MigrationService
 					[caption:"10.00"	,denomination:10.00		,qty:rem.d10qty		,amount:rem.d10qty*10.0],
 					[caption:"Coins"	,denomination:1.00		,qty:rem.coins		,amount:rem.coins]],
 			]
+			
+			println "updating ramittance: $rem.objid"
+			
 			em2.sqlContext.createExecutor('UPDATE remittance SET info = $P{info} WHERE [objid] = $P{objid}')
 					.setParameters([objid:rem.objid, info:em2.serializer.write( info) ]).execute() 
 		}
@@ -112,7 +124,10 @@ class TCV1MigrationService
     
     
     @ProxyMethod
-	public void updateAccount( parentacct, level) {
+	public void updateAccount( parentacct, level) 
+	{
+		println "updateAccount"
+	
 		def acctlist = []
 		if( ! parentacct )
 			acctlist = em2.sqlContext.createQuery('SELECT [objid], accttitle FROM account WHERE parentid IS NULL').resultList
@@ -143,6 +158,9 @@ class TCV1MigrationService
 			pathbyids 	: acct.pathbyids,
 			pathbytitle	: acct.pathbytitle,
 		]
+		
+		println "updating account: $params.objid"
+		
 		em2.sqlContext.createExecutor('UPDATE account SET acctlevel = $P{level}, pathbyids=$P{pathbyids}, pathbytitle=$P{pathbytitle} WHERE [objid] = $P{objid}')
 				.setParameters( params ).execute() 
 		
