@@ -426,9 +426,13 @@ class ReceiptService
 		}
 		else if( afcontrol.qtyissued == 0 ){
 			//first issuance after remittance
-			if( afcontrol.qtyissued ) //some migrated values from version 1 are null
-				afcontrol.qtyissued += 1
 			
+			//some migrated values from version 1 are null
+			if( afcontrol.qtyissued == null ) {
+				afcontrol.qtyissued = 0 
+			}
+			
+			afcontrol.qtyissued += 1
 			afcontrol.balance -= 1
 			afcontrol.issuedfrom = afcontrol.beginseries
 			afcontrol.issuedto = afcontrol.beginseries
