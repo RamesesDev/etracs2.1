@@ -6,20 +6,23 @@ public class XMigrationService
 	@PersistenceContext('main')
 	def em
 	
+	@PersistenceContext('system')
+	def sysem
+	
 	@Service('NumberService')
 	def numSvc 
 	
 	@ProxyMethod
 	public void fixRuleOpener() {
-		def ruleIds = em.sqlContext.createQuery('SELECT objid FROM rule ORDER BY ruleset, rulename ').resultList 
+		def ruleIds = sysem.sqlContext.createQuery('SELECT objid FROM rule ORDER BY ruleset, rulename ').resultList 
 		ruleIds.each{ ruleid ->
-			def rule = em.read('rule', ruleid )
+			def rule = sysem.read('rule', ruleid )
 			if( rule ) {
 				println 'rule.ruleset -> ' + rule.ruleset
 				if( rule.ruleset == 'bpbilling' ) fixBPBillingRule( rule )
 				else if( rule.ruleset == 'rptbilling' ) fixRPTBillingRule( rule )
 				else if( rule.ruleset == 'bpassessment' ) fixBPAssessmentRule( rule )
-				em.update( rule.schemaname, rule ) 
+				sysem.update( rule.schemaname, rule ) 
 			}
 		}
 	}
