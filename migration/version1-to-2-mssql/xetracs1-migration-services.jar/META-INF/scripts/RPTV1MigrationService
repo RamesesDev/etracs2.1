@@ -60,80 +60,91 @@ class RPTV1MigrationService
 	
 	@ProxyMethod 
 	public List updateFAASInfo( faaslist ) {
+		def execsvc = java.util.concurrent.Executors.newFixedThreadPool(2);
+		def tasks = [];
+		
 		def errorlist = []
 		faaslist.each{ faas ->
-			println 'processing faasinfo: faasid -> ' + faas.objid 
-			def newinfo = em1.sqlContext.createQuery('''
-					select
-						1 as datacapture,
-						td.previousMarketValue as prevmv,
-						td.previousAssessedValue as prevav,
-						td.effectivityqtr,
-						trim(td.remarks) as memoranda,
-						0 as autonumber,
-						0 as backtaxyrs,
-						rp.claimno as claimno,
-						0 as annotated,
-						case 
-							when td.txntype = 'GR' then '[txntype:"GR", caption:"General Revision"]'
-							when td.txntype = 'TR' then '[txntype:"TR", caption:"Transfer of Ownership"]'	
-							when td.txntype = 'ND' then '[txntype:"ND", caption:"New Discovery"]'	
-							when td.txntype = 'SD' then '[txntype:"SD", caption:"Subdivision"]'	
-							when td.txntype = 'CE' then '[txntype:"CE", caption:"Correction of Entry"]'	
-							when td.txntype = 'AM' then '[txntype:"CS", caption:"Consolidation"]'	
-							when td.txntype IN ('RE','CT','PC','CD','CC','PD' ) then '[txntype:"RE", caption:"Reassessment"]'	
-							else '[txntype:"DC", caption:"Data Capture"]'	
-						end as txn,
-						rpu.txntype,
-						td.tdno,
-						td.issuedate,
-						td.effectivityyear,
-						trim(td.previousTdNo) as prevtdno,
-						trim(td.previousPin) as prevpin,
-						trim(td.previousOwner) as prevowner,
-						null as appraisedbyid,
-						trim(td.appraisedby) as appraisedby,
-						trim(td.appraisedbyposition) as appraisedbytitle,
-						td.issuedate as dtappraised,
-						null as recommendedbyid,
-						trim(td.recommendedby) as recommendedby,
-						trim(td.recommendedbyposition) as recommendedbytitle,
-						td.issuedate as dtrecommended,
-						null as approvedbyid,
-						trim(td.approvedby) as approvedby,
-						trim(td.approvedbyposition) as approvedbytitle,
-						td.issuedate as dtapproved,
-						trim(td.taxpayerid) as taxpayerid,
-						trim(p.taxpayerno) as taxpayerno,
-						trim(td.taxpayername) as taxpayername,
-						trim(td.taxpayeraddress) as taxpayeraddress,
-						trim(td.taxpayername) as ownername,
-						trim(td.taxpayeraddress) as owneraddress
-					from taxdeclaration td
-						inner join rpu rpu on td.rpuid = rpu.objid 
-						inner join realproperty rp on rpu.realpropertyid = rp.objid 
-						left join Payer p on td.taxpayerId = p.objid 
-					where td.objid = $P{objid} 
-			''')
-			.setParameter('objid', faas.objid)
-			.singleResult
-			if( newinfo ) {
-				try{
-					newinfo.txn = em2.serializer.read( newinfo.txn ) 
-					def info = getCurrentFAASInfo( faas.objid )
-					if( !info ) {
-						newinfo.putAll( info )
+			tasks << execsvc.submit(
+				{
+				println 'processing faasinfo: faasid -> ' + faas.objid 
+				def newinfo = em1.sqlContext.createQuery('''
+						select
+							1 as datacapture,
+							td.previousMarketValue as prevmv,
+							td.previousAssessedValue as prevav,
+							td.effectivityqtr,
+							ltrim(rtrim(cast(td.remarks as varchar(2000)))) as memoranda,
+							0 as autonumber,
+							0 as backtaxyrs,
+							rp.claimno as claimno,
+							0 as annotated,
+							case 
+								when td.txntype = 'GR' then '[txntype:"GR", caption:"General Revision"]'
+								when td.txntype = 'TR' then '[txntype:"TR", caption:"Transfer of Ownership"]'	
+								when td.txntype = 'ND' then '[txntype:"ND", caption:"New Discovery"]'	
+								when td.txntype = 'SD' then '[txntype:"SD", caption:"Subdivision"]'	
+								when td.txntype = 'CE' then '[txntype:"CE", caption:"Correction of Entry"]'	
+								when td.txntype = 'AM' then '[txntype:"CS", caption:"Consolidation"]'	
+								when td.txntype IN ('RE','CT','PC','CD','CC','PD' ) then '[txntype:"RE", caption:"Reassessment"]'	
+								else '[txntype:"DC", caption:"Data Capture"]'	
+							end as txn,
+							rpu.txntype,
+							td.tdno,
+							td.issuedate,
+							td.effectivityyear,
+							ltrim(rtrim(td.previousTdNo)) as prevtdno,
+							ltrim(rtrim(td.previousPin)) as prevpin,
+							ltrim(rtrim(td.previousOwner)) as prevowner,
+							null as appraisedbyid,
+							ltrim(rtrim(td.appraisedby)) as appraisedby,
+							ltrim(rtrim(td.appraisedbyposition)) as appraisedbytitle,
+							td.issuedate as dtappraised,
+							null as recommendedbyid,
+							ltrim(rtrim(td.recommendedby)) as recommendedby,
+							ltrim(rtrim(td.recommendedbyposition)) as recommendedbytitle,
+							td.issuedate as dtrecommended,
+							null as approvedbyid,
+							ltrim(rtrim(td.approvedby)) as approvedby,
+							ltrim(rtrim(td.approvedbyposition)) as approvedbytitle,
+							td.issuedate as dtapproved,
+							ltrim(rtrim(td.taxpayerid)) as taxpayerid,
+							ltrim(rtrim(p.taxpayerno)) as taxpayerno,
+							ltrim(rtrim(td.taxpayername)) as taxpayername,
+							ltrim(rtrim(td.taxpayeraddress)) as taxpayeraddress,
+							ltrim(rtrim(td.taxpayername)) as ownername,
+							ltrim(rtrim(td.taxpayeraddress)) as owneraddress
+						from taxdeclaration td
+							inner join rpu rpu on td.rpuid = rpu.objid 
+							inner join realproperty rp on rpu.realpropertyid = rp.objid 
+							left join Payer p on td.taxpayerId = p.objid 
+						where td.objid = $P{objid} 
+				''')
+				.setParameter('objid', faas.objid)
+				.singleResult
+				if( newinfo ) {
+					try{
+						newinfo.txn = em2.serializer.read( newinfo.txn ) 
+						def info = getCurrentFAASInfo( faas.objid )
+						if( !info ) {
+							newinfo.putAll( info )
+						}
+						em2.sqlContext.createExecutor('UPDATE faas SET info = $P{info} WHERE objid=$P{objid}')
+								.setParameters( [objid:faas.objid, info:em2.serializer.write(newinfo)] )
+								.execute()
 					}
-					em2.sqlContext.createExecutor('UPDATE faas SET info = $P{info} WHERE objid=$P{objid}')
-							.setParameters( [objid:faas.objid, info:em2.serializer.write(newinfo)] )
-							.execute()
+					catch( e ) {
+						println e.message 
+						errorlist.add( 'faasid ' + faas.objid + '    [' + e.message + ']' )
+					}
 				}
-				catch( e ) {
-					println e.message 
-					errorlist.add( 'faasid ' + faas.objid + '    [' + e.message + ']' )
-				}
-			}
+			} as Runnable);
 		}
+		
+		//wait
+		tasks.each{ it.get() }
+		try{ execsvc.shutdown() }catch(e){}
+		
 		return errorlist
 	}
 	
@@ -141,75 +152,98 @@ class RPTV1MigrationService
 	
 	@ProxyMethod 
 	public List updateFAASRealPropertyInfo( faaslist ) {
+		def execsvc = java.util.concurrent.Executors.newFixedThreadPool(2);
+		def tasks = [];
+		
 		def errorlist = []
 		faaslist.each{ faas -> 
-			println 'processing faas realproperty info: faasid -> ' + faas.objid 
-			def rpinfo = em1.sqlContext.createQuery('''
-							select
-								LOWER((select type from lgu where indexno = rp.provCityIndex)) as lgutype,
-								null as attributes,
-								0 as autonumber,
-								'new' as pintype,
-								rp.barangayid,
-								rp.location as barangay,
-								rp.brgyIndex as barangayindex,
-								(select objid from lgu where indexno = rp.muniDistrictIndex) as munidistrictid,
-								rp.sectionNo as  section,
-								rp.parcelNo as parcel,
-								(select name from lgu where indexno = rp.provCityIndex ) as provcity,
-								rp.provCityIndex as  provcityindex,
-								(select name from lgu where indexno = rp.muniDistrictIndex) as munidistrict,
-								rp.muniDistrictIndex as munidistrictindex,
-								rp.houseNo as houseno,
-								rp.purok as purok,
-								rp.street as street,
-								rp.surveyno,
-								rp.blockno,
-								rp.pin,
-								rp.cadastrallotno,
-								rp.southboundary as south,
-								rp.northboundary as north,
-								rp.eastboundary as east,
-								rp.westboundary as west
-							from taxdeclaration td
-							inner join rpu rpu on td.rpuid = rpu.objid 
-							inner join realproperty rp on rpu.realpropertyid = rp.objid 
-							where td.objid = $P{objid} 
-					''')
-					.setParameter('objid', faas.objid)
-					.singleResult
-			if( rpinfo ) {
-				try{
-					em2.sqlContext.createExecutor('UPDATE faas SET rp = $P{rp} WHERE objid=$P{objid}')
-							.setParameters( [objid:faas.objid, rp:em2.serializer.write(rpinfo)] )
-							.execute()
+			tasks << execsvc.submit(
+			{
+				println 'processing faas realproperty info: faasid -> ' + faas.objid 
+				def rpinfo = em1.sqlContext.createQuery('''
+								select
+									LOWER((select type from lgu where indexno = rp.provCityIndex)) as lgutype,
+									null as attributes,
+									0 as autonumber,
+									'new' as pintype,
+									rp.barangayid,
+									rp.location as barangay,
+									rp.brgyIndex as barangayindex,
+									(select objid from lgu where indexno = rp.muniDistrictIndex) as munidistrictid,
+									rp.sectionNo as  section,
+									rp.parcelNo as parcel,
+									(select name from lgu where indexno = rp.provCityIndex ) as provcity,
+									rp.provCityIndex as  provcityindex,
+									(select name from lgu where indexno = rp.muniDistrictIndex) as munidistrict,
+									rp.muniDistrictIndex as munidistrictindex,
+									rp.houseNo as houseno,
+									rp.purok as purok,
+									rp.street as street,
+									rp.surveyno,
+									rp.blockno,
+									rp.pin,
+									rp.cadastrallotno,
+									rp.southboundary as south,
+									rp.northboundary as north,
+									rp.eastboundary as east,
+									rp.westboundary as west
+								from taxdeclaration td
+								inner join rpu rpu on td.rpuid = rpu.objid 
+								inner join realproperty rp on rpu.realpropertyid = rp.objid 
+								where td.objid = $P{objid} 
+						''')
+						.setParameter('objid', faas.objid)
+						.singleResult
+				if( rpinfo ) {
+					try{
+						em2.sqlContext.createExecutor('UPDATE faas SET rp = $P{rp} WHERE objid=$P{objid}')
+								.setParameters( [objid:faas.objid, rp:em2.serializer.write(rpinfo)] )
+								.execute()
+					}
+					catch( e ) {
+						println e.message 
+						errorlist.add( 'faasid: ' + faas.objid + '    [' + e.message + ']' )
+					}
 				}
-				catch( e ) {
-					println e.message 
-					errorlist.add( 'faasid: ' + faas.objid + '    [' + e.message + ']' )
-				}
-			}
+			} as Runnable);
 		}
+		
+		//wait
+		tasks.each { it.get() }
+		try{ execsvc.shutdown() }catch(e){}
+		
+		return errorlist
 	}
 	
 	
 	@ProxyMethod
 	public List  updateFAASLandRPUInfo( faaslist ) {
+		def execsvc = java.util.concurrent.Executors.newFixedThreadPool(2);
+		def tasks = [];
+	
 		def errorlist = []
 		faaslist.each{ faas -> 
-			try{
-				println 'processing faas land rpu info: faasid -> ' + faas.objid 
-				def rpu = buildRpuInfo( faas )
-				buildLandInfo( faas, rpu )
-				em2.sqlContext.createExecutor('UPDATE faas SET rpu=$P{rpu} WHERE objid=$P{objid}')
-						.setParameters([objid:faas.objid, rpu:em2.serializer.write(rpu)])
-						.execute()
-			}
-			catch( e ) {
-				println e.message 
-				errorlist.add( 'faasid: ' + faas.objid + '   [' + e.message + ']' )
-			}
+			tasks << execsvc.submit(
+			{
+				try{
+					println 'processing faas land rpu info: faasid -> ' + faas.objid 
+					def rpu = buildRpuInfo( faas )
+					buildLandInfo( faas, rpu )
+					em2.sqlContext.createExecutor('UPDATE faas SET rpu=$P{rpu} WHERE objid=$P{objid}')
+							.setParameters([objid:faas.objid, rpu:em2.serializer.write(rpu)])
+							.execute()
+				}
+				catch( e ) {
+					println e.message 
+					errorlist.add( 'faasid: ' + faas.objid + '   [' + e.message + ']' )
+				}
+			} as Runnable);
 		}
+		
+		//wait
+		tasks.each{ it.get() }
+		try{ execsvc.shutdown() }catch(e){}
+		
 		println 'done '+ faaslist[0]
 		return errorlist
 	}
@@ -217,24 +251,35 @@ class RPTV1MigrationService
 	
 	@ProxyMethod
 	public List  updateFAASMachRPUInfo( faaslist ) {
+		def execsvc = java.util.concurrent.Executors.newFixedThreadPool(2);
+		def tasks = [];
+		
 		def errorlist = []
 		faaslist.each{ faas ->
-			try{
-				println 'processing faas mach rpu: faasid -> ' + faas.objid 
-				def rpu = buildRpuInfo( faas )
-				buildMachInfo( faas, rpu )
-				
-				if( rpu ) {
-					em2.sqlContext.createExecutor('UPDATE faas SET rpu=$P{rpu} WHERE objid=$P{objid}')
-							.setParameters([objid:faas.objid, rpu:em2.serializer.write(rpu)])
-							.execute()
+			tasks << execsvc.submit(
+			{
+				try{
+					println 'processing faas mach rpu: faasid -> ' + faas.objid 
+					def rpu = buildRpuInfo( faas )
+					buildMachInfo( faas, rpu )
+					
+					if( rpu ) {
+						em2.sqlContext.createExecutor('UPDATE faas SET rpu=$P{rpu} WHERE objid=$P{objid}')
+								.setParameters([objid:faas.objid, rpu:em2.serializer.write(rpu)])
+								.execute()
+					}
 				}
-			}
-			catch( e ) {
-				println e.message 
-				errorlist.add( 'faasid: ' + faas.objid + '   [' + e.message +']' )
-			}
+				catch( e ) {
+					println e.message 
+					errorlist.add( 'faasid: ' + faas.objid + '   [' + e.message +']' )
+				}
+			} as Runnable);
 		}
+		
+		//wait
+		tasks.each{ it.get() }
+		try{ execsvc.shutdown() }catch(e){}
+		
 		return errorlist
 	}
 	
@@ -372,23 +417,34 @@ class RPTV1MigrationService
 	
 	@ProxyMethod
 	public List  updateFAASBldgRPUInfo( faaslist ) {
+		def execsvc = java.util.concurrent.Executors.newFixedThreadPool(2);
+		def tasks = [];
+	
 		def errorlist = []
 		faaslist.each{ faas ->
-			try{
-				def rpu = buildRpuInfo( faas )
-				buildBldgInfo( faas, rpu )
-				
-				if( rpu ) {
-					em2.sqlContext.createExecutor('UPDATE faas SET rpu=$P{rpu} WHERE objid=$P{objid}')
-							.setParameters([objid:faas.objid, rpu:em2.serializer.write(rpu)])
-							.execute()
+			tasks << execsvc.submit(
+			{
+				try{
+					def rpu = buildRpuInfo( faas )
+					buildBldgInfo( faas, rpu )
+					
+					if( rpu ) {
+						em2.sqlContext.createExecutor('UPDATE faas SET rpu=$P{rpu} WHERE objid=$P{objid}')
+								.setParameters([objid:faas.objid, rpu:em2.serializer.write(rpu)])
+								.execute()
+					}
 				}
-			}
-			catch( e ) {
-				println e.message 
-				errorlist.add( 'faasid: ' + faas.objid + '   [' + e.message + ']' )
-			}
+				catch( e ) {
+					println e.message 
+					errorlist.add( 'faasid: ' + faas.objid + '   [' + e.message + ']' )
+				}
+			} as Runnable);
 		}
+		
+		//wait
+		tasks.each{ it.get() }
+		try{ execsvc.shutdown() }catch(e){}
+		
 		return errorlist
 	}
 	
@@ -729,36 +785,46 @@ class RPTV1MigrationService
 	
 	@ProxyMethod
 	public void updateIndividualEntityInfo( list )  {
-		list.each {
-			println "processing individual entity: ${it.objid}"
-			
-			def info = em1.sqlContext.createQuery('''
-							select 
-								p.lastname, 
-								p.firstname,
-								p.middlename,
-								p.birthdate,
-								p.placeofbirth as birthplace,
-								p.citizenshipid as citizenship,
-								case when p.gender = 'M' then 'MALE' else 'FEMALE' end as gender,
-								p.civilstatus,
-								p.professionid as profession,
-								p.tin,
-								null as sss,
-								p.height_value as height,
-								p.weight_value as weight
-							from payer p
-							where objid = $P{objid}
-			''')
-			.setParameter('objid', it.objid )
-			.singleResult
-			
-			if( info ) {
-				em2.sqlContext.createExecutor('UPDATE entity SET info=$P{info} WHERE objid=$P{objid}')
-						.setParameters([objid:it.objid, info:em2.serializer.write(info)])
-						.execute()
-			}
+		def execsvc = java.util.concurrent.Executors.newFixedThreadPool(2);
+		def tasks = [];
+		
+		list.each { entity ->
+			tasks << execsvc.submit(
+			{
+				println "processing individual entity: ${entity.objid}"
+				
+				def info = em1.sqlContext.createQuery('''
+								select 
+									p.lastname, 
+									p.firstname,
+									p.middlename,
+									p.birthdate,
+									p.placeofbirth as birthplace,
+									p.citizenshipid as citizenship,
+									case when p.gender = 'M' then 'MALE' else 'FEMALE' end as gender,
+									p.civilstatus,
+									p.professionid as profession,
+									p.tin,
+									null as sss,
+									p.height_value as height,
+									p.weight_value as weight
+								from payer p
+								where objid = $P{objid}
+				''')
+				.setParameter('objid', entity.objid )
+				.singleResult
+				
+				if( info ) {
+					em2.sqlContext.createExecutor('UPDATE entity SET info=$P{info} WHERE objid=$P{objid}')
+							.setParameters([objid:entity.objid, info:em2.serializer.write(info)])
+							.execute()
+				}
+			} as Runnable);
 		};
+		
+		//wait
+		tasks.each{ it.get() }
+		try{ execsvc.shutdown() }catch(e){}
 	}
 	
 	@ProxyMethod
@@ -1224,69 +1290,89 @@ class RPTV1MigrationService
 	
 	@ProxyMethod
 	public List insertRPTLedger( ledgerlist ) {
+		def execsvc = java.util.concurrent.Executors.newFixedThreadPool(50);
+		def tasks = [];
+		
 		def errorlist = []
 		ledgerlist.each{ ledger ->
-			println 'processing ledger -> ' + ledger.objid 
-			def ledgerinfo = em1.sqlContext.createQuery('''
-				SELECT
-					rl.objid, 
-					'rptledger' AS schemaname, 
-					'1.0' AS schemaversion, 
-					rl.state AS docstate, 
-					case when r.suffix = 0 
-						then rp.pin 
-						else concat(rp.pin, '-', r.suffix) 
-					end as fullpin, 
-					rp.claimno as claimno, 
-					td.objid as faasid, 
-					lower(r.type ) as  rputype, 
-					r.classificationId as  classid, 
-					r.classCode as classcode , 
-					r.classificationId as  actualuseid, 
-					r.classCode as  actualusecode, 
-					td.tdno,
-					td.previousTdNo as  prevtdno, 
-					ifnull(rp.cadastralLotNo,'-') as  cadastrallotno, 
-					rp.blockNo as  blockno, 
-					rp.location as  barangay, 
-					td.txnType as  txntype, 
-					r.taxable as  taxable, 
-					r.totalAV as  assessedvalue, 
-					td.taxpayerId as taxpayerid, 
-					p.taxpayerno as  taxpayerno, 
-					td.taxpayerName as taxpayername, 
-					td.taxpayerAddress as taxpayeraddress, 
-					td.administratorId as administratorid, 
-					null as  administratorno, 
-					td.administratorName as administratorname, 
-					td.administratorAddress as  administratoraddress, 
-					rl.lastYearPaid as lastyearpaid, 
-					rl.lastQtrPaid as lastqtrpaid, 
-					0 as partialbasic, 
-					0 as partialsef, 
-					0 as firstqtrpaidontime, 
-					0 as partialbasicint, 
-					0 as partialsefint
-				FROM RPTLedger rl
-					INNER JOIN TaxDeclaration td ON rl.tdid = td.objid 
-					INNER JOIN RPU r ON td.rpuid = r.objid 
-					INNER JOIN RealProperty rp ON r.realpropertyid= rp.objid
-					INNER JOIN payer p on td.taxpayerId = p.objid 
-				WHERE rl.objid = $P{ledgerid}
-			''')
-			.setParameter( 'ledgerid', ledger.objid )
-			.singleResult 
-			
-			if( ledgerinfo ) {
-				try {
-					em2.create( ledgerinfo.schemaname, ledgerinfo )
+			tasks << execsvc.submit(
+			{
+				println 'processing ledger -> ' + ledger.objid 
+				
+				def ledgerinfo;
+				
+				try 
+				{
+					ledgerinfo = em1.sqlContext.createQuery('''
+						SELECT
+							rl.objid, 
+							'rptledger' AS schemaname, 
+							'1.0' AS schemaversion, 
+							rl.state AS docstate, 
+							case when r.suffix = 0 
+								then rp.pin 
+								else (rp.pin + '-' + cast(r.suffix as varchar(255)))
+							end as fullpin, 
+							rp.claimno as claimno, 
+							td.objid as faasid, 
+							lower(r.type ) as  rputype, 
+							r.classificationId as  classid, 
+							r.classCode as classcode , 
+							r.classificationId as  actualuseid, 
+							r.classCode as  actualusecode, 
+							td.tdno,
+							td.previousTdNo as  prevtdno, 
+							isnull(rp.cadastralLotNo,'-') as  cadastrallotno, 
+							rp.blockNo as  blockno, 
+							rp.location as  barangay, 
+							td.txnType as  txntype, 
+							r.taxable as  taxable, 
+							r.totalAV as  assessedvalue, 
+							td.taxpayerId as taxpayerid, 
+							p.taxpayerno as  taxpayerno, 
+							td.taxpayerName as taxpayername, 
+							td.taxpayerAddress as taxpayeraddress, 
+							td.administratorId as administratorid, 
+							null as  administratorno, 
+							td.administratorName as administratorname, 
+							td.administratorAddress as  administratoraddress, 
+							rl.lastYearPaid as lastyearpaid, 
+							rl.lastQtrPaid as lastqtrpaid, 
+							0 as partialbasic, 
+							0 as partialsef, 
+							0 as firstqtrpaidontime, 
+							0 as partialbasicint, 
+							0 as partialsefint
+						FROM RPTLedger rl
+							INNER JOIN TaxDeclaration td ON rl.tdid = td.objid 
+							INNER JOIN RPU r ON td.rpuid = r.objid 
+							INNER JOIN RealProperty rp ON r.realpropertyid= rp.objid
+							INNER JOIN payer p on td.taxpayerId = p.objid 
+						WHERE rl.objid = $P{ledgerid}
+					''')
+					.setParameter( 'ledgerid', ledger.objid )
+					.singleResult
 				}
-				catch( e )  {
-					println e.message 
-					errorlist.add( 'ledgerid: ' + ledger.objid + '    [' + e.message + ']')
+				catch(e) {
+					println "error loading ledger info: $ledger.objid,  Error: $e.message"  
 				}
-			}
+				
+				if( ledgerinfo ) {
+					try {
+						em2.create( ledgerinfo.schemaname, ledgerinfo )
+					}
+					catch( e )  {
+						println e.message 
+						errorlist.add( 'ledgerid: ' + ledger.objid + '    [' + e.message + ']')
+					}
+				}
+			} as Runnable);
 		}
+		
+		//wait
+		tasks.each{ it.get() }
+		try{ execsvc.shutdown() }catch(e){}
+		
 		return errorlist
 	}
 	
@@ -1297,48 +1383,59 @@ class RPTV1MigrationService
     	
 	@ProxyMethod
 	public List insertRPTLedgerItem( itemlist ) {
+		def execsvc = java.util.concurrent.Executors.newFixedThreadPool(50);
+		def tasks = [];
+		
 		def errorlist = []
 		println 'processing -> ' + itemlist[0] 
 		itemlist.each{ item ->
-			def iteminfo = em1.sqlContext.createQuery('''
-				SELECT
-					rli.objid, 
-					'rptledger:rptledgeritem' as schemaname, 
-					'1.0' as schemaversion, 
-					rli.state as  docstate, 
-					rl.objid as  parentid, 
-					td.objid as  faasid, 
-					rli.tdno as tdno, 
-					td.txntype as txntype, 
-					r.classificationId as classid, 
-					r.classCode as  classcode, 
-					r.classificationId as actualuseid, 
-					r.classCode as actualusecode, 
-					case when r.taxable is null then 1 else r.taxable end as  taxable, 
-					0 as backtax, 
-					rli.fromYear as  fromyear, 
-					rli.toYear as  toyear,
-					rli.assessedValue as  assessedvalue, 
-					rli.systemCreated as  systemcreated 
-				FROM RPTLedger rl
-					INNER JOIN etracs_sancarlos.RPTLedgerItem rli ON rl.objid = rli.parentid 
-					LEFT JOIN etracs_sancarlos.TaxDeclaration td ON rli.tdno  = td.tdno 
-					LEFT JOIN etracs_sancarlos.RPU r ON td.rpuid = r.objid
-				WHERE rli.objid = $P{objid} 
-			''')
-			.setParameter('objid', item.objid )
-			.singleResult 
-			
-			if( iteminfo ) {
-				try {
-					em2.create( iteminfo.schemaname, iteminfo  )
+			tasks << execsvc.submit(
+			{
+				def iteminfo = em1.sqlContext.createQuery('''
+					SELECT
+						rli.objid, 
+						'rptledger:rptledgeritem' as schemaname, 
+						'1.0' as schemaversion, 
+						rli.state as  docstate, 
+						rl.objid as  parentid, 
+						td.objid as  faasid, 
+						rli.tdno as tdno, 
+						td.txntype as txntype, 
+						r.classificationId as classid, 
+						r.classCode as  classcode, 
+						r.classificationId as actualuseid, 
+						r.classCode as actualusecode, 
+						case when r.taxable is null then 1 else r.taxable end as  taxable, 
+						0 as backtax, 
+						rli.fromYear as  fromyear, 
+						rli.toYear as  toyear,
+						rli.assessedValue as  assessedvalue, 
+						rli.systemCreated as  systemcreated 
+					FROM RPTLedger rl
+						INNER JOIN RPTLedgerItem rli ON rl.objid = rli.parentid 
+						LEFT JOIN TaxDeclaration td ON rli.tdno  = td.tdno 
+						LEFT JOIN RPU r ON td.rpuid = r.objid
+					WHERE rli.objid = $P{objid} 
+				''')
+				.setParameter('objid', item.objid )
+				.singleResult 
+				
+				if( iteminfo ) {
+					try {
+						em2.create( iteminfo.schemaname, iteminfo  )
+					}
+					catch( e ) {
+						println e.message 
+						errorlist.add( 'ledgeritemid: ' + item.objid  + '    [' + e.message +  ']') 
+					}
 				}
-				catch( e ) {
-					println e.message 
-					errorlist.add( 'ledgeritemid: ' + item.objid  + '    [' + e.message +  ']') 
-				}
-			}
+			} as Runnable);
 		}
+		
+		//wait
+		tasks.each{ it.get() }
+		try{ execsvc.shutdown() }catch(e){}
+		
 		return errorlist
 	}
 		

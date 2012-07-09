@@ -176,7 +176,7 @@ public class LandRYSettingService
     public void saveAssessLevel( assessLevel ) {
         def schemaname = 'landrysetting:assesslevel'
         em.validate(schemaname, assessLevel )
-        
+		
         def old = em.read(schemaname, assessLevel )
         if( old ) {
             if( assessLevel.fixrate ) {

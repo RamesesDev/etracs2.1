@@ -58,6 +58,12 @@ public class LandRYSettingController
         entity.remove('lcuv');
         entity.remove('landadjustments');
         entity.remove('landactualuseadjustments');
+        
+        assessLevels.each {
+            if( it.parentid ) {
+                it.parent = [classid: it.parentid, classcode: it.parentcode]
+            }
+        }
     }
     
     def createSetting() {
@@ -115,6 +121,7 @@ public class LandRYSettingController
     def selectedRangeLevel
     def assessLevelMsg 
     def assessLevels = [] 
+    def classLookupOpener = InvokerUtil.lookupOpener('propertyclass.lookup', [:])
     
     def assessLevelListHandler = [
         createItem : { return createAssessLevel() },
@@ -124,6 +131,7 @@ public class LandRYSettingController
             new Column(name:'classname', caption:'Name*', editable:true ),
             new Column(name:'fixrate', caption:'Fix?*', type:'boolean', maxWidth:40, editable:true ),
             new Column(name:'rate', caption:'Rate (%)*', type:'decimal', editable:true ),
+            new Column(name:'parent', caption:'Class', type:'lookup', editable:true, handler: classLookupOpener, expression: '#{classcode}' ),
         ]},
         validate       : { li -> doValidateAssessLevel( li.item ) },
         onRemoveItem   : { item -> 
@@ -135,6 +143,10 @@ public class LandRYSettingController
             if( colName == 'fixrate' && item.fixrate == true ) {
                 selectedAssessLevel?.ranges?.clear()
                 rangeLevelListHandler.load()
+            }
+            if( colName == 'parent' ) {
+                item.parentid = item.parent?.classid
+                item.parentcode = item.parent?.classcode
             }
         },
         fetchList      : { return assessLevels },
