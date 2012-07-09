@@ -11,7 +11,7 @@
  FROM personnel p
  INNER JOIN jobposition j ON j.assigneeid = p.objid
  INNER JOIN useraccount u ON u.objid = p.objid
- ORDER BY name
+ ORDER BY lastname,firstname,middlename
 
 
 
@@ -29,7 +29,7 @@
  INNER JOIN jobposition j ON j.assigneeid = p.objid
  INNER JOIN useraccount u ON u.objid = p.objid
  WHERE u.uid LIKE $P{uid}
- ORDER BY name
+ ORDER BY lastname,firstname,middlename
 
 
 
@@ -47,7 +47,7 @@
  INNER JOIN jobposition j ON j.assigneeid = p.objid
  INNER JOIN useraccount u ON u.objid = p.objid
  WHERE p.lastname LIKE $P{lastname} 
- ORDER BY name
+ ORDER BY lastname,firstname,middlename
 
 
 [findById]
@@ -64,7 +64,7 @@
  INNER JOIN jobposition j ON j.assigneeid = p.objid
  INNER JOIN useraccount u ON u.objid = p.objid
  WHERE p.objid = $P{objid} 
- ORDER BY name
+ ORDER BY lastname,firstname,middlename
 
 
 
@@ -84,7 +84,7 @@
    AND j.objid IN (
     SELECT jobid FROM jobposition_tag WHERE tagid = $P{tagid}
    )
- ORDER BY name
+ ORDER BY lastname,firstname,middlename
  
 
 
@@ -103,7 +103,7 @@
  WHERE j.objid IN (
           SELECT jobid FROM jobposition_tag WHERE tagid = $P{tagid}
        )
- ORDER BY name
+ ORDER BY lastname,firstname,middlename
 
 
 

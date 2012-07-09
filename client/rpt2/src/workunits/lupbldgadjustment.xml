@@ -106,9 +106,7 @@ class BldgAdditionalItemTypeLookupController extends LookupModel
     List fetchList( Map params ) { 
         def s = search
         if( !s ) s = searchText 
-        def list = svc.lookupAdditionalItems( ry, s, params)
-        if( list ) return list
-        throw new Exception("Record not found.")
+        return svc.lookupAdditionalItems( ry, s, params)
     }
     
     /* ----------------------------------------------
