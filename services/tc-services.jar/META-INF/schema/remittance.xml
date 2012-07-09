@@ -79,5 +79,20 @@
 		<field name="totalotherpayment" type="decimal"  mapfield="info.totalotherpayment"/>
 	</element>
 	
+	<element name="remittanceimport" tablename="remittanceimport">
+		<field name="objid" primary="true" />
+		<field name="txnno" required="true" mapfield="info.txnno" />
+		<field name="txndate" required="true" mapfield="info.txndate"  />
+		<field name="amount" required="true" type="decimal" mapfield="info.amount"  />
+		<field name="collectorid" required="true" />
+		<field name="collectorname" required="true" mapfield="info.collectorname" />
+		<field name="collectortitle" required="true" mapfield="info.collectortitle" />
+		<field name="liquidatingofficerid"  required="true" />
+		<field name="liquidatingofficername"  required="true" mapfield="info.liquidatingofficername"/>
+		<field name="liquidatingofficertitle"  required="true" mapfield="info.liquidatingofficertitle" />
+		<field name="postedby"  required="true" />
+		<field name="dtposted"  required="true" />
+	</element>
+	
 </schema>
 
