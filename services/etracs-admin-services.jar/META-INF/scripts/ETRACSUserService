@@ -25,6 +25,7 @@ class ETRACSUserService
 	@ProxyMethod
 	public List getUsersByTagid( tagid, param ) {
 		def qry = adminEm.sqlContext.createNamedQuery('etracsuser:getUsersByTagid');
+		qry.setPagingKeys('p.objid');
 		
 		if( !param ) param = [:];
 		param.tagid = tagid;
@@ -130,11 +131,14 @@ class ETRACSUserService
 	}
 		
 	private def getListByName( namedQuery, values, params ) {
-		return em.sqlContext.createNamedQuery( namedQuery )
+		def qry = em.sqlContext.createNamedQuery( namedQuery )
 					.setParameters(values)
 					.setFirstResult( params._start )
-					.setMaxResults( params._limit )
-					.resultList;
+					.setMaxResults( params._limit );
+		
+		qry.setPagingKeys("p.objid");
+		
+		return qry.resultList;
 	}
     
 }

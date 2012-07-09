@@ -222,6 +222,8 @@ public class LandRPUController
         item.assesslevelid = item.al?.assesslevelid
         item.assesslevelcode = item.al?.assesslevelcode 
         item.assesslevelname = item.al?.assesslevelname 
+        item.assesslevelparentid = item.al?.parentid
+        item.assesslevelparentcode = item.al?.parentcode
     }
     
     void updateStrippingInfo( item ) {

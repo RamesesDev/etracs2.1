@@ -24,7 +24,8 @@ ORDER BY s.subclasscode
   
 [lookupAssessLevel]  
 SELECT 
-	l.objid AS assesslevelid, l.classcode AS assesslevelcode, l.classname AS assesslevelname  
+	l.objid AS assesslevelid, l.classcode AS assesslevelcode, l.classname AS assesslevelname,
+	l.parentid, l.parentcode
 FROM landassesslevel l, landrysetting ls  
 WHERE l.landrysettingid = ls.objid  
   AND ls.ry = $P{ry}  

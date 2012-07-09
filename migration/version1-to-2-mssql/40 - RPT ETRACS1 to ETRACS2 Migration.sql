@@ -388,6 +388,47 @@ from etracs_bayombong..landadjustmenttype l;
 update  bayombong_etracs..landadjustment set expression = replace(replace(replace( expression, '$F{', ''), '$P{',''),'}','');
 
 
+update l
+set
+ classids = stuff(
+	(
+		select ',' + propertyclassificationid
+		from etracs_bayombong..landadjustmenttype_propertyclassification 
+		where landadjustmenttypeid = l.objid
+		FOR XML PATH(''),TYPE
+	).value('text()[1]','nvarchar(max)'),1,1,''
+ ),
+ appliedto = stuff(
+	(
+		select ',' + pc.code 
+		from etracs_bayombong..landadjustmenttype_propertyclassification la,
+			 etracs_bayombong..propertyclassification pc
+		where la.landadjustmenttypeid = l.objid
+		  and la.propertyclassificationid = pc.objid
+		FOR XML PATH(''),TYPE
+	).value('text()[1]','nvarchar(max)'),1,1,''
+ ),
+ classifications = (
+	'[' +
+	stuff(
+		(
+			select 
+				','+
+				'[propertyclass:[classname:"' + pc.description + '", classcode:"' + pc.code + '", classid:"' + pc.objid, '"],' +
+				'propertyid:"' + pc.objid + '", propertycode:"' + pc.code + '", propertyname:"' + pc.description, '"]'
+			from etracs_bayombong..landadjustmenttype_propertyclassification la,
+				 etracs_bayombong..propertyclassification pc
+			where la.landadjustmenttypeid = l.objid
+			  and la.propertyclassificationid = pc.objid
+			FOR XML PATH(''),TYPE
+		).value('text()[1]','nvarchar(max)'),1,1,''
+	 ) + 
+	']'
+)
+from bayombong_etracs..landadjustment l;
+
+
+
 
 /**********************************************************************
 * (20)
