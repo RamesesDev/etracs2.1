@@ -225,8 +225,8 @@ class LiquidationService {
 		
 		if( liq.cashier ) {
 			liq.info.depositedbyid 		= liq.cashier.objid 
-			liq.info.depositedbyname 	= liq.cashier.formalname 
-			liq.info.depositedbytitle 	= liq.cashier.jobtitle 
+			liq.info.depositedbyname 	= liq.cashier.cashiername  
+			liq.info.depositedbytitle 	= liq.cashier.cashiertitle 
 		}
 		
 	}
@@ -238,20 +238,9 @@ class LiquidationService {
 	
 	void updateRCDCashierInfo( liq ){
 		liq.rcds.each { rcd ->
-			rcd.cashierid 		= liq.cashierinfo.cashierid 
-			rcd.cashiername 	= liq.cashierinfo.cashiername 
-			rcd.cashiertitle 	= liq.cashierinfo.cashiertitle
-		}
-	}
-	
-	void updateRCDCashierInfo2( liq ) {
-		def cashiers = usrsvc.getUsersByRole( CASHIER_ROLE )
-		if( ! cashiers ) throw new Exception('Cashier is not defined.')
-		def cashier = cashiers[0]
-		liq.rcds.each { rcd ->
-			rcd.cashierid 		= cashier.objid 
-			rcd.cashiername 	= cashier.formalname 
-			rcd.cashiertitle 	= cashier.jobtitle 
+			rcd.cashierid 		= liq.cashier.cashierid 
+			rcd.cashiername 	= liq.cashier.cashiername 
+			rcd.cashiertitle 	= liq.cashier.cashiertitle
 		}
 	}
 	

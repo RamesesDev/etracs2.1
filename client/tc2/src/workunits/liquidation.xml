@@ -224,7 +224,7 @@
             def cashier
             
             void addCashierInfo() {
-                entity.cashierinfo = [
+                entity.cashier = [
                     cashierid : cashier.objid,
                     cashiername : cashier.formalname,
                     cashiertitle : cashier.jobtitle
