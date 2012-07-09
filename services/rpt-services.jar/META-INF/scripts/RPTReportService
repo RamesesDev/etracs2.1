@@ -51,7 +51,9 @@ class RPTReportService
 			barangay		: item.barangay,
 			basicnet		: item.basicnet,
 			sefnet			: item.sefnet,
-			total			: item.total 
+			total			: item.total,
+			lastyearpaid    : item.lastyearpaid,
+			lastqtrpaid     : item.lastqtrpaid,
 		]
 	}
 	
