@@ -56,8 +56,13 @@ class RPTReportService
 	}
 	
 	@ProxyMethod 
-	public List generateMasterList( year ) {
+	public List generateMasterList( year, orderby  ) { 
+		def orderbyclause = ''
+		if( orderby ) {
+			orderbyclause = 'ORDER BY ' + orderby.fieldname 
+		}
 		return em.sqlContext.createNamedQuery('rptreport:getMasterList')
+					.setVars( [orderby:orderbyclause] )
 					.setParameter('currentyear', dateSvc.serverYear )
 					.resultList 
 	}
@@ -148,8 +153,16 @@ class RPTReportService
 	}
 	
 	@ProxyMethod 
-	public def generateAnnotationListing( ) {
-		def list = em.sqlContext.createNamedQuery('rptreport:getAnnotationListing').resultList
+	public def generateAnnotationListing( orderby ) {
+		def list = []
+		def orderbyclause = ''
+		if( orderby ) {
+			orderbyclause = ' ORDER BY ' + orderby.fieldname 
+		}
+		
+		list = em.sqlContext.createNamedQuery('rptreport:getAnnotationListing')
+						.setVars( [orderby:orderbyclause ])
+						.resultList
 		if( ! list ) throw new Exception('Records not found.')
 		return list 
 	}

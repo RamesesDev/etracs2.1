@@ -34,6 +34,15 @@ class MasterListReportController
     def reportdata
     def readonly = true 
     
+    def orderby 
+    
+    def orderbyColumns = [
+        [fieldname:'t.ownername', caption:'Owner Name'],
+        [fieldname:'t.fullpin', caption:'PIN'],
+        [fieldname:'t.tdno', caption:'TD No.'],
+    ]
+    
+    
     void init() {
         year = dateSvc.serverYear 
     }
@@ -44,7 +53,7 @@ class MasterListReportController
     }
     
     void generateReport() {
-        reportdata = svc.generateMasterList( year )
+        reportdata = svc.generateMasterList( year, orderby )
         report.viewReport()
     }
     

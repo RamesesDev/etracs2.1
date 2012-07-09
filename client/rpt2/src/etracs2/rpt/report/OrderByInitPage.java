@@ -9,12 +9,12 @@ import java.math.BigDecimal;
  * @author  user
  */
 @StyleSheet("etracs2/rpt/report/RPTYearInitPage.style")
-public class RPTYearInitPage extends javax.swing.JPanel {
+public class OrderByInitPage extends javax.swing.JPanel {
     
     /**
      * Creates new form AbstractOfCollectionInitPage
      */
-    public RPTYearInitPage() {
+    public OrderByInitPage() {
         initComponents();
     }
     
@@ -27,7 +27,6 @@ public class RPTYearInitPage extends javax.swing.JPanel {
     private void initComponents() {
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
         formPanel1 = new com.rameses.rcp.util.FormPanel();
-        xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
 
         setPreferredSize(new java.awt.Dimension(603, 291));
@@ -38,14 +37,6 @@ public class RPTYearInitPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Initial Information");
         formPanel1.setBorder(xTitledBorder1);
-        xNumberField1.setCaption("Year");
-        xNumberField1.setFieldType(Integer.class);
-        xNumberField1.setIndex(-10);
-        xNumberField1.setName("year");
-        xNumberField1.setPreferredSize(new java.awt.Dimension(80, 19));
-        xNumberField1.setRequired(true);
-        formPanel1.add(xNumberField1);
-
         xComboBox1.setCaption("Order By");
         xComboBox1.setExpression("#{caption}");
         xComboBox1.setItems("orderbyColumns");
@@ -78,7 +69,6 @@ public class RPTYearInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
-    private com.rameses.rcp.control.XNumberField xNumberField1;
     // End of variables declaration//GEN-END:variables
     
 }

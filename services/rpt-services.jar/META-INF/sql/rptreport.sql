@@ -135,6 +135,7 @@ FROM faaslist fl
 WHERE fl.annotated = 1  
   AND fl.docstate = 'CURRENT'  
   AND fa.docstate = 'APPROVED'  
+${orderby} 
 
 #----------------------------------------------------------------------
 #
@@ -689,6 +690,6 @@ SELECT t.* FROM (
 	FROM faaslist  
 	WHERE docstate = 'CANCELLED'   
 	  AND YEAR(canceldate) = $P{currentyear}  
-) t
-ORDER BY t.fullpin 
+) t 
+${orderby} 
 
