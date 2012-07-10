@@ -1,5 +1,27 @@
 [list]
-select * from sys_module
+select
+	name,
+	title,
+	description,
+	version,
+	filename,
+	lastmodified,
+	permissions
+from sys_module
+
+
+[custom-list]
+select
+	name,
+	title,
+	description,
+	version,
+	filename,
+	lastmodified,
+	permissions
+from sys_module
+where type='custom'
+
 
 [get-module-permissions-by-roleclass]
  select 

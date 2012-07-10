@@ -17,7 +17,25 @@ class ModuleService {
 	}
 	
 	@ProxyMethod
+	public def getCustomModuleList(def params) {
+		def qry = em.sqlContext.createNamedQuery( 'module:custom-list' )
+		if( params ) {
+			if(params._start) qry.setFirstResult( params._start )
+			if(params._limit) qry.setMaxResults( params._limit )
+			qry.setParameters( params )
+		}
+		return qry.resultList
+	}
+	
+	@ProxyMethod
+	public def getJarFile(param) {
+		def m = em.read('module', param);
+		return m.jarfile;
+	}
+	
+	@ProxyMethod
 	public def save(def o) {
+		if( !o.type ) o.type = 'system';
 		return em.save( "module", o );
 	}
 	
@@ -28,6 +46,10 @@ class ModuleService {
 
 	@ProxyMethod
 	public def remove(def o) {
+		def old = read( o );
+		if( old.type == 'system' )
+			throw new Exception('Cannot delete system module.');
+		
 		em.delete( "module", o );
 	}
 	
