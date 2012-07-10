@@ -1,5 +1,10 @@
 import tester.*
 
+def proxy = new TestProxy([
+     'default.host' : 'localhost:8080',
+     'app.context'  : 'bayombong',   
+])
+
 int BATCHSIZE = 25
 int THREAD_COUNT = 10
 def g_errorlist = []
@@ -68,41 +73,38 @@ void printDone( action, g_errorlist ){
 }
 
 
-def proxy = new TestProxy([
-     'default.host' : 'localhost:8080',
-     'app.context'  : 'sancarlos',   
-])
+
 
 def svc = proxy.create('RPTV1MigrationService')
 
 
-//svc.updateLandFaasIdInfo()
-//println 'done svc.updateLandFaasIdInfo()...'
+svc.updateLandFaasIdInfo()
+println 'done svc.updateLandFaasIdInfo()...'
 
-//executeAction2({  g_errorlist.addAll(svc.updateFAASInfo( it )); it.clear() }, svc.getFAASList(), 'faasinfo' )
-//printDone( 'done svc.updateFAASInfo()...', g_errorlist )
+executeAction2({  g_errorlist.addAll(svc.updateFAASInfo( it )); it.clear() }, svc.getFAASList(), 'faasinfo' )
+printDone( 'done svc.updateFAASInfo()...', g_errorlist )
 
-//executeAction2({  g_errorlist.addAll(svc.updateFAASRealPropertyInfo( it )); it.clear() }, svc.getFAASList(), 'faas real property info' )
-//printDone('done svc.updateFAASRealPropertyInfo()...', g_errorlist )
+executeAction2({  g_errorlist.addAll(svc.updateFAASRealPropertyInfo( it )); it.clear() }, svc.getFAASList(), 'faas real property info' )
+printDone('done svc.updateFAASRealPropertyInfo()...', g_errorlist )
 
-//executeAction2({  g_errorlist.addAll(svc.updateFAASLandRPUInfo( it )); it.clear() }, svc.getFAASListByType('land'), 'faas land rpu info' )
-//printDone ('done svc.updateFAASLandRPUInfo()...', g_errorlist)
+executeAction2({  g_errorlist.addAll(svc.updateFAASLandRPUInfo( it )); it.clear() }, svc.getFAASListByType('land'), 'faas land rpu info' )
+printDone ('done svc.updateFAASLandRPUInfo()...', g_errorlist)
 
-//executeAction2({  g_errorlist.addAll(svc.updateFAASBldgRPUInfo( it )); it.clear() }, svc.getFAASListByType('bldg'), 'faas bldg rpu info' )
-//printDone('done svc.updateFAASBldgRPUInfo()...', g_errorlist)
+executeAction2({  g_errorlist.addAll(svc.updateFAASBldgRPUInfo( it )); it.clear() }, svc.getFAASListByType('bldg'), 'faas bldg rpu info' )
+printDone('done svc.updateFAASBldgRPUInfo()...', g_errorlist)
 
-//executeAction2({  g_errorlist.addAll(svc.updateFAASMachRPUInfo( it )); it.clear() }, svc.getFAASListByType('mach'), 'faas mach rpu info' )
-//printDone('done svc.updateFAASMachRPUInfo()...', g_errorlist)
-
-
-//svc.updateMachAssessLevelRanges()
-//println 'done svc.updateMachAssessLevelRanges()...'
+executeAction2({  g_errorlist.addAll(svc.updateFAASMachRPUInfo( it )); it.clear() }, svc.getFAASListByType('mach'), 'faas mach rpu info' )
+printDone('done svc.updateFAASMachRPUInfo()...', g_errorlist)
 
 
-//svc.updateMultipleEntityInfo()
-//println 'done svc.updateMultipleEntityInfo()...'
+svc.updateMachAssessLevelRanges()
+println 'done svc.updateMachAssessLevelRanges()...'
 
-/*
+
+svc.updateMultipleEntityInfo()
+println 'done svc.updateMultipleEntityInfo()...'
+
+
 executeAction2(
     { 
         svc.updateIndividualEntityInfo( it )
@@ -112,43 +114,43 @@ executeAction2(
     'individual entity info'
 )
 println 'done svc.updateIndividualEntityInfo()...'
-*/
 
 
-//svc.loadPlantTreeRYSettingInfos()
-//println 'done svc.loadPlantTreeRYSettingInfos()...'
+
+svc.loadPlantTreeRYSettingInfos()
+println 'done svc.loadPlantTreeRYSettingInfos()...'
 
 
-//svc.updateBldgAdditionalItemExpr()
-//println 'done svc.updateBldgAdditionalItemExpr()...'
+svc.updateBldgAdditionalItemExpr()
+println 'done svc.updateBldgAdditionalItemExpr()...'
 
 
-//svc.loadBldgDepreciationSchedules()
-//println 'done svc.loadBldgDepreciationSchedules()...'
+svc.loadBldgDepreciationSchedules()
+println 'done svc.loadBldgDepreciationSchedules()...'
 
 
-//svc.updateBldgKindBuccExtended()
-//println 'done svc.updateBldgKindBuccExtended()...'
+svc.updateBldgKindBuccExtended()
+println 'done svc.updateBldgKindBuccExtended()...'
 
 
-//svc.updateBldgAssessLevelRanges()
-//println 'done svc.updateBldgAssessLevelRanges()...'
+svc.updateBldgAssessLevelRanges()
+println 'done svc.updateBldgAssessLevelRanges()...'
 
 
-//svc.updateLandAssessLevelRanges()
-//println 'done svc.updateLandAssessLevelRanges()...'
+svc.updateLandAssessLevelRanges()
+println 'done svc.updateLandAssessLevelRanges()...'
 
 
-//svc.updateStructureMaterials()
-//println 'done svc.updateStructureMaterials()...'
+svc.updateStructureMaterials()
+println 'done svc.updateStructureMaterials()...'
 
 
-//executeAction2( { g_errorlist.addAll( svc.insertRPTLedger( it )) ; it.clear() }, svc.getLedgerList(), 'insert rpt ledger' )
-//printDone( 'done svc.insertRPTLedger()...', g_errorlist )
+executeAction2( { g_errorlist.addAll( svc.insertRPTLedger( it )) ; it.clear() }, svc.getLedgerList(), 'insert rpt ledger' )
+printDone( 'done svc.insertRPTLedger()...', g_errorlist )
 
 
-//executeAction2({ g_errorlist.addAll(svc.insertRPTLedgerItem( it )); it.clear() }, svc.getLedgerItemList(), 'insert rpt ledger item' )
-//printDone( 'done svc.insertRPTLedgerItem()...', g_errorlist )
+executeAction2({ g_errorlist.addAll(svc.insertRPTLedgerItem( it )); it.clear() }, svc.getLedgerItemList(), 'insert rpt ledger item' )
+printDone( 'done svc.insertRPTLedgerItem()...', g_errorlist )
 
 
 println 'done' 

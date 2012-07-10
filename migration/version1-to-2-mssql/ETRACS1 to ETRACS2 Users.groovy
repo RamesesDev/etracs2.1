@@ -1,7 +1,8 @@
 import tester.*
 
 System.setProperty("app.host", "localhost:8080")
-System.setProperty("app.context", "sancarlos")
+System.setProperty("app.context", "bayombong")
+
 def proxy = new TestProxy([:]);
 
 def ssa = proxy.create('ScriptServiceAnalyzer')
@@ -25,4 +26,3 @@ ssa.execute('''
 
 ''')
 println 'done'
-

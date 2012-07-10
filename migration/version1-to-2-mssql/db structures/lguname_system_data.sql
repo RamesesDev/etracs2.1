@@ -247,7 +247,7 @@ insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('TAX','TA
 
 /*Data for the table "sys_ds" */
 
-insert  into "sys_ds"("name","host","dbname","user","pwd","scheme") values ('etracsv1','localhost','etracs_sancarlos','root','12345','mysql');
+insert  into "sys_ds"("name","host","dbname","user","pwd","scheme") values ('etracsv1','${dbhost}','etracs_bayombong','${dbuser}','${dbpwd}','mssql');
 
 
 /*Data for the table "sys_module" */

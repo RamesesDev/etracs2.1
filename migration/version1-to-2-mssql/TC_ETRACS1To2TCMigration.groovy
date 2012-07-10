@@ -3,7 +3,7 @@ import tester.*
 
 def proxy = new TestProxy([
      'default.host' : 'localhost:8080',
-     'app.context'  : 'sancarlos',   
+     'app.context'  : 'bayombong',   
 ])
 
 def svc = proxy.create('TCV1MigrationService') 

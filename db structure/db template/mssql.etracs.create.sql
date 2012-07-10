@@ -1514,6 +1514,8 @@ CREATE TABLE "landassesslevel" (
   "previd" varchar(50) default NULL,
   "landrysettingid" varchar(50) NOT NULL,
   "ranges" text,
+  "parentid" varchar(50),
+  "parentcode" varchar(10),
   PRIMARY KEY  ("objid")
 ) ;
 
