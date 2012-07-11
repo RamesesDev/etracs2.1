@@ -13,7 +13,7 @@ class JobpositionService
 	@ProxyMethod
 	public def getList(def params) {
 		def qry = em.sqlContext.createNamedQuery( "jobposition:list" );
-		qry.setPagingKeys("jp.code");
+		qry.setPagingKeys("jp.objid");
 		
 		if(params) {
 			if(params._start) qry.setFirstResult( params._start );

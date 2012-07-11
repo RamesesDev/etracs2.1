@@ -50,6 +50,7 @@ class ModuleService {
 		if( old.type == 'system' )
 			throw new Exception('Cannot delete system module.');
 		
+		em.sqlContext.createNamedExecutor('module:remove-roleclass-entry').setParameters(o).execute();
 		em.delete( "module", o );
 	}
 	

@@ -16,7 +16,7 @@ class PersonnelService {
 	@ProxyMethod
 	public def getList(def params) {
 		def qry = em.sqlContext.createNamedQuery( "personnel:list" );
-		qry.setPagingKeys(["p.lastname", "p.firstname", "p.staffno"] as String[]);
+		qry.setPagingKeys("p.objid");
 		
 		def sb = new StringBuffer();
 		if(params) {
