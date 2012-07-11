@@ -21,6 +21,8 @@ class LandRPUService
 	@Env
 	def env
     
+	def LAND_RPU_ITEM_SCHEMA = 'landrpuitem'
+	
 	
 	@ProxyMethod
 	public Map initGeneralRevision( faas, newrysetting ) {
@@ -29,6 +31,15 @@ class LandRPUService
 		reviseAdjustments( faas, newrysetting )
 		recalculate( faas ) 
 		return faas 
+	}
+	
+	@ProxyMethod 
+	public void insertRPUItems( faas ) {
+		faas.rpu.info.landdetails.each {
+			it.objid  = 'LD' + new UID()
+			it.faasid = faas.objid 
+			em.create(LAND_RPU_ITEM_SCHEMA, it )
+		}
 	}
 	
 	

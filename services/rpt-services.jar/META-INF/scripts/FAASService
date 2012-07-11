@@ -426,9 +426,10 @@ class FAASService
         def faasinfo = getFaasInfo( faasid )
         validateApprove( faasinfo )
         def faas = open( faasinfo.objid )
-        updateAutonumberTdNo( faas  )
+		updateAutonumberTdNo( faas  )
         validateRPUInfo( faas )
         updateFaasState( faas, CURRENT_STATE )
+		insertRPUItems( faas )
         cancelPreviousFaas( faas )
         deleteTxnReference( faas )
         ledgerSvc.postSubdivisionFaas( faas.objid )
@@ -445,6 +446,7 @@ class FAASService
         updateAutonumberTdNo( faas  )
         validateRPUInfo( faas )
         updateFaasState( faas, CURRENT_STATE )
+		insertRPUItems( faas )
         cancelPreviousFaas( faas )
 		deleteTxnReference( faas )
         ledgerSvc.postConsolidatedFaas( faas.objid )
@@ -457,12 +459,18 @@ class FAASService
 		updateFaasState( faas, CURRENT_STATE )
 		updateImprovementLandReference( faas ) 
 		approveCarryOverAnnotations( faas )
+		insertRPUItems( faas )
 		cancelPreviousFaas( faas )
 		deleteTxnReference( faas )
 		ledgerSvc.post( faas.objid )
 		moveOutboxMessageToProcessed( faas.objid )
 		logSvc.log('APPROVE','FAAS', faas.objid)
     }
+	
+	void insertRPUItems( faas ) {
+		if( faas.rpu.rputype == 'land' )
+			landRpuSvc.insertRPUItems( faas )
+	}
     
 	void approveCarryOverAnnotations( faas ){
 		// approve carryover annotations 
