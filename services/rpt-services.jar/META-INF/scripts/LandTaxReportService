@@ -250,7 +250,7 @@ class LandTaxReportService
 		
 		//add manualrptcs to onlinerptcs 
 		manualrptcs.each{ manual ->
-			def online = onlinerptcs.find{ it.classid == item.classid || it.classcode == manual.classcode }
+			def online = onlinerptcs.find{ it.classid == manual.classid || it.classcode == manual.classcode }
 			if( online ) {
 				online.keySet().each{ key -> 
 					if( online[key] instanceof String )
