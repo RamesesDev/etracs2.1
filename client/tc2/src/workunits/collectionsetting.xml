@@ -2,6 +2,7 @@
     <invokers>
         <invoker type="tc.master" action="init" caption="Collection Setting" permission="collectionsetting.manage" target="window" icon="images/debug.png" index="13"/>
         <invoker folderid="/menu/tc/master" action="init" caption="Collection Setting" permission="collectionsetting.manage" target="window" index="6"/>
+        <invoker folderid="/txn/tc/master" action="init" caption="Collection Setting" permission="collectionsetting.manage" target="window" index="40"/>
         
         <invoker type="quick_launcher" code="COLSETTING" action="init" caption="Collection Setting" permission="collectionsetting.manage" index="6"/>
         

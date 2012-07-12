@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faasattachment.view" action="open" />
+        <invoker type="formActions" action="_close" caption="Back" mnemonic="b" shortcut="ctrl B" icon="images/back.png" />
+        <invoker type="viewActions" action="_default" caption="Back" mnemonic="b" shortcut="ctrl B" icon="images/back.png" />
+    </invokers>
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import java.rmi.server.UID
+import com.rameses.io.FileTransfer
+import com.rameses.invoker.client.DynamicHttpTransfer
+import java.io.*
+
+
+public class FAASAttachmentController {
+    @Binding
+    def binding
+    
+    @Service('FAASService')
+    def faasSvc
+    
+    @Service('ETRACSFileTransferService')
+    def svc 
+
+    def faas 
+    def selectedItem
+    def attachments
+    
+    
+    void open() {
+        //removeCachedDirectory()
+        attachments = faasSvc.getAttachments( faas.objid )
+    }
+    
+    def getHtml() {
+        return faasSvc.buildHtml( faas.objid )
+    }
+    
+    def listHandler = [
+        getRows    : { return 25 },
+        getColumns : { return [
+            new Column(name:'type', caption:'Attachment'),
+            new Column(name:'remarks', caption:'Remarks'),
+        ]},
+        onRemoveItem : { item -> removeItem( item ) },
+        fetchList : { return attachments },
+    ] as SubListModel
+    
+    void removeItem( item ) {
+        if( MsgBox.confirm('Delete selected item?') ) {
+            faasSvc.removeAttachment( faas.objid, item ) 
+            attachments.remove( item )
+        }
+    }
+    
+    void setSelectedItem( selectedItem ) {
+        this.selectedItem = selectedItem
+        if( selectedItem ) {
+            def file = new File( resolveFileName( selectedItem.filename ) )
+            if( ! file.exists() ) {
+                downloadFile( selectedItem )
+            }
+        }
+    }
+
+    void removeCachedDirectory() {
+        def cacheinitialized = OsirisContext.clientContext.properties.cache_initialized
+        if( cacheinitialized ) return 
+        try {
+            def cachedir = getCacheDirectory()
+            def file = new File( cachedir )
+            if( file.isDirectory() ) {
+                file.listFiles().each { f ->
+                    f.delete()
+                }
+            }
+        }
+        catch( e ) {
+            println 'removeCachedDirectory() error'
+            e.printStackTrace()
+        }
+    }
+    
+    def resolveFileName( filename ) {
+        def cachedir = getCacheDirectory()
+        def dir = new File( cachedir )
+        if( !dir.exists() ) {
+            dir.mkdir()
+            OsirisContext.clientContext.properties.cache_initialized = true 
+        }
+        return cachedir + '/' + filename 
+    }
+    
+    def getCacheDirectory() {
+        return System.properties['user.dir'] + '/cache' 
+    }
+    
+    def getImageUrl() {
+        return new File( resolveFileName(attachment.filename) )
+    }
+    
+    def displayAttachment( attachmentid ) {
+        attachment = faasSvc.getAttachmentById( attachmentid )
+        if( attachment ) {
+            def file = new File( resolveFileName( attachment.filename ) )
+            if( ! file.exists() ) {
+                downloadFile( attachment )
+            }
+        }
+        return 'view'
+    }
+    
+    /*----------------------------------------------------------------------
+    *
+    * Attachment Support 
+    *
+    *-----------------------------------------------------------------------*/
+    def attachment
+    def file
+    
+    
+    void removeAttachment( attachmentid ) {
+        if( MsgBox.confirm('Delete attachment?') ) {
+            faasSvc.removeAttachment( faas.objid, attachmentid )
+        }
+    }
+    
+    def addAttachment() {
+        attachment = [objid: 'FA' + new UID()]
+        return 'attachment' 
+    }
+    
+    def doCancel() {
+        return 'default' 
+    }
+    
+    def upload() {
+        def app = getAppInfo()
+        attachment.filename  = makeSafeFileName( attachment.objid ) + getFileExtension( file )
+        attachment.directory = makeSafeFileName( faas.objid ) 
+        
+        FileTransfer.FileInputSource fis = new FileTransfer.FileInputSource( file )
+        DynamicHttpTransfer.Out handler = new DynamicHttpTransfer.Out(app.host , app.context, 'ETRACSFileTransferService', 'uploadAttachment')
+        handler.parameters.put('attachment', attachment )
+        
+        FileTransfer ft = new FileTransfer()
+        ft.transfer(fis, handler)
+        try { Thread.sleep(1000) }catch( e ){}
+        svc.uploadComplete( attachment )
+        
+        copyToCache( file )
+        faasSvc.addAttachment( faas.objid, attachment )
+        attachments.add( attachment )
+        listHandler.load()
+        return 'default' 
+    }
+    
+    def getFileExtension( file ) {
+        def ext = ''
+        if( file && file.exists()) {
+            def filename = file.absolutePath
+            int idx = filename.lastIndexOf(".")
+            if( idx >= 0 ) {
+                ext = '.' + filename.substring(idx+1, filename.length())
+            }
+        }
+        return ext.toLowerCase()
+    }
+    
+    void copyToCache( file ) {
+        FileTransfer.FileInputSource fis = new FileTransfer.FileInputSource( file )
+        
+        File f = new File( resolveFileName(attachment.filename) );
+        FileTransfer.FileOutputHandler output = new FileTransfer.FileOutputHandler( f );
+        
+        FileTransfer ft = new FileTransfer();
+        ft.transfer( fis, output );
+    }
+    
+    void downloadFile( attachment ) {
+        def app = getAppInfo()
+        
+        DynamicHttpTransfer.In handler = new DynamicHttpTransfer.In( app.host, app.context, 'ETRACSFileTransferService', 'downloadAttachment');
+        handler.getParameters().put('attachment', attachment);
+        
+        File f = new File( resolveFileName(attachment.filename) );
+        FileTransfer.FileOutputHandler output = new FileTransfer.FileOutputHandler( f );
+        
+        FileTransfer ft = new FileTransfer();
+        ft.transfer( handler, output );
+    }
+    
+    def getAppInfo() {
+        def host        = OsirisContext.clientContext?.appEnv['app.host']
+        host            = ( host ? host : 'localhost:8080' )
+        def context     = OsirisContext.clientContext?.appEnv['app.context']
+        context         = (context ? context : 'lguname' )
+        return [host:host, context:context]
+    }
+    
+    def makeSafeFileName( strvalue ) {
+        return strvalue.replaceAll('[\\W]', '')
+    }
+    
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.faas.FAASAttachmentPage"/>
+        <page name="view" template="etracs2.rpt.faas.FAASAttachmentViewPage"/>
+    </pages>
+</workunit>

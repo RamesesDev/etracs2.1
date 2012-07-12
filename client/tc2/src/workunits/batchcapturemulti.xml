@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc" action="init" caption="Batch Capture (Multi-Account)" permission="batchcapture.create" />
+        <invoker folderid="/menu/tc/coll" action="init" caption="Batch Capture (Multi-Account)" permission="batchcapture.create" index="6"/>
+        <invoker folderid="/txn/tc/coll" action="init" caption="Batch Capture (Multi-Account)" permission="batchcapture.create" index="6"/>
+        
         <invoker type="batchcapturemulti.create" action="init" caption="Batch Capture (New)" target="window" permission="batchcapture.create"/>
         <invoker type="batchcapturemulti.view"  action="open" caption="Batch Capture" target="window" permission="batchcapture.view"/>
         

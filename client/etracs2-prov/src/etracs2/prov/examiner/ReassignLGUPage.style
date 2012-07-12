@@ -1,17 +1,25 @@
-"selectedItem|searchText" [mode == 'read'] {
+"selectedItem|searchText" [mode == 'view'] {
     enabled:true;
 }
 
-"selectedItem|searchText" [mode != 'read'] {
+"selectedItem|searchText" [mode != 'view'] {
     enabled:false;
 }
 
-"entity.*|searchMunicipality|selectedMunicipality" [mode == 'read'] {
-    readonly:true;
+"entity.*" [mode == 'view'] {
+    enabled:false;
 }
 
-"entity.*|searchMunicipality|selectedMunicipality" [mode != 'read'] {
-    readonly:false;
+"entity.*" [mode != 'view'] {
+    enabled:true;
+}
+
+"searchMunicipality|selectedMunicipality" [mode == 'view'] {
+    viewonly:true;
+}
+
+"searchMunicipality|selectedMunicipality" [mode != 'view'] {
+    viewonly:false;
 }
 
 

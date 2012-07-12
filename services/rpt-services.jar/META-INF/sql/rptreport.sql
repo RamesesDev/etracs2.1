@@ -22,7 +22,7 @@ FROM rptledger
 WHERE barangay = $P{barangay} 
   AND docstate = 'APPROVED' AND taxable = 1  
   AND ( lastyearpaid < $P{currentyr} OR (lastyearpaid = $P{currentyr} AND lastqtrpaid < 4 ) )  
-ORDER BY tdno    
+ORDER BY taxpayername, tdno     
  
 
 [getNoticeItemsByTaxpayerId]

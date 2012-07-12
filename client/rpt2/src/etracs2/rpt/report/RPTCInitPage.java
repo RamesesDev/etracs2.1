@@ -29,13 +29,6 @@ public class RPTCInitPage extends javax.swing.JPanel {
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
-        xSeparator1 = new com.rameses.rcp.control.XSeparator();
-        xNumberField2 = new com.rameses.rcp.control.XNumberField();
-        xNumberField3 = new com.rameses.rcp.control.XNumberField();
-        xNumberField4 = new com.rameses.rcp.control.XNumberField();
-        xSeparator2 = new com.rameses.rcp.control.XSeparator();
-        xNumberField5 = new com.rameses.rcp.control.XNumberField();
-        xNumberField6 = new com.rameses.rcp.control.XNumberField();
 
         setPreferredSize(new java.awt.Dimension(603, 291));
         xActionBar1.setBorder(new com.rameses.rcp.control.border.XUnderlineBorder());
@@ -63,87 +56,6 @@ public class RPTCInitPage extends javax.swing.JPanel {
         xComboBox2.setRequired(true);
         formPanel1.add(xComboBox2);
 
-        xSeparator1.setCaption("Municipality Share Rates");
-        xSeparator1.setCaptionFont(new java.awt.Font("Arial", 1, 11));
-        xSeparator1.setCaptionWidth(155);
-        xSeparator1.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
-        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
-        xSeparator1.setShowCaption(true);
-        org.jdesktop.layout.GroupLayout xSeparator1Layout = new org.jdesktop.layout.GroupLayout(xSeparator1);
-        xSeparator1.setLayout(xSeparator1Layout);
-        xSeparator1Layout.setHorizontalGroup(
-            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 135, Short.MAX_VALUE)
-        );
-        xSeparator1Layout.setVerticalGroup(
-            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 20, Short.MAX_VALUE)
-        );
-        formPanel1.add(xSeparator1);
-
-        xNumberField2.setCaption("Province (%)");
-        xNumberField2.setCaptionWidth(95);
-        xNumberField2.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
-        xNumberField2.setFieldType(BigDecimal.class);
-        xNumberField2.setName("provrate");
-        xNumberField2.setPattern("#,##0");
-        xNumberField2.setPreferredSize(new java.awt.Dimension(80, 19));
-        formPanel1.add(xNumberField2);
-
-        xNumberField3.setCaption("Municipality (%)");
-        xNumberField3.setCaptionWidth(95);
-        xNumberField3.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
-        xNumberField3.setFieldType(BigDecimal.class);
-        xNumberField3.setName("munirate");
-        xNumberField3.setPattern("#,##0");
-        xNumberField3.setPreferredSize(new java.awt.Dimension(80, 19));
-        formPanel1.add(xNumberField3);
-
-        xNumberField4.setCaption("Barangay (%)");
-        xNumberField4.setCaptionWidth(95);
-        xNumberField4.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
-        xNumberField4.setFieldType(BigDecimal.class);
-        xNumberField4.setName("brgyrate");
-        xNumberField4.setPattern("#,##0");
-        xNumberField4.setPreferredSize(new java.awt.Dimension(80, 19));
-        formPanel1.add(xNumberField4);
-
-        xSeparator2.setCaption("City Share Rates");
-        xSeparator2.setCaptionFont(new java.awt.Font("Arial", 1, 11));
-        xSeparator2.setCaptionWidth(115);
-        xSeparator2.setCellPadding(new java.awt.Insets(10, 0, 0, 0));
-        xSeparator2.setPreferredSize(new java.awt.Dimension(0, 20));
-        xSeparator2.setShowCaption(true);
-        org.jdesktop.layout.GroupLayout xSeparator2Layout = new org.jdesktop.layout.GroupLayout(xSeparator2);
-        xSeparator2.setLayout(xSeparator2Layout);
-        xSeparator2Layout.setHorizontalGroup(
-            xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 175, Short.MAX_VALUE)
-        );
-        xSeparator2Layout.setVerticalGroup(
-            xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 20, Short.MAX_VALUE)
-        );
-        formPanel1.add(xSeparator2);
-
-        xNumberField5.setCaption("City (%)");
-        xNumberField5.setCaptionWidth(95);
-        xNumberField5.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
-        xNumberField5.setFieldType(BigDecimal.class);
-        xNumberField5.setName("cityrate");
-        xNumberField5.setPattern("#,##0");
-        xNumberField5.setPreferredSize(new java.awt.Dimension(80, 19));
-        formPanel1.add(xNumberField5);
-
-        xNumberField6.setCaption("Barangay (%)");
-        xNumberField6.setCaptionWidth(95);
-        xNumberField6.setCellPadding(new java.awt.Insets(0, 20, 0, 0));
-        xNumberField6.setFieldType(BigDecimal.class);
-        xNumberField6.setName("citybrgyrate");
-        xNumberField6.setPattern("#,##0");
-        xNumberField6.setPreferredSize(new java.awt.Dimension(80, 19));
-        formPanel1.add(xNumberField6);
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -159,8 +71,8 @@ public class RPTCInitPage extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .add(xActionBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 264, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(95, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -170,13 +82,6 @@ public class RPTCInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XNumberField xNumberField1;
-    private com.rameses.rcp.control.XNumberField xNumberField2;
-    private com.rameses.rcp.control.XNumberField xNumberField3;
-    private com.rameses.rcp.control.XNumberField xNumberField4;
-    private com.rameses.rcp.control.XNumberField xNumberField5;
-    private com.rameses.rcp.control.XNumberField xNumberField6;
-    private com.rameses.rcp.control.XSeparator xSeparator1;
-    private com.rameses.rcp.control.XSeparator xSeparator2;
     // End of variables declaration//GEN-END:variables
     
 }

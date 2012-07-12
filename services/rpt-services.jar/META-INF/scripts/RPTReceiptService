@@ -31,17 +31,22 @@ class RPTReceiptService
         receiptSvc.create( receipt )
         
 		def parsedate = dateSvc.parseDate( receipt.info.txndate, null )
+		def rptpaymentlist = []
+		def rptpaymentdetaillist = []
 		
 		//post rptpayment 
         items.each { item ->
             def rptpayment = createRPTPayment( receipt, item )
             em.validate(rptpayment.schemaname, rptpayment )
             em.create(rptpayment.schemaname, rptpayment )
+			rptpaymentlist.add( rptpayment)
+			
             //post paymentdetail
             item.details.each { detail ->
                 def pmtdetail = createRPTPaymentDetail( receipt, rptpayment, detail, parsedate )
                 em.validate( pmtdetail.schemaname, pmtdetail )
                 em.create( pmtdetail.schemaname, pmtdetail )
+				rptpaymentdetaillist.add( pmtdetail )
             }
 			if( item.partialbasic == 0 )
 				updateLedgerLastYearQtrPaid([ objid:item.objid, lastyearpaid:item.toyear, lastqtrpaid:item.toqtr, partialbasic:0.0, partialbasicint:0.0, partialsef:0.0, partialsefint:0.0 ] )
@@ -57,8 +62,29 @@ class RPTReceiptService
 			it.sefdp    = it.sefint - it.sefdisc 
 		}
 		
-        return receipt 
+		forwardCollectionToMunicipality( receipt, rptpaymentlist, rptpaymentdetaillist )
+		forwardCollectionToProvince( receipt, rptpaymentlist, rptpaymentdetaillist )
+		
+		return receipt 
     }
+	
+	void forwardCollectionToMunicipality( receipt, rptpaymentlist, rptpaymentdetaillist ) {
+		if( var.lgu_type?.toLowerCase() == 'province' ) {
+			def sender = em.sqlContext.createNamedQuery('rptreceipt:getSenderInfo').setParameter('ledgerid', rptpaymentlist[0].rptledgerid).singleResult 
+			if( sender ) {
+				sendRemoteCollectionMessage( receipt, rptpaymentlist, rptpaymentdetaillist, sender.senderid, sender.sendername  )
+			}
+		}
+	}
+	
+	void forwardCollectionToProvince( receipt, rptpaymentlist, rptpaymentdetaillist ) {
+		def remote_connection_active = var.remote_connection_active
+		if( ! remote_connection_active ) remote_connection_active = 0
+		
+		if(  TO_BOOLEAN(remote_connection_active) && var.lgu_type?.toLowerCase() == 'municipality' ) {
+			sendRemoteCollectionMessage( receipt, rptpaymentlist, rptpaymentdetaillist, var.remote_lgu_index, var.remote_lgu_name  )
+		} 
+	}
 	
 	@ProxyMethod 
 	public def createRemoteCollection( receipt, items, receiverid, receivername   ) {
@@ -97,7 +123,6 @@ class RPTReceiptService
 			it.sefgross = it.sef
 			it.sefdp    = it.sefint - it.sefdisc 
 		}
-		println 'receiverinfo -> ' + receiverid + ' - ' + receivername 
 		sendRemoteCollectionMessage( receipt, rptpaymentlist, rptpaymentdetaillist, receiverid, receivername     )
 		
         return receipt 
@@ -304,7 +329,6 @@ class RPTReceiptService
         def receipt = em.read('receipt', [objid:receiptid])
 		if( ! receipt ) throw new Exception('Cannot open Receipt with ID No. ' + receiptid + '.')
         receipt._items = loadRPTPayments( receiptid, receipt.opener  ).each(){
-			it.taxpayername = ( it.taxpayername != receipt.info.payorname ) ? it.taxpayername : '';
 			if( receipt.opener == 'tc:real_property' ) {
 				it.basicgross = it.basic 
 				it.basicdp    = it.basicint - it.basicdisc 
@@ -321,6 +345,7 @@ class RPTReceiptService
         receiptSvc.voidReceipt( receiptid, reason )
         voidRPTPayments( receiptid )
 		postRemoteVoid( receiptid, reason )
+		postProvinceVoidMessage( receiptid, reason )
     }
 	
 	@ProxyMethod
@@ -485,6 +510,19 @@ class RPTReceiptService
 			msgSvc.send( msg )
 		}
 	}
+	
+	void postProvinceVoidMessage( receiptid, reason ) {
+		if( var.lgu_type?.toLowerCase() != 'municipality') return 
+		
+		def rct = em.sqlContext.createNamedQuery('rptreceipt:getExtendedInfo').setParameter('objid', receiptid).singleResult 
+		if( ! rct ) return 
+		rct = em.serializer.read( rct.extended )
+		def data = [receiptid:receiptid, reason:reason ]
+		def msg = msgSvc.createMessage( 'rptreceipt_void_remote_collection', data)
+		msg.receiverid = var.remote_lgu_index
+		msg.receivername  = var.remote_lgu_name
+		msgSvc.send( msg )
+	}
     
     void updateReceiptInfos( receipt, items ) {
         receipt.checknos   = ''
@@ -522,7 +560,14 @@ class RPTReceiptService
             receipt.sefdp       += (it.sefint - it.sefdisc)
             receipt.sefnet      += (it.sef + it.sefint - it.sefdisc )
         }
-    }
+		
+		if( var.lgu_type?.toLowerCase() == 'province') {
+			def sender = em.sqlContext.createNamedQuery('rptreceipt:getSenderInfo').setParameter('ledgerid', items[0].objid).singleResult 
+			receipt.isremotecollection = true 
+			receipt.collectedforid 	   = sender?.senderid 
+			receipt.collectedfor       = sender?.sendername 
+		}
+    } 
     
     
     void updateLedgerLastYearQtrPaid( params ) {
@@ -551,7 +596,9 @@ class RPTReceiptService
         pmt.basicpartial    = 0.0
         pmt.sefpartial      = 0.0
         pmt.period          = item.period 
-        return pmt 
+		pmt.collectingagencyid = var.lgu_index
+		pmt.collectingagency  = var.lgu_name 
+        return pmt  
     }
     
     Map createRPTPaymentDetail( receipt, rptpayment, detail, parsedate ) {
@@ -610,4 +657,8 @@ class RPTReceiptService
         }
     }
     
+	boolean TO_BOOLEAN( value ) {
+		if( value instanceof Boolean ) return value 
+		return '1/y/yes/true/t'.indexOf( value.toString().toLowerCase() ) >= 0
+	}
 }

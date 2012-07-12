@@ -24,40 +24,27 @@ public class FAASAttachmentPage extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        jSplitPane1 = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
-        xDataTable1 = new com.rameses.rcp.control.XDataTable();
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
         jScrollPane1 = new javax.swing.JScrollPane();
         xEditorPane1 = new com.rameses.rcp.control.XEditorPane();
 
-        setLayout(new java.awt.BorderLayout());
-
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         jPanel1.setPreferredSize(new java.awt.Dimension(350, 150));
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("List of Attachments");
-        xDataTable1.setBorder(xTitledBorder1);
-        xDataTable1.setDynamic(true);
-        xDataTable1.setHandler("listHandler");
-        xDataTable1.setName("selectedItem");
-        jPanel1.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
-        xActionBar1.setName("attachmentActions");
+        setLayout(new java.awt.BorderLayout());
+
+        xActionBar1.setName("formActions");
         xActionBar1.setPadding(new java.awt.Insets(2, 2, 2, 2));
         xActionBar1.setUseToolBar(false);
-        jPanel1.add(xActionBar1, java.awt.BorderLayout.NORTH);
+        add(xActionBar1, java.awt.BorderLayout.NORTH);
 
-        jSplitPane1.setLeftComponent(jPanel1);
-
-        xEditorPane1.setDepends(new String[] {"selectedItem"});
-        xEditorPane1.setName("imageUrl");
+        jScrollPane1.setName("imageUrl");
+        xEditorPane1.setName("html");
         jScrollPane1.setViewportView(xEditorPane1);
 
-        jSplitPane1.setRightComponent(jScrollPane1);
-
-        add(jSplitPane1, java.awt.BorderLayout.CENTER);
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
     }// </editor-fold>//GEN-END:initComponents
     
@@ -65,9 +52,7 @@ public class FAASAttachmentPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSplitPane jSplitPane1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
-    private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XEditorPane xEditorPane1;
     // End of variables declaration//GEN-END:variables
     

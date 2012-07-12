@@ -7,8 +7,8 @@ SELECT
     lastyearpaid, lastqtrpaid, 
 	0 AS toyear, 0 AS toqtr, partialbasic, partialbasicint, partialsef, partialsefint, 
     0.0 AS basic, 0.0 AS basicint, 0.0 AS basicdisc,
-    0.0 AS sef, 0.0 AS sefint, 0.0 AS sefdisc 
-FROM rptledger 
+    0.0 AS sef, 0.0 AS sefint, 0.0 AS sefdisc, administratorname, administratoraddress 
+FROM rptledger  
 WHERE taxpayerid = $P{taxpayerid} AND docstate = 'APPROVED' AND taxable = 1 
  AND ( lastyearpaid < $P{currentyr} OR (lastyearpaid = $P{currentyr} AND lastqtrpaid < 4 ) or partialbasic > 0) 
  
@@ -21,7 +21,7 @@ SELECT
     rl.lastyearpaid, rl.lastqtrpaid, 
 	0 AS toyear, 0 AS toqtr, rl.partialbasic, rl.partialbasicint, rl.partialsef, rl.partialsefint, 
     0.0 AS basic, 0.0 AS basicint, 0.0 AS basicdisc,
-    0.0 AS sef, 0.0 AS sefint, 0.0 AS sefdisc 
+    0.0 AS sef, 0.0 AS sefint, 0.0 AS sefdisc, rl.administratorname, rl.administratoraddress 
 FROM rptledger rl, propertypayer p, propertypayeritem ppi  
 WHERE rl.objid = ppi.ledgerid  
  AND ppi.propertypayerid = p.objid 
@@ -39,7 +39,7 @@ SELECT
     lastyearpaid, lastqtrpaid, 
 	0 AS toyear, 0 AS toqtr, partialbasic, partialbasicint, partialsef,  partialsefint, 
     0.0 AS basic, 0.0 AS basicint, 0.0 AS basicdisc, 
-    0.0 AS sef, 0.0 AS sefint, 0.0 AS sefdisc 
+    0.0 AS sef, 0.0 AS sefint, 0.0 AS sefdisc, administratorname, administratoraddress 
 FROM rptledger 
 WHERE objid = $P{objid} AND docstate = 'APPROVED' AND taxable = 1 
  AND ( lastyearpaid < $P{currentyr} OR (lastyearpaid = $P{currentyr} AND lastqtrpaid < 4 ) OR partialbasic > 0 ) 

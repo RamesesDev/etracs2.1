@@ -2,7 +2,9 @@
 <workunit>
     <invokers>
         <invoker folderid="/menu/tc/master" caption="Collection Groups" permission="collectiongroup.view"/>
+        <invoker folderid="/txn/tc/master" caption="Collection Groups" permission="collectiongroup.view" index="25"/>
         <invoker type="quick_launcher" code="colgrps" caption="Collection Groups" permission="collectiongroup.view"/>
+        
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"  permission="collectiongroup.create"/>
         <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null}" caption="Edit" mnemonic="s" icon="images/edit.png" permission="collectiongroup.edit"/>

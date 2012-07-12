@@ -2,10 +2,10 @@
     <invokers>
         <invoker type="home.action" caption="Examiners" target="window" permission="examiner.view"   icon="images/examiner.png" /> 
         
-        <invoker type="formActions" tooltip="New" action="create" immediate="true" permission="examiner.new" visibleWhen="#{mode == 'read'}" mnemonic="n" icon="images/addnew24.png"/>
-        <invoker type="formActions" tooltip="Edit" action="edit" immediate="true" permission="examiner.edit"  visibleWhen="#{mode == 'read' and examiner.objid != null}"  mnemonic="e" icon="images/edit24.png"/>
-        <invoker type="formActions" tooltip="Cancel" action="cancel" immediate="true" visibleWhen="#{mode != 'read'}" mnemonic="c" icon="images/cancel24.png"/>
-        <invoker type="formActions" tooltip="Save" action="save"  visibleWhen="#{mode != 'read'}" mnemonic="s" shortcut="ctrl S" icon="images/save24.png"/>
+        <invoker type="formActions" tooltip="New" action="create" immediate="true" permission="examiner.new" visibleWhen="#{mode == 'read'}" mnemonic="n" icon="images/doc-new.png"/>
+        <invoker type="formActions" tooltip="Edit" action="edit" immediate="true" permission="examiner.edit"  visibleWhen="#{mode == 'read' and examiner.objid != null}"  mnemonic="e" icon="images/doc-edit.png"/>
+        <invoker type="formActions" tooltip="Cancel" action="cancel" immediate="true" visibleWhen="#{mode != 'read'}" mnemonic="c" icon="images/doc-delete.png"/>
+        <invoker type="formActions" tooltip="Save" action="save"  visibleWhen="#{mode != 'read'}" mnemonic="s" shortcut="ctrl S" icon="images/doc-save.png"/>
     </invokers>
     
     <code>
@@ -56,7 +56,7 @@ public class ExaminerController
     
     def selectHandler = { muni ->
         if( muni && !assigned(muni) ) {
-            examiner.municipalities.add( [objid:muni.objid, name:muni.name]);
+            examiner.municipalities.add( [objid:muni.objid, name:muni.lguname]);
             searchMunicipality = null;
             municipalityHandler.load();
             binding.refresh("searchMunicipality");
@@ -110,9 +110,9 @@ public class ExaminerController
         getRows    : { return 25; },
         getColumns : { 
             return [
-                new Column(name:"item.uid", caption:"UID"),
                 new Column(name:"item.lastname", caption:"Last Name"),
                 new Column(name:"item.firstname", caption:"First Name"),
+                new Column(name:"item.staffno", caption:"Staff No."),
             ];
         },
         fetchList : { 

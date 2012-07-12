@@ -197,6 +197,7 @@
             <Component class="com.rameses.rcp.control.XTextArea" name="xTextArea1">
               <Properties>
                 <Property name="columns" type="int" value="20"/>
+                <Property name="lineWrap" type="boolean" value="true"/>
                 <Property name="rows" type="int" value="5"/>
                 <Property name="wrapStyleWord" type="boolean" value="true"/>
                 <Property name="caption" type="java.lang.String" value="Remarks"/>

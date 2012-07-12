@@ -20,12 +20,12 @@ class RPTOfficersService
 	def schemaname = 'rptofficers:rptofficers';
 	def schemaversion = '1.0';
 	
-	
     @ProxyMethod
     public List lookup( searchText, officerType, params ) {
 		params.searchText = searchText;
 		return userSvc.getUsersByTagid( officerType, params ).each{
 			it.title = it.remove('jobtitle');
+			it.name = it.formalname 
 		};
     }
 	
