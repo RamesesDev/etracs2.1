@@ -1,4 +1,17 @@
-insert into sancarlos_etracs.subdivision 
+alter table bayombong_etracs..subdivision alter column appraisedby varchar(75);
+alter table bayombong_etracs..subdivision alter column appraisedbytitle varchar(75);
+alter table bayombong_etracs..subdivision alter column recommendedby varchar(75);
+alter table bayombong_etracs..subdivision alter column recommendedbytitle varchar(75);
+alter table bayombong_etracs..subdivision alter column approvedby varchar(75);
+alter table bayombong_etracs..subdivision alter column approvedbytitle varchar(75);
+alter table bayombong_etracs..subdivision alter column mothertaxpayername varchar(800);
+alter table bayombong_etracs..subdivision alter column mothertdno varchar(30);
+alter table bayombong_etracs..subdivision alter column motherclasscode varchar(30);
+alter table bayombong_etracs..subdivision alter column motherpin varchar(30);
+alter table bayombong_etracs..subdivision alter column mothercadastrallotno varchar(300);
+alter table bayombong_etracs..subdivision alter column docno varchar(50);
+
+insert into bayombong_etracs..subdivision 
 	(objid, schemaname, schemaversion, docstate, ry, txntype, 
 	autonumber, 
 	issuedate, 
@@ -66,14 +79,14 @@ select
 	a.dtsubmitted as dtapproved, 
 	'[:]' as extended, 
 	a.txnno as docno
-from etracs_sancarlos.tdtransaction a
-	inner join etracs_sancarlos.subdivisiontdtransaction s on a.objid = s.objid 
-	inner join etracs_sancarlos.taxdeclaration td on a.taxdeclarationid = td.objid 
-	inner join etracs_sancarlos.rpu r on td.rpuid = r.objid 
-	inner join etracs_sancarlos.realproperty rp on r.realpropertyid = rp.objid;
+from etracs_bayombong..tdtransaction a
+	inner join etracs_bayombong..subdivisiontdtransaction s on a.objid = s.objid 
+	inner join etracs_bayombong..taxdeclaration td on a.taxdeclarationid = td.objid 
+	inner join etracs_bayombong..rpu r on td.rpuid = r.objid 
+	inner join etracs_bayombong..realproperty rp on r.realpropertyid = rp.objid;
 
 
-insert into sancarlos_etracs.subdivisionland 
+insert into bayombong_etracs..subdivisionland 
 	(objid, subdivisionid, newtdno, newpin, newtitletype, 
 	newtitleno, 
 	newtitledate, 
@@ -110,14 +123,20 @@ select
 	sl.newtaxdeclarationid as newfaasid, 
 	'[:]' as extended, 
 	sl.line_no as itemno
-from etracs_sancarlos.tdtransaction a
-	inner join etracs_sancarlos.subdivisiontdtransaction s on a.objid = s.objid 
-	inner join etracs_sancarlos.subdivisionland sl on s.objid = sl.subdivisiontdtransactionid 
-	inner join etracs_sancarlos.taxdeclaration otd on a.taxdeclarationid = otd.objid 
-	inner join etracs_sancarlos.rpu nr on sl.landrpuid = nr.objid
-	inner join etracs_sancarlos.payer p on otd.taxpayerid = p.objid ;
+from etracs_bayombong..tdtransaction a
+	inner join etracs_bayombong..subdivisiontdtransaction s on a.objid = s.objid 
+	inner join etracs_bayombong..subdivisionland sl on s.objid = sl.subdivisiontdtransactionid 
+	inner join etracs_bayombong..taxdeclaration otd on a.taxdeclarationid = otd.objid 
+	inner join etracs_bayombong..rpu nr on sl.landrpuid = nr.objid
+	inner join etracs_bayombong..payer p on otd.taxpayerid = p.objid ;
 
-insert into sancarlos_etracs.subdivisionaffectedrpu 
+
+alter table bayombong_etracs..subdivisionaffectedrpu alter column prevtdno varchar(30);
+alter table bayombong_etracs..subdivisionaffectedrpu alter column prevfullpin varchar(30);
+alter table bayombong_etracs..subdivisionaffectedrpu alter column newtdno varchar(30);
+alter table bayombong_etracs..subdivisionaffectedrpu alter column newpin varchar(30);
+
+insert into bayombong_etracs..subdivisionaffectedrpu 
 	(objid, subdivisionid, itemno, rputype, prevfaasid, 
 	prevtdno, 
 	prevfullpin, 
@@ -135,31 +154,32 @@ select
 	lower(orpu.type) as rputype, 
 	sa.taxdeclarationid as prevfaasid, 
 	otd.tdno as prevtdno, 
-	concat(orpu.pin,'-', orpu.suffix) as prevfullpin ,
+	(orpu.pin + '-' + cast(orpu.suffix as varchar)) as prevfullpin ,
 	ntd.tdno as newtdno, 
 	sa.subdivisionlandid, 
-	concat(nrpu.pin, '-', nrpu.suffix) as newpin, 
+	(nrpu.pin + '-' + cast(nrpu.suffix as varchar)) as newpin, 
 	sa.newsuffix, 
 	sa.remarks as memoranda, 
 	sa.newtaxdeclarationid as newfaasid
-from etracs_sancarlos.tdtransaction a
-	inner join etracs_sancarlos.subdivisiontdtransaction s on a.objid = s.objid 
-	inner join etracs_sancarlos.subdivisionaffectedrpu sa on s.objid = sa.subdivisiontdtransactionid 
-	inner join etracs_sancarlos.taxdeclaration otd on sa.taxdeclarationid = otd.objid 
-	inner join etracs_sancarlos.rpu orpu on otd.rpuid = orpu.objid 
-	inner join etracs_sancarlos.taxdeclaration ntd on sa.newtaxdeclarationid = ntd.objid 
-	inner join etracs_sancarlos.rpu nrpu on ntd.rpuid = nrpu.objid ;
+from etracs_bayombong..tdtransaction a
+	inner join etracs_bayombong..subdivisiontdtransaction s on a.objid = s.objid 
+	inner join etracs_bayombong..subdivisionaffectedrpu sa on s.objid = sa.subdivisiontdtransactionid 
+	inner join etracs_bayombong..taxdeclaration otd on sa.taxdeclarationid = otd.objid 
+	inner join etracs_bayombong..rpu orpu on otd.rpuid = orpu.objid 
+	inner join etracs_bayombong..taxdeclaration ntd on sa.newtaxdeclarationid = ntd.objid 
+	inner join etracs_bayombong..rpu nrpu on ntd.rpuid = nrpu.objid ;
 
 
-update sancarlos_etracs.subdivisionland sl, sancarlos_etracs.faas f set
+update sl set
 	sl.rp = f.rp,
 	sl.rpu = f.rpu
+from bayombong_etracs..subdivisionland sl, bayombong_etracs..faas f
 where sl.newfaasid = f.objid;
 
 
 
 
-insert into sancarlos_etracs.consolidation 
+insert into bayombong_etracs..consolidation 
 	(objid, schemaname, schemaversion, docstate, ry, txntype, 
 	autonumber, 
 	issuedate, 
@@ -231,15 +251,20 @@ select
 	'[:]' as rpu, 
 	ntd.objid as newfaasid, 
 	'[:]' as extended
-from etracs_sancarlos.tdtransaction t
-inner join etracs_sancarlos.amalgamationtdtransaction a on t.objid = a.objid 
-inner join etracs_sancarlos.taxdeclaration ntd on a.newtaxdeclarationid = ntd.objid 
-inner join etracs_sancarlos.rpu nr on ntd.rpuid = nr.objid 
-inner join etracs_sancarlos.realproperty nrp on nr.realpropertyid = nrp.objid 
-inner join etracs_sancarlos.payer p on ntd.taxpayerid = p.objid ;
+from etracs_bayombong..tdtransaction t
+inner join etracs_bayombong..amalgamationtdtransaction a on t.objid = a.objid 
+inner join etracs_bayombong..taxdeclaration ntd on a.newtaxdeclarationid = ntd.objid 
+inner join etracs_bayombong..rpu nr on ntd.rpuid = nr.objid 
+inner join etracs_bayombong..realproperty nrp on nr.realpropertyid = nrp.objid 
+inner join etracs_bayombong..payer p on ntd.taxpayerid = p.objid ;
 
 
-insert into sancarlos_etracs.consolidationaffectedrpu 
+alter table bayombong_etracs..consolidationaffectedrpu alter column prevtdno varchar(30);
+alter table bayombong_etracs..consolidationaffectedrpu alter column prevfullpin varchar(30);
+alter table bayombong_etracs..consolidationaffectedrpu alter column newtdno varchar(30);
+alter table bayombong_etracs..consolidationaffectedrpu alter column newpin varchar(30);
+
+insert into bayombong_etracs..consolidationaffectedrpu 
 	(objid, consolidationid, rputype, landfaasid, prevfaasid, 
 	prevtdno, 
 	prevfullpin, 
@@ -251,53 +276,34 @@ insert into sancarlos_etracs.consolidationaffectedrpu
 	extended
 	)
 select
-	t.objid, 
+	ar.objid, 
 	a.objid as consolidationid, 
 	lower(orpu.type) as rputype, 
 	ntd.objid as landfaasid, 
 	otd.objid as prevfaasid, 
 	otd.tdno as prevtdno, 
-	concat(orpu.pin, '-', orpu.suffix) as prevfullpin, 
+	(orpu.pin + '-' + cast(orpu.suffix as varchar)) as prevfullpin, 
 	ntd.tdno as newtdno, 
-	concat(nrpu.pin, '-', nrpu.suffix) as newpin, 
+	(nrpu.pin + '-' + cast(nrpu.suffix as varchar)) as newpin, 
 	ar.newsuffix, 
 	ar.remarks as memoranda, 
 	ntd.objid as newfaasid, 
 	'[:]' as extended
-from etracs_sancarlos.tdtransaction t
-	inner join etracs_sancarlos.amalgamationtdtransaction a on t.objid = a.objid 
-	inner join etracs_sancarlos.amalgamationaffectedrpu ar on a.objid = ar.amalgamationtdtransactionid 
-	inner join etracs_sancarlos.taxdeclaration otd on ar.taxdeclarationid = otd.objid 
-	inner join etracs_sancarlos.rpu orpu on otd.rpuid = orpu.objid 
-	inner join etracs_sancarlos.taxdeclaration ntd on ar.newtaxdeclarationid = ntd.objid 
-	inner join etracs_sancarlos.rpu nrpu on ntd.rpuid = nrpu.objid ;	
+from etracs_bayombong..tdtransaction t
+	inner join etracs_bayombong..amalgamationtdtransaction a on t.objid = a.objid 
+	inner join etracs_bayombong..amalgamationaffectedrpu ar on a.objid = ar.amalgamationtdtransactionid 
+	inner join etracs_bayombong..taxdeclaration otd on ar.taxdeclarationid = otd.objid 
+	inner join etracs_bayombong..rpu orpu on otd.rpuid = orpu.objid 
+	inner join etracs_bayombong..taxdeclaration ntd on ar.newtaxdeclarationid = ntd.objid 
+	inner join etracs_bayombong..rpu nrpu on ntd.rpuid = nrpu.objid ;	
 
-update sancarlos_etracs.consolidation c, sancarlos_etracs.faas f set
+
+
+update c set
 	c.rp = f.rp,
 	c.rpu = f.rpu 
+from bayombong_etracs..consolidation c, bayombong_etracs..faas f
 where c.newfaasid = f.objid ;
-
- /*
-select
-	al.objid, 
-	a.objid as consolidationid, 
-	al.tdno, 
-	orpu.pin, 
-	otd.taxpayerid, 
-	otd.taxpayername, 
-	orpu.totalamv as mv, 
-	orpu.totalav as av, 
-	orpu.areainsqm as areasqm, 
-	orpu.areainhec as areaha, 
-	otd.objid as landfaasid, 
-	'[:]' as extended
-from etracs_sancarlos.tdtransaction t
-inner join etracs_sancarlos.amalgamationtdtransaction a on t.objid = a.objid 
-inner join etracs_sancarlos.amalgamatedland al on a.objid = al.amalgamationtdtransactionid 
-inner join etracs_sancarlos.taxdeclaration otd on al.taxdeclarationid = otd.objid 
-inner join etracs_sancarlos.rpu orpu on otd.rpuid = orpu.objid;
-
-*/
 
 
 

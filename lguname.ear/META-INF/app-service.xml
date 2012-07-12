@@ -38,6 +38,7 @@
   
   <mbean code="com.rameses.ruleserver.RuleMgmt" name="rameses:sancarlos=RuleMgmt">
 	<depends>jboss.jdbc:datasource=sancarlos_system,service=metadata</depends>
+	<depends>jboss.j2ee:ear=sancarlos.ear,jar=rameses-server.jar,name=ScriptService,service=EJB3</depends>
   </mbean>
   
   <mbean code="com.rameses.reports.jasper.JasperReportCache" name="rameses:sancarlos=JasperReportMgmt"/>

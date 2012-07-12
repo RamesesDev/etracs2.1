@@ -16,11 +16,13 @@ CREATE TABLE "account" (
   "rootid" varchar(50) default NULL,
   "pathbyids" varchar(200) default NULL,
   "pathbytitle" varchar(200) default NULL,
-  PRIMARY KEY  ("objid"),
-  -- UNIQUE ("accttitle","parentid")
+  PRIMARY KEY  ("objid")
+  -- UNIQUE KEY "ux_title_parentid" ("accttitle","parentid")
 );
 
 /*Table structure for table "active_session" */
+
+
 
 CREATE TABLE "active_session" (
   "sessionid" varchar(50) NOT NULL,
@@ -32,13 +34,15 @@ CREATE TABLE "active_session" (
 
 /*Table structure for table "af" */
 
+
+
 CREATE TABLE "af" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
   "schemaversion" varchar(10) NOT NULL,
   "docstate" varchar(10) NOT NULL,
-  "description" varchar(150) default NULL,
-  "aftype" varchar(20) NOT NULL,
+  "description" varchar(100) default NULL,
+  "aftype" varchar(10) NOT NULL,
   "unit" varchar(10) NOT NULL,
   "pcsperunit" int NOT NULL,
   "denomination" decimal(10,2) default NULL,
@@ -47,6 +51,8 @@ CREATE TABLE "af" (
 );
 
 /*Table structure for table "afcontrol" */
+
+
 
 CREATE TABLE "afcontrol" (
   "objid" varchar(50) NOT NULL,
@@ -80,16 +86,16 @@ CREATE TABLE "afcontrol" (
   "cancelledseries" text,
   "txndate" date default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY ("collectorid"),
-  KEY ("collectorname"),
-  KEY ("afid"),
-  KEY ("collectorid","afid"),
-  KEY ("collectorid","afid","docstate","mode")
-  */
+  -- KEY "ix_afcontrol_collectorid" ("collectorid"),
+  -- KEY "ix_afcontrol_collectorname" ("collectorname"),
+  -- KEY "ix_afcontrol_afid" ("afid"),
+  -- KEY "ix_afcontrol_colid_afid" ("collectorid","afid"),
+  -- KEY "ix_afcontrol_colafstatemode" ("collectorid","afid","docstate","mode")
 );
 
 /*Table structure for table "afcontroltransfer" */
+
+
 
 CREATE TABLE "afcontroltransfer" (
   "objid" varchar(50) NOT NULL,
@@ -103,6 +109,8 @@ CREATE TABLE "afcontroltransfer" (
 );
 
 /*Table structure for table "afinventory" */
+
+
 
 CREATE TABLE "afinventory" (
   "objid" varchar(50) NOT NULL,
@@ -131,9 +139,11 @@ CREATE TABLE "afinventory" (
   "stubprefix" varchar(50) default NULL,
   "startserialno" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "afinventorycredit" */
+
+
 
 CREATE TABLE "afinventorycredit" (
   "objid" varchar(50) NOT NULL,
@@ -158,9 +168,11 @@ CREATE TABLE "afinventorycredit" (
   "balance" int default NULL,
   "aflength" int default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "bank" */
+
+
 
 CREATE TABLE "bank" (
   "objid" varchar(50) NOT NULL,
@@ -172,9 +184,11 @@ CREATE TABLE "bank" (
   "address" varchar(100) default NULL,
   "manager" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "bankaccount" */
+
+
 
 CREATE TABLE "bankaccount" (
   "objid" varchar(50) NOT NULL,
@@ -195,9 +209,11 @@ CREATE TABLE "bankaccount" (
   "cashbreakdownreport" varchar(50) default NULL,
   "checkreport" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "batchcapture" */
+
+
 
 CREATE TABLE "batchcapture" (
   "objid" varchar(50) NOT NULL,
@@ -220,18 +236,14 @@ CREATE TABLE "batchcapture" (
   "collectorname" varchar(100) NOT NULL,
   "opener" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_batchcapture_state" ("docstate"),
-  KEY "ix_batchcapture_colname" ("collectorname"),
-  KEY "ix_batchcapture_encodedby" ("encodedby")
-  */
+  -- KEY "ix_batchcapture_state" ("docstate"),
+  -- KEY "ix_batchcapture_colname" ("collectorname"),
+  -- KEY "ix_batchcapture_encodedby" ("encodedby")
 );
-create index ix_batchcapture_state on batchcapture ("docstate");
-create index ix_batchcapture_colname on batchcapture ("collectorname");
-create index ix_encodedby on batchcapture ("encodedby");
-
 
 /*Table structure for table "bldgadditionalitem" */
+
+
 
 CREATE TABLE "bldgadditionalitem" (
   "objid" varchar(50) NOT NULL,
@@ -242,9 +254,11 @@ CREATE TABLE "bldgadditionalitem" (
   "expr" varchar(100) NOT NULL,
   "previd" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "bldgassesslevel" */
+
+
 
 CREATE TABLE "bldgassesslevel" (
   "objid" varchar(50) NOT NULL,
@@ -256,9 +270,11 @@ CREATE TABLE "bldgassesslevel" (
   "previd" varchar(50) default NULL,
   "ranges" text,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "bldgkindbucc" */
+
+
 
 CREATE TABLE "bldgkindbucc" (
   "objid" varchar(50) NOT NULL,
@@ -278,9 +294,11 @@ CREATE TABLE "bldgkindbucc" (
   "previd" varchar(50) default NULL,
   "extended" text,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "bldgrysetting" */
+
+
 
 CREATE TABLE "bldgrysetting" (
   "objid" varchar(50) NOT NULL,
@@ -294,9 +312,11 @@ CREATE TABLE "bldgrysetting" (
   "straightdepreciation" int default NULL,
   "calcbldgagebasedondtoccupied" int NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "bldgtype" */
+
+
 
 CREATE TABLE "bldgtype" (
   "objid" varchar(50) NOT NULL,
@@ -309,9 +329,11 @@ CREATE TABLE "bldgtype" (
   "depreciations" text,
   "previd" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "bpappinfolisting" */
+
+
 
 CREATE TABLE "bpappinfolisting" (
   "objid" varchar(100) NOT NULL,
@@ -328,6 +350,8 @@ CREATE TABLE "bpappinfolisting" (
 );
 
 /*Table structure for table "bpapplication" */
+
+
 
 CREATE TABLE "bpapplication" (
   "objid" varchar(50) NOT NULL,
@@ -354,25 +378,17 @@ CREATE TABLE "bpapplication" (
   "credits" text,
   "assessments" text,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_bpapplication_docstate" ("docstate"),
-  KEY "ix_bpapplication_businesid" ("businessid"),
-  KEY "ix_bpapplication_businesid_docstate" ("businessid","docstate"),
-  KEY "ix_bpapplication_txnno" ("txnno"),
-  KEY "ix_bpapplication_tradename" ("tradename"),
-  KEY "ix_bpapplication_barcode" ("barcode")
-  */
+  -- KEY "ix_bpapplication_docstate" ("docstate"),
+  -- KEY "ix_bpapplication_businesid" ("businessid"),
+  -- KEY "ix_bpapplication_businesid_docstate" ("businessid","docstate"),
+  -- KEY "ix_bpapplication_txnno" ("txnno"),
+  -- KEY "ix_bpapplication_tradename" ("tradename"),
+  -- KEY "ix_bpapplication_barcode" ("barcode")
 );
 
-create index "ix_bpapplication_docstate" on "bpapplication" ("docstate");
-create index "ix_bpapplication_businesid" on "bpapplication" ("businessid");
-create index "ix_bpapplication_businesid_docstate" on "bpapplication" ("businessid","docstate");
-create index "ix_bpapplication_txnno" on "bpapplication" ("txnno");
-create index "ix_bpapplication_tradename" on "bpapplication" ("tradename");
-create index "ix_bpapplication_barcode" on "bpapplication" ("barcode");
-
-
 /*Table structure for table "bpapplication_list" */
+
+
 
 CREATE TABLE "bpapplication_list" (
   "objid" varchar(50) NOT NULL,
@@ -389,6 +405,8 @@ CREATE TABLE "bpapplication_list" (
 );
 
 /*Table structure for table "bpapplicationlisting" */
+
+
 
 CREATE TABLE "bpapplicationlisting" (
   "objid" varchar(50) NOT NULL,
@@ -420,35 +438,22 @@ CREATE TABLE "bpapplicationlisting" (
   "txndate" date default NULL,
   "fullypaid" int default '0',
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_bpapplicationlisting_businessid" ("businessid"),
-  KEY "ix_bpapplicationlisting_tradename" ("tradename"),
-  KEY "ix_bpapplicationlisting_docstate" ("docstate"),
-  KEY "ix_bpapplicationlisting_txnno" ("txnno"),
-  KEY "ix_bpapplicationlisting_businesid_docstate" ("businessid","docstate"),
-  KEY "ix_bpapplicationlisting_tradenamedocstate" ("tradename","docstate"),
-  KEY "ix_bpapplicationlisting_taxpayernamedocstate" ("taxpayername","docstate"),
-  KEY "ix_bpapplicationlisting_bindocstate" ("bin","docstate"),
-  KEY "ix_bpapplicationlisting_txnnodocstate" ("txnno","docstate"),
-  KEY "ix_bpapplicationlisting_barcode" ("barcode"),
-  KEY "ix_bpapplicationlisting_sym" ("docstate","iyear","txnmode")
-  */
+  -- KEY "ix_bpapplicationlisting_businessid" ("businessid"),
+  -- KEY "ix_bpapplicationlisting_tradename" ("tradename"),
+  -- KEY "ix_bpapplicationlisting_docstate" ("docstate"),
+  -- KEY "ix_bpapplicationlisting_txnno" ("txnno"),
+  -- KEY "ix_bpapplicationlisting_businesid_docstate" ("businessid","docstate"),
+  -- KEY "ix_bpapplicationlisting_tradenamedocstate" ("tradename","docstate"),
+  -- KEY "ix_bpapplicationlisting_taxpayernamedocstate" ("taxpayername","docstate"),
+  -- KEY "ix_bpapplicationlisting_bindocstate" ("bin","docstate"),
+  -- KEY "ix_bpapplicationlisting_txnnodocstate" ("txnno","docstate"),
+  -- KEY "ix_bpapplicationlisting_barcode" ("barcode"),
+  -- KEY "ix_bpapplicationlisting_sym" ("docstate","iyear","txnmode")
 );
 
-create index "ix_bpapplicationlisting_businessid" on "bpapplicationlisting" ("businessid");
-create index "ix_bpapplicationlisting_tradename" on "bpapplicationlisting" ("tradename");
-create index "ix_bpapplicationlisting_docstate" on "bpapplicationlisting" ("docstate");
-create index "ix_bpapplicationlisting_txnno" on "bpapplicationlisting" ("txnno");
-create index "ix_bpapplicationlisting_businesid_docstate" on "bpapplicationlisting" ("businessid","docstate");
-create index "ix_bpapplicationlisting_tradenamedocstate" on "bpapplicationlisting" ("tradename","docstate");
-create index "ix_bpapplicationlisting_taxpayernamedocstate" on "bpapplicationlisting" ("taxpayername","docstate");
-create index "ix_bpapplicationlisting_bindocstate" on "bpapplicationlisting" ("bin","docstate");
-create index "ix_bpapplicationlisting_txnnodocstate" on "bpapplicationlisting" ("txnno","docstate");
-create index "ix_bpapplicationlisting_barcode" on "bpapplicationlisting" ("barcode");
-create index "ix_bpapplicationlisting_sym" on "bpapplicationlisting" ("docstate","iyear","txnmode");
-
-
 /*Table structure for table "bploblisting" */
+
+
 
 CREATE TABLE "bploblisting" (
   "objid" varchar(100) NOT NULL,
@@ -459,15 +464,12 @@ CREATE TABLE "bploblisting" (
   "iyear" int default NULL,
   "assessmenttype" varchar(100) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_bploblisting_appid" ("applicationid")
-  */
+  -- KEY "ix_bploblisting_appid" ("applicationid")
 );
 
-create index "ix_bploblisting_appid" on "bploblisting" ("applicationid");
-
-
 /*Table structure for table "bppayment" */
+
+
 
 CREATE TABLE "bppayment" (
   "objid" varchar(50) default NULL,
@@ -492,21 +494,14 @@ CREATE TABLE "bppayment" (
   "discount" decimal(10,2) default NULL,
   "total" decimal(10,2) default NULL,
   "voided" int default NULL,
-  PRIMARY KEY ("objid")
-  /*
-  KEY "ix_bppayment_applicationid" ("applicationid"),
-  KEY "ix_bppayment_txndate" ("txndate"),
-  KEY "ix_bppayment_receiptid" ("receiptid")
-  */
+  -- KEY "ix_bppayment_applicationid" ("applicationid"),
+  -- KEY "ix_bppayment_txndate" ("txndate"),
+  -- KEY "ix_bppayment_receiptid" ("receiptid")
 );
 
-create index "ix_bppayment_applicationid" on "bppayment" ("applicationid");
-create index "ix_bppayment_txndate" on "bppayment" ("txndate");
-create index "ix_bppayment_receiptid" on "bppayment" ("receiptid");
-
-
-
 /*Table structure for table "bppermit" */
+
+
 
 CREATE TABLE "bppermit" (
   "objid" varchar(50) NOT NULL,
@@ -527,17 +522,13 @@ CREATE TABLE "bppermit" (
   "plateno" varchar(50) default NULL,
   "info" text,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_bppermit_businessid" ("businessid"),
-  KEY "ix_bppermit_appid" ("applicationid")
-  */
+  -- KEY "ix_bppermit_businessid" ("businessid"),
+  -- KEY "ix_bppermit_appid" ("applicationid")
 );
 
-create index "ix_bppermit_businessid" on "bppermit" ("businessid");
-create index "ix_bppermit_appid" on "bppermit" ("applicationid");
-
-
 /*Table structure for table "bpreceivable" */
+
+
 
 CREATE TABLE "bpreceivable" (
   "objid" varchar(32) NOT NULL,
@@ -555,11 +546,11 @@ CREATE TABLE "bpreceivable" (
   "iqtr" int default NULL,
   "acctno" varchar(32) default NULL,
   PRIMARY KEY  ("objid")
-);
-
-
+) ;
 
 /*Table structure for table "bpreceivablecredit" */
+
+
 
 CREATE TABLE "bpreceivablecredit" (
   "objid" varchar(50) NOT NULL default '',
@@ -573,9 +564,11 @@ CREATE TABLE "bpreceivablecredit" (
   "discount" decimal(9,2) NOT NULL,
   "refdate" date default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "bpsetting" */
+
+
 
 CREATE TABLE "bpsetting" (
   "objid" varchar(50) NOT NULL,
@@ -587,6 +580,8 @@ CREATE TABLE "bpsetting" (
 );
 
 /*Table structure for table "bptaxfeelisting" */
+
+
 
 CREATE TABLE "bptaxfeelisting" (
   "objid" varchar(100) NOT NULL,
@@ -603,6 +598,8 @@ CREATE TABLE "bptaxfeelisting" (
 
 /*Table structure for table "bptxn" */
 
+
+
 CREATE TABLE "bptxn" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
@@ -617,8 +614,10 @@ CREATE TABLE "bptxn" (
 
 /*Table structure for table "business" */
 
+
+
 CREATE TABLE "business" (
-  "objid" varchar(50) NOT NULL,
+  "objid" varchar(32) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
   "schemaversion" varchar(50) NOT NULL,
   "docstate" varchar(15) NOT NULL,
@@ -645,22 +644,15 @@ CREATE TABLE "business" (
   "lastyrpaid" int default NULL,
   "lastqtrpaid" int default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_business_bin" ("bin"),
-  KEY "ix_business_taxpayername" ("taxpayername"(767)),
-  KEY "ix_business_adminname" ("adminname"),
-  KEY "ix_business_businessaddress" ("businessaddress")
-  */
+  -- KEY "ix_business_bin" ("bin"),
+  -- KEY "ix_business_taxpayername" ("taxpayername"(767)),
+  -- KEY "ix_business_adminname" ("adminname"),
+  -- KEY "ix_business_businessaddress" ("businessaddress")
 );
 
-create index "ix_business_bin" on "business" ("bin");
-create index "ix_business_taxpayername" on "business" ("taxpayername");
-create index "ix_business_adminname" on "business" ("adminname");
-create index "ix_business_businessaddress" on "business" ("businessaddress");
-
-
-
 /*Table structure for table "cancelannotation" */
+
+
 
 CREATE TABLE "cancelannotation" (
   "objid" varchar(50) NOT NULL,
@@ -692,6 +684,8 @@ CREATE TABLE "cancelannotation" (
 
 /*Table structure for table "cancelfaas" */
 
+
+
 CREATE TABLE "cancelfaas" (
   "objid" varchar(50) NOT NULL,
   "docstate" varchar(50) NOT NULL,
@@ -714,6 +708,8 @@ CREATE TABLE "cancelfaas" (
 
 /*Table structure for table "canceltdreason" */
 
+
+
 CREATE TABLE "canceltdreason" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
@@ -722,9 +718,11 @@ CREATE TABLE "canceltdreason" (
   "canceltitle" varchar(100) NOT NULL,
   "canceldesc" varchar(150) NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "changeaddresslist" */
+
+
 
 CREATE TABLE "changeaddresslist" (
   "objid" varchar(50) NOT NULL,
@@ -737,16 +735,15 @@ CREATE TABLE "changeaddresslist" (
   "newbusinessaddress" varchar(255) NOT NULL,
   "taxpayername" varchar(100) NOT NULL,
   "taxpayeraddress" varchar(255) NOT NULL,
-  PRIMARY KEY  ("objid"),  
+  PRIMARY KEY  ("objid")
   -- KEY "FK_changeaddresslist_business" ("businessid"),
-  CONSTRAINT "FK_changeaddresslist" FOREIGN KEY ("objid") REFERENCES "bptxn" ("objid"),
-  CONSTRAINT "FK_changeaddresslist_business" FOREIGN KEY ("businessid") REFERENCES "business" ("objid")
+  -- CONSTRAINT "FK_changeaddresslist" FOREIGN KEY ("objid") REFERENCES "bptxn" ("objid"),
+  -- CONSTRAINT "FK_changeaddresslist_business" FOREIGN KEY ("businessid") REFERENCES "business" ("objid")
 );
 
-create index "FK_changeaddresslist_business" on "changeaddresslist" ("businessid");
-
-
 /*Table structure for table "changeadminlist" */
+
+
 
 CREATE TABLE "changeadminlist" (
   "objid" varchar(50) NOT NULL,
@@ -764,26 +761,19 @@ CREATE TABLE "changeadminlist" (
   "newadminid" varchar(50) default NULL,
   "newadminname" varchar(100) default NULL,
   "newadminaddress" varchar(255) default NULL,
-  PRIMARY KEY  ("objid"),
-  /*
-  KEY "FK_changeadminlist_newadmin" ("newadminid"),
-  KEY "FK_changeadminlist_prevadmin" ("prevadminid"),
-  KEY "FK_changeadminlist_business" ("businessid"),
-  */
-  /*
-  CONSTRAINT "FK_changeadminlist" FOREIGN KEY ("objid") REFERENCES "bptxn" ("objid"),
-  CONSTRAINT "FK_changeadminlist_business" FOREIGN KEY ("businessid") REFERENCES "business" ("objid"),
-  CONSTRAINT "FK_changeadminlist_newadmin" FOREIGN KEY ("newadminid") REFERENCES "entity" ("objid"),
-  CONSTRAINT "FK_changeadminlist_prevadmin" FOREIGN KEY ("prevadminid") REFERENCES "entity" ("objid")
-  */
+  PRIMARY KEY  ("objid")
+  -- KEY "FK_changeadminlist_newadmin" ("newadminid"),
+  -- KEY "FK_changeadminlist_prevadmin" ("prevadminid"),
+  -- KEY "FK_changeadminlist_business" ("businessid"),
+  -- CONSTRAINT "FK_changeadminlist" FOREIGN KEY ("objid") REFERENCES "bptxn" ("objid"),
+  -- CONSTRAINT "FK_changeadminlist_business" FOREIGN KEY ("businessid") REFERENCES "business" ("objid"),
+  -- CONSTRAINT "FK_changeadminlist_newadmin" FOREIGN KEY ("newadminid") REFERENCES "entity" ("objid"),
+  -- CONSTRAINT "FK_changeadminlist_prevadmin" FOREIGN KEY ("prevadminid") REFERENCES "entity" ("objid")
 );
 
-create index "ix_changeadminlist_newadmin" on "changeadminlist" ("newadminid");
-create index "ix_changeadminlist_prevadmin" on "changeadminlist" ("prevadminid");
-create index "ix_changeadminlist_business" on "changeadminlist" ("businessid");
-
-
 /*Table structure for table "changepermitteelist" */
+
+
 
 CREATE TABLE "changepermitteelist" (
   "objid" varchar(50) NOT NULL,
@@ -800,18 +790,18 @@ CREATE TABLE "changepermitteelist" (
   "newtaxpayername" varchar(100) NOT NULL,
   "newtaxpayeraddress" varchar(255) NOT NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "FK_changepermitteelist_newtaxpayer" ("newtaxpayerid"),
-  KEY "FK_changepermitteelist_prevtaxpayer" ("prevtaxpayerid"),
-  KEY "FK_changepermitteelist_business" ("businessid"),
-  CONSTRAINT "FK_changepermitteelist" FOREIGN KEY ("objid") REFERENCES "bptxn" ("objid"),
-  CONSTRAINT "FK_changepermitteelist_business" FOREIGN KEY ("businessid") REFERENCES "business" ("objid"),
-  CONSTRAINT "FK_changepermitteelist_newtaxpayer" FOREIGN KEY ("newtaxpayerid") REFERENCES "entity" ("objid"),
-  CONSTRAINT "FK_changepermitteelist_prevtaxpayer" FOREIGN KEY ("prevtaxpayerid") REFERENCES "entity" ("objid")
-  */
+  -- KEY "FK_changepermitteelist_newtaxpayer" ("newtaxpayerid"),
+  -- KEY "FK_changepermitteelist_prevtaxpayer" ("prevtaxpayerid"),
+  -- KEY "FK_changepermitteelist_business" ("businessid"),
+  -- CONSTRAINT "FK_changepermitteelist" FOREIGN KEY ("objid") REFERENCES "bptxn" ("objid"),
+  -- CONSTRAINT "FK_changepermitteelist_business" FOREIGN KEY ("businessid") REFERENCES "business" ("objid"),
+  -- CONSTRAINT "FK_changepermitteelist_newtaxpayer" FOREIGN KEY ("newtaxpayerid") REFERENCES "entity" ("objid"),
+  -- CONSTRAINT "FK_changepermitteelist_prevtaxpayer" FOREIGN KEY ("prevtaxpayerid") REFERENCES "entity" ("objid")
 );
 
 /*Table structure for table "changetradenamelist" */
+
+
 
 CREATE TABLE "changetradenamelist" (
   "objid" varchar(50) NOT NULL,
@@ -825,14 +815,14 @@ CREATE TABLE "changetradenamelist" (
   "txntype" varchar(20) NOT NULL,
   "businessaddress" varchar(255) NOT NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "FK_changetradenamelist_business" ("businessid"),
-  CONSTRAINT "FK_changetradenamelist" FOREIGN KEY ("objid") REFERENCES "bptxn" ("objid"),
-  CONSTRAINT "FK_changetradenamelist_business" FOREIGN KEY ("businessid") REFERENCES "business" ("objid")
-  */
+  -- KEY "FK_changetradenamelist_business" ("businessid"),
+  -- CONSTRAINT "FK_changetradenamelist" FOREIGN KEY ("objid") REFERENCES "bptxn" ("objid"),
+  -- CONSTRAINT "FK_changetradenamelist_business" FOREIGN KEY ("businessid") REFERENCES "business" ("objid")
 );
 
 /*Table structure for table "citizenship" */
+
+
 
 CREATE TABLE "citizenship" (
   "objid" varchar(100) NOT NULL,
@@ -840,6 +830,8 @@ CREATE TABLE "citizenship" (
 );
 
 /*Table structure for table "collectionsetting" */
+
+
 
 CREATE TABLE "collectionsetting" (
   "objid" varchar(50) NOT NULL,
@@ -851,6 +843,8 @@ CREATE TABLE "collectionsetting" (
 
 /*Table structure for table "collectiontype" */
 
+
+
 CREATE TABLE "collectiontype" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
@@ -859,15 +853,15 @@ CREATE TABLE "collectiontype" (
   "appcode" varchar(25) NOT NULL,
   "payorrequired" int NOT NULL,
   "afid" varchar(50) NOT NULL,
-  PRIMARY KEY  ("objid"),
-  UNIQUE ("name","afid")
-  /*
-  KEY "FK_collectiontype" ("afid"),
-  KEY "ix_collectiontype_afid" ("afid")
-  */
+  PRIMARY KEY  ("objid")
+  -- UNIQUE KEY "afid" ("name","afid"),
+  -- KEY "FK_collectiontype" ("afid"),
+  -- KEY "ix_collectiontype_afid" ("afid")
 );
 
 /*Table structure for table "consolidation" */
+
+
 
 CREATE TABLE "consolidation" (
   "objid" varchar(50) NOT NULL,
@@ -912,6 +906,8 @@ CREATE TABLE "consolidation" (
 
 /*Table structure for table "consolidationaffectedrpu" */
 
+
+
 CREATE TABLE "consolidationaffectedrpu" (
   "objid" varchar(50) NOT NULL,
   "consolidationid" varchar(50) NOT NULL,
@@ -931,6 +927,8 @@ CREATE TABLE "consolidationaffectedrpu" (
 
 /*Table structure for table "consolidationland" */
 
+
+
 CREATE TABLE "consolidationland" (
   "objid" varchar(50) NOT NULL,
   "consolidationid" varchar(50) NOT NULL,
@@ -949,13 +947,17 @@ CREATE TABLE "consolidationland" (
 
 /*Table structure for table "country" */
 
+
+
 CREATE TABLE "country" (
   "code" varchar(5) NOT NULL,
   "name" varchar(255) default NULL,
   PRIMARY KEY  ("code")
-);
+) ;
 
 /*Table structure for table "craaf" */
+
+
 
 CREATE TABLE "craaf" (
   "objid" varchar(50) NOT NULL,
@@ -987,9 +989,11 @@ CREATE TABLE "craaf" (
   "endingto" varchar(50) default NULL,
   "stubno" varchar(30) default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "craafcredit" */
+
+
 
 CREATE TABLE "craafcredit" (
   "objid" varchar(50) NOT NULL,
@@ -1001,9 +1005,11 @@ CREATE TABLE "craafcredit" (
   "refdate" varchar(25) NOT NULL,
   "qty" int NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "deposit" */
+
+
 
 CREATE TABLE "deposit" (
   "objid" varchar(50) NOT NULL,
@@ -1023,23 +1029,25 @@ CREATE TABLE "deposit" (
   "liquidations" text NOT NULL,
   "fundtotals" text NOT NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_deposit_txnno" ("txnno"),
-  KEY "ix_deposit_docstate" ("docstate"),
-  KEY "ix_deposit_depositedbyname" ("depositedbyname")
-  */
+  -- KEY "ix_deposit_txnno" ("txnno"),
+  -- KEY "ix_deposit_docstate" ("docstate"),
+  -- KEY "ix_deposit_depositedbyname" ("depositedbyname")
 );
 
 /*Table structure for table "docno_generator" */
+
+
 
 CREATE TABLE "docno_generator" (
   "name" varchar(50) NOT NULL,
   "prefix" varchar(50) NOT NULL,
   "lastnum" int default NULL,
-  PRIMARY KEY  ("name","prefix")
+  PRIMARY KEY  ("name", "prefix")
 );
 
 /*Table structure for table "entity" */
+
+
 
 CREATE TABLE "entity" (
   "objid" varchar(50) NOT NULL,
@@ -1056,16 +1064,16 @@ CREATE TABLE "entity" (
   "remarks" varchar(100) default NULL,
   "contactno" varchar(20) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ux_entity_no" ("entityno"),
-  KEY "ix_entity_name" ("entityname"),
-  KEY "ix_entity_entityname" ("entityname"),
-  KEY "ix_entity_entityno" ("entityno"),
-  KEY "ix_entity_entitytype" ("entitytype")
-  */
+  -- KEY "ux_entity_no" ("entityno"),
+  -- KEY "ix_entity_name" ("entityname"),
+  -- KEY "ix_entity_entityname" ("entityname"),
+  -- KEY "ix_entity_entityno" ("entityno"),
+  -- KEY "ix_entity_entitytype" ("entitytype")
 );
 
 /*Table structure for table "entitymember" */
+
+
 
 CREATE TABLE "entitymember" (
   "objid" varchar(50) NOT NULL,
@@ -1082,6 +1090,8 @@ CREATE TABLE "entitymember" (
 
 /*Table structure for table "examiner" */
 
+
+
 CREATE TABLE "examiner" (
   "objid" varchar(50) NOT NULL,
   "schemaName" varchar(50) NOT NULL,
@@ -1093,6 +1103,8 @@ CREATE TABLE "examiner" (
 
 /*Table structure for table "exemptiontype" */
 
+
+
 CREATE TABLE "exemptiontype" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
@@ -1101,9 +1113,11 @@ CREATE TABLE "exemptiontype" (
   "exemptdesc" varchar(100) NOT NULL,
   "orderno" int NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "faas" */
+
+
 
 CREATE TABLE "faas" (
   "objid" varchar(50) NOT NULL,
@@ -1125,6 +1139,8 @@ CREATE TABLE "faas" (
 );
 
 /*Table structure for table "faasannotation" */
+
+
 
 CREATE TABLE "faasannotation" (
   "objid" varchar(50) NOT NULL,
@@ -1162,6 +1178,8 @@ CREATE TABLE "faasannotation" (
 
 /*Table structure for table "faasannotationtype" */
 
+
+
 CREATE TABLE "faasannotationtype" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
@@ -1169,13 +1187,13 @@ CREATE TABLE "faasannotationtype" (
   "annotationtypecode" varchar(10) NOT NULL,
   "annotationtype" varchar(100) NOT NULL,
   PRIMARY KEY  ("objid")
-  /*
-  UNIQUE KEY "annotationtypecode" ("annotationtypecode"),
-  UNIQUE KEY "annotationtype" ("annotationtype")
-  */
+  -- UNIQUE KEY "annotationtypecode" ("annotationtypecode"),
+  -- UNIQUE KEY "annotationtype" ("annotationtype")
 );
 
 /*Table structure for table "faasattachment" */
+
+
 
 CREATE TABLE "faasattachment" (
   "objid" varchar(50) NOT NULL,
@@ -1192,6 +1210,8 @@ CREATE TABLE "faasattachment" (
 );
 
 /*Table structure for table "faaslist" */
+
+
 
 CREATE TABLE "faaslist" (
   "objid" varchar(50) NOT NULL,
@@ -1256,7 +1276,7 @@ CREATE TABLE "faaslist" (
   "barangayid" varchar(50) default NULL,
   "ownername" varchar(500) NOT NULL,
   "owneraddress" varchar(100) NOT NULL,
-  "txndatetime" varchar(25) NOT NULL,
+  "txntimestamp" varchar(25) NOT NULL,
   "section" varchar(3) NOT NULL,
   "parcel" varchar(3) NOT NULL,
   "memoranda" varchar(1000) NOT NULL,
@@ -1266,33 +1286,35 @@ CREATE TABLE "faaslist" (
   "restriction" varchar(30) default NULL,
   "message" text,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_brgy_state_section_taxable" ("barangayid","docstate","section","taxable"),
-  KEY "ix_faaslist_barangayid_docstate" ("barangayid","docstate"),
-  KEY "ix_txndatetime_docstate" ("txndatetime","docstate"),
-  KEY "FK_faaslist" ("taxpayerid"),
-  KEY "ix_faaslist_annotated" ("annotated"),
-  KEY "ix_faaslist_prevtdno_ry" ("prevtdno","ry"),
-  KEY "ix_faaslist_prevtdno" ("prevtdno"),
-  KEY "ix_faaslist_rydocstate" ("ry","docstate"),
-  KEY "ix_faaslist_datetime_docstate_taxable" ("txndatetime","docstate","taxable"),
-  KEY "ix_faaslist_pin_rputype" ("rputype","pin"),
-  CONSTRAINT "FK_faaslist" FOREIGN KEY ("taxpayerid") REFERENCES "entity" ("objid")
-  */
+  -- KEY "ix_brgy_state_section_taxable" ("barangayid","docstate","section","taxable"),
+  -- KEY "ix_faaslist_barangayid_docstate" ("barangayid","docstate"),
+  -- KEY "ix_txntimestamp_docstate" ("txntimestamp","docstate"),
+  -- KEY "FK_faaslist" ("taxpayerid"),
+  -- KEY "ix_faaslist_annotated" ("annotated"),
+  -- KEY "ix_faaslist_prevtdno_ry" ("prevtdno","ry"),
+  -- KEY "ix_faaslist_prevtdno" ("prevtdno"),
+  -- KEY "ix_faaslist_rydocstate" ("ry","docstate"),
+  -- KEY "ix_faaslist_timestamp_docstate_taxable" ("txntimestamp","docstate","taxable"),
+  -- KEY "ix_faaslist_pin_rputype" ("rputype","pin"),
+  -- CONSTRAINT "FK_faaslist" FOREIGN KEY ("taxpayerid") REFERENCES "entity" ("objid")
 );
 
 /*Table structure for table "filter" */
+
+
 
 CREATE TABLE "filter" (
   "objid" varchar(50) NOT NULL,
   "name" varchar(250) NOT NULL,
   "refname" varchar(100) NOT NULL,
   "info" text NOT NULL,
-  PRIMARY KEY  ("objid"),
+  PRIMARY KEY  ("objid")
   -- KEY "name" ("name","refname")
 );
 
 /*Table structure for table "form60setup" */
+
+
 
 CREATE TABLE "form60setup" (
   "objid" varchar(50) NOT NULL,
@@ -1301,6 +1323,8 @@ CREATE TABLE "form60setup" (
 );
 
 /*Table structure for table "fund" */
+
+
 
 CREATE TABLE "fund" (
   "objid" varchar(50) NOT NULL,
@@ -1311,9 +1335,11 @@ CREATE TABLE "fund" (
   "subfund" varchar(100) NOT NULL,
   "fundname" varchar(150) NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "incomeaccount" */
+
+
 
 CREATE TABLE "incomeaccount" (
   "objid" varchar(50) NOT NULL,
@@ -1326,7 +1352,7 @@ CREATE TABLE "incomeaccount" (
   "defaultvalue" decimal(12,2) NOT NULL,
   "systype" varchar(25) default NULL,
   "ngasid" varchar(50) default NULL,
-  "ngastitle" varchar(150) default NULL,
+  "ngastitle" varchar(100) default NULL,
   "ngassubacctid" varchar(50) default NULL,
   "ngassubaccttitle" varchar(100) default NULL,
   "sreid" varchar(50) default NULL,
@@ -1337,11 +1363,13 @@ CREATE TABLE "incomeaccount" (
   "fundname" varchar(150) default NULL,
   "amounttype" varchar(25) default NULL,
   "groupid" varchar(100) default NULL,
-  PRIMARY KEY  ("objid"),
-  -- UNIQUE KEY "ix_incomeacct_title" ("accttitle")
+  PRIMARY KEY  ("objid")
+  -- UNIQUE -- KEY "ix_incomeacct_title" ("accttitle")
 );
 
 /*Table structure for table "incomeaccountgroup" */
+
+
 
 CREATE TABLE "incomeaccountgroup" (
   "objid" varchar(100) NOT NULL,
@@ -1349,6 +1377,8 @@ CREATE TABLE "incomeaccountgroup" (
 );
 
 /*Table structure for table "iraf" */
+
+
 
 CREATE TABLE "iraf" (
   "objid" varchar(50) NOT NULL,
@@ -1371,6 +1401,8 @@ CREATE TABLE "iraf" (
 
 /*Table structure for table "iraf_list" */
 
+
+
 CREATE TABLE "iraf_list" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
@@ -1387,6 +1419,8 @@ CREATE TABLE "iraf_list" (
 
 /*Table structure for table "jobposition" */
 
+
+
 CREATE TABLE "jobposition" (
   "objid" varchar(50) NOT NULL,
   "code" varchar(20) default NULL,
@@ -1399,26 +1433,28 @@ CREATE TABLE "jobposition" (
   "assigneeid" varchar(50) default NULL,
   "jobstatus" char(1) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "FK_jobposition" ("orgunitid"),
-  KEY "FK_jobposition_roleclass" ("roleclass"),
-  KEY "FK_jobposition_role" ("role"),
-  KEY "FK_jobposition_personnel" ("assigneeid"),
-  CONSTRAINT "FK_jobposition" FOREIGN KEY ("orgunitid") REFERENCES "orgunit" ("objid"),
-  CONSTRAINT "FK_jobposition_assignee" FOREIGN KEY ("assigneeid") REFERENCES "personnel" ("objid"),
-  CONSTRAINT "FK_jobposition_role" FOREIGN KEY ("role") REFERENCES "role" ("name")
-  */
+  -- KEY "FK_jobposition" ("orgunitid"),
+  -- KEY "FK_jobposition_roleclass" ("roleclass"),
+  -- KEY "FK_jobposition_role" ("role"),
+  -- KEY "FK_jobposition_personnel" ("assigneeid"),
+  -- CONSTRAINT "FK_jobposition" FOREIGN KEY ("orgunitid") REFERENCES "orgunit" ("objid"),
+  -- CONSTRAINT "FK_jobposition_assignee" FOREIGN KEY ("assigneeid") REFERENCES "personnel" ("objid"),
+  -- CONSTRAINT "FK_jobposition_role" FOREIGN KEY ("role") REFERENCES "role" ("name")
 );
 
 /*Table structure for table "jobposition_tag" */
 
+
+
 CREATE TABLE "jobposition_tag" (
   "jobid" varchar(50) NOT NULL,
   "tagid" varchar(50) NOT NULL,
-  PRIMARY KEY  ("jobid","tagid")
+  PRIMARY KEY  ("jobid", "tagid")
 );
 
 /*Table structure for table "kindofbuilding" */
+
+
 
 CREATE TABLE "kindofbuilding" (
   "objid" varchar(50) NOT NULL,
@@ -1427,9 +1463,11 @@ CREATE TABLE "kindofbuilding" (
   "bldgcode" varchar(10) NOT NULL,
   "bldgkind" varchar(100) NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "landactualuseadjustment" */
+
+
 
 CREATE TABLE "landactualuseadjustment" (
   "objid" varchar(50) NOT NULL,
@@ -1447,6 +1485,8 @@ CREATE TABLE "landactualuseadjustment" (
 
 /*Table structure for table "landadjustment" */
 
+
+
 CREATE TABLE "landadjustment" (
   "objid" varchar(50) NOT NULL,
   "adjustmentcode" varchar(10) NOT NULL,
@@ -1462,6 +1502,8 @@ CREATE TABLE "landadjustment" (
 
 /*Table structure for table "landassesslevel" */
 
+
+
 CREATE TABLE "landassesslevel" (
   "objid" varchar(50) NOT NULL,
   "classcode" varchar(10) NOT NULL,
@@ -1472,9 +1514,11 @@ CREATE TABLE "landassesslevel" (
   "landrysettingid" varchar(50) NOT NULL,
   "ranges" text,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "landrysetting" */
+
+
 
 CREATE TABLE "landrysetting" (
   "objid" varchar(50) NOT NULL,
@@ -1487,6 +1531,8 @@ CREATE TABLE "landrysetting" (
 
 /*Table structure for table "lcuv" */
 
+
+
 CREATE TABLE "lcuv" (
   "objid" varchar(50) NOT NULL,
   "classcode" varchar(10) NOT NULL,
@@ -1494,9 +1540,11 @@ CREATE TABLE "lcuv" (
   "landrysettingid" varchar(50) NOT NULL,
   "previd" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "lcuvspecificclass" */
+
+
 
 CREATE TABLE "lcuvspecificclass" (
   "objid" varchar(50) NOT NULL,
@@ -1511,6 +1559,8 @@ CREATE TABLE "lcuvspecificclass" (
 
 /*Table structure for table "lcuvstripping" */
 
+
+
 CREATE TABLE "lcuvstripping" (
   "objid" varchar(50) NOT NULL,
   "striplevel" int NOT NULL,
@@ -1522,6 +1572,8 @@ CREATE TABLE "lcuvstripping" (
 );
 
 /*Table structure for table "lcuvsubclass" */
+
+
 
 CREATE TABLE "lcuvsubclass" (
   "objid" varchar(50) NOT NULL,
@@ -1535,6 +1587,8 @@ CREATE TABLE "lcuvsubclass" (
 );
 
 /*Table structure for table "lgu" */
+
+
 
 CREATE TABLE "lgu" (
   "objid" varchar(50) NOT NULL,
@@ -1552,6 +1606,8 @@ CREATE TABLE "lgu" (
 
 /*Table structure for table "liquidation" */
 
+
+
 CREATE TABLE "liquidation" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
@@ -1568,6 +1624,8 @@ CREATE TABLE "liquidation" (
 
 /*Table structure for table "liquidationlist" */
 
+
+
 CREATE TABLE "liquidationlist" (
   "objid" varchar(50) NOT NULL,
   "docstate" varchar(50) NOT NULL,
@@ -1577,7 +1635,7 @@ CREATE TABLE "liquidationlist" (
   "iqtr" int NOT NULL,
   "imonth" int NOT NULL,
   "iday" int NOT NULL,
-  "txndatetime" varchar(15) NOT NULL,
+  "txntimestamp" varchar(15) NOT NULL,
   "liquidatingofficerid" varchar(50) NOT NULL,
   "liquidatingofficername" varchar(100) NOT NULL,
   "liquidatingofficertitle" varchar(100) NOT NULL,
@@ -1591,13 +1649,13 @@ CREATE TABLE "liquidationlist" (
   "depositedbytitle" varchar(50) default NULL,
   "opener" varchar(50) NOT NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_liquidationlist_period" ("iyear","iqtr","imonth"),
-  CONSTRAINT "FK_liquidation" FOREIGN KEY ("objid") REFERENCES "liquidation" ("objid")
-  */
+  -- KEY "ix_liquidationlist_period" ("iyear","iqtr","imonth"),
+  -- CONSTRAINT "FK_liquidation" FOREIGN KEY ("objid") REFERENCES "liquidation" ("objid")
 );
 
 /*Table structure for table "liquidationrcd" */
+
+
 
 CREATE TABLE "liquidationrcd" (
   "objid" varchar(50) NOT NULL,
@@ -1623,17 +1681,17 @@ CREATE TABLE "liquidationrcd" (
   "depositid" varchar(50) default NULL,
   "dtdeposited" date default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "FK_liquidationrcd" ("liquidationid"),
-  KEY "FK_liquidationrcd_fund" ("fundid"),
-  KEY "lqofficerid" ("lqofficerid"),
-  KEY "ix_liquidationrcd_cashierid" ("cashierid"),
-  CONSTRAINT "FK_liquidationrcd" FOREIGN KEY ("liquidationid") REFERENCES "liquidation" ("objid"),
-  CONSTRAINT "FK_liquidationrcd_fund" FOREIGN KEY ("fundid") REFERENCES "fund" ("objid")
-  */
+  -- KEY "FK_liquidationrcd" ("liquidationid"),
+  -- KEY "FK_liquidationrcd_fund" ("fundid"),
+  -- KEY "lqofficerid" ("lqofficerid"),
+  -- KEY "ix_liquidationrcd_cashierid" ("cashierid"),
+  -- CONSTRAINT "FK_liquidationrcd" FOREIGN KEY ("liquidationid") REFERENCES "liquidation" ("objid"),
+  -- CONSTRAINT "FK_liquidationrcd_fund" FOREIGN KEY ("fundid") REFERENCES "fund" ("objid")
 );
 
 /*Table structure for table "lob" */
+
+
 
 CREATE TABLE "lob" (
   "objid" varchar(50) NOT NULL,
@@ -1645,14 +1703,14 @@ CREATE TABLE "lob" (
   "classification" varchar(50) NOT NULL,
   "attributes" text,
   PRIMARY KEY  ("objid")
-  /*
-  UNIQUE KEY "ux_lob_name" ("name"),
-  KEY "FK_lob" ("classificationid"),
-  CONSTRAINT "FK_lob" FOREIGN KEY ("classificationid") REFERENCES "lobclassification" ("objid")
-  */
+  -- UNIQUE KEY "ux_lob_name" ("name"),
+  -- KEY "FK_lob" ("classificationid"),
+  -- CONSTRAINT "FK_lob" FOREIGN KEY ("classificationid") REFERENCES "lobclassification" ("objid")
 );
 
 /*Table structure for table "lobattribute" */
+
+
 
 CREATE TABLE "lobattribute" (
   "objid" varchar(50) NOT NULL,
@@ -1663,6 +1721,8 @@ CREATE TABLE "lobattribute" (
 
 /*Table structure for table "lobclassification" */
 
+
+
 CREATE TABLE "lobclassification" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(25) NOT NULL,
@@ -1670,12 +1730,12 @@ CREATE TABLE "lobclassification" (
   "name" varchar(100) NOT NULL,
   "remarks" varchar(100) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  UNIQUE KEY "ux_lobclassification_name" ("name")
-  */
+  -- UNIQUE KEY "ux_lobclassification_name" ("name")
 );
 
 /*Table structure for table "machassesslevel" */
+
+
 
 CREATE TABLE "machassesslevel" (
   "objid" varchar(50) NOT NULL,
@@ -1687,9 +1747,11 @@ CREATE TABLE "machassesslevel" (
   "previd" varchar(50) default NULL,
   "ranges" text,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "machforex" */
+
+
 
 CREATE TABLE "machforex" (
   "objid" varchar(50) NOT NULL,
@@ -1698,9 +1760,11 @@ CREATE TABLE "machforex" (
   "forex" decimal(10,6) NOT NULL,
   "previd" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "machines" */
+
+
 
 CREATE TABLE "machines" (
   "objid" varchar(50) NOT NULL,
@@ -1711,9 +1775,11 @@ CREATE TABLE "machines" (
   "economiclife" int NOT NULL,
   "residualrate" decimal(10,2) NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "machrysetting" */
+
+
 
 CREATE TABLE "machrysetting" (
   "objid" varchar(50) NOT NULL,
@@ -1722,9 +1788,11 @@ CREATE TABLE "machrysetting" (
   "ry" int NOT NULL,
   "previd" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "materials" */
+
+
 
 CREATE TABLE "materials" (
   "objid" varchar(50) NOT NULL,
@@ -1733,9 +1801,11 @@ CREATE TABLE "materials" (
   "materialcode" varchar(10) NOT NULL,
   "materialdesc" varchar(100) NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "miscassesslevel" */
+
+
 
 CREATE TABLE "miscassesslevel" (
   "objid" varchar(50) NOT NULL,
@@ -1747,9 +1817,11 @@ CREATE TABLE "miscassesslevel" (
   "previd" varchar(50) default NULL,
   "ranges" text,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "miscitems" */
+
+
 
 CREATE TABLE "miscitems" (
   "objid" varchar(50) NOT NULL,
@@ -1758,9 +1830,11 @@ CREATE TABLE "miscitems" (
   "misccode" varchar(10) NOT NULL,
   "miscdesc" varchar(100) NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "miscitemvalue" */
+
+
 
 CREATE TABLE "miscitemvalue" (
   "objid" varchar(50) NOT NULL,
@@ -1775,6 +1849,8 @@ CREATE TABLE "miscitemvalue" (
 
 /*Table structure for table "miscrysetting" */
 
+
+
 CREATE TABLE "miscrysetting" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
@@ -1782,9 +1858,11 @@ CREATE TABLE "miscrysetting" (
   "ry" int NOT NULL,
   "previd" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "municipal_taxpayer" */
+
+
 
 CREATE TABLE "municipal_taxpayer" (
   "objid" varchar(50) NOT NULL,
@@ -1801,6 +1879,8 @@ CREATE TABLE "municipal_taxpayer" (
 );
 
 /*Table structure for table "noticeofassessment" */
+
+
 
 CREATE TABLE "noticeofassessment" (
   "objid" varchar(50) NOT NULL,
@@ -1825,12 +1905,16 @@ CREATE TABLE "noticeofassessment" (
 
 /*Table structure for table "orgtype" */
 
+
+
 CREATE TABLE "orgtype" (
   "name" varchar(50) NOT NULL,
   PRIMARY KEY  ("name")
 );
 
 /*Table structure for table "orgunit" */
+
+
 
 CREATE TABLE "orgunit" (
   "objid" varchar(50) NOT NULL,
@@ -1842,13 +1926,13 @@ CREATE TABLE "orgunit" (
   "reftype" varchar(50) default NULL,
   "refid" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "FK_orgunit" ("orgtype"),
-  CONSTRAINT "FK_orgunit" FOREIGN KEY ("orgtype") REFERENCES "orgtype" ("name")
-  */
+  -- KEY "FK_orgunit" ("orgtype"),
+  -- CONSTRAINT "FK_orgunit" FOREIGN KEY ("orgtype") REFERENCES "orgtype" ("name")
 );
 
 /*Table structure for table "paymentitem" */
+
+
 
 CREATE TABLE "paymentitem" (
   "objid" varchar(50) NOT NULL,
@@ -1860,16 +1944,16 @@ CREATE TABLE "paymentitem" (
   "liquidationid" varchar(50) default NULL,
   "liquidationrcdid" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_paymentitem_rctid" ("receiptid"),
-  KEY "ix_paymentitem_rctid_paytype" ("receiptid","paytype"),
-  KEY "ix_paymentitem_receiptid" ("receiptid"),
-  KEY "ix_paymentitem_liquidationid" ("liquidationid"),
-  KEY "ix_paymentitem_liquidationrcdid" ("liquidationrcdid")
-  */
+  -- KEY "ix_paymentitem_rctid" ("receiptid"),
+  -- KEY "ix_paymentitem_rctid_paytype" ("receiptid","paytype"),
+  -- KEY "ix_paymentitem_receiptid" ("receiptid"),
+  -- KEY "ix_paymentitem_liquidationid" ("liquidationid"),
+  -- KEY "ix_paymentitem_liquidationrcdid" ("liquidationrcdid")
 );
 
 /*Table structure for table "personnel" */
+
+
 
 CREATE TABLE "personnel" (
   "objid" varchar(50) NOT NULL,
@@ -1888,21 +1972,25 @@ CREATE TABLE "personnel" (
   "primaryaddress" text,
   "secondaryaddress" text,
   "spouseinfo" text,
-  PRIMARY KEY  ("objid"),
+  PRIMARY KEY  ("objid")
   -- UNIQUE KEY "staffno" ("staffno")
 );
 
 /*Table structure for table "pin" */
 
+
+
 CREATE TABLE "pin" (
   "pin" varchar(30) NOT NULL,
   "claimno" varchar(10) NOT NULL,
   "docstate" varchar(25) NOT NULL,
-  PRIMARY KEY  ("pin","claimno"),
-  UNIQUE ("pin","claimno")
+  PRIMARY KEY  ("pin","claimno")
+  -- UNIQUE KEY "ux_pin_pinclaimno" ("pin","claimno")
 );
 
 /*Table structure for table "plantsandtrees" */
+
+
 
 CREATE TABLE "plantsandtrees" (
   "objid" varchar(50) NOT NULL,
@@ -1911,9 +1999,11 @@ CREATE TABLE "plantsandtrees" (
   "planttreecode" varchar(20) NOT NULL,
   "planttreedesc" varchar(100) NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "planttreerysetting" */
+
+
 
 CREATE TABLE "planttreerysetting" (
   "objid" varchar(50) NOT NULL,
@@ -1925,9 +2015,11 @@ CREATE TABLE "planttreerysetting" (
   "assesslevels" text NOT NULL,
   "planttreeunits" text NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "planttreeunitvalue" */
+
+
 
 CREATE TABLE "planttreeunitvalue" (
   "objid" varchar(50) NOT NULL,
@@ -1943,6 +2035,8 @@ CREATE TABLE "planttreeunitvalue" (
 );
 
 /*Table structure for table "postcapture" */
+
+
 
 CREATE TABLE "postcapture" (
   "objid" varchar(50) NOT NULL,
@@ -1963,12 +2057,16 @@ CREATE TABLE "postcapture" (
 
 /*Table structure for table "profession" */
 
+
+
 CREATE TABLE "profession" (
   "objid" varchar(100) NOT NULL,
   PRIMARY KEY  ("objid")
 );
 
 /*Table structure for table "propertyclassification" */
+
+
 
 CREATE TABLE "propertyclassification" (
   "objid" varchar(50) NOT NULL,
@@ -1979,9 +2077,11 @@ CREATE TABLE "propertyclassification" (
   "special" tinyint NOT NULL,
   "orderno" int NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "propertypayer" */
+
+
 
 CREATE TABLE "propertypayer" (
   "objid" varchar(50) NOT NULL,
@@ -1993,15 +2093,19 @@ CREATE TABLE "propertypayer" (
 
 /*Table structure for table "propertypayeritem" */
 
+
+
 CREATE TABLE "propertypayeritem" (
   "objid" varchar(50) NOT NULL,
   "propertypayerid" varchar(50) NOT NULL,
   "ledgerid" varchar(50) NOT NULL,
-  PRIMARY KEY  ("objid"),
-  UNIQUE ("propertypayerid","ledgerid")
+  PRIMARY KEY  ("objid")
+  -- UNIQUE KEY "ux_propertypayerid_ledgerid" ("propertypayerid","ledgerid")
 );
 
 /*Table structure for table "province_taxpayer" */
+
+
 
 CREATE TABLE "province_taxpayer" (
   "objid" varchar(50) NOT NULL,
@@ -2015,6 +2119,8 @@ CREATE TABLE "province_taxpayer" (
 );
 
 /*Table structure for table "reassignedlgu" */
+
+
 
 CREATE TABLE "reassignedlgu" (
   "objid" varchar(50) NOT NULL,
@@ -2032,6 +2138,8 @@ CREATE TABLE "reassignedlgu" (
 );
 
 /*Table structure for table "receipt" */
+
+
 
 CREATE TABLE "receipt" (
   "objid" varchar(50) NOT NULL,
@@ -2052,13 +2160,13 @@ CREATE TABLE "receipt" (
   "voidreason" varchar(50) default NULL,
   "capturedbyid" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_receipt_remid" ("remittanceid"),
-  KEY "ix_receipt_remno" ("remittanceno")
-  */
+  -- KEY "ix_receipt_remid" ("remittanceid"),
+  -- KEY "ix_receipt_remno" ("remittanceno")
 );
 
 /*Table structure for table "receiptitem" */
+
+
 
 CREATE TABLE "receiptitem" (
   "objid" varchar(50) NOT NULL,
@@ -2074,16 +2182,16 @@ CREATE TABLE "receiptitem" (
   "refid" varchar(50) default NULL,
   "liquidationrcdid" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_receiptitem_rctid" ("receiptid"),
-  KEY "ix_receiptitem_acctid" ("acctid"),
-  KEY "ix_receiptitem_accttitle" ("accttitle"),
-  KEY "ix_receiptitem_liquidationrcdid" ("liquidationrcdid"),
-  CONSTRAINT "FK_receiptitem" FOREIGN KEY ("acctid") REFERENCES "incomeaccount" ("objid")
-  */
+  -- KEY "ix_receiptitem_rctid" ("receiptid"),
+  -- KEY "ix_receiptitem_acctid" ("acctid"),
+  -- KEY "ix_receiptitem_accttitle" ("accttitle"),
+  -- KEY "ix_receiptitem_liquidationrcdid" ("liquidationrcdid"),
+  -- CONSTRAINT "FK_receiptitem" FOREIGN KEY ("acctid") REFERENCES "incomeaccount" ("objid")
 );
 
 /*Table structure for table "receiptlist" */
+
+
 
 CREATE TABLE "receiptlist" (
   "objid" varchar(50) NOT NULL,
@@ -2124,24 +2232,24 @@ CREATE TABLE "receiptlist" (
   "capturedbyname" varchar(100) default NULL,
   "capturedbytitle" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_receiptlist_docstatecolid" ("collectorid","docstate"),
-  KEY "ix_receiptlist_remid" ("remittanceid"),
-  KEY "ix_receiptlist_remno" ("remittanceno"),
-  KEY "ix_receiptlist_iyear" ("iyear"),
-  KEY "ix_receiptlist_iqtr" ("iyear","iqtr"),
-  KEY "ix_receiptlist_imonth" ("iyear","imonth"),
-  KEY "ix_receiptlist_iday" ("iyear","imonth","iday"),
-  KEY "ix_receiptlist_serialno" ("serialno"),
-  KEY "ix_receiptlist_stubno" ("stubno"),
-  KEY "ix_receiptlist_collectorname" ("collectorname"),
-  KEY "ix_receiptlist_payorname" ("payorname"),
-  KEY "ix_receiptlist_colidvoided" ("collectorid","voided"),
-  KEY "ix_receiptlist_doctype_voided" ("doctype","voided")
-  */
+  -- KEY "ix_receiptlist_docstatecolid" ("collectorid","docstate"),
+  -- KEY "ix_receiptlist_remid" ("remittanceid"),
+  -- KEY "ix_receiptlist_remno" ("remittanceno"),
+  -- KEY "ix_receiptlist_iyear" ("iyear"),
+  -- KEY "ix_receiptlist_iqtr" ("iyear","iqtr"),
+  -- KEY "ix_receiptlist_imonth" ("iyear","imonth"),
+  -- KEY "ix_receiptlist_iday" ("iyear","imonth","iday"),
+  -- KEY "ix_receiptlist_serialno" ("serialno"),
+  -- KEY "ix_receiptlist_stubno" ("stubno"),
+  -- KEY "ix_receiptlist_collectorname" ("collectorname"),
+  -- KEY "ix_receiptlist_payorname" ("payorname"),
+  -- KEY "ix_receiptlist_colidvoided" ("collectorid","voided"),
+  -- KEY "ix_receiptlist_doctype_voided" ("doctype","voided")
 );
 
 /*Table structure for table "remittance" */
+
+
 
 CREATE TABLE "remittance" (
   "objid" varchar(50) NOT NULL,
@@ -2159,6 +2267,8 @@ CREATE TABLE "remittance" (
 );
 
 /*Table structure for table "remittancelist" */
+
+
 
 CREATE TABLE "remittancelist" (
   "objid" varchar(50) NOT NULL,
@@ -2179,15 +2289,15 @@ CREATE TABLE "remittancelist" (
   "liquidatingofficername" varchar(50) default NULL,
   "liquidatingofficertitle" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_remittancelist_liquidationid" ("liquidationid"),
-  KEY "ix_liquidatingofficerid" ("liquidatingofficerid"),
-  KEY "ix_liquidatingofficerid_txndate" ("liquidatingofficerid","txndate"),
-  CONSTRAINT "FK_remittancelist" FOREIGN KEY ("objid") REFERENCES "remittance" ("objid")
-  */
+  -- KEY "ix_remittancelist_liquidationid" ("liquidationid"),
+  -- KEY "ix_liquidatingofficerid" ("liquidatingofficerid"),
+  -- KEY "ix_liquidatingofficerid_txndate" ("liquidatingofficerid","txndate"),
+  -- CONSTRAINT "FK_remittancelist" FOREIGN KEY ("objid") REFERENCES "remittance" ("objid")
 );
 
 /*Table structure for table "remittedform" */
+
+
 
 CREATE TABLE "remittedform" (
   "objid" varchar(50) NOT NULL,
@@ -2209,17 +2319,17 @@ CREATE TABLE "remittedform" (
   "stubno" varchar(20) NOT NULL,
   "aftype" varchar(10) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "FK_remittance" ("remittanceid"),
-  KEY "FK_afcontrol" ("afcontrolid"),
-  KEY "FK_af" ("afid"),
-  CONSTRAINT "FK_af" FOREIGN KEY ("afid") REFERENCES "af" ("objid"),
-  CONSTRAINT "FK_afcontrol" FOREIGN KEY ("afcontrolid") REFERENCES "afcontrol" ("objid"),
-  CONSTRAINT "FK_remittance" FOREIGN KEY ("remittanceid") REFERENCES "remittance" ("objid")
-  */
+  -- KEY "FK_remittance" ("remittanceid"),
+  -- KEY "FK_afcontrol" ("afcontrolid"),
+  -- KEY "FK_af" ("afid"),
+  -- CONSTRAINT "FK_af" FOREIGN KEY ("afid") REFERENCES "af" ("objid"),
+  -- CONSTRAINT "FK_afcontrol" FOREIGN KEY ("afcontrolid") REFERENCES "afcontrol" ("objid"),
+  -- CONSTRAINT "FK_remittance" FOREIGN KEY ("remittanceid") REFERENCES "remittance" ("objid")
 );
 
 /*Table structure for table "requirements" */
+
+
 
 CREATE TABLE "requirements" (
   "objid" varchar(50) NOT NULL,
@@ -2229,9 +2339,11 @@ CREATE TABLE "requirements" (
   "reqname" varchar(100) NOT NULL,
   "reqdesc" varchar(1000) default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "revenue" */
+
+
 
 CREATE TABLE "revenue" (
   "objid" varchar(50) NOT NULL,
@@ -2270,35 +2382,34 @@ CREATE TABLE "revenue" (
   "ngasid" varchar(50) default '',
   "sreid" varchar(50) default '',
   "amount" decimal(14,2) default NULL,
-  "voided" int(11) NOT NULL,
+  "voided" int NOT NULL,
   "liquidationrcdid" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "FK_revenue_liquidation" ("liquidationid"),
-  KEY "FK_revenue_remittance" ("remittanceid"),
-  KEY "FK_revenue_deposit" ("depositid"),
-  KEY "FK_revenue_incomeaccount" ("acctid"),
-  KEY "FK_revenue_ngas" ("ngasid"),
-  KEY "FK_revenue_sre" ("sreid"),
-  KEY "FK_revenue_receipt" ("receiptid"),
-  KEY "FK_revenue_af" ("afid"),
-  KEY "FK_revenue_afcontrol" ("afcontrolid"),
-  KEY "ix_revenue_liquidationtimestamp_voided" ("liquidationtimestamp","voided"),
-  KEY "ix_revenue_liquidationtimestamp" ("liquidationtimestamp"),
-  KEY "ix_revenue_liquidationrcdid" ("liquidationrcdid"),
-  CONSTRAINT "FK_revenue_af" FOREIGN KEY ("afid") REFERENCES "af" ("objid"),
-  CONSTRAINT "FK_revenue_afcontrol" FOREIGN KEY ("afcontrolid") REFERENCES "afcontrol" ("objid"),
-  CONSTRAINT "FK_revenue_deposit" FOREIGN KEY ("depositid") REFERENCES "deposit" ("objid"),
-  CONSTRAINT "FK_revenue_incomeaccount" FOREIGN KEY ("acctid") REFERENCES "incomeaccount" ("objid"),
-  CONSTRAINT "FK_revenue_liquidation" FOREIGN KEY ("liquidationid") REFERENCES "liquidation" ("objid"),
-  CONSTRAINT "FK_revenue_ngas" FOREIGN KEY ("ngasid") REFERENCES "account" ("objid"),
-  CONSTRAINT "FK_revenue_remittance" FOREIGN KEY ("remittanceid") REFERENCES "remittance" ("objid"),
-  CONSTRAINT "FK_revenue_sre" FOREIGN KEY ("sreid") REFERENCES "account" ("objid")
-  */
+  -- KEY "FK_revenue_liquidation" ("liquidationid"),
+  -- KEY "FK_revenue_remittance" ("remittanceid"),
+  -- KEY "FK_revenue_deposit" ("depositid"),
+  -- KEY "FK_revenue_incomeaccount" ("acctid"),
+  -- KEY "FK_revenue_ngas" ("ngasid"),
+  -- KEY "FK_revenue_sre" ("sreid"),
+  -- KEY "FK_revenue_receipt" ("receiptid"),
+  -- KEY "FK_revenue_af" ("afid"),
+  -- KEY "FK_revenue_afcontrol" ("afcontrolid"),
+  -- KEY "ix_revenue_liquidationtimestamp_voided" ("liquidationtimestamp","voided"),
+  -- KEY "ix_revenue_liquidationtimestamp" ("liquidationtimestamp"),
+  -- KEY "ix_revenue_liquidationrcdid" ("liquidationrcdid"),
+  -- CONSTRAINT "FK_revenue_af" FOREIGN KEY ("afid") REFERENCES "af" ("objid"),
+  -- CONSTRAINT "FK_revenue_afcontrol" FOREIGN KEY ("afcontrolid") REFERENCES "afcontrol" ("objid"),
+  -- CONSTRAINT "FK_revenue_deposit" FOREIGN KEY ("depositid") REFERENCES "deposit" ("objid"),
+  -- CONSTRAINT "FK_revenue_incomeaccount" FOREIGN KEY ("acctid") REFERENCES "incomeaccount" ("objid"),
+  -- CONSTRAINT "FK_revenue_liquidation" FOREIGN KEY ("liquidationid") REFERENCES "liquidation" ("objid"),
+  -- CONSTRAINT "FK_revenue_ngas" FOREIGN KEY ("ngasid") REFERENCES "account" ("objid"),
+  -- CONSTRAINT "FK_revenue_remittance" FOREIGN KEY ("remittanceid") REFERENCES "remittance" ("objid"),
+  -- CONSTRAINT "FK_revenue_sre" FOREIGN KEY ("sreid") REFERENCES "account" ("objid")
 );
 
-
 /*Table structure for table "riv" */
+
+
 
 CREATE TABLE "riv" (
   "objid" varchar(50) NOT NULL,
@@ -2311,11 +2422,12 @@ CREATE TABLE "riv" (
   "requestedby" varchar(75) NOT NULL,
   "requestedbytitle" varchar(50) NOT NULL,
   "info" text NOT NULL,
-  "items" text NOT NULL,
-  PRIMARY KEY ("objid")
+  "items" text NOT NULL
 );
 
 /*Table structure for table "role" */
+
+
 
 CREATE TABLE "role" (
   "name" varchar(50) NOT NULL,
@@ -2324,12 +2436,12 @@ CREATE TABLE "role" (
   "included" text,
   "system" smallint default '0',
   PRIMARY KEY  ("name","roleclass")
-  /*
-  KEY "FK_role" ("roleclass")
-  */
+  -- KEY "FK_role" ("roleclass")
 );
 
 /*Table structure for table "rptcertification" */
+
+
 
 CREATE TABLE "rptcertification" (
   "objid" varchar(50) NOT NULL,
@@ -2359,6 +2471,8 @@ CREATE TABLE "rptcertification" (
 );
 
 /*Table structure for table "rptledger" */
+
+
 
 CREATE TABLE "rptledger" (
   "objid" varchar(50) NOT NULL,
@@ -2396,21 +2510,21 @@ CREATE TABLE "rptledger" (
   "firstqtrpaidontime" int NOT NULL,
   "partialbasicint" decimal(12,2) NOT NULL,
   "partialsefint" decimal(12,2) NOT NULL,
-  PRIMARY KEY  ("objid"),
-  UNIQUE ("fullpin","claimno")
-  /*
-  KEY "ix_rptledger_docstate" ("docstate"),
-  KEY "ix_rptledger_tdnostate" ("tdno","docstate"),
-  KEY "ix_rptledger_prevtdnostate" ("prevtdno","docstate"),
-  KEY "ix_rptledger_lotstate" ("cadastrallotno","docstate"),
-  KEY "ix_rptledger_brgystate" ("barangay","docstate"),
-  KEY "ix_rptledger_tpaynostate" ("taxpayerno","docstate"),
-  KEY "ix_rptledger_namestate" ("taxpayername","docstate"),
-  KEY "ix_rptledger_faasid" ("faasid")
-  */
+  PRIMARY KEY  ("objid")
+  -- UNIQUE KEY "ux_rptledger_fullpin" ("fullpin","claimno"),
+  -- KEY "ix_rptledger_docstate" ("docstate"),
+  -- KEY "ix_rptledger_tdnostate" ("tdno","docstate"),
+  -- KEY "ix_rptledger_prevtdnostate" ("prevtdno","docstate"),
+  -- KEY "ix_rptledger_lotstate" ("cadastrallotno","docstate"),
+  -- KEY "ix_rptledger_brgystate" ("barangay","docstate"),
+  -- KEY "ix_rptledger_tpaynostate" ("taxpayerno","docstate"),
+  -- KEY "ix_rptledger_namestate" ("taxpayername","docstate"),
+  -- KEY "ix_rptledger_faasid" ("faasid")
 );
 
 /*Table structure for table "rptledgeritem" */
+
+
 
 CREATE TABLE "rptledgeritem" (
   "objid" varchar(50) NOT NULL,
@@ -2432,13 +2546,13 @@ CREATE TABLE "rptledgeritem" (
   "assessedvalue" decimal(14,2) NOT NULL,
   "systemcreated" int NOT NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_rptledger_parentid" ("parentid"),
-  KEY "ix_rptledger_tdno" ("tdno")
-  */
+  -- KEY "ix_rptledger_parentid" ("parentid"),
+  -- KEY "ix_rptledger_tdno" ("tdno")
 );
 
 /*Table structure for table "rptparameters" */
+
+
 
 CREATE TABLE "rptparameters" (
   "objid" varchar(50) NOT NULL,
@@ -2451,9 +2565,11 @@ CREATE TABLE "rptparameters" (
   "parammin" decimal(10,2) default NULL,
   "parammax" decimal(10,2) default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "rptpayment" */
+
+
 
 CREATE TABLE "rptpayment" (
   "objid" varchar(50) NOT NULL,
@@ -2493,6 +2609,8 @@ CREATE TABLE "rptpayment" (
 
 /*Table structure for table "rptpaymentdetail" */
 
+
+
 CREATE TABLE "rptpaymentdetail" (
   "objid" varchar(50) NOT NULL,
   "receiptid" varchar(50) NOT NULL,
@@ -2513,6 +2631,8 @@ CREATE TABLE "rptpaymentdetail" (
 );
 
 /*Table structure for table "rptpaymentmanual" */
+
+
 
 CREATE TABLE "rptpaymentmanual" (
   "objid" varchar(50) NOT NULL,
@@ -2558,12 +2678,12 @@ CREATE TABLE "rptpaymentmanual" (
   "municityid" varchar(50) NOT NULL,
   "municityname" varchar(100) NOT NULL,
   PRIMARY KEY  ("objid")
-  /*
-  KEY "ix_rptpaymentmanual_receiptid" ("receiptid")
-  */
+  -- KEY "ix_rptpaymentmanual_receiptid" ("receiptid")
 );
 
 /*Table structure for table "rptsetting" */
+
+
 
 CREATE TABLE "rptsetting" (
   "objid" varchar(50) NOT NULL,
@@ -2572,26 +2692,28 @@ CREATE TABLE "rptsetting" (
   "ry" int NOT NULL,
   "ordinanceno" varchar(30) default NULL,
   "ordinancedate" varchar(20) default NULL,
-  "roundadjmarketvalue" smallint NOT NULL,
-  "allowlandcancellation" smallint NOT NULL,
-  "usenewtdprintout" smallint NOT NULL,
-  "landreportbasedonactualuse" smallint NOT NULL,
-  "allowtransferwithbalance" smallint NOT NULL,
-  "allowcorrectionwithbalance" smallint NOT NULL,
-  "allowdepreciationwithbalance" smallint NOT NULL,
-  "allowchangetaxabilitywithbalance" smallint NOT NULL,
-  "allowsubdivisionwithbalance" smallint NOT NULL,
-  "allowconsolidationwithbalance" smallint NOT NULL,
-  "allowreclasswithbalance" smallint NOT NULL,
+  "roundadjmarketvalue" int NOT NULL,
+  "allowlandcancellation" int NOT NULL,
+  "usenewtdprintout" int NOT NULL,
+  "landreportbasedonactualuse" int NOT NULL,
+  "allowtransferwithbalance" int NOT NULL,
+  "allowcorrectionwithbalance" int NOT NULL,
+  "allowdepreciationwithbalance" int NOT NULL,
+  "allowchangetaxabilitywithbalance" int NOT NULL,
+  "allowsubdivisionwithbalance" int NOT NULL,
+  "allowconsolidationwithbalance" int NOT NULL,
+  "allowreclasswithbalance" int NOT NULL,
   "approvedmvbelow" decimal(10,2) default NULL,
   "agriculturalid" varchar(50) default NULL,
   "agriculturaltitle" varchar(100) default NULL,
-  "adjustplanttree" smallint NOT NULL,
+  "adjustplanttree" int NOT NULL,
   "propertyclassifications" text,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "session_history" */
+
+
 
 CREATE TABLE "session_history" (
   "sessionid" varchar(50) NOT NULL,
@@ -2604,6 +2726,8 @@ CREATE TABLE "session_history" (
 
 /*Table structure for table "structures" */
 
+
+
 CREATE TABLE "structures" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
@@ -2613,9 +2737,11 @@ CREATE TABLE "structures" (
   "materials" text,
   "indexno" int default NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "structuretemplate" */
+
+
 
 CREATE TABLE "structuretemplate" (
   "objid" varchar(50) NOT NULL,
@@ -2624,9 +2750,11 @@ CREATE TABLE "structuretemplate" (
   "templatecode" varchar(10) NOT NULL,
   "structures" text,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "subdivision" */
+
+
 
 CREATE TABLE "subdivision" (
   "objid" varchar(50) NOT NULL,
@@ -2669,6 +2797,8 @@ CREATE TABLE "subdivision" (
 
 /*Table structure for table "subdivisionaffectedrpu" */
 
+
+
 CREATE TABLE "subdivisionaffectedrpu" (
   "objid" varchar(50) NOT NULL,
   "subdivisionid" varchar(50) NOT NULL,
@@ -2687,6 +2817,8 @@ CREATE TABLE "subdivisionaffectedrpu" (
 );
 
 /*Table structure for table "subdivisionland" */
+
+
 
 CREATE TABLE "subdivisionland" (
   "objid" varchar(50) NOT NULL,
@@ -2713,6 +2845,8 @@ CREATE TABLE "subdivisionland" (
 
 /*Table structure for table "sys_inbox" */
 
+
+
 CREATE TABLE "sys_inbox" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
@@ -2733,6 +2867,8 @@ CREATE TABLE "sys_inbox" (
 );
 
 /*Table structure for table "sys_outbox" */
+
+
 
 CREATE TABLE "sys_outbox" (
   "objid" varchar(50) NOT NULL,
@@ -2755,6 +2891,8 @@ CREATE TABLE "sys_outbox" (
 
 /*Table structure for table "sys_processedinbox" */
 
+
+
 CREATE TABLE "sys_processedinbox" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
@@ -2775,6 +2913,8 @@ CREATE TABLE "sys_processedinbox" (
 );
 
 /*Table structure for table "sys_processedoutbox" */
+
+
 
 CREATE TABLE "sys_processedoutbox" (
   "objid" varchar(50) NOT NULL,
@@ -2797,6 +2937,8 @@ CREATE TABLE "sys_processedoutbox" (
 
 /*Table structure for table "terminal" */
 
+
+
 CREATE TABLE "terminal" (
   "terminalid" varchar(50) NOT NULL,
   "macaddress" varchar(50) default NULL,
@@ -2805,10 +2947,12 @@ CREATE TABLE "terminal" (
   "info" text,
   "state" int default NULL,
   PRIMARY KEY  ("terminalid")
-  -- UNIQUE ("macaddress")
+  -- UNIQUE KEY "macaddress_unique" ("macaddress")
 );
 
 /*Table structure for table "test" */
+
+
 
 CREATE TABLE "test" (
   "objid" varchar(10) NOT NULL,
@@ -2819,13 +2963,17 @@ CREATE TABLE "test" (
 
 /*Table structure for table "timezone" */
 
+
+
 CREATE TABLE "timezone" (
   "timezone" varchar(50) NOT NULL default '',
   "country" varchar(5) default NULL,
   PRIMARY KEY  ("timezone")
-);
+) ;
 
 /*Table structure for table "truecopy" */
+
+
 
 CREATE TABLE "truecopy" (
   "objid" varchar(50) NOT NULL,
@@ -2848,18 +2996,22 @@ CREATE TABLE "truecopy" (
   "tdno" varchar(50) NOT NULL,
   "faasinfo" text NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "txninfo" */
 
+
+
 CREATE TABLE "txninfo" (
   "objid" varchar(50) NOT NULL,
-  "lastupdate" datetime NOT NULL default GETDATE(),
+  "lastupdate" datetime NOT NULL default CURRENT_TIMESTAMP,
   "lastupdateby" varchar(50) default NULL,
   PRIMARY KEY  ("objid")
 );
 
 /*Table structure for table "txnlog" */
+
+
 
 CREATE TABLE "txnlog" (
   "objid" varchar(50) NOT NULL,
@@ -2878,6 +3030,8 @@ CREATE TABLE "txnlog" (
 
 /*Table structure for table "txnreference" */
 
+
+
 CREATE TABLE "txnreference" (
   "objid" varchar(50) NOT NULL,
   "refid" varchar(50) NOT NULL,
@@ -2889,6 +3043,8 @@ CREATE TABLE "txnreference" (
 
 /*Table structure for table "txnrequirements" */
 
+
+
 CREATE TABLE "txnrequirements" (
   "objid" varchar(50) NOT NULL,
   "schemaname" varchar(50) NOT NULL,
@@ -2897,9 +3053,11 @@ CREATE TABLE "txnrequirements" (
   "txntype" varchar(100) NOT NULL,
   "requirements" text,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "txntypes" */
+
+
 
 CREATE TABLE "txntypes" (
   "objid" varchar(50) NOT NULL,
@@ -2908,9 +3066,11 @@ CREATE TABLE "txntypes" (
   "txntype" varchar(100) NOT NULL,
   "used" smallint NOT NULL,
   PRIMARY KEY  ("objid")
-);
+) ;
 
 /*Table structure for table "useraccount" */
+
+
 
 CREATE TABLE "useraccount" (
   "objid" varchar(50) NOT NULL,
@@ -2921,11 +3081,13 @@ CREATE TABLE "useraccount" (
   "lastname" varchar(50) default NULL,
   "middlename" varchar(50) default NULL,
   "email" varchar(100) default NULL,
-  PRIMARY KEY  ("objid"),
-  UNIQUE ("uid")
-);
+  PRIMARY KEY  ("objid")
+  -- UNIQUE KEY "username" ("uid")
+) ;
 
 /*Table structure for table "variable" */
+
+
 
 CREATE TABLE "variable" (
   "objid" varchar(50) NOT NULL,
@@ -2937,11 +3099,13 @@ CREATE TABLE "variable" (
   "description" varchar(100) default NULL,
   "arrayvalues" text,
   "printtopermit" int default NULL,
-  PRIMARY KEY  ("objid"),
-  UNIQUE ("name")
+  PRIMARY KEY  ("objid")
+  -- UNIQUE KEY "ux_variable_name" ("name")
 );
 
 /*Table structure for table "webdraft" */
+
+
 
 CREATE TABLE "webdraft" (
   "objid" varchar(50) NOT NULL,
@@ -2953,6 +3117,8 @@ CREATE TABLE "webdraft" (
 );
 
 /*Table structure for table "wf_task" */
+
+
 
 CREATE TABLE "wf_task" (
   "objid" varchar(50) NOT NULL,
@@ -2966,19 +3132,23 @@ CREATE TABLE "wf_task" (
 
 /*Table structure for table "wf_task_actor" */
 
+
+
 CREATE TABLE "wf_task_actor" (
   "objid" varchar(50) NOT NULL,
   "taskid" varchar(50) default NULL,
   "actorid" varchar(50) default NULL,
-  PRIMARY KEY  ("objid"),
+  PRIMARY KEY  ("objid")
   -- KEY "FK_wf_task_actor" ("taskid"),
   -- CONSTRAINT "FK_wf_task_actor" FOREIGN KEY ("taskid") REFERENCES "wf_task" ("objid")
 );
 
 /*Table structure for table "individualentity" */
 
+
+
 /*!50001 DROP VIEW IF EXISTS "individualentity" */;
-/*!50001 DROP TABLE IF EXISTS "individualentity" */;
+/*!50001 
 
 /*!50001 CREATE TABLE "individualentity" (
   "objid" varchar(50) NOT NULL,
@@ -2994,5 +3164,14 @@ CREATE TABLE "wf_task_actor" (
   "sys_lastupdateby" varchar(50) default NULL,
   "remarks" varchar(100) default NULL,
   "contactno" varchar(20) default NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 */;
+) */;
 
+/*View structure for view individualentity */
+
+/*!50001 
+/*!50001 DROP VIEW IF EXISTS "individualentity" */;
+
+/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER="root"@"localhost" SQL SECURITY DEFINER VIEW "individualentity" AS select "entity"."objid" AS "objid","entity"."schemaname" AS "schemaname","entity"."schemaversion" AS "schemaversion","entity"."entityno" AS "entityno","entity"."entityname" AS "entityname","entity"."entityaddress" AS "entityaddress","entity"."mailingaddress" AS "mailingaddress","entity"."entitytype" AS "entitytype","entity"."info" AS "info","entity"."sys_lastupdate" AS "sys_lastupdate","entity"."sys_lastupdateby" AS "sys_lastupdateby","entity"."remarks" AS "remarks","entity"."contactno" AS "contactno" from "entity" where ("entity"."entitytype" = _latin1'individual') order by "entity"."entityname" */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

@@ -2,7 +2,7 @@ import tester.*
 
 
 def proxy = new TestProxy([
-     'default.host' : '192.168.0.4:8080',
+     'default.host' : 'localhost:8080',
      'app.context'  : 'sancarlos',   
 ])
 

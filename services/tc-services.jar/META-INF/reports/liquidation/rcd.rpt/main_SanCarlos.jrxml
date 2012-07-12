@@ -748,8 +748,8 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="207"
-						y="90"
+						x="409"
+						y="104"
 						width="24"
 						height="13"
 						forecolor="#000000"
@@ -788,8 +788,8 @@
 				<textField isStretchWithOverflow="false" pattern="MM/dd/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="233"
-						y="90"
+						x="435"
+						y="104"
 						width="104"
 						height="13"
 						forecolor="#000000"
@@ -907,13 +907,13 @@
 				</image>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="344"
+						x="0"
 						y="85"
-						width="196"
+						width="540"
 						height="19"
 						key="textField-14"/>
 					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{fundname}]]></textFieldExpression>
