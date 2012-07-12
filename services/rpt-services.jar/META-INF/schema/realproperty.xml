@@ -1,0 +1,40 @@
+<schema>
+	
+    <element name="realproperty" tablename="realproperty">
+		<field name="objid" primary="true"/>
+		<field name="landfaasid"/>
+		
+        <!-- location infos -->
+        <field name="provcity" required="true" />
+		<field name="munidistrict" required="true" />
+        <field name="barangay" required="true" />
+        <field name="barangayid" required="true"  />
+		
+        <!-- pin infos -->
+        <field name="lgutype"/>
+        <field name="pintype" required="true" />
+		<field name="pin" required="true" />
+        <field name="provcityindex" required="true"  />
+		<field name="munidistrictindex" required="true"  />
+		<field name="barangayindex" required="true"  />
+		<field name="section" required="true"  />
+		<field name="parcel" required="true"  />
+		
+		<!-- general info -->
+		<field name="arpno" />
+		<field name="cadastrallotno" required="true"  />
+		<field name="blockno"  />
+		<field name="surveyno"  />
+		<field name="houseno"  />
+		<field name="street"  />
+		<field name="purok"  />
+		<complex name="attributes" type="list" serializer="default" required="false"  />
+		
+        <!-- boundary -->
+		<field name="north" required="true"  />
+		<field name="south" required="true"  />
+		<field name="east" required="true"  />
+		<field name="west" required="true"  />
+    </element>
+    
+</schema>
