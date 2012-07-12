@@ -385,7 +385,7 @@ class LandRPUService
 			//if classid is null, allow the addition to retain previous behaviour
 			def classid = adjustment.adj.classid 
 			
-			if( !classid || classid == it.actualuseid || classid == it.actualusecode || adjustall == true ) {
+			if( classid == it.actualuseid || classid == it.actualusecode || adjustall == true ) {
 				// evaluate the expr
 				def binding = buildFieldBindings( it )  
 				binding += buildParamBindings( adjustment )
