@@ -181,6 +181,7 @@ class RPTReceiptService
 			item.schemaname 	= 'rptreceipt:rptpaymentmanual'
 			item.schemaversion 	= '1.0'
 			item.receiptid 		= receipt.objid 
+			buildPeriod( item )
 			em.create( 'rptreceipt:rptpaymentmanual', item )
 		}
 		
