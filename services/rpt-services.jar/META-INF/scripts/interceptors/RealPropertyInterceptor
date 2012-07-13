@@ -1,0 +1,31 @@
+/*
+* @author    : jaycverg
+* @copyright : Rameses Systems Inc
+* @date      : july 11, 2012
+*/
+
+import com.rameses.annotations.*;
+import com.rameses.common.*
+import java.rmi.server.*
+
+public class RealPropertyInterceptor
+{
+	@Service("RealPropertyService")
+	def svc
+	
+    
+	@After(pattern="FAASService.approve.*")
+	public void afterApprove( evt ) {
+		def faas = evt.result
+
+		if( faas.rpu.rputype == 'land' ) {
+			println "saving realproperty info for faas: $faas.info.tdno"
+			
+			def realproperty = [:]
+			realproperty.putAll( faas.rp )
+			realproperty.landfaasid = faas.objid
+			svc.save( realproperty )
+		}
+	}
+
+}
