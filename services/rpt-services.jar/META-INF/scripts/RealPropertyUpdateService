@@ -17,6 +17,9 @@ class RealPropertyUpdateService
 	@Service('DateService')
 	def dateSvc
 	
+	@Service('RealPropertyService')
+	def rpSvc
+	
 	@Env
 	def env
 	
@@ -68,6 +71,9 @@ class RealPropertyUpdateService
 			info.pin = entity.pin
 			em.sqlContext.createNamedExecutor('realpropertyupdate:update-faaslist-rp').setParameters(info).execute()
 			em.sqlContext.createNamedExecutor('realpropertyupdate:update-faaslist-rp').setParameters(info).execute()
+			
+			info.landfaasid = faas.objid
+			rpSvc.save( info )
 		}
 		
 		entity.state = 'APPROVED'
