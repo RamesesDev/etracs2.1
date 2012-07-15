@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/menu/tc/txn" action="init" caption="RIV (LGU)" permission="riv_lgu.create" index="5"/>
-        <invoker folderid="/menu/tc/txn" action="initCollector" caption="RIV (Collector)" permission="riv.create" index="6"/>
+        <invoker folderid="/menu/tc/txn" action="initCollector" caption="RIV (Collector)" permission="riv.collector" index="6"/>
         <invoker folderid="/menu/tc/txn" action="initRIVSale" caption="RIV (Sale)" permission="riv.salecreate" index="7"/>
         
         <invoker folderid="/txn/tc/txn" action="init" caption="RIV (LGU)" permission="riv_lgu.create" index="5"/>
