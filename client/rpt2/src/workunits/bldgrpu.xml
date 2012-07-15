@@ -253,7 +253,7 @@ public class BldgRPUController
     
     def defineFloorInfo() {
         index = rpu.info.bldguses.indexOf( selectedBldgUse )
-        return InvokerUtil.lookupOpener('bldgrpufloor.open',[rpu:rpu, bldguse:selectedBldgUse, onupdate:floorUpdateHandler])
+        return InvokerUtil.lookupOpener('bldgrpufloor.open',[allowEdit:allowEdit, rpu:rpu, bldguse:selectedBldgUse, onupdate:floorUpdateHandler])
     }
     
     void recalc() {
@@ -316,10 +316,26 @@ public class BldgRPUController
                 item.material = [materialname:'']
             }
         },
+        onRemoveItem : { item -> removeBldgStructure( item ) },
         fetchList : { return rpu.bldgstructures },
     ] as SubListModel
     
     
+    def removeBldgStructure( item ) {
+        if( !item.material ) return 
+        if( MsgBox.confirm('Delete selected item?') ) {
+            rpu.bldgstructures.each{
+                if( it.structureid == item.structureid ){
+                    it.material = [:]
+                    it.materialid = null
+                    it.materialcode = null
+                    it.materialname = null
+                }
+                
+            }
+        }
+    }
+     
     
     /*---------------------------------------------------------------
     *

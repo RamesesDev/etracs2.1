@@ -40,6 +40,7 @@ class IncomeAcctService
 		validate( incomeacct ) ;
 		resetNgasAccount( incomeacct );
 		resetSreAccount( incomeacct );
+	
 		em.create( incomeacct.schemaname, incomeacct);
 		return incomeacct;
 	}
@@ -109,8 +110,8 @@ class IncomeAcctService
 		util.validateLastUpdate( incomeacct, oldacct );
 		
 		checkDuplicates( incomeacct );
-		if( incomeacct.defaultvalue == null ) incomeacct.defaultvalue = 0.0;
-		if( incomeacct.defaultvalue < 0.0)  throw new Exception("Default Value must be greater than or equal to zero." );
+		if( ! incomeacct.amounttype ) incomeacct.defaultvalue = 0.0;
+		if( incomeacct.amounttype && incomeacct.defaultvalue < 0.0)  throw new Exception("Default Value must be greater than zero." );
 		em.validate(incomeacct.schemaname, incomeacct);
 	}
 	
@@ -135,18 +136,20 @@ class IncomeAcctService
 	}
 	
 	private void resetNgasAccount( incomeacct ) {
-		if( ! incomeacct.ngasid ) {
-			incomeacct.ngastitle = null;
-			incomeacct.ngassubacctid = null
-			incomeacct.ngassubaccttitle = null 
+		if( !incomeacct.ngasid )
+			incomeacct.ngastitle = null
+			
+		if( ! incomeacct.ngastitle ) {
+			incomeacct.ngasacctid = null;
 		}
 	}
 	
 	private void resetSreAccount( incomeacct ) {
-		if( ! incomeacct.sreid) {
-			incomeacct.sretitle = null;
-			incomeacct.sresubacctid
-			incomeacct.sresubaccttitle
+		if( !incomeacct.sreid )
+			incomeacct.sretitle = null
+			
+		if( ! incomeacct.sretitle ) {
+			incomeacct.sreacctid = null;
 		}
 	}
 	
