@@ -52,7 +52,7 @@ FROM landadjustment la, landrysetting ls
 WHERE la.landrysettingid = ls.objid   
   AND ls.ry = $P{ry}  
   AND la.adjustmentcode LIKE $P{code}  
-  
+  AND la.classids LIKE $P{classid} 
 ORDER BY la.adjustmentcode   
     
 #-- AND la.classids LIKE $P{classid} 
