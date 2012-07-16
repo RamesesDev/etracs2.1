@@ -741,12 +741,12 @@ class RPTV1MigrationService
 	
 	@ProxyMethod
 	public List  getFAASList() {
-		return em2.sqlContext.createQuery("SELECT top 10 objid FROM faaslist ").resultList 
+		return em2.sqlContext.createQuery("SELECT objid FROM faaslist ").resultList 
 	}
 	
 	@ProxyMethod
 	public List  getFAASListByType( rputype ) {
-		return em2.sqlContext.createQuery('SELECT top 10 objid FROM faaslist WHERE rputype=$P{rputype}')
+		return em2.sqlContext.createQuery('SELECT objid FROM faaslist WHERE rputype=$P{rputype}')
 					.setParameter('rputype', rputype)
 					.resultList 
 	}

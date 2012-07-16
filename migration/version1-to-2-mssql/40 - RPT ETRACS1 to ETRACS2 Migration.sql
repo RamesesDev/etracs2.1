@@ -5,8 +5,6 @@
 *
 ***********************************************************************/
 
-set foreign_key_checks=0;
-
 
 /**********************************************************************
 *
@@ -980,7 +978,7 @@ update bayombong_etracs..faas set extended = '[txntimestamp:"201130819",transmit
 
 
 
-
+/*
 insert into bayombong_etracs..faasannotation 
 	(objid, schemaname, schemaversion, docstate, doctype, 
 	opener, 
@@ -1063,7 +1061,7 @@ select
 	end as extended
 from etracs_bayombong..abstracttdannotation a
 	inner join bayombong_etracs..faaslist fl on a.tdid = fl.objid ;
-
+*/
 
 update bayombong_etracs..faasannotation  set memoranda = details where details is not null;
 
