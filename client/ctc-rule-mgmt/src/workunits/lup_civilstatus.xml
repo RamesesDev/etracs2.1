@@ -9,7 +9,7 @@
     import com.rameses.rcp.common.*
     import com.rameses.osiris2.client.*
 
-    class CitizenshipLookupController
+    class CivilStatusLookupController
     {
         @Binding
         def binding

@@ -23,6 +23,23 @@
         <invoker type="receipt.actions:tc:ctc_individual" action="doVoid" caption="Void" mnemonic="v" permission="collection_ctc_individual.void" icon="images/doc-void.png"/>
         
         <invoker type="inquiry:tc:ctc_individual" action="initInquiry" caption="Inquiry" />
+        
+        
+        <!--======== BARANGAY COLLECTION SUPPORT ===========-->
+        <invoker type="collection" caption="CTC-Individual (Barangay)" afid="0016" appcode="ctc_individual_brgy" permission="collection_ctc_individual_brgy.create"/>
+        <invoker type="tc:ctc_individual_brgy" action="initBarangay" caption="CTC-Individual (Barangay)" afid="0016" permission="collection_ctc_individual_brgy.create"/>
+        
+        <invoker type="initActions" action="back" caption="Back" mnemonic="b"  immediate="true" icon="images/back.png"/>
+        
+        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" permission="collection_ctc_individual_brgy.create"  icon="images/doc-new.png"/>
+        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" permission="collection_ctc_individual_brgy.print"/>
+        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view'}" permission="collection_ctc_individual_brgy.void" icon="images/void.png"/>
+        
+        <invoker type="receipt.actions:tc:ctc_individual_brgy" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup" permission="collection_ctc_individual_brgy.edit" icon="images/edit.png"/>
+        <invoker type="receipt.actions:tc:ctc_individual_brgy" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" permission="collection_ctc_individual_brgy.print"/>
+        <invoker type="receipt.actions:tc:ctc_individual_brgy" action="doVoid" caption="Void" mnemonic="v" permission="collection_ctc_individual_brgy.void" icon="images/doc-void.png"/>
+        
+        <invoker type="inquiry:tc:ctc_individual_brgy" action="initInquiry" caption="Inquiry" />
     </invokers>
     
     <code lang="groovy">
@@ -59,13 +76,24 @@
             def taxpayerLookup = InvokerUtil.lookupOpener("entity\\.lookup", [:])
             def genderList = ['MALE','FEMALE']
             
+            def barangay
+            def orgtype
+            def brgylookup
+            
             void init() {
                 super.init();
+                entity.doctype = 'CTCI'
+            }
+            
+            void initBarangay() {
+                super.init();
                 if( OsirisContext.env.CLIENT?.orgtype == 'BARANGAY' ) {
+                    orgtype = OsirisContext.env.CLIENT?.orgtype
                     def brgy = lguSvc.open( OsirisContext.env.CLIENT.refid );
-                    entity.barangayid = brgy.objid;
-                    entity.barangayname = brgy.lguname;
+                    setBarangay( [objid: brgy.objid, name: brgy.lguname] )
                 }
+                entity.doctype = 'CTCIB'
+                brgylookup = InvokerUtil.lookupOpener('barangay.lookup', [:])
             }
             
             def next() {
@@ -80,7 +108,7 @@
                         info:[:]
                     ]
                 }
-                entity.doctype = 'CTCI'
+                
                 entity.tax = [
                     basic:    0.00,
                     business: 0.00,
@@ -108,6 +136,12 @@
                     entity.info.payer.clear();
                     entity.info.payer.putAll( tp );
                 }
+            }
+            
+            void setBarangay( brgy ) {
+                entity.barangayid = brgy.objid;
+                entity.barangayname = brgy.name;
+                this.barangay = brgy
             }
             
             void calculate() {

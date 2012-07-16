@@ -25,7 +25,12 @@ public class CTCService
 		assessment.items = result.values() as List
 		assessment.total = assessment.items*.amount.sum()
 		if( assessment.total==null ) assessment.total = 0.00
-		initItems( assessment )		
+		initItems( assessment )	
+		
+		assessment.items.each {
+			println it
+		}
+		
 		return assessment
 	}
 	
@@ -46,7 +51,7 @@ public class CTCService
 	def executeRule( entity ) {
 		def facts = []
 		facts << createCTCFact( entity )
-		if( entity.doctype == 'CTCI' )
+		if( entity.doctype == 'CTCI' || entity.doctype == 'CTCIB' )
 			facts << createIndividualFact( entity )
 		else if( entity.doctype == 'CTCC' )
 			facts << createCorporateFact( entity )
@@ -69,7 +74,9 @@ public class CTCService
 			property: 0.00,
 			interest: 0.00,
 		]
-		result.each{k,v-> values[k] = v.amount }
+		result.each{k,v-> 
+			if( values[k] != null ) values[k] = v.amount 
+		}
 		
 		return values
 	}
@@ -98,6 +105,7 @@ public class CTCService
 		fact.businessgrosstax = taxes.business
 		fact.propertyincometax  = taxes.property
 		fact.additionaltax      = taxes.additionaltax
+		fact.interest = taxes.interest
 		fact.amtdue		= taxes.business + taxes.basic + taxes.salary + taxes.property
 	}
 	
@@ -144,6 +152,7 @@ public class CTCService
 		fact.businessgrosstax   = 0.00
 		fact.propertyincometax  = 0.00
 		fact.additionaltax      = 0.00
+		fact.interest = 0.00
 		fact.amtdue		= 0.00
 		
 		return fact
@@ -170,6 +179,7 @@ class ComputationHandler implements RuleActionHandler
 			acctno:    data.acctno,
 			accttitle: data.accttitle,
 			amount:    amount,
+			type:      data.type,
 		];
 	}
 	

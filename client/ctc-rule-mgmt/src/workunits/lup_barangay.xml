@@ -9,7 +9,7 @@
     import com.rameses.rcp.common.*
     import com.rameses.osiris2.client.*
 
-    class CitizenshipLookupController
+    class BarangayLookupController extends LookupModel
     {
         @Binding
         def binding
@@ -20,23 +20,23 @@
         def searchText
         def selected
         def onselect
+        def listHandler = this
 
         def ok() {
             if( ! selected ) throw new Exception('Please select an item.')
             if( onselect ) onselect( selected )
-            return '_close' 
+            return select()
         }
 
-        def listHandler = [
-            getColumns: {
-                return [
-                    new Column(name: "name", caption: "Barangay")
-                ]
-            },
-            fetchList: {
-                return svc.getBarangays()
-            }
-        ] as SubListModel
+        Column[] getColumns() {
+            return [
+                new Column(name: "name", caption: "Barangay")
+            ]
+        }
+        
+        List fetchList( Map param ) {
+            return svc.getBarangays()
+        }
 
     }
 

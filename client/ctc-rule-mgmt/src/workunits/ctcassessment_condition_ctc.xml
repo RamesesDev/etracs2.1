@@ -33,6 +33,7 @@
                     new FactField( "businessgrosstax", "Business Gross Tax", "decimal"),
                     new FactField( "propertyincometax", "Property Income Tax", "decimal"),
                     new FactField( "additionaltax", "Additional Tax", "decimal"),
+                    new FactField( "interest", "Interest", "decimal"),
                     new FactField( "amtdue", "Amount Due", "decimal"),
 
                 ] as FactField[];

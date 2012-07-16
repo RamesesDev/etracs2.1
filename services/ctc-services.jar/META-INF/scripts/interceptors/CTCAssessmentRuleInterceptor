@@ -19,22 +19,26 @@ class CTCAssessmentRuleInterceptor
 		s << 'import ctc.assessment.facts.*\n';
 		s << 'import java.util.*\n\n';
 		s << 'global com.rameses.rules.common.RuleAction ruleActionHandler\n\n'
-		s << 'rule "' + rule.rulename + '"\n'
-		s << 'agenda-group "' + rule.agendagroup + '"\n'
-		s << 'no-loop\n'
-		s << 'salience ' + rule.salience + '\n\n'
-		s << 'when\n'
 		
-		rule.conditions.each { cond ->
-			s << helper.buildFactCondition( cond, null )
-		}		
-		s << 'then\n'
-		
-		def varlist = helper.getAllVariableNames( rule )
-		rule.actions.each { action ->
+		//create an individual rule for each action
+		//to avoid the clash of variable names for each rule action
+		rule.actions.eachWithIndex { action, idx ->
+			s << 'rule "' + rule.rulename + '_' + idx + '"\n'
+			s << 'agenda-group "' + rule.agendagroup + '"\n'
+			s << 'no-loop\n'
+			s << 'salience ' + rule.salience + '\n\n'
+			s << 'when\n'
+			
+			rule.conditions.each { cond ->
+				s << helper.buildFactCondition( cond, null )
+			}		
+			s << 'then\n'
+			
+			def varlist = helper.getAllVariableNames( rule )
 			s << buildActionText( rule, varlist, action )
+			s << 'end\n\n'
 		}
-		s << 'end'
+		
 		
 		return s.toString()
 	}

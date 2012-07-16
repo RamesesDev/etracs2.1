@@ -12,7 +12,7 @@ class CTCCollectionInterceptor
 	def ctcSvc;
 	
 	
-	@Before(pattern="ReceiptService.create.*", eval="#{args[0].doctype == 'CTCI' || args[0].doctype == 'CTCC'}") 
+	@Before(pattern="ReceiptService.create.*", eval="#{args[0].doctype == 'CTCI' || args[0].doctype == 'CTCIB' || args[0].doctype == 'CTCC'}") 
 	public void beforeCreate( evt ) {
 		def receipt = evt.args[0]
 		def payer = receipt.info.payer
@@ -32,7 +32,7 @@ class CTCCollectionInterceptor
 		if( receipt.info.mode == 'CAPTURE' ) ctcSvc.buildCaptureItems( receipt )
 	}
 	
-	@Before(pattern="ReceiptService.update.*", eval="#{args[0].doctype == 'CTCI' || args[0].doctype == 'CTCC'}") 
+	@Before(pattern="ReceiptService.update.*", eval="#{args[0].doctype == 'CTCI' || args[0].doctype == 'CTCIB' || args[0].doctype == 'CTCC'}") 
 	public void beforeUpdate( evt ) {
 		def receipt = evt.args[0]
 		def payer = receipt.info.payer
@@ -48,7 +48,7 @@ class CTCCollectionInterceptor
 		if( receipt.taxnmode == 'CAPTURE' ) ctcSvc.buildCaptureItems( receipt )
 	}
 	
-	@After(pattern="ReceiptService.open", eval="#{result.doctype == 'CTCI' || result.doctype == 'CTCC'}")
+	@After(pattern="ReceiptService.open", eval="#{result.doctype == 'CTCI' || result.doctype == 'CTCIB' || result.doctype == 'CTCC'}")
 	public void afterOpenReceipt( evt ){
 		def receipt = evt.result
 	}
