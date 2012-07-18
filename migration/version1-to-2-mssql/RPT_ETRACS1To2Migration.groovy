@@ -1,9 +1,13 @@
 import tester.*
 
+
 def proxy = new TestProxy([
      'default.host' : 'localhost:8080',
      'app.context'  : 'bayombong',   
 ])
+
+def svc = proxy.create('RPTV1MigrationService')
+
 
 int BATCHSIZE = 25
 int THREAD_COUNT = 10
@@ -73,11 +77,7 @@ void printDone( action, g_errorlist ){
 }
 
 
-
-
-def svc = proxy.create('RPTV1MigrationService')
-
-
+/*
 svc.updateLandFaasIdInfo()
 println 'done svc.updateLandFaasIdInfo()...'
 
@@ -93,15 +93,24 @@ printDone ('done svc.updateFAASLandRPUInfo()...', g_errorlist)
 executeAction2({  g_errorlist.addAll(svc.updateFAASBldgRPUInfo( it )); it.clear() }, svc.getFAASListByType('bldg'), 'faas bldg rpu info' )
 printDone('done svc.updateFAASBldgRPUInfo()...', g_errorlist)
 
+
 executeAction2({  g_errorlist.addAll(svc.updateFAASMachRPUInfo( it )); it.clear() }, svc.getFAASListByType('mach'), 'faas mach rpu info' )
 printDone('done svc.updateFAASMachRPUInfo()...', g_errorlist)
 
 
 svc.updateMachAssessLevelRanges()
 println 'done svc.updateMachAssessLevelRanges()...'
+*/
 
 
-svc.updateMultipleEntityInfo()
+executeAction2(
+    { 
+        svc.updateMultipleEntityInfo( it )
+        it.clear() 
+    }, 
+    svc.getMultipleEntityList(),
+    'individual entity info'
+)
 println 'done svc.updateMultipleEntityInfo()...'
 
 

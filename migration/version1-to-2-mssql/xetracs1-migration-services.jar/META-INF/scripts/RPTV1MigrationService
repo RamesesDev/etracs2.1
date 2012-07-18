@@ -144,7 +144,7 @@ class RPTV1MigrationService
 								.execute()
 					}
 					catch( e ) {
-						println e.message 
+						println 'faasid ' + faas.objid + '    [' + e.message + ']'
 						errorlist.add( 'faasid ' + faas.objid + '    [' + e.message + ']' )
 					}
 				}
@@ -211,7 +211,7 @@ class RPTV1MigrationService
 								.execute()
 					}
 					catch( e ) {
-						println e.message 
+						println 'faasid: ' + faas.objid + '    [' + e.message + ']'
 						errorlist.add( 'faasid: ' + faas.objid + '    [' + e.message + ']' )
 					}
 				}
@@ -244,7 +244,7 @@ class RPTV1MigrationService
 							.execute()
 				}
 				catch( e ) {
-					println e.message 
+					println 'faasid: ' + faas.objid + '   [' + e.message + ']'
 					errorlist.add( 'faasid: ' + faas.objid + '   [' + e.message + ']' )
 				}
 			} as Runnable);
@@ -270,6 +270,7 @@ class RPTV1MigrationService
 			{
 				try{
 					println 'processing faas mach rpu: faasid -> ' + faas.objid 
+					
 					def rpu = buildRpuInfo( faas )
 					buildMachInfo( faas, rpu )
 					
@@ -280,7 +281,7 @@ class RPTV1MigrationService
 					}
 				}
 				catch( e ) {
-					println e.message 
+					println 'faasid: ' + faas.objid + '   [' + e.message +']'
 					errorlist.add( 'faasid: ' + faas.objid + '   [' + e.message +']' )
 				}
 			} as Runnable);
@@ -435,6 +436,8 @@ class RPTV1MigrationService
 			tasks << execsvc.submit(
 			{
 				try{
+					println 'processing faas bldg rpu info: faasid -> ' + faas.objid 
+				
 					def rpu = buildRpuInfo( faas )
 					buildBldgInfo( faas, rpu )
 					
@@ -445,7 +448,7 @@ class RPTV1MigrationService
 					}
 				}
 				catch( e ) {
-					println e.message 
+					println 'faasid: ' + faas.objid + '   [' + e.message + ']'
 					errorlist.add( 'faasid: ' + faas.objid + '   [' + e.message + ']' )
 				}
 			} as Runnable);
@@ -754,35 +757,45 @@ class RPTV1MigrationService
 	
 	
 	
-	
+	@ProxyMethod
+	public def getMultipleEntityList() {
+		return em2.sqlContext.createQuery('SELECT objid FROM entity WHERE entitytype=$P{entitytype}')
+		          .setParameter('entitytype', 'multiple')
+				  .resultList
+	}
 	
 	
 	@ProxyMethod
-	public void updateMultipleEntityInfo()  {
+	public void updateMultipleEntityInfo( list )  {
 		println "updating multiple entity"
 		
-		def fhandler = {
-			println "processing multiple entity: ${it.objid}"
-			
-			def info = em1.sqlContext.createQuery('''
-							select fullname 
-							from payer p
-							where objid = $P{objid}
-			''')
-			.setParameter('objid', it.objid )
-			.singleResult
-			
-			if( info ) {
-				em2.sqlContext.createExecutor('UPDATE entity SET info=$P{info} WHERE objid=$P{objid}')
-						.setParameters([objid:it.objid, info:em2.serializer.write(info)])
-						.execute()
-			}
+		def execsvc = java.util.concurrent.Executors.newFixedThreadPool(2);
+		def tasks = [];
+		
+		list.each{ entity ->
+			tasks << execsvc.submit(
+			{
+				println "processing multiple entity: ${entity.objid}"
+				
+				def info = em1.sqlContext.createQuery('''
+								select fullname 
+								from payer p
+								where objid = $P{objid}
+				''')
+				.setParameter('objid', entity.objid )
+				.singleResult
+				
+				if( info ) {
+					em2.sqlContext.createExecutor('UPDATE entity SET info=$P{info} WHERE objid=$P{objid}')
+							.setParameters([objid:entity.objid, info:em2.serializer.write(info)])
+							.execute()
+				}
+			} as Runnable);
 		};
 		
-		
-		def qry = em2.sqlContext.createQuery('SELECT objid FROM entity WHERE entitytype=$P{entitytype}').setParameter('entitytype', 'multiple')
-		qry.fetchHandler = new CustomFetchHandler( handler: fhandler );
-		qry.resultList;
+		//wait
+		tasks.each{ it.get() }
+		try{ execsvc.shutdown() }catch(e){}
 	}
 	
 	
@@ -1388,7 +1401,7 @@ class RPTV1MigrationService
 						em2.create( ledgerinfo.schemaname, ledgerinfo )
 					}
 					catch( e )  {
-						println e.message 
+						println 'ledgerid: ' + ledger.objid + '    [' + e.message + ']'
 						errorlist.add( 'ledgerid: ' + ledger.objid + '    [' + e.message + ']')
 					}
 				}
@@ -1451,7 +1464,7 @@ class RPTV1MigrationService
 						em2.create( iteminfo.schemaname, iteminfo  )
 					}
 					catch( e ) {
-						println e.message 
+						println 'ledgeritemid: ' + item.objid  + '    [' + e.message +  ']'
 						errorlist.add( 'ledgeritemid: ' + item.objid  + '    [' + e.message +  ']') 
 					}
 				}
