@@ -1,5 +1,8 @@
 -- MIGRATE RPT LEDGERS 
 
+alter table bayombong_etracs..rptledger alter column taxpayername varchar(800);
+alter table bayombong_etracs..rptledger alter column administratorname varchar(255);
+
 INSERT INTO bayombong_etracs..rptledger
 (
 	objid, 
