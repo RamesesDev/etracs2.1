@@ -1078,9 +1078,14 @@ class RPTV1MigrationService
 						('SYS_BASE_MARKET_VALUE * ' +
 							CAST(
 							  (
-								case when la.expression like 'if%' then 
-									replace(replace(replace( la.expression, '$P', ''), '}', ''),'{','')
-								else la.expression / 100.00 end 
+								case 
+									when la.expression like 'if%' then
+										replace(replace(replace( la.expression, '$P', ''), '}', ''),'{','')
+									when ISNUMERIC(la.expression)=1 then
+										la.expression / 100.00 
+									else 
+										rate / 100.00
+								end
 							  ) as varchar(1000)
 							)
 						) as expr

@@ -533,7 +533,15 @@ select
 	bi.code, 
 	bi.description as name, 
 	bi.unit, 
-	replace(replace(replace(bi.expression, '$P{', ''), '}', ''), '$F{','') as expr, 
+	replace(
+		replace(
+			replace(
+				replace(bi.expression, '$P{', ''), 
+				'}', ''
+			), '$F{',''
+		), 
+		'BASE_VALUE', 'SYS_BASE_VALUE'
+	) as expr,	
 	bi.previd
 from etracs_bayombong..bldgadditionalitem bi ;
 
