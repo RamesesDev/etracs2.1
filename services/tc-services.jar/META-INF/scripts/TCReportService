@@ -4,7 +4,7 @@ import java.rmi.server.UID;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
-class TDReportService {
+class TCReportService {
 
 	@PersistenceContext("main")
 	def em;
