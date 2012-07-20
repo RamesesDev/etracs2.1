@@ -270,7 +270,7 @@ class RPTV1MigrationService
 			{
 				try{
 					println 'processing faas mach rpu: faasid -> ' + faas.objid 
-					
+
 					def rpu = buildRpuInfo( faas )
 					buildMachInfo( faas, rpu )
 					
@@ -437,7 +437,7 @@ class RPTV1MigrationService
 			{
 				try{
 					println 'processing faas bldg rpu info: faasid -> ' + faas.objid 
-				
+
 					def rpu = buildRpuInfo( faas )
 					buildBldgInfo( faas, rpu )
 					
@@ -1325,7 +1325,6 @@ class RPTV1MigrationService
 		qry.fetchHandler = new CustomFetchHandler( handler: fhandler );
 		qry.resultList;
 	}
-	
 	
 	
 	
