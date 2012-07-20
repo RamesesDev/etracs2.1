@@ -72,7 +72,7 @@ public class LandRPUController
     }
     
     def openLandValueAdjustments() {
-        return InvokerUtil.lookupOpener('landrpuadjustment.open', [ allowEdit: allowEdit, rpu:rpu, onupdate:onupdateLandAdjustment ])
+        return InvokerUtil.lookupOpener('landrpuadjustment.open', [ lguid:faas.lguid, allowEdit: allowEdit, rpu:rpu, onupdate:onupdateLandAdjustment ])
     }
     
     def onupdateActualUseAdjustment = { 
@@ -83,7 +83,7 @@ public class LandRPUController
     }
     
     def openActualUseAdjustment() {
-        return InvokerUtil.lookupOpener('landrpuactualuseadjustment.open', [ allowEdit: allowEdit, rpu:rpu, landDetail:selectedLand, onupdate:onupdateActualUseAdjustment  ])
+        return InvokerUtil.lookupOpener('landrpuactualuseadjustment.open', [ lguid:faas.lguid, allowEdit: allowEdit, rpu:rpu, landDetail:selectedLand, onupdate:onupdateActualUseAdjustment  ])
     }
     
     void recalcLandDetails() {
@@ -106,11 +106,11 @@ public class LandRPUController
     def selectedLand 
     
     def getLookupSubclass() {
-        return InvokerUtil.lookupOpener('lcuvsubclass.lookup', [ry:rpu.ry] )
+        return InvokerUtil.lookupOpener('lcuvsubclass.lookup', [lguid:faas.lguid, ry:rpu.ry] )
     }
     
     def getLookupAssessLevel() {
-        return InvokerUtil.lookupOpener('landassesslevel.lookup', [ry:rpu.ry] )
+        return InvokerUtil.lookupOpener('landassesslevel.lookup', [lguid:faas.lguid, ry:rpu.ry] )
     }
     
     boolean allowColumnAVEdit() {
@@ -227,7 +227,7 @@ public class LandRPUController
     }
     
     void updateStrippingInfo( item ) {
-        def stripping = svc.lookupStripping( rpu.ry, item.actualuseid, item.striplevel, null )
+        def stripping = svc.lookupStripping( faas.lguid, rpu.ry, item.actualuseid, item.striplevel, null )
         if( stripping ) {
             item.stripping = stripping[0]
             item.strippingid = stripping[0].stripid 
@@ -345,11 +345,11 @@ public class LandRPUController
     def selectedPlantTree
     
     def getLookupTreeUnitValue() {
-        return InvokerUtil.lookupOpener('planttreeunitvalue.lookup', [ry:rpu.ry] )
+        return InvokerUtil.lookupOpener('planttreeunitvalue.lookup', [lguid:faas.lguid, ry:rpu.ry] )
     }
     
     def getLookupPlantTreeAssessLevel() {
-        return InvokerUtil.lookupOpener('planttreeassesslevel.lookup', [ry:rpu.ry] )
+        return InvokerUtil.lookupOpener('planttreeassesslevel.lookup', [lguid:faas.lguid, ry:rpu.ry] )
     }
     
     def planttreeListHandler = [

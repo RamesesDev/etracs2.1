@@ -18,16 +18,20 @@ WHERE pin = $P{pin}
 [lookupAssessLevel]  
 SELECT 
 	l.objid AS assesslevelid, l.code AS assesslevelcode, l.name AS assesslevelname  
-FROM miscassesslevel l, miscrysetting ms  
+FROM miscassesslevel l, miscrysetting ms, rysetting_lgu rl  
 WHERE l.miscrysettingid = ms.objid  
+  AND ms.objid = rl.objid 
+  AND rl.lguid = $P{lguid} 
   AND ms.ry = $P{ry}  
 ORDER BY code  
 
 [lookupMiscItems]
 SELECT 
 	m.objid, m.miscitemid, m.miscitemcode, m.miscitemname, m.expr  
-FROM miscitemvalue m, miscrysetting ms  
+FROM miscitemvalue m, miscrysetting ms , rysetting_lgu rl  
 WHERE m.miscrysettingid = ms.objid  
+  AND ms.objid = rl.objid 
+  AND rl.lguid = $P{lguid} 
   AND ms.ry = $P{ry}  
   AND m.miscitemcode LIKE $P{miscitemcode}  
 ORDER BY miscitemcode

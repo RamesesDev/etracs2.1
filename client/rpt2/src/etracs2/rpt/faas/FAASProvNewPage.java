@@ -81,20 +81,20 @@ public class FAASProvNewPage extends javax.swing.JPanel {
         xComboBox3.setExpression("#{lguname}");
         xComboBox3.setImmediate(true);
         xComboBox3.setIndex(-10);
-        xComboBox3.setItems("municipalities");
-        xComboBox3.setName("municipality");
+        xComboBox3.setItems("lguList");
+        xComboBox3.setName("lgu");
         xComboBox3.setPreferredSize(new java.awt.Dimension(0, 22));
         xComboBox3.setRequired(true);
         formPanel1.add(xComboBox3);
 
         xComboBox4.setCaption("Barangay");
         xComboBox4.setCaptionWidth(100);
-        xComboBox4.setDepends(new String[] {"municipality"});
+        xComboBox4.setDepends(new String[] {"lgu"});
         xComboBox4.setDynamic(true);
         xComboBox4.setExpression("#{lguname}");
         xComboBox4.setImmediate(true);
         xComboBox4.setIndex(-10);
-        xComboBox4.setItems("barangays");
+        xComboBox4.setItems("lguBarangays");
         xComboBox4.setName("barangay");
         xComboBox4.setPreferredSize(new java.awt.Dimension(0, 22));
         xComboBox4.setRequired(true);

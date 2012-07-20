@@ -23,6 +23,7 @@ class BldgTypeLookupController extends LookupModel
     def searchText
     def ry
     def selected
+    def lguid 
     
     void init(){
     }
@@ -50,7 +51,7 @@ class BldgTypeLookupController extends LookupModel
     List fetchList( Map params ) { 
         def s = search
         if( !s ) s = searchText 
-        def list = svc.lookupBldgType( ry, s, params)
+        def list = svc.lookupBldgType( lguid, ry, s, params)
         if( list ) return list
         throw new Exception("Record not found.")
     }

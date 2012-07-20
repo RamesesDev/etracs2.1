@@ -136,6 +136,9 @@ public class FAASController
         if( isProvinceLgu() ) {
             return 'newprov'
         }
+        else {
+            lgu = [objid:faas.lguid, lguname:faas.lguname]
+        }
         return 'new'
     }
     
@@ -308,8 +311,11 @@ public class FAASController
     def municipality
     def section = 0
     def parcel = 0
+    def lgu
     
     def create() {
+        faas.lguid = lgu.objid
+        faas.lguname = lgu.lguname 
         faas.rp.barangayid = barangay.objid
         faas.rp.barangay = barangay.lguname
         faas.rp.barangayindex = barangay.indexno 
@@ -319,7 +325,6 @@ public class FAASController
         faas = svc.validateCreate( faas )
         return 'default'
     } 
-    
     
     void setSectionInfo() {
         String ssection = section+''
@@ -353,11 +358,16 @@ public class FAASController
     List getPinTypes() { return ['new', 'old'] }
     List getMunicipalities() { return svc.getMunicipalities() }
     
+    def getLguList() {
+        return svc.getCityMunicipalityList()
+    }   
+    
     List getBarangays(){ 
-        if( isProvinceLgu() ) {
-            return svc.getBarangayListByParentId( municipality?.objid )
-        }
         return svc.getBarangays()
+    }
+    
+    List getLguBarangays() {
+        return svc.getBarangaysByLguType( lgu.objid, lgu.lgutype )
     }
     
     List getQuarters() { return [1,2,3,4] }

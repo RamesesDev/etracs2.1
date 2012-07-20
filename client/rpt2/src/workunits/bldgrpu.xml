@@ -97,7 +97,7 @@ public class BldgRPUController
     }
     
     def getLookupBldgType() {
-        return InvokerUtil.lookupOpener('bldgtype.lookup', [ ry:rpu.ry])
+        return InvokerUtil.lookupOpener('bldgtype.lookup', [lguid:faas.lguid, ry:rpu.ry])
     }
     
     void setBldgtype( bldgtype ) {
@@ -110,7 +110,7 @@ public class BldgRPUController
     
     def getLookupBldgKind() {
         required( 'Building Type', rpu.info.bldgtype )
-        return InvokerUtil.lookupOpener('bldgtypebldgkind.lookup', [bldgtypeid:rpu.info.bldgtype.bldgtypeid])
+        return InvokerUtil.lookupOpener('bldgtypebldgkind.lookup', [lguid:faas.lguid, bldgtypeid:rpu.info.bldgtype.bldgtypeid])
     }
     
     void setBldgkind( bldgkind ) {
@@ -197,7 +197,7 @@ public class BldgRPUController
     }
     
     def getLookupActualUse() {
-        return InvokerUtil.lookupOpener('bldgactualuse.lookup', [ry:rpu?.ry])
+        return InvokerUtil.lookupOpener('bldgactualuse.lookup', [lguid:faas.lguid, ry:rpu?.ry])
     }
     
     def bldguseListHandler = [
@@ -253,7 +253,7 @@ public class BldgRPUController
     
     def defineFloorInfo() {
         index = rpu.info.bldguses.indexOf( selectedBldgUse )
-        return InvokerUtil.lookupOpener('bldgrpufloor.open',[allowEdit:allowEdit, rpu:rpu, bldguse:selectedBldgUse, onupdate:floorUpdateHandler])
+        return InvokerUtil.lookupOpener('bldgrpufloor.open',[lguid:faas.lguid, allowEdit:allowEdit, rpu:rpu, bldguse:selectedBldgUse, onupdate:floorUpdateHandler])
     }
     
     void recalc() {
@@ -282,7 +282,7 @@ public class BldgRPUController
     def lookupMaterial
     
     def getLookupMaterial(){
-        return InvokerUtil.lookupOpener('structurematerial.lookup',[item:selectedStructure])
+        return InvokerUtil.lookupOpener('structurematerial.lookup',[ item:selectedStructure])
     }
 
     def structureListHandler = [

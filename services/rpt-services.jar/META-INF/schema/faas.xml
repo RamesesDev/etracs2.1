@@ -205,6 +205,8 @@
 		<field name="cancelledbytdnos"  />
 		<field name="txntimestamp"  />
 		<field name="restriction" />
+		<field name="lguid"/>
+		<field name="lguname"/>
 	</element>
     
 	<element name="previousfaas">

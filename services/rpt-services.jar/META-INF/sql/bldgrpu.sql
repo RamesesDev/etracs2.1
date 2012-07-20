@@ -26,9 +26,11 @@ SELECT
     bt.depreciations, bt.multistoreyadjustments, bt.basevaluetype, bt.residualrate, 
     s.predominant, s.depreciatecoreanditemseparately, s.computedepreciationbasedonschedule ,
 	s.calcbldgagebasedondtoccupied, s.straightdepreciation   
-FROM bldgrysetting s, bldgtype bt  
+FROM bldgrysetting s, bldgtype bt, rysetting_lgu rl 
 WHERE s.objid = bt.bldgrysettingid  
- AND s.ry = $P{ry} AND bt.code LIKE $P{code}   
+  AND s.objid = rl.objid 
+  AND rl.lguid = $P{lguid} 
+  AND s.ry = $P{ry} AND bt.code LIKE $P{code}   
  
  
 [lookupBldgKindByCode] 
@@ -39,13 +41,16 @@ SELECT
 	bk.gapvalue, bk.minarea, bk.maxarea 
 FROM bldgkindbucc bk 
 WHERE bk.bldgtypeid = $P{bldgtypeid} AND bk.bldgkindcode LIKE $P{code} 
+ORDER BY bk.bldgkindname 
 
 [lookupActualUseByCode]
 SELECT  
 	bl.objid AS actualuseid, bl.code AS actualusecode, bl.name AS actualusename, 
 	bl.fixrate, bl.rate, bl.ranges 
-FROM bldgrysetting s, bldgassesslevel bl 
+FROM bldgrysetting s, bldgassesslevel bl, rysetting_lgu rl
 WHERE s.objid = bl.bldgrysettingid 
+  AND s.objid = rl.objid 
+  AND rl.lguid = $P{lguid} 
   AND s.ry = $P{ry} AND bl.code LIKE $P{code} 
 
 [lookupAdditionalItem]  
@@ -55,8 +60,10 @@ SELECT
     bi.name AS addlitemname, 
     bi.unit AS addlitemunit, 
     bi.expr   
-FROM bldgrysetting s, bldgadditionalitem bi 
+FROM bldgrysetting s, bldgadditionalitem bi, rysetting_lgu rl
 WHERE s.objid = bi.bldgrysettingid  
+  AND s.objid = rl.objid 
+  AND rl.lguid = $P{lguid} 
   AND s.ry = $P{ry} AND bi.code LIKE $P{code} 
 
 

@@ -186,6 +186,13 @@ class FAASService
 		return []
 	}
 	
+	@ProxyMethod
+	public List getCityMunicipalityList() {
+		println 'getCityMunicipalityList...'
+		
+		return em.sqlContext.createNamedQuery('faas:getCityMunicipalityList').resultList 
+	}
+	
 	def buildSearchCriteria( search, docstate ) {
 		return [
             tdno : search,
@@ -222,6 +229,8 @@ class FAASService
             rpu           : [ry:ry, classid:'RES', classcode:'RES', classname:'RES',suffix:0,info:[:], taxable:true, totalareasqm:0.0, totalareaha:0.0],
             previousfaases: [],
             lgutype       : var.lgu_type,
+			lguid		  : var.lgu_index,
+			lguname       : var.lgu_name,
         ]
     }
     
@@ -686,6 +695,7 @@ class FAASService
      
 	@ProxyMethod
 	public List getMunicipalities() {
+		println 'getMunicipalities...'
 		return em.sqlContext.createNamedQuery('faas:getMunicipalities').resultList 
 	}
 	
@@ -693,6 +703,18 @@ class FAASService
     public List getBarangays() {
         return em.sqlContext.createNamedQuery('faas:getBarangays').resultList 
     }
+	
+	@ProxyMethod
+	public List getBarangaysByLguType( parentid, lgutype) {
+		lgutype = lgutype?.toLowerCase()
+		if( 'municipality' == lgutype  ) {
+			return getBarangayListByParentId( parentid )
+		}
+		else if( 'city' == lgutype ) {
+			return em.sqlContext.createNamedQuery('faas:getBarangays').resultList 
+		}
+		return []
+	}
 	
 	@ProxyMethod
     public List getBarangayListByParentId( parentid ) {

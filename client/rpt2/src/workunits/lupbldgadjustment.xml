@@ -32,6 +32,7 @@ class BldgAdditionalItemTypeLookupController extends LookupModel
     def params 
     def selectedInfo
     def addlItem = [:]
+    def lguid
     
     void init(){
     }
@@ -106,7 +107,7 @@ class BldgAdditionalItemTypeLookupController extends LookupModel
     List fetchList( Map params ) { 
         def s = search
         if( !s ) s = searchText 
-        return svc.lookupAdditionalItems( ry, s, params)
+        return svc.lookupAdditionalItems(lguid, ry, s, params)
     }
     
     /* ----------------------------------------------

@@ -52,6 +52,10 @@ public class BldgRYSettingPage extends javax.swing.JPanel {
         xButton3 = new com.rameses.rcp.control.XButton();
         xDataTable6 = new com.rameses.rcp.control.XDataTable();
         xButton4 = new com.rameses.rcp.control.XButton();
+        jPanel10 = new javax.swing.JPanel();
+        xDataTable7 = new com.rameses.rcp.control.XDataTable();
+        formPanel4 = new com.rameses.rcp.util.FormPanel();
+        xLookupField1 = new com.rameses.rcp.control.XLookupField();
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
@@ -290,6 +294,39 @@ public class BldgRYSettingPage extends javax.swing.JPanel {
         );
         jTabbedPane1.addTab("Building Adjustments", jPanel3);
 
+        xDataTable7.setDynamic(true);
+        xDataTable7.setHandler("lguListHandler");
+        xDataTable7.setName("selectedLgu");
+
+        xLookupField1.setText("xLookupField1");
+        xLookupField1.setCaption("Search LGU");
+        xLookupField1.setDynamic(true);
+        xLookupField1.setHandler("lookupLgu");
+        xLookupField1.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel4.add(xLookupField1);
+
+        org.jdesktop.layout.GroupLayout jPanel10Layout = new org.jdesktop.layout.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel10Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, xDataTable7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, formPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
+                .add(448, 448, 448))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(formPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(xDataTable7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jTabbedPane1.addTab("Applied to the following LGUs", jPanel10);
+
         formPanel1.setCellpadding(new java.awt.Insets(0, 0, 0, 10));
         formPanel1.setCellspacing(0);
         formPanel1.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
@@ -384,7 +421,9 @@ public class BldgRYSettingPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.util.FormPanel formPanel2;
     private com.rameses.rcp.util.FormPanel formPanel3;
+    private com.rameses.rcp.util.FormPanel formPanel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -411,7 +450,9 @@ public class BldgRYSettingPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDataTable xDataTable4;
     private com.rameses.rcp.control.XDataTable xDataTable5;
     private com.rameses.rcp.control.XDataTable xDataTable6;
+    private com.rameses.rcp.control.XDataTable xDataTable7;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;

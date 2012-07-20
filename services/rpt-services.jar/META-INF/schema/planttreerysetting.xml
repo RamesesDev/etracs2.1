@@ -6,6 +6,7 @@
 		<field name="ry" required="true" type="integer" />
 		<field name="applyagriadjustment" required="true" type="integer" />
         <field name="previd"  />
+		<field name="appliedto"/>
         <complex name="assesslevels" ref="assesslevel" type="list" serializer="default" />
         <complex name="planttreeunits" ref="planttreeunit" type="list" serializer="default" />
 	</element>

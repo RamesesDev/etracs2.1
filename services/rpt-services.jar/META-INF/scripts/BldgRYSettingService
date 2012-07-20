@@ -14,7 +14,10 @@ public class BldgRYSettingService
     def SCHEMA_NAME = 'bldgrysetting'
     def SCHEMA_VERSION = '1.0'
     
-    
+    @Service('RYSettingService')
+	def rysettingSvc
+	
+	def SETTING_TYPE = 'bldg' 
     
     @ProxyMethod
     public boolean settingExists() {
@@ -45,6 +48,7 @@ public class BldgRYSettingService
         entity.schemaname = SCHEMA_NAME
         entity.schemaversion = SCHEMA_VERSION
 		
+		entity.appliedto = entity.lgus.lguname.join(', ')
 		entity.fixrate = ( entity.fixrate ) ? 1 : 0
         entity.predominant = ( entity.predominant ) ? 1 : 0
 		entity.depreciatecoreanditemseparately = ( entity.depreciatecoreanditemseparately ) ? 1 : 0
@@ -69,11 +73,29 @@ public class BldgRYSettingService
             entity.assesslevels.add( assesslevel )
 		}
 		
+		
+		rysettingSvc.createLgus( SETTING_TYPE, entity )
+		
         logSvc.log('CREATE', 'BldgRYSetting', entity.objid )
         return entity 
     }
+		
+	@ProxyMethod
+	public Map copy( objid, newry ) {
+		//allow only if there are still lgus not referenced 
+		def lgus = rysettingSvc.lookupUnreferencedLgu( SETTING_TYPE, newry, null, null )
+		if( ! lgus ) throw new Exception('All LGUs has already been referenced.')
+		
+		def entity = reviseSetting(newry+1, newry )
+		entity.ry = newry 
+		entity.appliedto = null 
+		rysettingSvc.removeLgus( SETTING_TYPE, entity.objid )
+		em.update(entity.schemaname, entity )
+		return open( entity.objid )
+	}
+	
     @ProxyMethod
-    public Map copySetting( newry, copyYear ) {
+    public Map reviseSetting( newry, copyYear ) {
         required('Copy Year', copyYear )
         if( newry <= copyYear ) throw new Exception('New Revision Year must be greater than copy year.')
         def setting = em.sqlContext.createNamedQuery('bldgrysetting:getIdByRy').setParameter('ry', copyYear).singleResult
@@ -120,12 +142,15 @@ public class BldgRYSettingService
                 saveBldgKindBucc( bucc )
             }
        }
+	   
+	   rysettingSvc.copyLgus( SETTING_TYPE, setting.objid, settingoldid)
         
         return open( setting.objid )
     }
     
     @ProxyMethod
     public def update( entity ) {
+		entity.appliedto = entity.lgus.lguname.join(', ')
 		entity.predominant = ( entity.predominant ) ? 1 : 0
 		entity.fixrate = ( entity.fixrate ) ? 1 : 0
 		entity.depreciatecoreanditemseparately = ( entity.depreciatecoreanditemseparately ) ? 1 : 0
@@ -144,6 +169,7 @@ public class BldgRYSettingService
 		entity.computedepreciationbasedonschedule = ( entity.computedepreciationbasedonschedule == 1)
 		entity.calcbldgagebasedondtoccupied = ( entity.calcbldgagebasedondtoccupied == 1)
 		entity.straightdepreciation = ( entity.straightdepreciation == 1)
+		rysettingSvc.createLgus(SETTING_TYPE, entity )
         return entity 
     }
     
@@ -171,6 +197,7 @@ public class BldgRYSettingService
         entity.assesslevels = loadAssessLevels( objid ) 
         entity.additionalitems = loadAdditionalItems( objid ) 
         entity.bldgtypes = loadBldgTypes( objid ) 
+		entity.lgus = rysettingSvc.loadLgus( SETTING_TYPE, objid )
         return entity 
     }
     
@@ -180,6 +207,7 @@ public class BldgRYSettingService
         removeAssessLevels( objid )
         removeBldgAdditionalItems( objid )
         removeBldgTypes( objid )
+		rysettingSvc.removeLgus(SETTING_TYPE, objid) 
         em.delete( SCHEMA_NAME, [objid:objid])
     }
     
@@ -321,7 +349,7 @@ public class BldgRYSettingService
     
     void validate( entity ) {
         if( entity.ry <= 0 ) throw new Exception('Revision Year must be greater than zero.')
-        checkDuplicateSetting( entity )
+        //checkDuplicateSetting( entity )
         em.validate(entity.schemaname, entity )
     }
     

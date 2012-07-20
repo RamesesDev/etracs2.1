@@ -163,14 +163,14 @@ class MiscRPUService
     ----------------------------------------------------------------------------------*/
     
     @ProxyMethod
-    public List lookupAssessLevel( ry ) {
-        return getListByName('miscrpu:lookupAssessLevel', [ ry:ry ], null)
+    public List lookupAssessLevel( lguid, ry ) {
+        return getListByName('miscrpu:lookupAssessLevel', [ lguid:lguid, ry:ry ], null)
     }
     
     @ProxyMethod
-    public List getLookupMiscItems( ry, searchText, params ){
+    public List getLookupMiscItems( lguid, ry, searchText, params ){
     	def searchValue = (searchText ? searchText+'%' : '%');
-    	def criteria = [ry:ry, miscitemcode:searchValue];
+    	def criteria = [lguid:lguid, ry:ry, miscitemcode:searchValue];
     	return getListByName( 'miscrpu:lookupMiscItems', criteria, params );
     }
     
