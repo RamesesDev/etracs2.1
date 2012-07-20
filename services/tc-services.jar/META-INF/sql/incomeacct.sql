@@ -20,7 +20,7 @@ SELECT objid, acctno, acctcode, accttitle, fundid, fundname, defaultvalue, amoun
 SELECT objid, acctno, acctcode, accttitle, fundid, fundname, defaultvalue, amounttype FROM incomeaccount WHERE docstate = 'APPROVED' AND accttitle LIKE $P{accttitle} ORDER BY accttitle 
 
 [getFund]
-SELECT * FROM fund WHERE docstate = "APPROVED"
+SELECT * FROM fund WHERE docstate = 'APPROVED'
 
 [getFundId]
 SELECT objid FROM fund WHERE fundname = $P{fundname}

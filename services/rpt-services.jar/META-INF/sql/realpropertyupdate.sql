@@ -11,14 +11,14 @@
 [realproperty-list]
  select fl.pin, fl.cadastrallotno, fl.blockno, fl.surveyno
  from faaslist fl 
- where fl.docstate <> 'CANCELLED'
+ where fl.docstate <> 'CANCELLED' and fl.rputype = 'land'
  group by fl.pin
 
 
 [realproperty-list-by-pin]
  select fl.pin, fl.cadastrallotno, fl.blockno, fl.surveyno
  from faaslist fl 
- where fl.docstate <> 'CANCELLED' and fl.pin like $P{pin}
+ where fl.docstate <> 'CANCELLED' and fl.fullpin = $P{pin} and fl.rputype = 'land'
  group by fl.pin
 
 

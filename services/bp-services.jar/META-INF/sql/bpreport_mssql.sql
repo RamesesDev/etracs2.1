@@ -9,9 +9,9 @@ SELECT objid AS classificationid, name AS classification FROM lobclassification 
 SELECT  
 	a.objid,  
 	p.txnno AS permitno, a.iyear,  a.organization, a.barangayname, 
-	a.tradename, a.businessaddress, a.taxpayername, a.taxpayeraddress, a.txntype
-	-- (SELECT SUM(value) FROM bpappinfolisting WHERE varname = 'CAPITAL' and objid like (a.objid + '%')) AS capital, 
-	-- (SELECT SUM(value) FROM bpappinfolisting WHERE varname = 'GROSS' and objid like (a.objid + '%')) AS gross 
+	a.tradename, a.businessaddress, a.taxpayername, a.taxpayeraddress, a.txntype,
+	(SELECT isnull(sum(convert(decimal(10,2),value)), 0) FROM bpappinfolisting WHERE applicationid = a.objid and varname like '%CAPITAL%') AS capital,
+	(SELECT isnull(sum(convert(decimal(10,2),value)), 0) FROM bpappinfolisting WHERE applicationid = a.objid and varname like '%GROSS%') AS gross 
 FROM bpapplicationlisting a, bppermit p  
 WHERE a.objid = p.applicationid  
   AND a.iyear = $P{iyear} 
@@ -21,9 +21,9 @@ ORDER BY a.txnno
 SELECT 
 	a.txnno AS appno, a.iyear, a.docstate, a.txntype, a.organization, a.barangayname, 
 	a.tradename, a.businessaddress, a.taxpayername, a.taxpayeraddress, 
-	l.name AS lobname, l.classification
-	-- (SELECT SUM(value) FROM bpappinfolisting WHERE varname = 'CAPITAL' and objid like (a.objid + '%') AND lobid = bl.lobid) AS capital,
-	-- (SELECT SUM(value) FROM bpappinfolisting WHERE varname = 'GROSS' and objid like (a.objid + '%')  AND lobid = bl.lobid) AS gross 
+	l.name AS lobname, l.classification,
+	(SELECT isnull(sum(convert(decimal(10,2),value)), 0) FROM bpappinfolisting WHERE applicationid = a.objid AND lobid = bl.lobid and varname = 'CAPITAL') AS capital,
+	(SELECT isnull(sum(convert(decimal(10,2),value)), 0) FROM bpappinfolisting WHERE applicationid = a.objid AND lobid = bl.lobid and varname = 'GROSS') AS gross 
 FROM bpapplicationlisting a
 	INNER JOIN bploblisting bl ON bl.applicationid = a.objid 
 	INNER JOIN lob l ON l.objid = bl.lobid 

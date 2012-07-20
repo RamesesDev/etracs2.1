@@ -105,7 +105,7 @@ class RealPropertyUpdateService
 	public def lookupRealProperties( param ) {
 		def qry
 		if( param.searchText ) {
-			qry = em.sqlContext.createNamedQuery('realpropertyupdate:realproperty-list-by-pin').setParameter('pin', param.searchText+'%')
+			qry = em.sqlContext.createNamedQuery('realpropertyupdate:realproperty-list-by-pin').setParameter('pin', param.searchText)
 		}
 		else {
 			qry = em.sqlContext.createNamedQuery('realpropertyupdate:realproperty-list')

@@ -1,4 +1,5 @@
 -- MIGRATE RPT LEDGERS 
+-- delete from bayombong_etracs..rptledger where objid  not (select objid from etracs_bayombong..RPTLedger);
 
 alter table bayombong_etracs..rptledger alter column taxpayername varchar(800);
 alter table bayombong_etracs..rptledger alter column administratorname varchar(255);
@@ -89,6 +90,8 @@ FROM etracs_bayombong..RPTLedger rl
 
 
 -- MIGRATE RPT LEDGER ITEMS 
+-- delete from bayombong_etracs..rptledgeritem where parentid not in (select objid from bayombong_etracs..rptledger)
+
 INSERT INTO bayombong_etracs..rptledgeritem
 (
 	objid, 
@@ -114,10 +117,10 @@ SELECT
 	rli.objid, 
 	'rptledger:rptledgeritem' as schemaname, 
 	'1.0' as schemaversion, 
-	rli.state as  docstate, 
+	convert(varchar(25),rli.state) as  docstate, 
 	rl.objid as  parentid, 
 	td.objid as  faasid, 
-	rli.tdno as tdno, 
+	convert(varchar(30), rli.tdno) as tdno, 
 	td.txntype as txntype, 
 	r.classificationId as classid, 
 	r.classCode as  classcode, 
