@@ -225,6 +225,7 @@
             
             void addCashierInfo() {
                 entity.cashier = [
+                    objid     : cashier.objid, 
                     cashierid : cashier.objid,
                     cashiername : cashier.formalname,
                     cashiertitle : cashier.jobtitle
