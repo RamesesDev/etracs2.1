@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="menu/mgmt" caption="Imported FAAS Transmittals" mnemonic="t" permission="faastransmittal_import_mgmt.view" index="310"/>
+        <invoker folderid="/txn/rpt" caption="Importedd FAAS Transmittals" mnemonic="t" permission="faastransmittal_import_mgmt.view" index="310"/>
+        <invoker type="quick_launcher" code="IFAT" caption="Imported FAAS Transmittals" mnemonic="f" permission="faastransmittal_import_mgmt.view" />
+        
+        <invoker type="formActions" action="create" shortcut="ctrl i" immediate="true" caption="Import" mnemonic="i" icon="images/doc-new.png" permission="faastransmittal_import.create" target="window"/>
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="faastransmittal_import.open" target="window"/>
+    </invokers>
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+public class FAASTransmittalImportMgmtController 
+{
+    @Binding 
+    def binding
+    
+    @Service('FAASTransmittalService')
+    def svc 
+    
+    def selectedItem
+    def searchText
+    
+    void search() {
+        listHandler.load()
+    }
+    
+    def listRefreshHandler = {
+        listHandler.load()
+    }
+    
+    def create() {
+        return InvokerUtil.lookupOpener('faastransmittal_import.create', [listRefreshHandler:listRefreshHandler] )
+    }
+    
+    def open(){
+        return InvokerUtil.lookupOpener('faastransmittal_import.open', [entity:selectedItem] )
+    }
+    
+    def listHandler = [
+        getRows     : { 
+            return 50 
+        },
+        getColumns  : { return [
+            new Column(name:'transmittalno', caption:'Transmittal No.', maxWidth:120),
+            new Column(name:'transmittaldate', caption:'Date Transmitted', type:'date', maxWidth:120),
+            new Column(name:'createdby', caption:'Transmitted By'),
+            new Column(name:'icount', caption:'No. of Items', type:'integer', format:'#,##0', maxWidth:100 ),
+            new Column(name:'importedby', caption:'Imported By'),
+            new Column(name:'dtimported', caption:'Date Imported'),
+            new Column(name:'lguname', caption:'Imported From'),
+        ]},
+        fetchList  : { 
+            return svc.getImportedTransmittalList( searchText, it ) 
+        },
+    ] as PageListModel
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.ListSearchPage"/>
+    </pages>
+</workunit>

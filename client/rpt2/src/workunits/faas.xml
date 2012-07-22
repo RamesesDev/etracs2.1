@@ -381,6 +381,7 @@ public class FAASController
     
     boolean getShowApproveAction() {
         if( faas.lgutype?.toLowerCase() == 'municipality'  ) return false
+        if( faas.lgutype?.toLowerCase() == 'province'  ) return false
         if( faas.docstate != 'FORAPPROVAL' ) return false
         return true
     }
@@ -398,15 +399,19 @@ public class FAASController
     }
     
     boolean getShowApprovedByProvinceAction() {
-        if( faas.lgutype?.toLowerCase() != 'municipality'  ) return false
-        if( faas.docstate != 'FORPROVAPPROVAL' ) return false
-        return true
+        def lgutype = faas.lgutype?.toLowerCase()
+        if( lgutype == 'city'  ) return false
+        if( lgutype == 'municipality' && faas.docstate == 'FORPROVAPPROVAL' ) return true
+        if( lgutype == 'province' && faas.docstate == 'FORAPPROVAL' ) return true
+        return false
     }
     
     boolean getShowDisapproveByProvinceAction() {
-        if( faas.lgutype != 'municipality'  ) return false
-        if( faas.docstate != 'FORPROVAPPROVAL' ) return false
-        return true
+        def lgutype = faas.lgutype?.toLowerCase()
+        if( lgutype == 'city'  ) return false
+        if( lgutype == 'municipality' && faas.docstate == 'FORPROVAPPROVAL' ) return true
+        if( lgutype == 'province' && faas.docstate == 'FORAPPROVAL' ) return true
+        return false
     }
     
     /*-----------------------------------------------------------------------------

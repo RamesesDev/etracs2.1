@@ -56,11 +56,11 @@ class FAASService
     def FORPROVAPPROVAL_STATE = 'FORPROVAPPROVAL'
 	def CURRENT_STATE = 'CURRENT'
 	def CANCELLED_STATE = 'CANCELLED'
-    
+	
 	def SCHEMA_NAME = 'faas'
     def SCHEMA_VERSION = '1.0'
     def LISTSCHEMA_NAME = 'faas:faaslist'
-    
+	
     def LAND_TYPE = 'land' 
     def BLDG_TYPE = 'bldg'
     def MACH_TYPE = 'mach'
@@ -215,6 +215,8 @@ class FAASService
             schemaversion : SCHEMA_VERSION,
             docstate      : INTERIM_STATE,
             transmitted   : false,
+			fortransmittal : ( var.lgu_type?.toLowerCase() != 'city' ? true : false),
+			transmittalid  : null, 
             info          : [   datacapture : true, 
                                 prevmv      : 0.0, 
                                 prevav      : 0.0, 
@@ -349,6 +351,8 @@ class FAASService
         def faasinfo = getFaasInfo( faasid )
         validateSubmitToProvince( faasinfo )
         def faas = open( faasinfo.objid )
+		faas.fortransmittal = true 
+		faas.transmittalid = null 
         updateFaasState( faas, FORPROVAPPROVAL_STATE )
         updateMessage(faas, null )
         updateAttachmentStates( faas, 'FORTRANSMITTAL' )
@@ -359,27 +363,29 @@ class FAASService
     
     @ProxyMethod
     public Map approve( faasid ) {
-        def faasinfo = getFaasInfo( faasid )
+		def faasinfo = getFaasInfo( faasid )
         validateApprove( faasinfo )
         def faas = open( faasinfo.objid )
         updateAutonumberTdNo( faas  )
         invokeCommonApproveActions( faas )
         logSvc.log('APPROVE','FAAS', faas.objid)
-        return faas 
+		return faas 
     }
     
     @ProxyMethod
     public Map approveByProvince( faasid ) {
-        def faasinfo = getFaasInfo( faasid )
+		def faasinfo = getFaasInfo( faasid )
         validateProvinceApproval( faasinfo )
         def faas = open( faasinfo.objid )
+		faas.fortransmittal = true 
+		faas.transmittalid = null 
         updateAutonumberTdNo( faas )
 		assignNextPin( faas ) 
         invokeCommonApproveActions( faas )
         logSvc.log('APPROVEBYPROVINCE','FAAS', faas.objid)
-        return faas 
+		return faas 
     }
-        
+	
     @ProxyMethod
     public Map disapproveByProvince( faasid ) {
         def faasinfo = getFaasInfo( faasid )
@@ -1243,7 +1249,6 @@ class FAASService
     
     void validateProvinceApproval( faasinfo ) {
         if( faasinfo.docstate == INTERIM_STATE ) throw new Exception('FAAS is still interim.')
-        if( faasinfo.docstate == FORAPPROVAL_STATE ) throw new Exception('FAAS must not be FORAPPROVAL state.')
         if( faasinfo.docstate == CURRENT_STATE) throw new Exception('FAAS is already current.')
         if( faasinfo.docstate == CANCELLED_STATE ) throw new Exception('FAAS has already been cancelled.')
         checkDuplicateTdNo( faasinfo.objid, faasinfo.tdno )

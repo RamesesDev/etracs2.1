@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="faastransmittal_import.create" action="init" caption="Import FAAS Transmittal (New)" permission="faastransmittal_import.create"/>
+        <invoker type="faastransmittal_import.open" action="open" caption="Imported FAAS Transmittal" permission="faastransmittal_import.open"/>
+        
+        <invoker folderid="/menu/rpt/faas" action="init"  caption="Import FAAS Transmittal" mnemonic="i" permission="faastransmittal_import.create" index="400"/>
+        <invoker type="quick_launcher" action="init" code="IFAT" caption="Import FAAS Transmittal" mnemonic="i" permission="faastransmittal_import.create" />
+        
+        <invoker type="initActions" action="_close"  immediate="true" caption="Close" mnemonic="c" icon="images/cancel.png"/>
+        <invoker type="initActions" action="next" shortcut="ctrl N" caption="Next" mnemonic="n" icon="images/next.png"/>
+        
+        <invoker type="formActions" action="_close"  caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
+        <invoker type="formActions" action="post" caption="Post Transmittal" mnemonic="p" icon="images/doc-save.png" visibleWhen="#{mode=='create'}"/>
+    </invokers>
+    
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import java.io.*
+import javax.swing.JFileChooser;
+import com.rameses.util.*
+
+public class ImportFAASTransmittalController 
+{
+    @Binding 
+    def binding
+    
+    @Service('FAASTransmittalService')
+    def svc 
+    
+    def data 
+    def entity
+    def list 
+    def mode = 'view' 
+    def file 
+    def listRefreshHandler
+    
+    def init() {
+        mode = 'create' 
+        return 'init' 
+    }
+    
+    void open() {
+        mode = 'view' 
+        entity.txnno   = entity.transmittalno
+        entity.txndate = entity.transmittaldate
+        list = svc.getImportedTransmittalItems( entity.objid )
+    }
+    
+    def next() {
+        importTransmittal()
+        svc.checkDuplicateImportPosting( entity.objid )
+        return 'default'
+    }
+    
+    void post() {
+        if( MsgBox.confirm('Post remittance import?') ) {
+            svc.postImportTransmittal( data ) 
+            mode = 'view' 
+            MsgBox.alert('FAAS Transmittal has been successfully imported and posted.')
+            if( listRefreshHandler ) listRefreshHandler()
+        }
+    }
+    
+    void importTransmittal() {
+        try {
+            file.eachObject{ data = it }
+            data = CipherUtil.decode( data )
+            data = ObjectDeserializer.instance.read( data)
+            entity = data.transmittal
+            list = data.faaslists
+        }
+        catch( e ) {
+            println '='*50 
+            e.printStackTrace()
+            throw new Exception('Cannot load transmittal file. It might be corrupted or invalid.\nKindly re-export the transmittal and try importing again.')
+        }
+    }
+    
+    def listHandler = [
+        getRows     : { return 50 },
+        getColumns  : { return [
+            new Column(name:'tdno', caption:'TD No.'),
+            new Column(name:'ownername', caption:'Owner Name'),
+            new Column(name:'fullpin', caption:'PIN'),
+            new Column(name:'rputype', caption:'Kind'),
+            new Column(name:'classcode', caption:'Class'),
+            new Column(name:'totalmv', caption:'Market Value', type:'decimal'),
+            new Column(name:'totalav', caption:'Assessed Value', type:'decimal'),
+        ]},
+        fetchList  : { return list },
+    ] as SubListModel
+    
+
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.faas.transmittal.FAASTransmittalPage"/>
+        <page name="init" template="etracs2.rpt.faas.transmittal.ImportFAASTransmittalInitPage"/>
+    </pages>
+</workunit>

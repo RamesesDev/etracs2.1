@@ -16,6 +16,8 @@
 		<field name="docstate" required="true"/>
         <field name="message" />
         <field name="sys_dtapproved" />
+		<field name="fortransmittal"/>
+		<field name="transmittalid" />
         <complex name="info" ref="faasinfo" serializer="default"/>
         <complex name="rp" ref="realproperty" serializer="default"/>
 		<complex name="rpu" ref="rpu:rpu" serializer="default" />
@@ -207,6 +209,8 @@
 		<field name="restriction" />
 		<field name="lguid"/>
 		<field name="lguname"/>
+		<field name="fortransmittal" />
+		<field name="transmittalid" />
 	</element>
     
 	<element name="previousfaas">

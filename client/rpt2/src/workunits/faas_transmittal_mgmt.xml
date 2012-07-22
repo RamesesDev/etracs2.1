@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="menu/mgmt" caption="FAAS Transmittals" mnemonic="t" permission="faastransmittalmgmt.view" index="300"/>
+        <invoker folderid="/txn/rpt" caption="FAAS Transmittals" mnemonic="t" permission="faastransmittalmgmt.view" index="300"/>
+        <invoker type="quick_launcher" code="FATR" caption="FAAS Transmittals" mnemonic="f" permission="faastransmittalmgmt.view" />
+        
+        <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="faastransmittal.create" target="window"/>
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="faastransmittal.open" target="window"/>
+    </invokers>
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+public class FAASTransmittalMgmtController 
+{
+    @Binding 
+    def binding
+    
+    @Service('FAASTransmittalService')
+    def svc 
+    
+    def selectedItem
+    def searchText
+    
+    void search() {
+        listHandler.load()
+    }
+    
+    def listRefreshHandler = {
+        listHandler.load()
+    }
+    
+    def create() {
+        return InvokerUtil.lookupOpener('faastransmittal.create', [listRefreshHandler:listRefreshHandler] )
+    }
+    
+    def open(){
+        return InvokerUtil.lookupOpener('faastransmittal.open', [entity:selectedItem] )
+    }
+    
+    def listHandler = [
+        getRows     : { 
+            return 50 
+        },
+        getColumns  : { return [
+            new Column(name:'txnno', caption:'Transmittal No.', maxWidth:120),
+            new Column(name:'txndate', caption:'Date Transmitted', type:'date', maxWidth:120),
+            new Column(name:'createdby', caption:'Transmitted By'),
+            new Column(name:'lguname', caption:'Transmitting LGU'),
+        ]},
+        fetchList  : { 
+            return svc.getList( searchText, it ) 
+        },
+    ] as PageListModel
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.ListSearchPage"/>
+    </pages>
+</workunit>
