@@ -13,6 +13,9 @@ public class CTCService
 	@Service('DateService')
 	def dateSvc
 	
+	@Service('RuleService')
+	def rulemgmt;
+	
 	@PersistenceContext("main")
 	def em
 	
@@ -22,6 +25,7 @@ public class CTCService
 		def result = executeRule( entity )
 		def assessment = [:]
 		assessment.tax = createTaxItems( result )
+		adjustTaxItems( result )
 		assessment.items = result.values() as List
 		assessment.total = assessment.items*.amount.sum()
 		if( assessment.total==null ) assessment.total = 0.00
@@ -59,10 +63,12 @@ public class CTCService
 		def result = [:]
 		def ruleAction = ruleSvc.createRuleAction()
 		ruleAction.addCommand( 'compute', new ComputationHandler( result: result ) )		
-			
-		ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], 'TAX' )
-		updateCTCFact( facts[0], result )
-		ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], 'INTEREST' )
+		
+		rulemgmt.getAgendaGroups( 'ctcassessment' ).each{ agenda ->
+			ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], agenda.name )
+			updateCTCFact( facts[0], result )
+		}
+		
 		return result;
 	}
 	
@@ -77,8 +83,33 @@ public class CTCService
 		result.each{k,v-> 
 			if( values[k] != null ) values[k] = v.amount 
 		}
-		
+
 		return values
+	}
+	
+	void adjustTaxItems( result ) {
+		def tax;
+
+		result.each{ k,v ->
+			try {
+				if( k == 'brgy_share_basic_tax' && result['basic'])
+					tax = result['basic']
+				else if( k == 'brgy_share_gross_tax' && result['business'] )
+					tax = result['business']
+				else if( k == 'brgy_share_interest' && result['interest'])
+					tax = result['interest']
+				else if( k == 'brgy_share_propertyincome_tax' && result['property'] )
+					tax = result['property']
+				else if( k == 'brgy_share_salary_tax' && result['salary'])
+					tax = result['salary']
+				
+				if( tax ) tax.amount = tax.amount - v.amount
+			}
+			catch(e) {
+				println "$k = $v"
+				throw e
+			}
+		}
 	}
 	
 	void initItems( assessment ) {
