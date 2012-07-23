@@ -4,7 +4,7 @@
 
 import tester.*
 
-def conf = ['default.host': 'localhost:8080', 'app.context': 'sancarlos']
+def conf = ['default.host': 'localhost:8080', 'app.context': 'bayombong']
 def proxy = new TestProxy(conf)
 
 def svc = proxy.create('ScriptServiceAnalyzer')
