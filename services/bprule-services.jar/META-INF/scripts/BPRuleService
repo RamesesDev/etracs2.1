@@ -137,7 +137,7 @@ public class BPRuleService
 	}
 	
 	def createInputVariableFacts( app ) {
-		def parsedate = dateSvc.parseCurrentDate()
+		def parseddate = dateSvc.parseCurrentDate()
 		def facts = []
 		app.infos.each {
 			def fact = ruleService.createFact(BPASSESSMENT_RULESET, FACTS_PACKAGE + 'InputVariableFact' )
@@ -158,13 +158,17 @@ public class BPRuleService
 			fact.varname = it.varname 
 			fact.vartype = it.vartype 
 			if( it.varname == 'CURRENT_YEAR' ) 
-				fact.value   = parsedate.year 
+				fact.value   = parseddate.year 
 			else if( it.varname == 'CURRENT_QTR')
-				fact.value =  parsedate.qtr 
+				fact.value =  parseddate.qtr 
 			else if( it.varname == 'NO_LOBS')
 				fact.value = app.lobs.size() 
+			else if( it.varname == 'CURRENT_MONTH' )
+				fact.value = parseddate.month
+			
 			facts += fact 
 		}
+		
 		return facts 
 	}
 	
