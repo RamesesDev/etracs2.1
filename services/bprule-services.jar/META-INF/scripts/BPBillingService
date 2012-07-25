@@ -173,6 +173,7 @@ public class BPBillingService
 		def receivables = em.serializer.read( app.receivables );
 		for ( rc in receivables ) {
 			if ( rc.amtpaid < rc.amount ){
+				rc.amount -= rc.amtpaid
 				rc.year = rc.iyear;
 				rc.qtr = rc.iqtr;
 				taxfees << rc;

@@ -199,7 +199,9 @@
         
         public def onpartial = { partial ->
             if( partial ){
-                entity.items = bpcolSvc.doComputePartial( entity, partial )
+                def items = bpcolSvc.doComputePartial( entity, partial )
+                entity.items = items
+                entity._items = items
             }
             listHandler.load()
             calculateReceiptAmount()

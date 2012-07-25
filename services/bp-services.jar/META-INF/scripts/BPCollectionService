@@ -79,6 +79,7 @@ class BPCollectionService{
 			it.discount = numSvc.round( it.discount )
 			it.interest = numSvc.round( it.interest )
 			it.amount = numSvc.round( it.amount )
+			
 			def item = [
 				taxfeeid	: it.objid,
 				iyear		: it.year, 
@@ -119,25 +120,30 @@ class BPCollectionService{
 	}
 	
 	@ProxyMethod 
-	public def doComputePartial( entity , partial ){
-		def partialpmt = partial
-		entity.items.each(){
-			if( partialpmt == 0 )
-				it.amount = partialpmt
-			if( partialpmt >= it.amount )
-				partialpmt -= it.amount
-			else{
-				it.taxamount = partialpmt * ( it.taxamount / it.amount )
-				it.surcharge = partialpmt * ( it.surcharge / it.amount )
-				it.interest = partialpmt - it.taxamount - it.surcharge 
-				it.amount = it.taxamount + it?.surcharge + it?.interest
-				
-				partialpmt = 0.0
+	public def doComputePartial( entity , partialpmt ){
+		entity._items.each{
+			it.surcharge = ( it.surcharge ? it.surcharge : 0.0 )
+			it.interest  = ( it.interest ? it.interest : 0.0 )
+			if( partialpmt == 0 ) it.amount = partialpmt
+			if( partialpmt >= it.amount ){
+				partialpmt -= it.taxamount
+				partialpmt -= it.surcharge
+				partialpmt -= it.interest
 			}
-
+			else{
+				it.taxamount = numSvc.round( partialpmt * ( it.taxamount / it.amount ) )
+				if( it.surcharge > 0.0 ) 
+					it.surcharge = numSvc.round( partialpmt * ( it.surcharge / it.amount ) )
+				if( it.interest > 0.0 ){
+					//routine tomake ( it.taxamount + it.surcharge + it.interest ) equal to partialpmt
+					it.interest = numSvc.round( partialpmt - it.taxamount - it.surcharge )
+				}
+				it.amount = numSvc.round( it.taxamount + it.surcharge + it.interest )
+				partialpmt -= it.amount 
+			}
 		}
-	
-		return entity.items.findAll{ it.amount != 0.0 }
+		
+		return entity._items.findAll{ it.amount > 0.0 } 
 	}
 	
 	private def populatePenalty( def items, def taxfee ){
