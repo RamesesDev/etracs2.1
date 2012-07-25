@@ -77,7 +77,7 @@ void printDone( action, g_errorlist ){
 }
 
 
-/*
+
 svc.updateLandFaasIdInfo()
 println 'done svc.updateLandFaasIdInfo()...'
 
@@ -100,7 +100,7 @@ printDone('done svc.updateFAASMachRPUInfo()...', g_errorlist)
 
 svc.updateMachAssessLevelRanges()
 println 'done svc.updateMachAssessLevelRanges()...'
-*/
+
 
 
 executeAction2(
@@ -153,13 +153,6 @@ println 'done svc.updateLandAssessLevelRanges()...'
 svc.updateStructureMaterials()
 println 'done svc.updateStructureMaterials()...'
 
-
-executeAction2( { g_errorlist.addAll( svc.insertRPTLedger( it )) ; it.clear() }, svc.getLedgerList(), 'insert rpt ledger' )
-printDone( 'done svc.insertRPTLedger()...', g_errorlist )
-
-
-executeAction2({ g_errorlist.addAll(svc.insertRPTLedgerItem( it )); it.clear() }, svc.getLedgerItemList(), 'insert rpt ledger item' )
-printDone( 'done svc.insertRPTLedgerItem()...', g_errorlist )
 
 
 println 'done' 
