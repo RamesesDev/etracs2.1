@@ -30,11 +30,11 @@ class IssuedReceiptController
     void init() {
         collector = userService.getCollector( OsirisContext.env.USERID )
         def searchParam = [ 
-            collectorid:collector.objid, 
+            collectorid: collector.objid, 
             docstate : 'OPEN',
-            searchText:searchText 
+            searchText: searchText 
         ]
-        total = svc.getList( searchParam, [:] ).amount.sum()
+        total = svc.getIssuedTotal( searchParam )
     }
     
     void setSelectedItem( item ) {
@@ -63,13 +63,12 @@ class IssuedReceiptController
         }, 
         fetchList : { 
             def searchParam = [ 
-                collectorid:collector.objid, 
+                collectorid: collector.objid, 
                 docstate : 'OPEN',
-                searchText:searchText 
+                searchText: searchText 
             ]
-            def list = svc.getList( searchParam, it ) 
-            total = list.amount.sum()
-            return list
+            
+            return svc.getList( searchParam, it ) 
         },
     ] as PageListModel
     
