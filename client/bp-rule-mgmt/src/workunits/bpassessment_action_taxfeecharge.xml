@@ -41,7 +41,12 @@
                     return rule.conditions.findAll{ it.variable }.collect{ [name:it.variable.name, info: it.variable.description] } 
                 },
                 getParameters : { return [] },
-                getFunctions : { return [ [name:"IIF", info: "IIF Function"] ] },
+                getFunctions : { 
+                    return [ 
+                        [name:"IIF", info: "IIF Function"], 
+                        [name:"FIXED", info: "FIXED Function: drops the decimal places of a decimal number without rounding (i.e. 1.85 = 1)"] 
+                    ] 
+                },
                 getExpr : { return action.expr },
                 setExpr : { s-> action.expr = s; }
             ] as FormulaEditorModel;
