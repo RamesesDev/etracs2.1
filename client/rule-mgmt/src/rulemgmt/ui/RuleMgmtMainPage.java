@@ -45,6 +45,7 @@ public class RuleMgmtMainPage extends javax.swing.JPanel {
 
         jPanel2.setBorder(new com.rameses.rcp.control.border.XUnderlineBorder());
         xActionTextField1.setActionName("search");
+        xActionTextField1.setDepends(new String[] {"selectedRuleset"});
         xActionTextField1.setHint("Search Rule");
         xActionTextField1.setName("searchText");
         xActionTextField1.setPreferredSize(new java.awt.Dimension(200, 19));
@@ -54,6 +55,7 @@ public class RuleMgmtMainPage extends javax.swing.JPanel {
         xActionBar1.setDynamic(true);
         xActionBar1.setName("formActions");
 
+        xComboBox1.setDepends(new String[] {"selectedRuleset"});
         xComboBox1.setImmediate(true);
         xComboBox1.setItems("stateList");
         xComboBox1.setName("state");
@@ -77,9 +79,8 @@ public class RuleMgmtMainPage extends javax.swing.JPanel {
         );
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
-        jSplitPane1.setDividerLocation(200);
+        jSplitPane1.setDividerLocation(220);
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        xDataTable1.setDynamic(true);
         xDataTable1.setHandler("listHandler");
         xDataTable1.setImmediate(true);
         xDataTable1.setName("selectedItem");
