@@ -1,6 +1,9 @@
-use sancarlos_system;
+use bayombong_system;
 
-replace into rulegroup (objid,name,sortorder,ruleset)
+
+delete from rulegroup where ruleset='ctcassessment';
+
+insert into rulegroup (objid,name,sortorder,ruleset)
 values
  ('TAX', 'TAX', 1, 'ctcassessment'),
  ('ATAX', 'AFTER TAX', 2, 'ctcassessment'),

@@ -21,6 +21,8 @@
         def selected
         def onselect
         def listHandler = this
+        
+        def brgylist
 
         def ok() {
             if( ! selected ) throw new Exception('Please select an item.')
@@ -34,8 +36,17 @@
             ]
         }
         
-        List fetchList( Map param ) {
-            return svc.getBarangays()
+        List fetchList( Map param ) 
+        {
+            if( brgylist == null ) 
+                brgylist = svc.getBarangays()
+            
+            def end = param._start + param._limit
+            
+            if( end > brgylist.size()-1 )  
+                end = brgylist.size()-1
+            
+            return brgylist[ (param._start)..(end) ]
         }
 
     }
