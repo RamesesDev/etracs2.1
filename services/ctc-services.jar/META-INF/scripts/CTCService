@@ -29,34 +29,29 @@ public class CTCService
 		assessment.items = result.values() as List
 		assessment.total = assessment.items*.amount.sum()
 		if( assessment.total==null ) assessment.total = 0.00
-		initItems( assessment )	
-		
-		assessment.items.each {
-			println it
-		}
+		initItems( assessment )
 		
 		return assessment
 	}
 	
 	@ProxyMethod
 	public def buildCaptureItems( entity ) {
-		def result = executeRule( entity )
-		if( result.business ) result.business.amount = entity.tax.business
-		if( result.basic )    result.basic.amount = entity.tax.basic
-		if( result.salary )   result.salary.amount = entity.tax.salary
-		if( result.property ) result.property.amount = entity.tax.property
-		if( result.interest ) result.interest.amount = entity.tax.interest
+		def result = executeRule( entity, 'CAPTURE' )
+		adjustTaxItems( result )
 		entity.items = result.values() as List
 		initItems( entity )
+		
 		return entity
 	}
 	
 	
-	def executeRule( entity ) {
+	def executeRule( entity, mode = 'ONLINE' ) {
 		def facts = []
 		facts << createCTCFact( entity )
+		
 		if( entity.doctype == 'CTCI' || entity.doctype == 'CTCIB' )
 			facts << createIndividualFact( entity )
+			
 		else if( entity.doctype == 'CTCC' )
 			facts << createCorporateFact( entity )
 			
@@ -66,6 +61,17 @@ public class CTCService
 		
 		rulemgmt.getAgendaGroups( 'ctcassessment' ).each{ agenda ->
 			ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], agenda.name )
+			
+			//if mode is capture, always reset the amount of the result
+			//just map the captured values
+			if( mode == 'CAPTURE' ) {
+				if( result.business ) result.business.amount = entity.tax.business
+				if( result.basic )    result.basic.amount = entity.tax.basic
+				if( result.salary )   result.salary.amount = entity.tax.salary
+				if( result.property ) result.property.amount = entity.tax.property
+				if( result.interest ) result.interest.amount = entity.tax.interest
+			}
+			
 			updateCTCFact( facts[0], result )
 		}
 		
