@@ -334,10 +334,10 @@ public class IndividualPage extends javax.swing.JPanel {
         formPanel2.setCaptionWidth(120);
         formPanel2.setPadding(new java.awt.Insets(0, 5, 0, 0));
         xDateField1.setCaption("Transaction Date");
+        xDateField1.setEnabled(false);
         xDateField1.setFont(new java.awt.Font("Arial", 1, 11));
         xDateField1.setName("entity.info.txndate");
         xDateField1.setPreferredSize(new java.awt.Dimension(100, 19));
-        xDateField1.setReadonly(true);
         formPanel2.add(xDateField1);
 
         xTextField12.setCaption("Barangay");

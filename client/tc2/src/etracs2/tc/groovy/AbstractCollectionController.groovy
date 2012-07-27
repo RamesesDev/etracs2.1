@@ -77,7 +77,11 @@ abstract class AbstractCollectionController
             validateTxnDate()
             resetItemIncomeAcctInfo()
             entity = svc.create( entity )
-            print()
+            
+            if( entity.info.mode != 'CAPTURE' ) {
+                print()
+            }
+            
             mode = 'view'
             return 'view'
         }
