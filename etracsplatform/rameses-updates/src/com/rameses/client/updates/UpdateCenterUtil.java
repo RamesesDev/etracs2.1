@@ -157,6 +157,10 @@ public final class UpdateCenterUtil {
         BufferedOutputStream bos = null;
         File file = new File( me.getModulePath() + me.getFilename());
         try {
+            if( !file.getParentFile().exists() ) {
+                file.getParentFile().mkdirs();
+            }
+            
             int buffSize = 1024 * 32;
             
             fos = new FileOutputStream( file );

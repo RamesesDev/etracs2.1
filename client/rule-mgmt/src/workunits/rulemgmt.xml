@@ -5,7 +5,10 @@
         <invoker type="quick_launcher" code="rules" action="init" caption="Rule Management" permission="rulemgmt.view"/>
         
         <invoker type="formActions" action="create" caption="New" mnemonic="n" shortcut="ctrl N" icon="images/doc-new.png"/>
+        <invoker type="formActions" action="copy" caption="Copy" mnemonic="c" shortcut="ctrl C" visibleWhen="#{selectedItem != null}" icon="images/doc-copy.png"/>
         <invoker type="formActions" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" visibleWhen="#{selectedItem != null}" icon="images/open.png"/>
+        <invoker type="formActions" action="deploy" caption="Deploy" mnemonic="d" shortcut="ctrl D" visibleWhen="#{selectedItem != null and selectedItem.docstate != 'DEPLOYED'}" icon="images/deploy.png"/>
+        <invoker type="formActions" action="undeploy" caption="Undeploy" mnemonic="u" shortcut="ctrl U" visibleWhen="#{selectedItem != null and selectedItem.docstate == 'DEPLOYED'}" icon="images/undeploy.png"/>
     </invokers>
     <code>
         <![CDATA[
@@ -25,7 +28,6 @@
                 def selectedItem;
                 def selectedRuleset;
                 def ruleset;
-                def rule = [:];
                 
                 def stateList = ['DRAFT', 'DEPLOYED'];
                 
@@ -44,12 +46,18 @@
                 }
                 
                 public void init() {
-                    search();
+                    if( getRulesets() ) {
+                        setSelectedRuleset( getRulesets()[0] )
+                    }
+                    else {
+                        search();
+                    }
                 }
                 
                 def listHandler = [
                     getColumns   : {
                         return [
+                            new Column(name:'objid', visible: false, primary: true),
                             new Column(name:'agendagroup', caption:'Group', maxWidth:120),
                             new Column(name:'docstate', caption:'State', maxWidth:80 ),
                             new Column(name:'rulename', caption:'Rule Name'),
@@ -84,7 +92,9 @@
                 
                 public void setSelectedRuleset( selectedRuleset ) {
                     this.selectedRuleset = selectedRuleset;
-                    ruleset = selectedRuleset?.handle.ruleset;
+                    this.ruleset = selectedRuleset?.handle.ruleset;
+                    this.searchText = '';
+                    this.state = '';
                     search();
                 }
                 
@@ -102,6 +112,19 @@
                     return InvokerUtil.lookupOpener("xrule_create", [ruleType:selectedRuleset.handle,updateHandler:updateHandler]);
                 }
                 
+                public def copy() {
+                    def r = svc.open( selectedItem.objid )
+                    return InvokerUtil.lookupOpener("xrule_copy", [rule:r, ruleType:selectedRuleset.handle,updateHandler:updateHandler]);
+                }
+                
+                public void deploy() {
+                    svc.deploy( selectedItem.objid );
+                }
+
+                public void undeploy() {
+                    svc.undeploy( selectedItem.objid );
+                }
+
             }
         ]]>
     </code>

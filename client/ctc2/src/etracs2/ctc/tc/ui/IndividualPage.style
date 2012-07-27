@@ -1,8 +1,11 @@
 "entity.tax.*" [entity.info.mode!="CAPTURE"] { enabled: false; }
 "entity.tax.*" [entity.info.mode=="CAPTURE"] { enabled: true; }
 
-"entity.barangayname" [entity.barangayid==null] { visible: false; }
-"entity.barangayname" [entity.barangayid!=null] { visible: true; }
+"barangay" [entity.doctype!='CTCIB'] { visible: false; }
+"barangay" [entity.doctype=='CTCIB'] { visible: true; }
+
+"barangay" [orgtype!='BARANGAY'] { readonly: false; }
+"barangay" [orgtype=='BARANGAY'] { readonly: true; }
 
 "entity.info.payer.info.(lastname|firstname|middlename)" [taxpayer!=null] { enabled: false; }
 "entity.info.payer.info.(lastname|firstname|middlename)" [taxpayer==null] { enabled: true; }

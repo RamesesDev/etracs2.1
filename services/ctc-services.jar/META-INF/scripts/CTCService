@@ -13,6 +13,9 @@ public class CTCService
 	@Service('DateService')
 	def dateSvc
 	
+	@Service('RuleService')
+	def rulemgmt;
+	
 	@PersistenceContext("main")
 	def em
 	
@@ -22,42 +25,56 @@ public class CTCService
 		def result = executeRule( entity )
 		def assessment = [:]
 		assessment.tax = createTaxItems( result )
+		adjustTaxItems( result )
 		assessment.items = result.values() as List
 		assessment.total = assessment.items*.amount.sum()
 		if( assessment.total==null ) assessment.total = 0.00
-		initItems( assessment )		
+		initItems( assessment )
+		
 		return assessment
 	}
 	
 	@ProxyMethod
 	public def buildCaptureItems( entity ) {
-		def result = executeRule( entity )
-		if( result.business ) result.business.amount = entity.tax.business
-		if( result.basic )    result.basic.amount = entity.tax.basic
-		if( result.salary )   result.salary.amount = entity.tax.salary
-		if( result.property ) result.property.amount = entity.tax.property
-		if( result.interest ) result.interest.amount = entity.tax.interest
+		def result = executeRule( entity, 'CAPTURE' )
+		adjustTaxItems( result )
 		entity.items = result.values() as List
 		initItems( entity )
+		
 		return entity
 	}
 	
 	
-	def executeRule( entity ) {
+	def executeRule( entity, mode = 'ONLINE' ) {
 		def facts = []
 		facts << createCTCFact( entity )
-		if( entity.doctype == 'CTCI' )
+		
+		if( entity.doctype == 'CTCI' || entity.doctype == 'CTCIB' )
 			facts << createIndividualFact( entity )
+			
 		else if( entity.doctype == 'CTCC' )
 			facts << createCorporateFact( entity )
 			
 		def result = [:]
 		def ruleAction = ruleSvc.createRuleAction()
 		ruleAction.addCommand( 'compute', new ComputationHandler( result: result ) )		
+		
+		rulemgmt.getAgendaGroups( 'ctcassessment' ).each{ agenda ->
+			ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], agenda.name )
 			
-		ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], 'TAX' )
-		updateCTCFact( facts[0], result )
-		ruleSvc.execute( 'ctcassessment', facts, [ruleActionHandler:ruleAction], 'INTEREST' )
+			//if mode is capture, always reset the amount of the result
+			//just map the captured values
+			if( mode == 'CAPTURE' ) {
+				if( result.business ) result.business.amount = entity.tax.business
+				if( result.basic )    result.basic.amount = entity.tax.basic
+				if( result.salary )   result.salary.amount = entity.tax.salary
+				if( result.property ) result.property.amount = entity.tax.property
+				if( result.interest ) result.interest.amount = entity.tax.interest
+			}
+			
+			updateCTCFact( facts[0], result )
+		}
+		
 		return result;
 	}
 	
@@ -69,9 +86,36 @@ public class CTCService
 			property: 0.00,
 			interest: 0.00,
 		]
-		result.each{k,v-> values[k] = v.amount }
-		
+		result.each{k,v-> 
+			if( values[k] != null ) values[k] = v.amount 
+		}
+
 		return values
+	}
+	
+	void adjustTaxItems( result ) {
+		def tax;
+
+		result.each{ k,v ->
+			try {
+				if( k == 'brgy_share_basic_tax' && result['basic'])
+					tax = result['basic']
+				else if( k == 'brgy_share_gross_tax' && result['business'] )
+					tax = result['business']
+				else if( k == 'brgy_share_interest' && result['interest'])
+					tax = result['interest']
+				else if( k == 'brgy_share_propertyincome_tax' && result['property'] )
+					tax = result['property']
+				else if( k == 'brgy_share_salary_tax' && result['salary'])
+					tax = result['salary']
+				
+				if( tax ) tax.amount = tax.amount - v.amount
+			}
+			catch(e) {
+				println "$k = $v"
+				throw e
+			}
+		}
 	}
 	
 	void initItems( assessment ) {
@@ -98,6 +142,7 @@ public class CTCService
 		fact.businessgrosstax = taxes.business
 		fact.propertyincometax  = taxes.property
 		fact.additionaltax      = taxes.additionaltax
+		fact.interest = taxes.interest
 		fact.amtdue		= taxes.business + taxes.basic + taxes.salary + taxes.property
 	}
 	
@@ -144,6 +189,7 @@ public class CTCService
 		fact.businessgrosstax   = 0.00
 		fact.propertyincometax  = 0.00
 		fact.additionaltax      = 0.00
+		fact.interest = 0.00
 		fact.amtdue		= 0.00
 		
 		return fact
@@ -170,6 +216,7 @@ class ComputationHandler implements RuleActionHandler
 			acctno:    data.acctno,
 			accttitle: data.accttitle,
 			amount:    amount,
+			type:      data.type,
 		];
 	}
 	

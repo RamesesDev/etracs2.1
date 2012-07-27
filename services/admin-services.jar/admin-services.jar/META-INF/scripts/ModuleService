@@ -1,6 +1,8 @@
 import com.rameses.annotations.*;
 
-class ModuleService {
+class ModuleService 
+{
+	final static def VERSION_INCREMENT_FACTOR = 0.0001
 
 	@PersistenceContext("system")
 	def em;
@@ -29,13 +31,21 @@ class ModuleService {
 	
 	@ProxyMethod
 	public def getJarFile(param) {
-		def m = em.read('module', param);
-		return m.jarfile;
+		return em.sqlContext.createNamedQuery('module:get-jarfile-by-filename')
+		         .setParameters(param)
+				 .singleResult?.jarfile
 	}
 	
 	@ProxyMethod
 	public def save(def o) {
 		if( !o.type ) o.type = 'system';
+		if( o.version == 0 ) {
+			def old = em.sqlContext.createNamedQuery('module:get-module-version').setParameters(o).singleResult;
+			if( old )
+				o.version = old.version + VERSION_INCREMENT_FACTOR
+			else
+				o.version = 1.0000;
+		}
 		return em.save( "module", o );
 	}
 	
