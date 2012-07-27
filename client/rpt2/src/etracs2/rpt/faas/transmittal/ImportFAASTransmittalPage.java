@@ -10,10 +10,10 @@ package etracs2.rpt.faas.transmittal;
  *
  * @author  PRMF
  */
-public class FAASTransmittalPage extends javax.swing.JPanel {
+public class ImportFAASTransmittalPage extends javax.swing.JPanel {
     
     /** Creates new form FAASTransmittalInitPage */
-    public FAASTransmittalPage() {
+    public ImportFAASTransmittalPage() {
         initComponents();
     }
     
@@ -30,6 +30,7 @@ public class FAASTransmittalPage extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
 
         xActionBar1.setBorder(new com.rameses.rcp.control.border.XUnderlineBorder());
@@ -70,12 +71,11 @@ public class FAASTransmittalPage extends javax.swing.JPanel {
         xLabel3.setPreferredSize(new java.awt.Dimension(300, 19));
         formPanel1.add(xLabel3);
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("List of Transmitted Items");
-        xDataTable1.setBorder(xTitledBorder2);
+        xDataTable1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         xDataTable1.setHandler("listHandler");
         xDataTable1.setImmediate(true);
         xDataTable1.setName("selectedItem");
+        jTabbedPane1.addTab("List of FAASes", xDataTable1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -88,7 +88,7 @@ public class FAASTransmittalPage extends javax.swing.JPanel {
                 .addContainerGap())
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 622, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 622, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -98,7 +98,7 @@ public class FAASTransmittalPage extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -106,6 +106,7 @@ public class FAASTransmittalPage extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XLabel xLabel1;

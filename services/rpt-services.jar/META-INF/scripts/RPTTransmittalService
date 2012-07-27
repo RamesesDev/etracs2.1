@@ -3,7 +3,7 @@ import java.rmi.server.UID
 import com.rameses.eserver.*;
 import com.rameses.common.*;
 
-class FAASTransmittalService
+class RPTTransmittalService
 {
 	
 	@PersistenceContext('main')
@@ -27,11 +27,13 @@ class FAASTransmittalService
 	@Service('EntityService')
 	def entitySvc
     
-    def SCHEMA_NAME = 'faastransmittal'
-	def TRANSMITTAL_ITEM_SCHEMA = 'faastransmittal:faastransmittal_item'
+    def SCHEMA_NAME = 'rpttransmittal'
+	def TRANSMITTAL_ITEM_SCHEMA = 'rpttransmittal:rpttransmittal_item'
 	
-	def IMPORT_SCHEMA_NAME = 'faastransmittal:faastransmittalimport'
-	def IMPORT_ITEM_SCHEMA_NAME = 'faastransmittal:faastransmittalimport_item'
+	def IMPORT_SCHEMA_NAME = 'rpttransmittal:rpttransmittal_import'
+	def IMPORT_ITEM_SCHEMA_NAME = 'rpttransmittal:rpttransmittal_import_item'
+	
+	def FOR_TRANSMITTAL_SCHEMA_NAME = 'fortransmittal:fortransmittal'
 	
     
 	def SCHEMA_VERSION = '1.0'
@@ -45,32 +47,14 @@ class FAASTransmittalService
 	
 	
 	
-	
-	def FOR_PROV_APPROVAL_STATE = 'FORPROVAPPROVAL'
-	def CURRENT_STATE = 'CURRENT'
-    
-    
 	@ProxyMethod
 	public List getList( searchText, params ) {
-		return getListByQuery('faastransmittal:getList', [:], params )
+		return getListByQuery('rpttransmittal:getList', [:], params )
 	}
 	
 	@ProxyMethod
-	public List getFaasForTransmittal() {
-		//default to province lgutype which should transmit 
-		//curent records only
-		def docstate = CURRENT_STATE 
-		if( var.lgu_type?.toLowerCase() == 'municipality' ) {
-			docstate = FOR_PROV_APPROVAL_STATE 
-		}
-		return em.sqlContext.createNamedQuery('faastransmittal:getFaasForTransmittal')
-					.setParameter('docstate', docstate)
-					.resultList 
-	}
-	
-	@ProxyMethod
-	public List getImportedTransmittalList( searchText, params ) {
-		return getListByQuery('faastransmittal:getImportedTransmittalList', [:], params )
+	public List getItemsForTransmittal() {
+		return em.sqlContext.createNamedQuery('rpttransmittal:getItemsForTransmittal').resultList 
 	}
 	
 	@ProxyMethod
@@ -80,28 +64,22 @@ class FAASTransmittalService
 			docstate : OPEN_STATE,
 			lguid	 : var.lgu_index,
 			lguname  : var.lgu_name,
-			txnno    : seqSvc.getNextFormattedSeries('FAAS_TRANSMITTAL'),
+			txnno    : seqSvc.getNextFormattedSeries('RPT_TRANSMITTAL'),
 			txndate  : dateSvc.serverDate,
 			createdby: env.USERFORMALNAME, 
 			icount   : items.size(), 
 		]
 		
+		em.validate(SCHEMA_NAME, transmittal)
 		em.create(SCHEMA_NAME, transmittal)
 		
-		items.each {
-			em.sqlContext.createNamedExecutor('faastransmittal:updateFaasTransmittalId')
-						.setParameter('transmittalid', transmittal.objid )
-						.setParameter('faasid', it )
-						.execute()
-						
-			em.sqlContext.createNamedExecutor('faastransmittal:updateFaasListTransmittalId')
-						.setParameter('transmittalid', transmittal.objid )
-						.setParameter('faasid', it )
-						.execute()
-						
-			em.create(TRANSMITTAL_ITEM_SCHEMA, [objid:transmittal.objid, faasid:it])
+		items.each { item ->
+			item.docid = item.objid 
+			item.objid = transmittal.objid 
+			em.validate(TRANSMITTAL_ITEM_SCHEMA, item )
+			em.create(TRANSMITTAL_ITEM_SCHEMA, item )
+			em.delete(FOR_TRANSMITTAL_SCHEMA_NAME, [objid:item.docid])
 		}
-		
 		return transmittal 
 	}
 	
@@ -116,7 +94,7 @@ class FAASTransmittalService
 	
 	@ProxyMethod
 	public List getTransmittalItems( objid ) {
-		return em.sqlContext.createNamedQuery('faastransmittal:getTransmittalItems')
+		return em.sqlContext.createNamedQuery('rpttransmittal:getTransmittalItems')
 					.setParameter('transmittalid', objid)
 					.resultList 
 	}
@@ -136,38 +114,49 @@ class FAASTransmittalService
 	}
 	
 	@ProxyMethod
+	public List exportTransmittalItems( objid ) {
+		return getTransmittalItems( objid )
+	}
+	
+	@ProxyMethod
 	public List exportFaases( objid ) {
-		def items = getTransmittalItems( objid )
-		items = items.objid 
+		def faaslist = em.sqlContext.createNamedQuery('rpttransmittal:getTransmittedFaasIds')
+						.setParameter('transmittalid', objid)
+						.resultList 
+						
 		def faases = [] 
-		items.each {
-			faases.add( em.read(FAAS_SCHEMA_NAME, [objid:it]) )
+		faaslist.each {
+			def faas = em.read(FAAS_SCHEMA_NAME, it)
+			if( ! faas ) throw new Exception('FAAS with ID ' + it.objid  + ' cannot be loaded.\nVerify that the record was not deleted.')
+			faases.add(  faas )
 		}
 		return faases 
 	}
 	
 	@ProxyMethod
 	public List exportFaasLists( objid ) {
-		return getTransmittalItems( objid )
+		return em.sqlContext.createNamedQuery('rpttransmittal:getTransmittedFaasList')
+					.setParameter('transmittalid', objid)
+					.resultList
 	}
 	
 	@ProxyMethod 
 	public List exportLedgers( objid ) {
-		return em.sqlContext.createNamedQuery('faastransmittal:getTransmittedLedgers')
+		return em.sqlContext.createNamedQuery('rpttransmittal:getTransmittedLedgers')
 					.setParameter('transmittalid', objid)
 					.resultList
 	}
 	
 	@ProxyMethod
 	public List exportLedgerItems( objid ) {
-		return em.sqlContext.createNamedQuery('faastransmittal:getTransmittedLedgerItems')
+		return em.sqlContext.createNamedQuery('rpttransmittal:getTransmittedLedgerItems')
 					.setParameter('transmittalid', objid)
 					.resultList
 	}
 	
 	@ProxyMethod
 	public List exportEntities( objid ) {
-		return em.sqlContext.createNamedQuery('faastransmittal:getTransmittedEntities')
+		return em.sqlContext.createNamedQuery('rpttransmittal:getTransmittedEntities')
 					.setParameter('transmittalid', objid)
 					.resultList
 					.each {
@@ -182,16 +171,26 @@ class FAASTransmittalService
 	* Import Transmittal Support
 	*
 	*=============================================================*/	
+	@ProxyMethod
+	public List getImportedFaasList( objid ) {
+		return em.sqlContext.createNamedQuery('rpttransmittal:getImportedFaasList').setParameter('transmittalid', objid).resultList 
+	}
+	
+	@ProxyMethod
+	public List getImportedTransmittalList( searchText, params ) {
+		return getListByQuery('rpttransmittal:getImportedTransmittalList', [:], params )
+	}
+	
 	@ProxyMethod 
 	public List getImportedTransmittalItems( objid ) {
-		return em.sqlContext.createNamedQuery('faastransmittal:getImportedTransmittalItems')
+		return em.sqlContext.createNamedQuery('rpttransmittal:getImportedTransmittalItems')
 				.setParameter('transmittalid', objid)
 				.resultList 
 	}
 	
 	@ProxyMethod
 	public void checkDuplicateImportPosting( objid ) {
-		def transmittalimport = em.sqlContext.createNamedQuery('faastransmittal:getFasTransmittalImportById')
+		def transmittalimport = em.sqlContext.createNamedQuery('rpttransmittal:getImportTransmittalById')
 									.setParameter('objid', objid)
 									.singleResult
 		if( transmittalimport ) throw new Exception('Transmittal has already been posted.')
@@ -207,12 +206,11 @@ class FAASTransmittalService
 			}
 		}
 		
+		data.transmittalitems.each { item ->
+			em.create( IMPORT_ITEM_SCHEMA_NAME, item )
+		}
+		
 		data.faases.each { faas ->
-			println '='*50
-			println 'faas state -> ' + faas.docstate 
-			faas.fortransmittal = false
-			faas.transmittalid = null 
-			
 			if( ! faasExists( faas.objid ) ) {
 				em.create( FAAS_SCHEMA_NAME, faas )
 				em.create( FAAS_LIST_SCHEMA_NAME, faas )
@@ -223,10 +221,8 @@ class FAASTransmittalService
 			}
 			if( !pinExists( faas )) {
 				def pin = [pin:faas.rpu.fullpin, claimno:faas.info.claimno, docstate:faas.docstate]
-				em.sqlContext.createNamedExecutor('faastransmittal:insertPin').setParameters(pin).execute()
+				em.sqlContext.createNamedExecutor('rpttransmittal:insertPin').setParameters(pin).execute()
 			}
-			
-			em.create(IMPORT_ITEM_SCHEMA_NAME, [objid:data.transmittal.objid, faasid:faas.objid ])
 		}
 		
 		data.ledgers.each{ ledger ->
@@ -261,33 +257,33 @@ class FAASTransmittalService
 	
 	boolean pinExists( faas ) {
 		def pin = [pin:faas.rpu.fullpin, claimno:faas.info.claimno, docstate:faas.docstate]
-		pin = em.sqlContext.createNamedQuery('faastransmittal:getPin').setParameters( pin ).singleResult 
+		pin = em.sqlContext.createNamedQuery('rpttransmittal:getPin').setParameters( pin ).singleResult 
 		return pin != null 
 	}
 	
 	boolean entityExists( objid ) {
-		def entity = em.sqlContext.createNamedQuery('faastransmittal:getEntityById').setParameter('objid', objid).singleResult 
+		def entity = em.sqlContext.createNamedQuery('rpttransmittal:getEntityById').setParameter('objid', objid).singleResult 
 		return entity != null 
 	}
 	
 	boolean ledgerItemExists( itemid ) {
-		def item = em.sqlContext.createNamedQuery('faastransmittal:getLedgerItemById').setParameter('objid', itemid).singleResult 
+		def item = em.sqlContext.createNamedQuery('rpttransmittal:getLedgerItemById').setParameter('objid', itemid).singleResult 
 		return item != null 
 	}
 	
 	boolean ledgerExists( ledgerid ) {
-		def ledger = em.sqlContext.createNamedQuery('faastransmittal:getLedgerById').setParameter('objid', ledgerid).singleResult
+		def ledger = em.sqlContext.createNamedQuery('rpttransmittal:getLedgerById').setParameter('objid', ledgerid).singleResult
 		return ledger != null 
 	}
 	
 	boolean faasExists( faasid ) {
-		def faas = em.sqlContext.createNamedQuery('faastransmittal:getFaasById').setParameter('objid', faasid).singleResult 
+		def faas = em.sqlContext.createNamedQuery('rpttransmittal:getFaasById').setParameter('objid', faasid).singleResult 
 		return faas != null 
 	}
 	
 	void validateImport( data ) {
 		checkDuplicateImportPosting( data.transmittal.objid )
-		if( ! data.faases ) throw new Exception('At least one (1) transmitted FAAS is required.')
+		if( data.transmittalitems.size() == 0) throw new Exception('At least one (1) transmittal item is required.')
 	}
 		
 		

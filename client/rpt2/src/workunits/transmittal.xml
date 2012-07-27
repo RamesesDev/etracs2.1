@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="faastransmittal.create" action="init" caption="FAAS Transmittal (New)" permission="faastransmittal.create"/>
-        <invoker type="faastransmittal.open" action="open" caption="FAAS Transmittal" permission="faastransmittal.open"/>
+        <invoker type="rpt_transmittal.create" action="init" caption="Transmittal (New)" permission="rpt_transmittal.create"/>
+        <invoker type="rpt_transmittal.open" action="open" caption="Transmittal" permission="rpt_transmittal.open"/>
         
-        <invoker folderid="/menu/rpt/faas" action="init"  caption="FAAS Transmittal" mnemonic="t" permission="faastransmittal.create" index="300"/>
-        <invoker type="quick_launcher" action="init" code="FATR" caption="FAAS Transmittal" mnemonic="t" permission="faastransmittal.create" />
+        <invoker folderid="/menu/rpt/faas" action="init"  caption="Transmittal" mnemonic="t" permission="rpt_transmittal.create" index="300"/>
+        <invoker type="quick_launcher" action="init" code="FATR" caption="Transmittal" mnemonic="t" permission="rpt_transmittal.create" />
         
         <invoker type="formActions" action="_close"  caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
         <invoker type="formActions" action="create" shortcut="ctrl s" caption="Save" mnemonic="s" icon="images/doc-save.png" visibleWhen="#{mode=='create'}"/>
         <!-- 
-        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" icon="images/doc-view.png" permission="faastransmittal.print" visibleWhen="#{mode!='create'}"/>
-        <invoker type="formActions" action="print" shortcut="ctrl P" caption="Print" mnemonic="p" icon="images/doc-view.png" permission="faastransmittal.print" visibleWhen="#{mode!='create'}"/>
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" icon="images/doc-view.png" permission="rpt_transmittal.print" visibleWhen="#{mode!='create'}"/>
+        <invoker type="formActions" action="print" shortcut="ctrl P" caption="Print" mnemonic="p" icon="images/doc-view.png" permission="rpt_transmittal.print" visibleWhen="#{mode!='create'}"/>
         -->
-        <invoker type="formActions" action="export" shortcut="ctrl E" caption="Export Transmittal" mnemonic="e" permission="faastransmittal.export" visibleWhen="#{mode!='create'}"/>
+        <invoker type="formActions" action="export" shortcut="ctrl E" caption="Export Transmittal" mnemonic="e" permission="rpt_transmittal.export" visibleWhen="#{mode!='create'}"/>
     </invokers>
     
     <code lang="groovy">
@@ -31,7 +31,7 @@ public class FAASTransmittalController
     @Binding 
     def binding
     
-    @Service('FAASTransmittalService')
+    @Service('RPTTransmittalService')
     def svc 
     
     def entity
@@ -42,7 +42,7 @@ public class FAASTransmittalController
     
     def init() {
         mode = 'create' 
-        list = svc.getFaasForTransmittal()
+        list = svc.getItemsForTransmittal()
         return 'init' 
     }
     
@@ -73,6 +73,7 @@ public class FAASTransmittalController
         if( res == JFileChooser.APPROVE_OPTION ){
             def data = [
                 transmittal        : svc.exportTransmittal( entity.objid ),   
+                transmittalitems   : svc.exportTransmittalItems( entity.objid ),
                 faases             : svc.exportFaases( entity.objid ),   
                 faaslists          : svc.exportFaasLists( entity.objid ),   
                 ledgers            : svc.exportLedgers( entity.objid ),
@@ -109,7 +110,7 @@ public class FAASTransmittalController
     def create() {
         if( ! list ) throw new Exception('There are no more FAAS for transmittal.')
         if( MsgBox.confirm('Save transmittal?') ) {
-            entity = svc.create( list.objid )
+            entity = svc.create( list)
             mode = 'view' 
             return 'default'
         }
@@ -119,13 +120,12 @@ public class FAASTransmittalController
     def listHandler = [
         getRows     : { return 50 },
         getColumns  : { return [
-            new Column(name:'tdno', caption:'TD No.'),
-            new Column(name:'ownername', caption:'Owner Name'),
-            new Column(name:'fullpin', caption:'PIN'),
-            new Column(name:'rputype', caption:'Kind'),
-            new Column(name:'classcode', caption:'Class'),
-            new Column(name:'totalmv', caption:'Market Value', type:'decimal'),
-            new Column(name:'totalav', caption:'Assessed Value', type:'decimal'),
+            new Column(name:'doctype', caption:'Doc Type', maxWidth:150),
+            new Column(name:'docno', caption:'Doc No.', maxWidth:150),
+            new Column(name:'postedby', caption:'Posted By'),
+            new Column(name:'postedbytitle', caption:'Job Title'),
+            new Column(name:'dtposted', caption:'Date Posted', maxWidth:120),
+            new Column(name:'numdays', caption:'Days', maxWidth:200),
         ]},
         fetchList  : { return list },
     ] as SubListModel

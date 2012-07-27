@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="menu/mgmt" caption="FAAS Transmittals" mnemonic="t" permission="faastransmittalmgmt.view" index="300"/>
-        <invoker folderid="/txn/rpt" caption="FAAS Transmittals" mnemonic="t" permission="faastransmittalmgmt.view" index="300"/>
-        <invoker type="quick_launcher" code="FATR" caption="FAAS Transmittals" mnemonic="f" permission="faastransmittalmgmt.view" />
+        <invoker folderid="menu/mgmt" caption="Transmittals" mnemonic="t" permission="rpt_transmittal_mgmt.view" index="300"/>
+        <invoker folderid="/txn/rpt" caption="Transmittals" mnemonic="t" permission="rpt_transmittal_mgmt.view" index="300"/>
+        <invoker type="quick_launcher" code="RPTTR" caption="Transmittals" mnemonic="f" permission="rpt_transmittal_mgmt.view" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="faastransmittal.create" target="window"/>
-        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="faastransmittal.open" target="window"/>
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="rpt_transmittal.open" target="window"/>
     </invokers>
     <code lang="groovy">
 <![CDATA[
@@ -15,12 +15,12 @@ import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
 
-public class FAASTransmittalMgmtController 
+public class rpt_transmittal_mgmtController 
 {
     @Binding 
     def binding
     
-    @Service('FAASTransmittalService')
+    @Service('RPTTransmittalService')
     def svc 
     
     def selectedItem
@@ -35,11 +35,11 @@ public class FAASTransmittalMgmtController
     }
     
     def create() {
-        return InvokerUtil.lookupOpener('faastransmittal.create', [listRefreshHandler:listRefreshHandler] )
+        return InvokerUtil.lookupOpener('rpt_transmittal.create', [listRefreshHandler:listRefreshHandler] )
     }
     
     def open(){
-        return InvokerUtil.lookupOpener('faastransmittal.open', [entity:selectedItem] )
+        return InvokerUtil.lookupOpener('rpt_transmittal.open', [entity:selectedItem] )
     }
     
     def listHandler = [

@@ -49,6 +49,9 @@ class FAASService
 	
 	@Service('RPTSettingService')
 	def rptsettingSvc
+	
+	@Service('ForTransmittalService')
+	def forTransmittalSvc
 
     def INTERIM_STATE = 'INTERIM'
     def FORAPPROVAL_STATE = 'FORAPPROVAL'
@@ -215,9 +218,7 @@ class FAASService
             schemaversion : SCHEMA_VERSION,
             docstate      : INTERIM_STATE,
             transmitted   : false,
-			fortransmittal : ( var.lgu_type?.toLowerCase() != 'city' ? true : false),
-			transmittalid  : null, 
-            info          : [   datacapture : true, 
+			info          : [   datacapture : true, 
                                 prevmv      : 0.0, 
                                 prevav      : 0.0, 
                                 effectivityqtr  : 1, 
@@ -339,6 +340,8 @@ class FAASService
     @ProxyMethod
     public Map submit( faasid ) {
         def faasinfo = getFaasInfo( faasid )
+		println '='*50
+		println 'ledgerid -> ' + faasinfo.ledgerid 
         validateSubmit( faasinfo )
         def faas = open( faasinfo.objid )
         updateFaasState( faas, FORAPPROVAL_STATE )
@@ -351,9 +354,8 @@ class FAASService
         def faasinfo = getFaasInfo( faasid )
         validateSubmitToProvince( faasinfo )
         def faas = open( faasinfo.objid )
-		faas.fortransmittal = true 
-		faas.transmittalid = null 
-        updateFaasState( faas, FORPROVAPPROVAL_STATE )
+		insertForTransmittal( faas )
+		updateFaasState( faas, FORPROVAPPROVAL_STATE )
         updateMessage(faas, null )
         updateAttachmentStates( faas, 'FORTRANSMITTAL' )
         sendToOutbox( faas )
@@ -377,9 +379,10 @@ class FAASService
 		def faasinfo = getFaasInfo( faasid )
         validateProvinceApproval( faasinfo )
         def faas = open( faasinfo.objid )
-		faas.fortransmittal = true 
-		faas.transmittalid = null 
-        updateAutonumberTdNo( faas )
+		if( var.lgu_type?.toLowerCase() == 'province' ) {
+			insertForTransmittal( faas )
+		}
+		updateAutonumberTdNo( faas )
 		assignNextPin( faas ) 
         invokeCommonApproveActions( faas )
         logSvc.log('APPROVEBYPROVINCE','FAAS', faas.objid)
@@ -1593,6 +1596,20 @@ class FAASService
         def params = [objid:faas.objid, message:message]
         em.sqlContext.createNamedExecutor('faas:updateMessage').setParameters( params ).execute() 
     }
+	
+	void insertForTransmittal( faas ) {
+		def fortransmittal = [
+			objid 		: faas.objid,
+			module		: 'rpt',
+			dtposted	: dateSvc.serverDate, 
+			doctype		: 'faas',
+			docno		: ( faas.info.tdno != null ? faas.info.tdno : faas.rpu.fullpin ),  
+			postedbyid	: env.USERID,
+			postedby	: env.USERFORMALNAME,
+			postedbytitle : env.JOBTITLE,
+		]
+		forTransmittalSvc.create( fortransmittal )
+	}
     
     void sendToOutbox( faas ) {	
 		def remote_connection_active = var.remote_connection_active
