@@ -17,20 +17,29 @@ public class BPBillingService
 	
 	@Service("DateService")
 	def dtService;
-	
+	 
 	@Service('NumberService')
 	def numSvc;
 		
 	@Service('Var')
-	def var;
+	def var; 
 	
 	@Service("BPSettingService")
 	def bpSettingService;
 	
 	def setting;
+	def advancepayment
+	def billdate
 	
+
 	@ProxyMethod
 	public def getBilling( billing ) {
+		if( billing.advancepayment ) { 
+			advancepayment = billing.advancepayment
+			billdate = dtService.parseDate( billing.billdate, null )
+			
+		}
+		
 		def businesslist = getBusinessByTaxpayer( billing );
 		if( !businesslist ) throw new Exception("There are no businesses registered for this taxpayer.");
 		billing.items = [];
@@ -219,10 +228,11 @@ public class BPBillingService
 	def createCYFact( ) {
 		def cyfact = ruleService.createFact('bpbilling','bp.billing.facts.CurrentYearFact')
 		if( !cyfact ) throw new Exception("Error in creating Current Year Fact.");
-		cyfact.year  = dtService.getServerYear();
-		cyfact.qtr   = dtService.getServerQtr();
-		cyfact.month = dtService.getServerMonth();
-		cyfact.day   = dtService.getServerDay();
+		cyfact.year  = ( advancepayment ) ? billdate.year :dtService.getServerYear()
+		cyfact.qtr   = ( advancepayment ) ? billdate.qtr  :dtService.getServerQtr()
+		cyfact.month = ( advancepayment ) ? billdate.month : dtService.getServerMonth()
+		cyfact.day   =( advancepayment ) ? billdate.day : dtService.getServerDay()
+		
 		return cyfact
 	}
 	
@@ -337,6 +347,7 @@ public class BPBillingService
 		}
 		return dayCount;
 	}
+	
 	
 	boolean isApplySurcharge( currentFact, year, qtr ) {
 		if ( year < currentFact.year )
