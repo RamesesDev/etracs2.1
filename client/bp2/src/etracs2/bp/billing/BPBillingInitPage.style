@@ -1,0 +1,7 @@
+"entity.billdate" [ entity.advancepayment == true ] {
+    enabled:true;
+}
+
+"entity.billdate" [ entity.advancepayment == false ] {
+    enabled:false;
+}
