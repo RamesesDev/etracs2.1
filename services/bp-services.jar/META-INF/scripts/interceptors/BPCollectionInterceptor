@@ -238,27 +238,30 @@ class BPCollectionInterceptor {
 	private def summarizedByBTItems( def receipt ){
 		def bt_items = receipt.items.findAll{ it.systype.equals('BUSINESS_TAX') }
 		def fqtr = { qtr ->
-			if( qtr == 1 )
-				return 'st'
-			else if( qtr == 2)
-				return 'nd'
-			else if( qtr == 3 )
-				return 'rd'
-			else if( qtr == 4 )
-				return 'th'
+			if( qtr == 1 ) return 'st'
+			else if( qtr == 2) return 'nd'
+			else if( qtr == 3 ) return 'rd'
+			else if( qtr == 4 )	return 'th'
 		} 
-		
+
 		bt_items = bt_items.clone().unique{ it.lobid }.each(){ item ->
 			def amount = receipt.items.findAll{ it.lobid.equals(item.lobid) && it.systype.equals('BUSINESS_TAX') }.amount.sum()
 			def nqtr = receipt.items.findAll{ it.lobid.equals(item.lobid) && it.systype.equals('BUSINESS_TAX') }.size()
+			def isize = receipt.items.size()
+			def lqtr = receipt.items[isize-1].iqtr
+			def lpartial = receipt.items[isize-1].partial
+			lqtr += fqtr(lqtr)
+			if( nqtr == 4 ) 
+				nqtr = 'Full paid'
+			else if( nqtr == 1 ) 
+				nqtr = "$item.iqtr" + fqtr(item.iqtr) + " Qtr"
+			else 
+				nqtr = "$item.iqtr-$lqtr Qtr"
+			   
+			if( receipt.txntype == 'NEW' ) 
+				nqtr = ( lpartial ? 'New - Partial Payment' : 'Full paid' ) 
 			
-			if( nqtr == 4 ) nqtr = 'Full paid'
-			else if( nqtr == 1 ) nqtr = "$item.iqtr" + fqtr(item.iqtr) + " Qtr"
-			else nqtr = "$item.iqtr-$receipt.qtr Qtr"
-			
-			if( receipt.txntype == 'NEW' ) nqtr = 'Full paid'
-			
-			item.accttitle = "$item.accttitle - $nqtr".toString()
+			item.accttitle = "$item.accttitle - $nqtr".toString() + ( lpartial ? ' Partial Payment' : '' )
 			item.amount = ( amount ) ? amount : item.amount
 		}   
 		
