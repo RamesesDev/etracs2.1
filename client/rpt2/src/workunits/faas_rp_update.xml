@@ -84,19 +84,9 @@
             this.rpinfo = info
             
             if( info ) {
-                info = svc.getInfo( info.pin )
+                info = svc.createRealPropertyUpdate( info )
                 clearEntity()
-                entity.pin = info.pin
-                entity.cadastrallotno = entity.prevcadastrallotno = info.cadastrallotno
-                entity.blockno = entity.prevblockno = info.blockno
-                entity.surveyno = entity.prevsurveyno = info.surveyno
-                entity.houseno = entity.prevhouseno = info.houseno
-                entity.street = entity.prevstreet = info.street
-                entity.purok = entity.prevpurok = info.purok
-                entity.north = entity.prevnorth = info.north
-                entity.east = entity.preveast = info.east
-                entity.south = entity.prevsouth = info.south
-                entity.west = entity.prevwest = info.west
+                entity.putAll( info )
             }
             else {
                 clearEntity()

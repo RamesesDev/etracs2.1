@@ -10,7 +10,13 @@ class RealPropertyService
 	
 	@ProxyMethod
 	public def save( realproperty ) {
-		def old = em.sqlContext.createNamedQuery('realproperty:find-by-landfaasid').setParameters(realproperty).singleResult;
+		def sqlctx = em.sqlContext;
+		
+		//check if land exists
+		def land = sqlctx.createNamedQuery('realproperty:find-landfaas').setParameters(realproperty).singleResult;
+		if( !land ) throw new Exception("Faas with objid $realproperty.landfaasid not found.");
+		
+		def old = sqlctx.createNamedQuery('realproperty:find-by-landfaasid').setParameters(realproperty).singleResult;
 		if( old ) realproperty.objid = old.objid;
 		if( !realproperty.objid ) realproperty.objid = "RP" + new UID()
 		return em.save( 'realproperty:realproperty', realproperty )
