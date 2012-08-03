@@ -18,7 +18,7 @@ WHERE s.specificclassid = sp.objid
   AND sp.lcuvid = l.objid 
   AND l.landrysettingid = ls.objid 
   AND ls.objid = rl.objid 
-  AND rl.lguid = $P{lguid} 
+  AND rl.lguid LIKE $P{lguid} 
   AND ls.ry = $P{ry} 
   AND s.subclasscode LIKE $P{subclasscode}  
 ORDER BY s.subclasscode   
@@ -31,7 +31,7 @@ SELECT
 FROM landassesslevel l, landrysetting ls, rysetting_lgu rl 
 WHERE l.landrysettingid = ls.objid  
   AND ls.objid = rl.objid 
-  AND rl.lguid = $P{lguid} 
+  AND rl.lguid LIKE $P{lguid} 
   AND ls.ry = $P{ry}  
   AND l.classcode LIKE $P{classcode} 
 ORDER BY classcode  
@@ -44,7 +44,7 @@ FROM lcuvstripping s, lcuv l, landrysetting ls, rysetting_lgu rl
 WHERE s.lcuvid = l.objid    
   AND l.landrysettingid = ls.objid 
   AND ls.objid = rl.objid 
-  AND rl.lguid = $P{lguid} 
+  AND rl.lguid LIKE $P{lguid} 
   AND ls.ry = $P{ry} 
   AND s.lcuvid = $P{actualuseid}     
   AND s.striplevel = $P{striplevel}   
@@ -58,7 +58,7 @@ SELECT la.objid AS adjtypeid, la.adjustmentcode AS adjtypecode,
 FROM landadjustment la, landrysetting ls , rysetting_lgu rl 
 WHERE la.landrysettingid = ls.objid   
   AND ls.objid = rl.objid 
-  AND rl.lguid = $P{lguid} 
+  AND rl.lguid LIKE $P{lguid} 
   AND ls.ry = $P{ry}  
   AND la.adjustmentcode LIKE $P{code}  
   AND la.classids LIKE $P{classid} 

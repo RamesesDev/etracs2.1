@@ -459,6 +459,7 @@ class LandRPUService
     ----------------------------------------------------------------------------------*/
     @ProxyMethod
     public List lookupSubclass( lguid, ry, searchText, params) {
+		lguid = (lguid == null ? '%' : lguid )
         def searchValue = (searchText ? searchText+'%' : '%')
         def criteria = [lguid:lguid, ry:ry, subclasscode:searchValue]
         return getListByName('landrpu:lookupSubclass', criteria, params, 's.objid')
@@ -466,6 +467,7 @@ class LandRPUService
     
     @ProxyMethod
     public List lookupAssessLevel( lguid, ry, searchText, params) {
+		lguid = (lguid == null ? '%' : lguid )
         def searchValue = (searchText ? searchText+'%' : '%')
         def criteria = [lguid:lguid, ry:ry, classcode:searchValue]
         return getListByName('landrpu:lookupAssessLevel', criteria, params, 'l.objid')
@@ -473,6 +475,7 @@ class LandRPUService
     
     @ProxyMethod
     public List lookupStripping( lguid, ry, actualuseid, searchText, params) {
+		lguid = (lguid == null ? '%' : lguid )
         def searchValue = (searchText ? searchText : '-1')
         def criteria = [lguid:lguid, ry:ry, actualuseid:actualuseid, striplevel:searchValue ]
         return getListByName('landrpu:lookupStripping', criteria, params, 's.objid')
@@ -480,6 +483,7 @@ class LandRPUService
     
     @ProxyMethod
     public List lookupLandAdjustments( lguid, ry, classid, searchText, params) {
+		lguid = (lguid == null ? '%' : lguid )
         def searchValue = (searchText ? searchText+'%' : '%')
         def criteria = [lguid:lguid, ry:ry, classidvalue:classid, classid:'%'+classid+'%', code:searchValue ]
         return getListByName('landrpu:lookupAdjType', criteria, params, 'la.objid') 
