@@ -181,12 +181,14 @@ class PlantTreeRPUService
     ----------------------------------------------------------------------------------*/
     @ProxyMethod
     public List lookupUnitValues( lguid, ry, searchText, params) {
+		lguid = (lguid == null ? '%' : lguid )
         if( !searchText ) return getListByName('planttreerpu:lookupUnitValue', [lguid:lguid, ry:ry], params)
         return getListByName('planttreerpu:lookupUnitValueByCode', [lguid:lguid, ry:ry, code:searchText+'%'], params)
     }
     
     @ProxyMethod
     public List lookupAssessLevel( lguid, ry, searchText, params) {
+		lguid = (lguid == null ? '%' : lguid )
         def setting = em.sqlContext.createNamedQuery('planttreerpu:getRYSetting')
 				.setParameter('ry', ry )
 				.setParameter('lguid', lguid)

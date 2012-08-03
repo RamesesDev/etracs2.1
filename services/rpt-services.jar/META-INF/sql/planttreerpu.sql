@@ -4,7 +4,7 @@ SELECT * FROM landassesslevel WHERE objid = $P{objid}
 [getRYSetting]
 SELECT * FROM planttreerysetting s, rysetting_lgu rl 
 WHERE s.objid = rl.objid 
-  AND rl.lguid = $P{lguid} 
+  AND rl.lguid LIKE $P{lguid} 
   AND ry = $P{ry} 
 
 [getLatestRevisedLandFaas] 
@@ -28,7 +28,7 @@ FROM planttreeunitvalue ptv, plantsandtrees pt, planttreerysetting s, rysetting_
 WHERE ptv.planttreeid = pt.objid   
   AND ptv.planttreerysettingid = s.objid  
   AND s.objid = rl.objid  
-  AND rl.lguid = $P{lguid} 
+  AND rl.lguid LIKE $P{lguid} 
   AND s.ry = $P{ry} 
 ORDER BY ptv.code  
 
@@ -42,7 +42,7 @@ FROM planttreeunitvalue ptv, plantsandtrees pt, planttreerysetting s, rysetting_
 WHERE ptv.planttreeid = pt.objid  
   AND ptv.planttreerysettingid = s.objid 
   AND s.objid = rl.objid  
-  AND rl.lguid = $P{lguid} 
+  AND rl.lguid LIKE $P{lguid} 
   AND s.ry = $P{ry} 
   AND ptv.code LIKE $P{code} 
 ORDER BY ptv.code   
