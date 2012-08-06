@@ -493,5 +493,11 @@ class ReceiptService
 					.resultList
 	}
 	
+	@ProxyMethod 
+	public def getIssuedTotal( def searchParam ){ 
+		def params = [ _start:0, _limit:0 ] 
+		return getListByQuery( "receipt:getIssuedTotal", searchParam, params )[0].amount
+	}
+	
 	
 }

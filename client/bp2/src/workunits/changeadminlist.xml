@@ -2,7 +2,7 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/bp/txn" caption="Change Administrator List" permission="changeadministratorlist"/>
+        <invoker folderid="/menu/bp/apps" caption="Change Administrator List" permission="changeadministratorlist"/>
         <invoker folderid="/txn/bp/apps" caption="Change Administrator List" permission="changeadministratorlist"/>
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"/>

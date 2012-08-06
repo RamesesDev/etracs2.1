@@ -72,15 +72,18 @@ class RPTReportService
     @ProxyMethod
 	public def generateNotice( notice ) {
 		notice.items = []
+		def rptsetting 	= em.sqlContext.createNamedQuery('rptreport:getRPTSetting').singleResult
 		if(  notice.faasid ) {
 			notice.items = em.sqlContext.createNamedQuery('rptreport:getNoticeItemsByFaasid').setParameter('objid', notice.faasid).resultList
 		}
 		else {
-			def rptsetting 	= em.sqlContext.createNamedQuery('rptreport:getRPTSetting').singleResult
-			notice.ry 		= rptsetting?.ry 
 			notice.items 	= em.sqlContext.createNamedQuery( 'rptreport:getNoticeItemsByTaxpayerId' ).setParameter('taxpayerid', notice.taxpayerid).resultList
 		}
 		if( ! notice.items ) throw new Exception('Records not found.\nPleas verify that FAAS records are current.')
+		
+		notice.ry 		        = notice.items[0].effectivityyear 
+		notice.effectivityyear	= notice.items[0].effectivityyear 
+		
 		
 		notice.docno 			= seqSvc.getNextFormattedSeries( 'NOTICEOFASSESSMENT' )
 		notice.objid			= notice.docno 

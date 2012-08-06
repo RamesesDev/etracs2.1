@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rpt_transmittal.create" action="init" caption="Transmittal (New)" permission="rpt_transmittal.create"/>
+        <invoker type="rpt_transmittal.open" action="open" caption="Transmittal" permission="rpt_transmittal.open"/>
+        
+        <invoker folderid="/menu/rpt/faas" action="init"  caption="Transmittal" mnemonic="t" permission="rpt_transmittal.create" index="300"/>
+        <invoker type="quick_launcher" action="init" code="FATR" caption="Transmittal" mnemonic="t" permission="rpt_transmittal.create" />
+        
+        <invoker type="formActions" action="_close"  caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
+        <invoker type="formActions" action="create" shortcut="ctrl s" caption="Save" mnemonic="s" icon="images/doc-save.png" visibleWhen="#{mode=='create'}"/>
+        <!-- 
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" icon="images/doc-view.png" permission="rpt_transmittal.print" visibleWhen="#{mode!='create'}"/>
+        <invoker type="formActions" action="print" shortcut="ctrl P" caption="Print" mnemonic="p" icon="images/doc-view.png" permission="rpt_transmittal.print" visibleWhen="#{mode!='create'}"/>
+        -->
+        <invoker type="formActions" action="export" shortcut="ctrl E" caption="Export Transmittal" mnemonic="e" permission="rpt_transmittal.export" visibleWhen="#{mode!='create'}"/>
+    </invokers>
+    
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import java.io.*
+import javax.swing.JFileChooser;
+import com.rameses.util.*
+
+public class FAASTransmittalController 
+{
+    @Binding 
+    def binding
+    
+    @Service('RPTTransmittalService')
+    def svc 
+    
+    def entity
+    def selectedItem
+    def list 
+    def listRefreshHandler
+    def mode = 'view' 
+    
+    def init() {
+        mode = 'create' 
+        list = svc.getItemsForTransmittal()
+        return 'init' 
+    }
+    
+    void open() {
+        mode = 'view' 
+        entity = svc.open( entity.objid  )
+        list = entity.items 
+    }
+    
+    void print() {
+        //TODO: print faastransmittal
+    }
+    
+    void preview() {
+        //TODO: preview faastransmittal
+    }
+    
+    void export() {
+        if( ! MsgBox.confirm('Export transmittal?') ) return;
+
+        def previouspath = System.getProperty("chooser.previouspath");
+        JFileChooser chooser = new JFileChooser( previouspath );
+        chooser.fileSelectionMode = JFileChooser.FILES_ONLY;
+        def sdf = new java.text.SimpleDateFormat("yyyyMMddHHmmss");
+        def fileName = entity.lguname + '-FAAS-TRANSMITTAL-' + entity.txnno + ".txm";
+        chooser.selectedFile = new File( fileName );
+        int res = chooser.showSaveDialog( null );
+        if( res == JFileChooser.APPROVE_OPTION ){
+            def data = [
+                transmittal        : svc.exportTransmittal( entity.objid ),   
+                transmittalitems   : svc.exportTransmittalItems( entity.objid ),
+                faases             : svc.exportFaases( entity.objid ),   
+                faaslists          : svc.exportFaasLists( entity.objid ),   
+                ledgers            : svc.exportLedgers( entity.objid ),
+                ledgeritems        : svc.exportLedgerItems( entity.objid ), 
+                entities           : svc.exportEntities( entity.objid ),
+            ]
+
+            def pass = false
+            try {
+                data = ObjectSerializer.instance.toString( data )
+                data = CipherUtil.encode(data)
+                def out = chooser.selectedFile.newOutputStream()
+                def oos = new ObjectOutputStream( out )
+                oos.writeObject( data )
+                oos.close()
+                pass = true
+            }
+            catch( e ) {
+                MsgBox.err( e.message )
+            }
+            finally {
+                if( !pass ) {
+                    try{ chooser.selectedFile.delete() }catch( e ){}
+                }
+            }
+
+            if( pass ) {
+                System.setProperty("chooser.previouspath", chooser.selectedFile.parent );
+                MsgBox.alert( "Transmittal No. $entity.txnno was successfully exported." );
+            }
+        }                
+    }
+    
+    def create() {
+        if( ! list ) throw new Exception('There are no more FAAS for transmittal.')
+        if( MsgBox.confirm('Save transmittal?') ) {
+            entity = svc.create( list)
+            mode = 'view' 
+            return 'default'
+        }
+        return null
+    }
+    
+    def listHandler = [
+        getRows     : { return 50 },
+        getColumns  : { return [
+            new Column(name:'doctype', caption:'Doc Type', maxWidth:150),
+            new Column(name:'docno', caption:'Doc No.', maxWidth:150),
+            new Column(name:'postedby', caption:'Posted By'),
+            new Column(name:'postedbytitle', caption:'Job Title'),
+            new Column(name:'dtposted', caption:'Date Posted', maxWidth:120),
+            new Column(name:'numdays', caption:'Days', maxWidth:200),
+        ]},
+        fetchList  : { return list },
+    ] as SubListModel
+    
+
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.faas.transmittal.FAASTransmittalPage"/>
+        <page name="init" template="etracs2.rpt.faas.transmittal.FAASTransmittalInitPage"/>
+    </pages>
+</workunit>

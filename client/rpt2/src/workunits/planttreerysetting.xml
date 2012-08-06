@@ -8,6 +8,7 @@
     <invokers>
         <invoker type="planttreerysetting.create" action="create" caption="Create Plant and Tree RY Settting" mnemonic="b" icon="images/doc-new.png" target="window"/>
         <invoker type="planttreerysetting.open" action="open" caption="Edit Plant and Tree RY Settting" mnemonic="b" icon="images/edit.png" target="window"/>
+        <invoker type="planttreerysetting.copy" action="copy" caption="Copy Plant and Tree RY Settting" mnemonic="c" icon="images/doc-new.png" target="window"/>
         
         <invoker type="formActions" action="_close" caption="Close" icon="images/cancel.png"/>
         <invoker type="formActions" action="save" shortcut="ctrl S" caption="Save" mnemonic="s" icon="images/save.png"/>
@@ -55,6 +56,12 @@ public class PlantTreeRYSettingController
         }
     }
     
+    void copy() {
+        mode = 'view' 
+        entity = svc.copy( entity.objid, entity.ry )
+    }
+    
+    
     void open() {
         mode = 'view' 
         entity = svc.open( entity.objid )
@@ -65,7 +72,7 @@ public class PlantTreeRYSettingController
             entity = svc.create( entity )
         }
         else {
-            entity = svc.copySetting( entity.ry, copyYear );
+            entity = svc.reviseSetting( entity.ry, copyYear );
             initVariables();
         }
         return 'default'
@@ -88,7 +95,42 @@ public class PlantTreeRYSettingController
         return 'default'
     }
     
+    /*---------------------------------------------------------------------
+    *
+    * LGU Support 
+    *
+    ----------------------------------------------------------------------*/
+    def SETTING_TYPE = 'planttree' 
     
+    def onselectLgu = {lgu ->
+        if( entity.lgus.find{ it.lguid == lgu.objid } != null ) {
+            throw new Exception( lgu.lguname + ' has already been added.')
+        }
+        entity.lgus.add([
+            objid       : entity.objid,
+            lguid       : lgu.objid,
+            lguname     : lgu.lguname,
+            settingtype : SETTING_TYPE,
+        ])
+        lguListHandler.load()
+    }
+    
+    def getLookupLgu() {
+        return InvokerUtil.lookupOpener('rysettinglgu.lookup', [settingtype:SETTING_TYPE, ry:entity.ry, onselect:onselectLgu])
+    }
+    
+    def lguListHandler = [
+        getColumns : { return [
+            new Column(name:'lguname', caption:'Name'),
+        ]},
+        fetchList : { return entity.lgus },
+        onRemoveItem : { item ->
+            if( MsgBox.confirm('Delete item?')) {
+                entity.lgus.remove( item )
+            }
+        },
+        
+    ] as SubListModel
 
     /*---------------------------------------------------------------------
     *

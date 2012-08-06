@@ -21,6 +21,7 @@ class LCUVSubclassLookupController extends LookupModel
     
     def onselect
     def searchText
+    def lguid
     def ry
     def selected
     
@@ -52,7 +53,7 @@ class LCUVSubclassLookupController extends LookupModel
     List fetchList( Map params ) { 
         def s = search
         if( !s ) s = searchText 
-        return svc.lookupSubclass( ry, s, params)
+        return svc.lookupSubclass( lguid, ry, s, params)
     }
 }  
 

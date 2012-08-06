@@ -28,6 +28,7 @@ public class MachRPUUseController
     def faas
     def rpu
     def machuse
+    def lguid
     
     void open() {
     }

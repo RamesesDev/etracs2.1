@@ -14,6 +14,7 @@
 		<field name="schemaname" required="true"/>
 		<field name="schemaversion" required="true"/>
 		<field name="docstate" required="true"/>
+		<field name="ledgerid" />
         <field name="message" />
         <field name="sys_dtapproved" />
         <complex name="info" ref="faasinfo" serializer="default"/>
@@ -205,6 +206,8 @@
 		<field name="cancelledbytdnos"  />
 		<field name="txntimestamp"  />
 		<field name="restriction" />
+		<field name="lguid"/>
+		<field name="lguname"/>
 	</element>
     
 	<element name="previousfaas">

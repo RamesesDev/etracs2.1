@@ -62,17 +62,7 @@ class DepositService
 			noncashpayments  : [], 
 			fundsummaries	 : [],
         ]
-		
-		/*
-		deposit.liquidations  = getOpenLiquidations()
-		if( ! deposit.liquidations ) throw new Exception('There are no open liquidations for deposit.')
-		
-		deposit.fundtotals 		= getOpenFundTotals()
-		deposit.noncashpayments = getOpenNonCashPayments()
-		deposit.noncashcount 	= deposit.noncashpayments.size()
-		deposit.amount 			= deposit.liquidations.sum({it.amount})
-		*/
-		
+			
 		deposit.liquidations  = getOpenLiquidationsByCashier( cashierid )
 		if( ! deposit.liquidations ) throw new Exception('There are no open liquidations for deposit.')
 		
@@ -246,6 +236,9 @@ class DepositService
 		// em.sqlContext.createNamedExecutor('deposit:depositOpenLiquidationList').setParameters(params).execute()
 	}
 	void closeLiquidation( deposit ){
+		em.sqlContext.createNamedExecutor('deposit:closeLiquidationListByDeposit')
+				.setParameter('depositid', deposit.objid)
+				.execute()
 		em.sqlContext.createNamedExecutor('deposit:closeLiquidationByDeposit')
 				.setParameter('depositid', deposit.objid)
 				.execute()
@@ -344,8 +337,16 @@ class DepositService
 	}
 	
 	List getOpenNonCashPaymentsCashier( cashierid ) {
-		return em.sqlContext.createNamedQuery('deposit:getOpenNonCashPaymentsCashier')
-				.setParameter( 'cashierid', cashierid ).resultList
+		//try multi, if there are records return otherwise return all checks for the liquidation
+		def list = em.sqlContext.createNamedQuery('deposit:getOpenNonCashPaymentsCashierMulti')
+						.setParameter( 'cashierid', cashierid )
+						.resultList
+		if( ! list ) {
+			list = em.sqlContext.createNamedQuery('deposit:getOpenNonCashPaymentsCashier')
+						.setParameter( 'cashierid', cashierid )
+						.resultList
+		}
+		return list 
 	}
 	
 	List getListByNamedQuery(namedQuery, criteria, params ) {

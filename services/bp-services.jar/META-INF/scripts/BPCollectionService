@@ -8,6 +8,7 @@ class BPCollectionService{
 	def appSvc;
 	
 	@Service("BPBillingService")
+	
 	def billingSvc;
 	
 	@PersistenceContext('main')
@@ -79,6 +80,7 @@ class BPCollectionService{
 			it.discount = numSvc.round( it.discount )
 			it.interest = numSvc.round( it.interest )
 			it.amount = numSvc.round( it.amount )
+			
 			def item = [
 				taxfeeid	: it.objid,
 				iyear		: it.year, 
@@ -98,11 +100,12 @@ class BPCollectionService{
 				amount 		: new BigDecimal( it.amount )
 			]
 			
+			def amount = item.taxamount + item.surcharge + item.interest - item.discount
+			item.amount = numSvc.round( amount )
+			
 			entity.items << item.clone()
 			populatePenalty( entity.items, it )  
 			
-			def amount = item.taxamount + item.surcharge + item.interest - item.discount
-			item.amount = numSvc.round( amount )			
 			entity._items << item;
 		}
 		
@@ -119,25 +122,31 @@ class BPCollectionService{
 	}
 	
 	@ProxyMethod 
-	public def doComputePartial( entity , partial ){
-		def partialpmt = partial
-		entity.items.each(){
+	public def doComputePartial( entity , partialpmt ){
+		entity._items.each{
+			it.surcharge = ( it.surcharge ? it.surcharge : 0.0 )
+			it.interest  = ( it.interest ? it.interest : 0.0 )
+			it.discount = ( it.discount ? it.discount : 0.0 )
+			it.partial = 0
+			
 			if( partialpmt == 0 )
-				it.amount = partialpmt
+				it.amount = partialpmt 
 			if( partialpmt >= it.amount )
-				partialpmt -= it.amount
-			else{
-				it.taxamount = partialpmt * ( it.taxamount / it.amount )
-				it.surcharge = partialpmt * ( it.surcharge / it.amount )
-				it.interest = partialpmt - it.taxamount - it.surcharge 
-				it.amount = it.taxamount + it?.surcharge + it?.interest
+				partialpmt -= numSvc.round( it.taxamount + it.surcharge + it.interest - it.discount )
+			else{ 
+				it.partial = 1
+				it.taxamount = numSvc.round( it.taxamount / it.amount * partialpmt )
+				if( it.surcharge > 0.0 ) it.surcharge = numSvc.round( it.surcharge / it.amount * partialpmt )
+				//routine tomake ( it.taxamount + it.surcharge + it.interest ) equal to partialpmt
+				if( it.interest > 0.0 ) it.interest = numSvc.round( partialpmt - it.taxamount - it.surcharge )
+				if( it.discount > 0.0 ) it.discount = numSvc.round( it.discount / it.amount * partialpmt )
 				
-				partialpmt = 0.0
+				it.amount = numSvc.round( it.taxamount + it.surcharge + it.interest - it.discount )
+				partialpmt -= it.amount 
 			}
-
 		}
-	
-		return entity.items.findAll{ it.amount != 0.0 }
+		
+		return entity._items.findAll{ it.amount > 0.0 } 
 	}
 	
 	private def populatePenalty( def items, def taxfee ){

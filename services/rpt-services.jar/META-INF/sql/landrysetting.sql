@@ -59,3 +59,25 @@ DELETE FROM landadjustment WHERE landrysettingid = $P{objid}
 
 [deleteLandActualUseAdjustment]
 DELETE FROM landactualuseadjustment WHERE landrysettingid = $P{objid} 
+
+
+[lookupUnreferencedLgu]
+SELECT objid, lguname, pin FROM lgu 
+WHERE lgutype IN ( 'MUNICIPALITY','CITY') 
+  AND lguname LIKE $P{lguname} 
+  AND NOT EXISTS(
+		SELECT * 
+		FROM landrysetting r
+		INNER JOIN rysetting_lgu rl ON r.objid = rl.objid 
+		WHERE rl.lguid = lgu.objid 
+		  AND rl.settingtype = 'land' 
+		  AND r.ry = $P{ry} 
+  ) 
+ORDER BY lguname 
+
+[getLguList]
+SELECT * FROM rysetting_lgu WHERE objid = $P{objid} AND settingtype='land' 
+
+[deleteLgus]
+DELETE FROM rysetting_lgu WHERE objid = $P{objid} AND settingtype='land' 
+

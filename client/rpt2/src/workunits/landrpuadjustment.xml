@@ -31,6 +31,7 @@ public class LandRPUAdjustmentController
     //handler 
     def onupdate
     
+    def lguid
     def rpu
     def selectedItem 
     def errorMsg 
@@ -53,7 +54,7 @@ public class LandRPUAdjustmentController
     }
     
     def getLookupAdjustment() {
-        return InvokerUtil.lookupOpener('landadjustmenttype.lookup', [classid:rpu.classid, ry:rpu.ry] )
+        return InvokerUtil.lookupOpener('landadjustmenttype.lookup', [lguid:lguid, classid:rpu.classid, ry:rpu.ry] )
     }
     
     def listHandler = [

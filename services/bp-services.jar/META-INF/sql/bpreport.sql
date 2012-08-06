@@ -10,8 +10,8 @@ SELECT
 	a.objid,  
 	p.txnno AS permitno, a.iyear,  a.organization, a.barangayname, 
 	a.tradename, a.businessaddress, a.taxpayername, a.taxpayeraddress, a.txntype, 
-	(SELECT SUM(value) FROM bpappinfolisting WHERE varname = 'CAPITAL' and objid like CONCAT(a.objid,'%')) AS capital, 
-	(SELECT SUM(value) FROM bpappinfolisting WHERE varname = 'GROSS' and objid like CONCAT(a.objid,'%')) AS gross 
+	(SELECT SUM(value) FROM bpappinfolisting WHERE varname = $P{varname_capital} and objid like CONCAT(a.objid,'%')) AS capital, 
+	(SELECT SUM(value) FROM bpappinfolisting WHERE varname = $P{varname_gross} and objid like CONCAT(a.objid,'%')) AS gross 
 FROM bpapplicationlisting a, bppermit p  
 WHERE a.objid = p.applicationid  
   AND a.iyear = $P{iyear} 
@@ -22,8 +22,8 @@ SELECT
 	a.txnno AS appno, a.iyear, a.docstate, a.txntype, a.organization, a.barangayname, 
 	a.tradename, a.businessaddress, a.taxpayername, a.taxpayeraddress, 
 	l.name AS lobname, l.classification, 
-	(SELECT SUM(value) FROM bpappinfolisting WHERE varname = 'CAPITAL' and objid like CONCAT(a.objid,'%') AND lobid = bl.lobid) AS capital,
-	(SELECT SUM(value) FROM bpappinfolisting WHERE varname = 'GROSS' and objid like CONCAT(a.objid,'%')  AND lobid = bl.lobid) AS gross 
+	(SELECT SUM(value) FROM bpappinfolisting WHERE varname = $P{varname_capital} and objid like CONCAT(a.objid,'%') AND lobid = bl.lobid) AS capital,
+	(SELECT SUM(value) FROM bpappinfolisting WHERE varname = $P{varname_gross} and objid like CONCAT(a.objid,'%')  AND lobid = bl.lobid) AS gross 
 FROM bpapplicationlisting a
 	INNER JOIN bploblisting bl ON bl.applicationid = a.objid 
 	INNER JOIN lob l ON l.objid = bl.lobid 
@@ -63,7 +63,7 @@ SELECT info FROM bppermit WHERE applicationid = $P{applicationid}
 [getBusinessTopList]
 SELECT DISTINCT amount 
 FROM ( 
-	SELECT bl.objid,SUM(bi.VALUE) AS amount  
+	SELECT SUM(bi.VALUE) AS amount  
 	FROM bpappinfolisting bi  
 		INNER JOIN bpapplicationlisting bl ON bi.applicationid = bl.objid  
 		INNER JOIN lob l ON l.objid = bi.lobid 

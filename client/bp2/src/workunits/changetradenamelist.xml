@@ -2,7 +2,7 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/bp/txn" caption="Change Tradename List" permission="bpadmin.changetradename"/>
+        <invoker folderid="/menu/bp/apps" caption="Change Tradename List" permission="bpadmin.changetradename"/>
         <invoker folderid="/txn/bp/apps" caption="Change Tradename List" permission="bpadmin.changetradename"/>
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"/>

@@ -12,9 +12,8 @@
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" />
         <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null }" immediate="true" caption="Open" mnemonic="e" icon="images/open.png" />
-        <!-- 
+        <invoker type="formActions" action="copy" shortcut="ctrl C" visibleWhen="#{selectedItem != null }" immediate="true" caption="Copy" mnemonic="c" icon="images/doc-new.png" />
         <invoker type="formActions" action="delete" shortcut="ctrl D" visibleWhen="#{selectedItem != null}" immediate="true" caption="Delete" mnemonic="d" icon="images/doc-delete.png" />
-        --> 
     </invokers>
     <code lang="groovy">
 <![CDATA[        
@@ -43,6 +42,13 @@ public class PlantTreeRYSettingMgmtController
         return InvokerUtil.lookupOpener('planttreerysetting.open', [entity:selectedItem])
     }
     
+    def copy() {
+        if( MsgBox.confirm('Copy revision year ' + selectedItem.ry + '?' ) ) {
+            return InvokerUtil.lookupOpener('planttreerysetting.copy', [entity:selectedItem])
+        }
+        return null
+    }
+    
     void delete() {
         if( selectedItem && MsgBox.confirm('Delete setting?') ) {
             svc.remove( selectedItem.objid )
@@ -58,7 +64,8 @@ public class PlantTreeRYSettingMgmtController
         getRows    : { return 50 },
         getColumns : { return [
             new Column(name:'ry', caption:'Revision Year', maxWidth:150, format:'0000', alignment:'left'),
-            new Column(name:'applyagriadjustment', caption:'Apply Agricultural Adjustment Rate', type:'boolean' )
+            new Column(name:'applyagriadjustment', caption:'Apply Agricultural Adjustment Rate', type:'boolean' ),
+            new Column(name:'appliedto', caption:'Applied To'),
         ]},
         fetchList  : { return svc.getList( searchText ) },
     ] as SubListModel

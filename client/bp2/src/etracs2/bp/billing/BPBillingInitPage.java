@@ -5,11 +5,12 @@
  */
 
 package etracs2.bp.billing;
-
+import com.rameses.rcp.ui.annotations.StyleSheet;
 /**
  *
  * @author  user
  */
+@StyleSheet("etracs2/bp/billing/BPBillingInitPage.style")
 public class BPBillingInitPage extends javax.swing.JPanel {
     
     /** Creates new form BPBillingInitPage */
@@ -30,6 +31,9 @@ public class BPBillingInitPage extends javax.swing.JPanel {
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
+        xSeparator2 = new com.rameses.rcp.control.XSeparator();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -67,8 +71,38 @@ public class BPBillingInitPage extends javax.swing.JPanel {
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 36));
         formPanel1.add(xLabel2);
 
+        xSeparator2.setPreferredSize(new java.awt.Dimension(0, 20));
+        org.jdesktop.layout.GroupLayout xSeparator2Layout = new org.jdesktop.layout.GroupLayout(xSeparator2);
+        xSeparator2.setLayout(xSeparator2Layout);
+        xSeparator2Layout.setHorizontalGroup(
+            xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 526, Short.MAX_VALUE)
+        );
+        xSeparator2Layout.setVerticalGroup(
+            xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 20, Short.MAX_VALUE)
+        );
+        formPanel1.add(xSeparator2);
+
+        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox1.setText("Is Advance Billing?");
+        xCheckBox1.setCaption("");
+        xCheckBox1.setCaptionWidth(90);
+        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox1.setName("entity.advancepayment");
+        xCheckBox1.setOpaque(false);
+        formPanel1.add(xCheckBox1);
+
+        xDateField1.setCaption("Advance Billing Date");
+        xDateField1.setCaptionWidth(120);
+        xDateField1.setCellPadding(new java.awt.Insets(0, 90, 0, 0));
+        xDateField1.setDepends(new String[] {"entity.advancepayment"});
+        xDateField1.setName("entity.billdate");
+        xDateField1.setPreferredSize(new java.awt.Dimension(100, 19));
+        formPanel1.add(xDateField1);
+
         jPanel1.add(formPanel1);
-        formPanel1.setBounds(10, 10, 540, 140);
+        formPanel1.setBounds(10, 10, 540, 250);
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -79,9 +113,12 @@ public class BPBillingInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel1;
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
+    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLookupField xLookupField2;
+    private com.rameses.rcp.control.XSeparator xSeparator2;
     // End of variables declaration//GEN-END:variables
     
 }
