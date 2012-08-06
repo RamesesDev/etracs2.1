@@ -5,6 +5,7 @@
 		<field name="schemaversion" required="true"/>
 		<field name="ry" required="true" type="integer" />
         <field name="previd"  />
+		<field name="appliedto" />
 	</element>
 	
     <!-- AssessLevels -->

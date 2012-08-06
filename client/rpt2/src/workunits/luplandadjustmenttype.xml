@@ -26,6 +26,7 @@ class LandAdjustmentTypeLookupController extends LookupModel
     def onselect
     
     def searchText
+    def lguid
     def ry
     def classid 
     def selected
@@ -107,7 +108,7 @@ class LandAdjustmentTypeLookupController extends LookupModel
     List fetchList( Map params ) { 
         def s = search
         if( !s ) s = searchText 
-        def list = svc.lookupLandAdjustments( ry, classid, s, params)
+        def list = svc.lookupLandAdjustments( lguid, ry, classid, s, params)
         if( list ) return list
         throw new Exception("Record not found.")
     }

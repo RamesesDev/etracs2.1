@@ -17,6 +17,8 @@
 		<field name="dtdelivered" />
 		<field name="receivedby" />
 		<field name="remarks" />
+		<field name="ry" type="integer" required="true"/>
 		<complex name="items" type="list" required="false" serializer="default" />
+		<complex name="extended" merge="true" serializer="default" required="false"/>
 	</element>
 </schema>

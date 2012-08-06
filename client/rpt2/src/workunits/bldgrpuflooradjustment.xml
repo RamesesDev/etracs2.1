@@ -32,6 +32,7 @@ public class BldgRPUFloorAdjustmentController
     def bldgFloor
     def errorMsg 
     def allowEdit
+    def lguid
 
 
     void open() {
@@ -50,7 +51,7 @@ public class BldgRPUFloorAdjustmentController
     def selectedItem
     
     def getLookupAdditionalItem() {
-        return InvokerUtil.lookupOpener('bldgadditionalitem.lookup', [ ry:rpu.ry ])
+        return InvokerUtil.lookupOpener('bldgadditionalitem.lookup', [ lguid:lguid, ry:rpu.ry ])
     }
     
     def listHandler = [

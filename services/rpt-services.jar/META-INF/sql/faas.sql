@@ -139,7 +139,6 @@ WHERE parentid = $P{parentid}
   AND lgutype = 'BARANGAY' 
 ORDER BY objid 
 
-
 [getActiveAnnotationId] 
 SELECT objid FROM faasannotation WHERE faasid = $P{faasid} AND docstate = 'APPROVED' ORDER BY docno DESC 
 
@@ -390,3 +389,9 @@ WHERE f.docstate LIKE $P{docstate}
 
 [findByExaminer]
 SELECT * FROM faaslist ${whereClause}
+
+
+[getCityMunicipalityList]
+SELECT * FROM lgu 
+WHERE lgutype IN ('CITY', 'MUNICIPALITY') 
+ORDER BY lguname 

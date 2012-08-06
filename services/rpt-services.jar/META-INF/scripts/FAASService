@@ -49,6 +49,9 @@ class FAASService
 	
 	@Service('RPTSettingService')
 	def rptsettingSvc
+	
+	@Service('ForTransmittalService')
+	def forTransmittalSvc
 
     def INTERIM_STATE = 'INTERIM'
     def FORAPPROVAL_STATE = 'FORAPPROVAL'
@@ -56,11 +59,11 @@ class FAASService
     def FORPROVAPPROVAL_STATE = 'FORPROVAPPROVAL'
 	def CURRENT_STATE = 'CURRENT'
 	def CANCELLED_STATE = 'CANCELLED'
-    
+	
 	def SCHEMA_NAME = 'faas'
     def SCHEMA_VERSION = '1.0'
     def LISTSCHEMA_NAME = 'faas:faaslist'
-    
+	
     def LAND_TYPE = 'land' 
     def BLDG_TYPE = 'bldg'
     def MACH_TYPE = 'mach'
@@ -186,6 +189,13 @@ class FAASService
 		return []
 	}
 	
+	@ProxyMethod
+	public List getCityMunicipalityList() {
+		println 'getCityMunicipalityList...'
+		
+		return em.sqlContext.createNamedQuery('faas:getCityMunicipalityList').resultList 
+	}
+	
 	def buildSearchCriteria( search, docstate ) {
 		return [
             tdno : search,
@@ -208,7 +218,7 @@ class FAASService
             schemaversion : SCHEMA_VERSION,
             docstate      : INTERIM_STATE,
             transmitted   : false,
-            info          : [   datacapture : true, 
+			info          : [   datacapture : true, 
                                 prevmv      : 0.0, 
                                 prevav      : 0.0, 
                                 effectivityqtr  : 1, 
@@ -222,6 +232,8 @@ class FAASService
             rpu           : [ry:ry, classid:'RES', classcode:'RES', classname:'RES',suffix:0,info:[:], taxable:true, totalareasqm:0.0, totalareaha:0.0],
             previousfaases: [],
             lgutype       : var.lgu_type,
+			lguid		  : var.lgu_index,
+			lguname       : var.lgu_name,
         ]
     }
     
@@ -328,6 +340,8 @@ class FAASService
     @ProxyMethod
     public Map submit( faasid ) {
         def faasinfo = getFaasInfo( faasid )
+		println '='*50
+		println 'ledgerid -> ' + faasinfo.ledgerid 
         validateSubmit( faasinfo )
         def faas = open( faasinfo.objid )
         updateFaasState( faas, FORAPPROVAL_STATE )
@@ -340,7 +354,8 @@ class FAASService
         def faasinfo = getFaasInfo( faasid )
         validateSubmitToProvince( faasinfo )
         def faas = open( faasinfo.objid )
-        updateFaasState( faas, FORPROVAPPROVAL_STATE )
+		insertForTransmittal( faas )
+		updateFaasState( faas, FORPROVAPPROVAL_STATE )
         updateMessage(faas, null )
         updateAttachmentStates( faas, 'FORTRANSMITTAL' )
         sendToOutbox( faas )
@@ -350,27 +365,30 @@ class FAASService
     
     @ProxyMethod
     public Map approve( faasid ) {
-        def faasinfo = getFaasInfo( faasid )
+		def faasinfo = getFaasInfo( faasid )
         validateApprove( faasinfo )
         def faas = open( faasinfo.objid )
         updateAutonumberTdNo( faas  )
         invokeCommonApproveActions( faas )
         logSvc.log('APPROVE','FAAS', faas.objid)
-        return faas 
+		return faas 
     }
     
     @ProxyMethod
     public Map approveByProvince( faasid ) {
-        def faasinfo = getFaasInfo( faasid )
+		def faasinfo = getFaasInfo( faasid )
         validateProvinceApproval( faasinfo )
         def faas = open( faasinfo.objid )
-        updateAutonumberTdNo( faas )
+		if( var.lgu_type?.toLowerCase() == 'province' ) {
+			insertForTransmittal( faas )
+		}
+		updateAutonumberTdNo( faas )
 		assignNextPin( faas ) 
         invokeCommonApproveActions( faas )
         logSvc.log('APPROVEBYPROVINCE','FAAS', faas.objid)
-        return faas 
+		return faas 
     }
-        
+	
     @ProxyMethod
     public Map disapproveByProvince( faasid ) {
         def faasinfo = getFaasInfo( faasid )
@@ -686,6 +704,7 @@ class FAASService
      
 	@ProxyMethod
 	public List getMunicipalities() {
+		println 'getMunicipalities...'
 		return em.sqlContext.createNamedQuery('faas:getMunicipalities').resultList 
 	}
 	
@@ -693,6 +712,18 @@ class FAASService
     public List getBarangays() {
         return em.sqlContext.createNamedQuery('faas:getBarangays').resultList 
     }
+	
+	@ProxyMethod
+	public List getBarangaysByLguType( parentid, lgutype) {
+		lgutype = lgutype?.toLowerCase()
+		if( 'municipality' == lgutype  ) {
+			return getBarangayListByParentId( parentid )
+		}
+		else if( 'city' == lgutype ) {
+			return em.sqlContext.createNamedQuery('faas:getBarangays').resultList 
+		}
+		return []
+	}
 	
 	@ProxyMethod
     public List getBarangayListByParentId( parentid ) {
@@ -1221,7 +1252,6 @@ class FAASService
     
     void validateProvinceApproval( faasinfo ) {
         if( faasinfo.docstate == INTERIM_STATE ) throw new Exception('FAAS is still interim.')
-        if( faasinfo.docstate == FORAPPROVAL_STATE ) throw new Exception('FAAS must not be FORAPPROVAL state.')
         if( faasinfo.docstate == CURRENT_STATE) throw new Exception('FAAS is already current.')
         if( faasinfo.docstate == CANCELLED_STATE ) throw new Exception('FAAS has already been cancelled.')
         checkDuplicateTdNo( faasinfo.objid, faasinfo.tdno )
@@ -1566,6 +1596,20 @@ class FAASService
         def params = [objid:faas.objid, message:message]
         em.sqlContext.createNamedExecutor('faas:updateMessage').setParameters( params ).execute() 
     }
+	
+	void insertForTransmittal( faas ) {
+		def fortransmittal = [
+			objid 		: faas.objid,
+			module		: 'rpt',
+			dtposted	: dateSvc.serverDate, 
+			doctype		: 'faas',
+			docno		: ( faas.info.tdno != null ? faas.info.tdno : faas.rpu.fullpin ),  
+			postedbyid	: env.USERID,
+			postedby	: env.USERFORMALNAME,
+			postedbytitle : env.JOBTITLE,
+		]
+		forTransmittalSvc.create( fortransmittal )
+	}
     
     void sendToOutbox( faas ) {	
 		def remote_connection_active = var.remote_connection_active

@@ -180,15 +180,21 @@ class PlantTreeRPUService
     * Lookup Support
     ----------------------------------------------------------------------------------*/
     @ProxyMethod
-    public List lookupUnitValues( ry, searchText, params) {
-        if( !searchText ) return getListByName('planttreerpu:lookupUnitValue', [ry:ry], params)
-        return getListByName('planttreerpu:lookupUnitValueByCode', [ry:ry, code:searchText+'%'], params)
+    public List lookupUnitValues( lguid, ry, searchText, params) {
+		lguid = (lguid == null ? '%' : lguid )
+        if( !searchText ) return getListByName('planttreerpu:lookupUnitValue', [lguid:lguid, ry:ry], params)
+        return getListByName('planttreerpu:lookupUnitValueByCode', [lguid:lguid, ry:ry, code:searchText+'%'], params)
     }
     
     @ProxyMethod
-    public List lookupAssessLevel( ry, searchText, params) {
-        def setting = em.sqlContext.createNamedQuery('planttreerpu:getRYSetting').setParameter('ry', ry ).singleResult
+    public List lookupAssessLevel( lguid, ry, searchText, params) {
+		lguid = (lguid == null ? '%' : lguid )
+        def setting = em.sqlContext.createNamedQuery('planttreerpu:getRYSetting')
+				.setParameter('ry', ry )
+				.setParameter('lguid', lguid)
+				.singleResult
         if( ! setting) throw new Exception('Plant/Tree Revision Setting for year ' + ry + ' is not defined.')
+		
         setting.assesslevels = em.serializer.read( setting.assesslevels )
         def levels = []
         if( !searchText || searchText.startsWith('%') ) return buildAssessLevels( setting.assesslevels )

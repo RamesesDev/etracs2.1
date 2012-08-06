@@ -32,7 +32,6 @@ SELECT objid, lguname, pin FROM lgu
 WHERE lgutype = 'MUNICIPALITY' AND lguname LIKE $P{lguname} 
 ORDER BY lguname 
 
-
 [deleteBarangayByParentId]
 DELETE FROM lgu WHERE lgutype = 'BARANGAY' AND parentid = $P{parentid} 
 

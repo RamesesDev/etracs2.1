@@ -38,3 +38,8 @@
 ".*" [ allowEdit == false ] {
     enabled:false;
 }
+
+"machdetail.ferac|machdetail.forex|machdetail.acquisitioncost|machdetail.replacementcost|machdetail.depreciationvalue" [ true == true ] {
+    enabled:false;
+}
+

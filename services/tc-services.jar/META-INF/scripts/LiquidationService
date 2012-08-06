@@ -224,7 +224,7 @@ class LiquidationService {
 		liq.info.depositedbytitle 	= '-'
 		
 		if( liq.cashier ) {
-			liq.info.depositedbyid 		= liq.cashier.objid 
+			liq.info.depositedbyid 		= liq.cashier.cashierid  
 			liq.info.depositedbyname 	= liq.cashier.cashiername  
 			liq.info.depositedbytitle 	= liq.cashier.cashiertitle 
 		}

@@ -436,9 +436,9 @@ class BldgRPUService
     * Lookup Support 
     ----------------------------------------------------------------------------------*/
     @ProxyMethod
-    public List lookupBldgType( ry, searchText, params) {
+    public List lookupBldgType( lguid, ry, searchText, params) {
         def searchValue = (searchText ? searchText+'%' : '%')
-        def criteria = [ry:ry, code:searchValue]
+        def criteria = [lguid:lguid, ry:ry, code:searchValue]
         def list = getListByName('bldgrpu:lookupBldgTypeByCode', criteria, params, 'bt.objid')
         return list.each {
             it.depreciations = em.serializer.read( it.depreciations )
@@ -450,16 +450,16 @@ class BldgRPUService
     }
     
     @ProxyMethod
-    public List lookupBldgKind( bldgtypeid , searchText, params) {
+    public List lookupBldgKind( lguid, bldgtypeid , searchText, params) {
         def searchValue = (searchText ? searchText+'%' : '%')
-        def criteria = [bldgtypeid:bldgtypeid, code:searchValue]
+        def criteria = [lguid:lguid, bldgtypeid:bldgtypeid, code:searchValue]
         return getListByName('bldgrpu:lookupBldgKindByCode', criteria, params, 'bk.objid')
     }
     
     @ProxyMethod
-    public List lookupActualUse( ry , searchText, params) {
+    public List lookupActualUse( lguid, ry , searchText, params) {
         def searchValue = (searchText ? searchText+'%' : '%')
-        def criteria = [ry:ry, code:searchValue]
+        def criteria = [lguid:lguid, ry:ry, code:searchValue]
         def list = getListByName('bldgrpu:lookupActualUseByCode', criteria, params, 'bl.objid')
         return list.each {
             it.fixrate = it.fixrate as boolean
@@ -468,9 +468,9 @@ class BldgRPUService
     }
     
     @ProxyMethod
-    public List lookupAdditionalItems( ry, searchText, params) {
+    public List lookupAdditionalItems(lguid, ry, searchText, params) {
         def searchValue = (searchText ? searchText+'%' : '%')
-        def criteria = [ry:ry, code:searchValue]
+        def criteria = [lguid:lguid, ry:ry, code:searchValue]
         return getListByName('bldgrpu:lookupAdditionalItem', criteria, params, 'bi.objid')
     }
     

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rule.copy" action="copy" caption="New Rule" target="popup" />
+        <invoker type="xrule_copy" action="copy" caption="New Rule" target="popup" />
         <invoker type="xrule_create" action="create" caption="New Rule" target="popup" />
         <invoker type="xrule_open" action="open" caption="XRule Information" target="popup" />
         
@@ -40,6 +40,14 @@
             def rule;
             def ruleType;
             def updateHandler; 
+            
+            
+            public void copy() {
+                open()
+                rule.rulename = ''
+                rule.description = ''
+                mode = 'create'
+            }
 
             public void create() {
                 rule = [

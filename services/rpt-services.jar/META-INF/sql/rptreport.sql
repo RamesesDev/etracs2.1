@@ -29,7 +29,7 @@ ORDER BY taxpayername, tdno
 SELECT 
 	objid, tdno, fullpin, barangay, classcode, 
 	totalareasqm, totalareaha, totalmv, totalav, 
-	cadastrallotno, txntype, rputype 
+	cadastrallotno, txntype, rputype, effectivityyear 
 FROM faaslist 
 WHERE taxpayerid = $P{taxpayerid}
   AND docstate = 'CURRENT' 
@@ -39,7 +39,7 @@ ORDER BY fullpin
 SELECT 
 	objid, tdno, fullpin, barangay, classcode, 
 	totalareasqm, totalareaha, totalmv, totalav, 
-	cadastrallotno, txntype, rputype 
+	cadastrallotno, txntype, rputype, effectivityyear 
 FROM faaslist 
 WHERE objid = $P{objid} 
   AND docstate = 'CURRENT'  

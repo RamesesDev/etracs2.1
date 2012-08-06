@@ -15,13 +15,24 @@ public class BPReportService
 	@Service('BPBillingService') 
 	def billingSvc 
 	
+	@Service('Var')
+	def var 
+	
+	
 	
 	@ProxyMethod
 	public List getTaxpayerMasterList( year ) {
+		def varname_capital = "CAPITAL"
+		def varname_gross = "GROSS"
+		if( var.varname_capital ) varname_capital = var.varname_capital 
+		if( var.varname_gross ) varname_gross = var.varname_gross 
+		
 		required( 'Year', year )
 		validateYear( year )
 		def list = em.sqlContext.createNamedQuery('bpreport:getTaxpayerMasterList')
-					.setParameter('iyear', year )
+					.setParameters([
+						iyear: year, varname_capital: varname_capital, varname_gross:varname_gross 
+					])
 					.resultList
 					.each { 
 						it.capital = (it.capital ? numSvc.round( it.capital ) : 0.0 )
@@ -33,12 +44,19 @@ public class BPReportService
 	
 	@ProxyMethod
 	public List getApplicationListing( year, docstate, barangayid, classificationid, lobid  ) {
+		def varname_capital = "CAPITAL"
+		def varname_gross = "GROSS"
+		if( var.varname_capital ) varname_capital = var.varname_capital 
+		if( var.varname_gross ) varname_gross = var.varname_gross 
+		
 		def params 	= [ 
 			iyear				: year, 
 			docstate			: ( docstate ? docstate : '%' ),
 			barangayid			: ( barangayid ? barangayid : '%' ),
 			classificationid	: ( classificationid ? classificationid : '%' ),
 			lobid 				: ( lobid  ? lobid : '%' ),
+			varname_capital		: varname_capital,
+			varname_gross		: varname_gross, 
 		] 
 		def list = em.sqlContext.createNamedQuery('bpreport:getApplicationListing')
 					.setParameters( params )
@@ -102,6 +120,12 @@ public class BPReportService
 	
 	@ProxyMethod
 	public def generateTopBusinessList( entity ){
+		def VAR_CAPITAL = 'CAPITAL' 
+		def VAR_GROSS = 'GROSS' 
+		
+		if( var.varname_capital ) VAR_CAPITAL = var.varname_capital
+		if( var.varname_gross ) VAR_GROSS = var.varname_gross 
+		
 		entity.classification = entity.classification?.classification
 		def param = [ classification:entity.classification, txntype:entity.txntype, topsize:entity.topsize]
 		def reportdata = [:]
@@ -112,14 +136,14 @@ public class BPReportService
 			.setParameters([
 				  txntype:entity.txntype, topsize:entity.topsize, year:entity.year,
 				  classification:( entity.classification ? entity.classification : '%' ),
-				  varname:( entity.txntype == 'NEW' ? 'CAPITAL' : 'GROSS')
+				  varname:( entity.txntype == 'NEW' ? VAR_CAPITAL : VAR_GROSS)
 			]).resultList.each{ 
 			
 			reportdata.items += em.sqlContext.createNamedQuery('bpreport:getBusinessTopListGroupByAmount')
 				.setParameters([
 					txntype:entity.txntype, amount:it.amount, year:entity.year,
 					classification:( entity.classification ? entity.classification : '%' ),
-					varname:( entity.txntype == 'NEW' ? 'CAPITAL' : 'GROSS')
+					varname:( entity.txntype == 'NEW' ? VAR_CAPITAL : VAR_GROSS)
 				]).resultList	
 		} 
 		

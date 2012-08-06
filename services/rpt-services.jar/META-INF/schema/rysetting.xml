@@ -1,0 +1,9 @@
+<schema>
+		<!-- landrysetting_lgu -->
+	<element name="rysettinglgu" tablename="rysetting_lgu">
+		<field name="objid" primary="true"/>
+		<field name="lguid" primary="true"/>
+		<field name="lguname" required="true" />
+		<field name="settingtype" required="true"/>
+	</element>
+</schema>

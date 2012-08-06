@@ -27,7 +27,7 @@ class LguService
         return getListByQuery('lgu:lookupMunicipality', criteria, null )
     }
 	
-	
+
 	@ProxyMethod
 	public def getHostLgu() {
 		def lgutype = VAR.lgu_type;

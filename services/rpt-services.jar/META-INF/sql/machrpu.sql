@@ -6,8 +6,10 @@ FROM bldgrysetting WHERE ry = $P{ry}
 SELECT  
 	bl.objid AS actualuseid, bl.code AS actualusecode, bl.name AS actualusename, 
 	bl.fixrate, bl.rate, bl.ranges 
-FROM machrysetting s, machassesslevel bl 
+FROM machrysetting s, machassesslevel bl, rysetting_lgu rl  
 WHERE s.objid = bl.machrysettingid 
+  AND s.objid = rl.objid 
+  AND rl.lguid = $P{lguid} 
   AND s.ry = $P{ry} AND bl.code LIKE $P{code} 
 
 [getForex]  

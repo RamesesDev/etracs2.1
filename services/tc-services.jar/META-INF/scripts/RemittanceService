@@ -309,12 +309,6 @@ class RemittanceService {
 		em.create(SCHEMANAME, data.remittance )
 		em.create(LISTSCHEMANAME, data.remittance )
 		
-		data.receipts.each {
-			buildDatePartInfo( it )
-			em.create(RECEIPT_SCHEMANAME, it)
-			em.create(RECEIPT_LIST_SCHEMA, it)
-		}
-		
 		data.remittedforms.each { rf ->
 			def importedafc = data.afcontrols.find{ a -> a.objid == rf.afcontrolid  }
 			if( ! importedafc ) throw new Exception('Imported Accountable Form with stub no. ' + rf.stubno + ' does not exists.')
@@ -329,6 +323,16 @@ class RemittanceService {
 		data.paymentitems.each{ em.create(PAYMENT_ITEM_SCHEMA, it ) }
 		
 		postImportedAFControls( data ) 
+		
+		data.receipts.each { receipt ->
+			buildDatePartInfo( receipt )
+			def afc = data.afcontrols.find{ it.origafcontrolid == receipt.info.afcontrolid}
+			if( ! afc ) throw new Exception('Cannot load original AF Control.')
+			receipt.info.afcontrolid = afc.objid 
+			em.create(RECEIPT_SCHEMANAME, receipt)
+			em.create(RECEIPT_LIST_SCHEMA, receipt)
+		}
+		
 		postToRevenue( data.remittance )
 		
 		data.remittance.postedby = env.USERNAME 
@@ -357,6 +361,7 @@ class RemittanceService {
 			
 			//update afcontrol based on the imported info 
 			def afc = getOrigAFControlByImportedAFControl( importedafc )
+			importedafc.origafcontrolid = importedafc.objid 
 			importedafc.objid = afc.objid 
 			importedafc.afinventorycreditid = afc.afinventorycreditid 
 			if( importedafc.cancelledseries  instanceof String ) {
@@ -406,7 +411,7 @@ class RemittanceService {
 			
 			def balance = (rf.beginqty != null && rf.beginqty > 0 ? rf.beginqty : rf.receivedqty )
 			if( afc.balance  != balance ) {
-				throw new Exception('AF Control with stub no. ' + afc.stubno + ' series mismatch is detected.\nKindly ask assistance from your System Administrator.')
+				throw new Exception('AF Control with Stub No. ' + afc.stubno + ' series mismatch is detected.\nVerify that the current series for this stub is equal to the start series of the imported remittance.')
 			}
 		}
 	}
