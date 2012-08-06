@@ -36,6 +36,9 @@
         @Service('RPTReceiptService')
         def svc
         
+        @Service('RPTCompromiseService')
+        def compSvc
+        
         @Service('RPTReceiptHtmlService')
         def htmlSvc
         
@@ -158,6 +161,12 @@
             }
             else if ( payoption == 'bytd' ) {
                 return 'bytd'
+            }
+            else if ( payoption == 'compromise' ) {
+                if( compromise.docstate == 'FORPAYMENT' ) {
+                    return 'requirepmt'
+                }
+                return 'installment' 
             }
             else if ( payoption == 'remote' ) {
                 sendRemoteBillingRequest()
@@ -573,6 +582,59 @@
                 
             ])
         }
+        
+        
+        /*----------------------------------------------------------------------
+        *
+        * Compromise Payment Support 
+        *
+        *------------------------------------------------------------------------*/
+        def compromise 
+        def requiredpayment
+        
+        void setRequiredpayment( requiredpayment ) {
+            this.requiredpayment = requiredpayment
+            if( requiredpayment && requiredpayment.type == 'downpayment' ) {
+                bill = compSvc.loadDownpaymentForPayment( compromise )
+                entity.sys_option = [action:'compromise', type:'downpayment', compromiseid:compromise.objid]
+            }
+            else if( requiredpayment && requiredpayment.type == 'cypayment' ) {
+                bill = compSvc.loadCurrentYearPayment( compromise )
+                entity.sys_option = [action:'compromise', type:'cypayment', compromiseid:compromise.objid]
+            }
+            else {
+                bill.items.clear()
+            }
+            
+            calculateReceiptAmount()
+            paymentRequiredListHandler.load()
+        }
+        
+        def paymentRequiredListHandler = [
+            getColumns   : { return [
+                new Column(name:'basic', caption:'Basic', type:'decimal'),
+                new Column(name:'basicint', caption:'Interest', type:'decimal'),
+                new Column(name:'sef', caption:'SEF', type:'decimal'),
+                new Column(name:'sefint', caption:'Interest', type:'decimal'),
+                new Column(name:'total', caption:'Total', type:'decimal'),
+            ]},
+            fetchList   :{ return bill.items },
+        ] as SubListModel
+        
+        def getLookupCompromise() {
+            return InvokerUtil.lookupOpener('rptcompromise.lookup', [:])
+        }
+        
+        List getRequiredPayments() {
+            def list = []
+            if( compromise.downpaymentrequired  ) {
+                list.add( [type:'downpayment', caption:'Downpayment' ] )
+            }
+            if( compromise.cypaymentrequired ) {
+                list.add( [type:'cypayment', caption:'Current Year Payment' ] )
+            }
+            return list ;
+        }
     }    
 
 
@@ -584,6 +646,8 @@
         <page name="main" template="etracs2.rpt.collection.RPTReceiptPage" />
         <page name="bytd" template="etracs2.rpt.collection.RPTReceiptByTDPage" />
         <page name="remote" template="etracs2.rpt.collection.RPTReceiptByRemotePage" />
+        <page name="requirepmt" template="etracs2.rpt.collection.RPTReceiptByCompromiseRequiredPayment" />
+        <page name="installment" template="etracs2.rpt.collection.RPTReceiptByCompromiseInstallment" />
         <page name="wait" template="etracs2.rpt.collection.WaitPage" />
         <page name="view" template="etracs2.tc.collection.CollectionViewPage"/>
         <page name="html" template="etracs2.tc.HtmlPage"/>

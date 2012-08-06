@@ -30,7 +30,8 @@ class NumberService {
     
     @ProxyMethod
     public def roundA( amount, int scale ) {
-        def bd = new BigDecimal(amount+'')
+		if( amount instanceof Number ) amount = format('0.00000000',amount)
+        def bd = new BigDecimal( amount )
         return bd.setScale(scale, RoundingMode.HALF_UP)
     }
     

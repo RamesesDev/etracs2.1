@@ -1,0 +1,67 @@
+<!--
+// author    : jzamora
+// copyright : Rameses Systems Inc
+-->
+<workunit>
+    <invokers>
+        <invoker type="rptcompromise.lookup" action="init" caption="Lookup RPT Compromise" target="popup" />
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+
+class RPTCompromiseLookupController extends LookupModel 
+{
+    @Service("RPTCompromiseService")
+    def svc
+    
+    def onselect
+    def bldgtypeid 
+    def selected
+    
+    void init(){
+    }
+    
+    
+    def ok() {
+        search = null
+        if( onselect ) onselect( selected )
+        return select()
+    }
+    
+    def getListHandler() {
+        return this
+    }
+    
+    int getRows() { return 25 }
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"txnno", caption:"Txn No.", maxWidth:80),
+            new Column(name:"tdno", caption:"TD No.", maxWidth:150),
+            new Column(name:"secondpartyname", caption:"Taxpayer Name"),
+            new Column(name:"cadastrallotno", caption:"Lot No."),
+            new Column(name:"docstate", caption:"State", maxWidth:80),
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        def list = svc.lookupCompromise( search, params)
+        if( list ) return list
+        throw new Exception("Record not found.")
+    }
+}  
+
+
+]]>
+
+    </code>
+    
+    <pages>
+        <page template="etracs2.common.LookupPage"/>
+    </pages>
+</workunit>

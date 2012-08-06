@@ -631,7 +631,7 @@ class RPTReceiptService
     }
     
     void buildItemsFromMap( receipt, item, field, mapgroup) {
-        mapgroup.keySet().each { mkey ->
+		mapgroup.keySet().each { mkey ->
             if( mkey ) {
                 def acctinfo = em.sqlContext.createNamedQuery('rptreceipt:getIncomeAccountInfo').setParameter('objid', mkey).singleResult
                 if( !acctinfo ) throw new Exception("Account with ID No. $mkey does not exists.")

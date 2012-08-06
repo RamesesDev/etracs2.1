@@ -9,7 +9,7 @@ class DateService {
 
 	@ProxyMethod(local=true)
 	public def getServerDate() {
-		def val = db.createQuery( "select now() as dt" ).singleResult;
+		def val = db.createNamedQuery("date:get-current").singleResult;
 		return val.dt; 
 	}
 	
@@ -128,6 +128,12 @@ class DateService {
 	public def findNextDate(String timeInterval) {
 		return DateUtil.add( serverDate, timeInterval );	
 	}
+	
+	@ProxyMethod
+	public def findNextFromDate( dt, String timeInterval) {
+		return DateUtil.add( parse('yyyy-MM-dd', dt) , timeInterval );	 
+	}
+
 
 	@ProxyMethod
 	public def getMonths() {

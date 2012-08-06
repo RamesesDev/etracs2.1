@@ -61,8 +61,6 @@ class RPTLedgerService
 	
 	@ProxyMethod
 	public def generateNoticeOfDelinquency( bill ) {
-		println '='*50
-		println bill 
 		bill = billingSvc.generateBill( bill )
 		
 		def curryear = dateSvc.serverYear 
