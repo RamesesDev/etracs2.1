@@ -5,6 +5,7 @@
             <folder id="faas" caption="FAAS" mnemonic="f"/>
             <folder id="cert" caption="Certifications" mnemonic="c"/>
             <folder id="landtax" caption="Land Tax" mnemonic="l"/>
+            <folder id="util" caption="Utilities" mnemonic="u"/>
         </folder>
     </folder>
     
