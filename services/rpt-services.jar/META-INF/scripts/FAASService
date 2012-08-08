@@ -1101,7 +1101,13 @@ class FAASService
         if( datacapture == false && checktxntypes.indexOf( txntype ) < 0 ) {
             return ;
         }
-        
+		//if section and parcel are both zero, then
+		//property is unsurveyed, bypass pin checking 
+		//check for patterns 000-00 or 00-000
+        if( fullpin.indexOf('000-00') >= 0 || fullpin.indexOf('00-000') >= 0 ) {
+			return 
+		}
+		
         //check for unique pin and claimno  only
         def data = em.sqlContext.createNamedQuery('faas:getPinClaimno').setParameters([pin:fullpin, claimno:claimno]).singleResult
         if( data ) throw new Exception('PIN ' + fullpin + ' already exists.')
