@@ -273,7 +273,7 @@ class IRAFController
             rivtxnno             : entity.rivno,
             rivtxndate           : entity.info.rivdate.toString(),
             requestedby          : entity.rivrequestedby,
-            requestedbytitle     : entity.rivrequestedby,
+            requestedbytitle     : entity.rivrequestedbytitle,
             rivtype              : entity.info.rivtype,
             info                 : [approvedby : entity.info.preparedby, approvedbytitle : entity.info.preparedbytitle],
             items                : entity.rcvitems
