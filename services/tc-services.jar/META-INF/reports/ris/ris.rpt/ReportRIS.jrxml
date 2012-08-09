@@ -42,8 +42,8 @@
 
 	<field name="requestedby" class="java.lang.String"/>
 	<field name="items" class="java.lang.Object"/>
-	<field name="txnno" class="java.lang.String"/>
-	<field name="txndate" class="java.lang.String"/>
+	<field name="rivtxnno" class="java.lang.String"/>
+	<field name="rivtxndate" class="java.lang.String"/>
 	<field name="nonserialremittances" class="java.lang.Object"/>
 	<field name="collectiontype" class="java.lang.Object"/>
 	<field name="requestedbytitle" class="java.lang.String"/>
@@ -367,7 +367,7 @@
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txnno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rivtxnno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -434,7 +434,7 @@
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txndate}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rivtxndate}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -902,7 +902,7 @@
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-14">
-							<printWhenExpression><![CDATA[new Boolean($F{rivtype}.toString().equals("COLLECTOR"))]]></printWhenExpression>
+							<printWhenExpression><![CDATA[new Boolean($F{rivtype}.toString().equals("COLLECTOR") || $F{rivtype}.toString().equals("SALE"))]]></printWhenExpression>
 						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -924,7 +924,7 @@
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-15">
-							<printWhenExpression><![CDATA[new Boolean($F{rivtype}.toString().equals("COLLECTOR"))]]></printWhenExpression>
+							<printWhenExpression><![CDATA[new Boolean($F{rivtype}.toString().equals("COLLECTOR") || $F{rivtype}.toString().equals("SALE"))]]></printWhenExpression>
 						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -968,14 +968,14 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txndate}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rivtxndate}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="0"
 						y="195"
-						width="76"
+						width="49"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -993,9 +993,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="76"
+						x="49"
 						y="195"
-						width="65"
+						width="48"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1013,9 +1013,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="141"
+						x="97"
 						y="195"
-						width="159"
+						width="90"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1035,7 +1035,7 @@
 						mode="Transparent"
 						x="0"
 						y="178"
-						width="300"
+						width="233"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1053,29 +1053,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="300"
-						y="178"
-						width="81"
-						height="17"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-81"/>
-					<box>					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="300"
+						x="187"
 						y="195"
-						width="81"
+						width="46"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1088,14 +1068,14 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[Qty. Requested]]></text>
+				<text><![CDATA[Qty.]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="381"
+						x="233"
 						y="195"
-						width="81"
+						width="46"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1108,14 +1088,14 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[Qty. Issued]]></text>
+				<text><![CDATA[Qty.]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="381"
+						x="233"
 						y="178"
-						width="171"
+						width="319"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1133,9 +1113,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="462"
+						x="279"
 						y="195"
-						width="90"
+						width="273"
 						height="17"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1148,14 +1128,14 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[Remarks]]></text>
+				<text><![CDATA[Series]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="0"
 						y="212"
-						width="76"
+						width="49"
 						height="369"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1173,9 +1153,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="381"
+						x="233"
 						y="212"
-						width="81"
+						width="46"
 						height="369"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1193,9 +1173,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="462"
+						x="279"
 						y="212"
-						width="90"
+						width="273"
 						height="369"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1213,9 +1193,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="76"
+						x="49"
 						y="212"
-						width="65"
+						width="48"
 						height="369"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1233,9 +1213,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="141"
+						x="97"
 						y="212"
-						width="159"
+						width="90"
 						height="369"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1253,9 +1233,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="300"
+						x="187"
 						y="212"
-						width="81"
+						width="46"
 						height="369"
 						forecolor="#000000"
 						backcolor="#FFFFFF"

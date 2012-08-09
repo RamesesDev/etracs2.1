@@ -215,7 +215,10 @@ class RIVController
     }
     
     def viewRIV(){
-        entity.txndate = entity.txndate.toString()
+        // for report data
+        entity.rivtxnno = entity.txnno
+        entity.rivtxndate = entity.txndate.toString()
+        
         reportName = "RIV";
         report.viewReport();
         
@@ -223,7 +226,10 @@ class RIVController
     }
     
     def viewRIS(){
-        entity.txndate = entity.txndate.toString()
+        // for report data
+        entity.rivtxnno = entity.txnno
+        entity.rivtxndate = entity.txndate.toString()
+    
         reportName = "RIS";
         report.viewReport();
         

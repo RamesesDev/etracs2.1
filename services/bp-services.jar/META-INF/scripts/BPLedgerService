@@ -326,6 +326,46 @@ class BPLedgerService {
 				}				
 				
 			 };
+	}	
+	
+	@ProxyMethod     
+	public def getBPLedgerData( businessid ){
+		def bpledger = [ ledgeritems:[] ]
+		em.sqlContext.createNamedQuery('business:getApplicationListByBusinessId')
+			 .setParameters([businessid: businessid])
+			 .resultList.each{ bapp ->
+				bapp.amount = 0.0
+				bapp.amtpaid = 0.0
+				bapp.lobs = em.serializer.read( bapp.lobs )
+				bapp.credits = em.serializer.read( bapp.credits )
+				
+				bapp.receivables = em.serializer.read( bapp.receivables ).each{ rcvbls ->
+					rcvbls.credits = bapp.credits.findAll{ it.bpreceivableid == rcvbls.objid }
+					rcvbls.iqtr = rcvbls.iqtr
+					bapp.amount += rcvbls.amount
+					bapp.amtpaid += rcvbls.amtpaid
+				}
+				 
+				bpledger.ledgeritems << [
+					iyear 	: bapp.iyear,
+					txnno   : bapp.txnno,
+					txntype : bapp.txntype,
+					txnmode : bapp.txnmode,
+					amount 	: bapp.amount, 
+					amtpaid : bapp.amtpaid,
+					surcharge : bapp.credits.surcharge.sum(),
+					interest  : bapp.credits.interest.sum(),
+					discount  : bapp.credits.discount.sum(),
+					docstate  : bapp.docstate.replaceAll( '_', ' ' ),
+					
+					lobs 	: bapp.lobs, 
+					credits : bapp.credits,
+					receivables : bapp.receivables,
+				]
+			}
+			 
+			 return bpledger
+		
 	}
 		
 }

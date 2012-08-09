@@ -42,8 +42,8 @@
 
 	<field name="requestedby" class="java.lang.String"/>
 	<field name="items" class="java.lang.Object"/>
-	<field name="txnno" class="java.lang.String"/>
-	<field name="txndate" class="java.lang.String"/>
+	<field name="rivtxnno" class="java.lang.String"/>
+	<field name="rivtxndate" class="java.lang.String"/>
 	<field name="nonserialremittances" class="java.lang.Object"/>
 	<field name="collectiontype" class="java.lang.Object"/>
 	<field name="requestedbytitle" class="java.lang.String"/>
@@ -135,7 +135,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txnno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rivtxnno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -277,7 +277,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{txndate}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rivtxndate}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement

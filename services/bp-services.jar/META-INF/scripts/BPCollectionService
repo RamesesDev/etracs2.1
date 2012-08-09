@@ -73,17 +73,29 @@ class BPCollectionService{
 		entity.info.amount = 0.0;
 		entity.items = [];
 		entity._items = []
-
+		
+		def populatePenaltyInfo = { tf, item ->
+			if( tf.surcharge > 0.0){
+				item.surchargetaxfeeid = tf.surchargetaxfeeid
+				item.surchargeacctid = tf.surchargeacctid
+			}
+			if( tf.interest > 0.0 ){
+				item.interesttaxfeeid = tf.interesttaxfeeid
+				item.interestacctid = tf.interestacctid
+			}
+		}
+		
 		bill.taxfees.each{
 			def acct = em.read("incomeacct:incomeacct", [objid: it.acctid]);
 			it.surcharge = numSvc.round( it.surcharge )
 			it.discount = numSvc.round( it.discount )
 			it.interest = numSvc.round( it.interest )
 			it.amount = numSvc.round( it.amount )
+			
 			def item = [
 				taxfeeid	: it.objid,
 				iyear		: it.year, 
-				iqtr		: it.qtr, 
+				iqtr		: it.qtr,  
 				lobid		: it.lobid,
 				lobname		: it.lobname,
 				acctid		: acct.objid, 
@@ -96,32 +108,29 @@ class BPCollectionService{
 				discount	: new BigDecimal( (it.discount) ?  it.discount : 0.0 ),
 				interest	: new BigDecimal( (it.interest)  ?  it.interest : 0.0 ),
 				taxamount	: new BigDecimal( it.amount ),
-				amount 		: new BigDecimal( it.amount )
+				amount 		: new BigDecimal( it.amount ),
+				
 			]
 			
+			populatePenaltyInfo( it, item )
 			def amount = item.taxamount + item.surcharge + item.interest - item.discount
 			item.amount = numSvc.round( amount )
-			
-			entity.items << item.clone()
-			populatePenalty( entity.items, it )  
-			
-			entity._items << item;
+			entity.items << item
+			entity._items << item
 		}
-		
+	
 		entity.info.amount = numSvc.round( entity._items.amount.sum() ) 
 		entity.items.sort { a, b ->
 			def sA = a.iyear+''+a.iqtr;
 			def sB = b.iyear+''+b.iqtr;
 			return sA<=>sB;
 		}
-		
 		entity.applicationlastmodified = app.lastmodified;
-		
+				
     	return entity;
 	}
 	
 	@ProxyMethod 
-
 	public def doComputePartial( entity , partialpmt ){
 		entity._items.each{
 			it.surcharge = ( it.surcharge ? it.surcharge : 0.0 )
@@ -144,39 +153,12 @@ class BPCollectionService{
 				it.amount = numSvc.round( it.taxamount + it.surcharge + it.interest - it.discount )
 				partialpmt -= it.amount 
 			}
-
 		}
-	
-		return entity.items.findAll{ it.amount != 0.0 }
-	}
-	
-	private def populatePenalty( def items, def taxfee ){
-		def populateItem = { tf, tfid, acctid, penalty ->
-			def acct = em.read("incomeacct:incomeacct", [objid: acctid])
-			return [
-				taxfeeid 	: tfid,
-				iyear		: tf.year,
-				iqtr		: tf.qtr,
-				lobid		: tf.lobid,
-				acctid		: acct.objid, 
-				acctno		: acct.acctno,
-				accttitle	: acct.accttitle,
-				systype 	: acct.systype,
-				fundid		: acct.fundid,
-				fundname	: acct.fundname,
-				surcharge	: new BigDecimal( 0.0 ),
-				discount	: new BigDecimal( 0.0 ),
-				interest	: new BigDecimal( 0.0 ),
-				taxamount	: new BigDecimal( numSvc.round( penalty ) ),
-				amount 		: new BigDecimal( numSvc.round( penalty ) )
-			
-			]
-		}		
-		
-		if( taxfee.surcharge > 0.0 )
-			items << populateItem( taxfee, taxfee.surchargetaxfeeid, taxfee.surchargeacctid, taxfee.surcharge )
-					
-		if( taxfee.interest > 0.0 )
-			items << populateItem( taxfee, taxfee.interesttaxfeeid, taxfee.interestacctid, taxfee.interest )
+		entity._items.sort { a, b ->
+			def sA = a.iyear+''+a.iqtr;
+			def sB = b.iyear+''+b.iqtr;
+			return sA<=>sB;
+		}
+		return entity._items.findAll{ it.amount > 0.0 }
 	}
 } 
