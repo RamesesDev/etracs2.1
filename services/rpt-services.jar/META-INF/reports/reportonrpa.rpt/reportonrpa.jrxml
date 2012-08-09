@@ -785,7 +785,7 @@ RPU]]></text>
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<text><![CDATA[with MV of
-P150,000 
+P175,000 
 or less]]></text>
 				</staticText>
 				<staticText>
@@ -804,7 +804,7 @@ or less]]></text>
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<text><![CDATA[with MV over
-P150,000 ]]></text>
+P175,000 ]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
@@ -925,7 +925,7 @@ Impr.]]></text>
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<text><![CDATA[with MV of
-P150,000 
+P175,000 
 or less]]></text>
 				</staticText>
 				<staticText>
@@ -944,7 +944,7 @@ or less]]></text>
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<text><![CDATA[with MV over
-P150,000 ]]></text>
+P175,000 ]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
