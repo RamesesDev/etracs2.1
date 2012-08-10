@@ -176,7 +176,7 @@ class RPTReportService
 		def period = 'JAN - MAR, ' + year 
 		if( qtr == 2 ) period = 'APR - JUN, ' + year 
 		else if( qtr == 3 ) period = 'JUL - SEP, ' + year 
-		else if( qtr == 4 ) period = 'OCT - NOV, ' + year 
+		else if( qtr == 4 ) period = 'OCT - DEC, ' + year 
 		return period 
 	}
 	
@@ -192,7 +192,7 @@ class RPTReportService
 		}
 		
 		def params = [ lguindex:var.lgu_index ]
-		params.txntimestamp	= calculateCurrentTimeStamp( year, qtr, month )
+		params.txntimestamp	= calculateCurrentTimeStamp( year, qtr, month ).replace('%','Z') //temporary fix 
 		
 		def taxables = em.sqlContext.createNamedQuery('rptreport:getReportOnRPATaxable').setParameters(params).resultList 
 		
