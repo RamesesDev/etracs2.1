@@ -43,6 +43,15 @@ UPDATE rptledger rl, consolidationland cl SET
 WHERE rl.faasid = cl.landfaasid  
   AND cl.consolidationid = $P{consolidationid}  
 
+[getMinLastYearPaidByConsolidation]  
+SELECT MIN(lastyearpaid) as minlastyearpaid 
+FROM rptledger rl 
+	INNER JOIN consolidationland cl on rl.faasid = cl.landfaasid 
+WHERE cl.consolidationid = $P{consolidationid} 
+
+[getLedgerByFaasId]
+SELECT * FROM rptledger WHERE faasid = $P{faasid} 
+  
 
 #---------------------------------------------------------------
 # DELETE
