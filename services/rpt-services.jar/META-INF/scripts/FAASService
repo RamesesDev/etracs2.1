@@ -191,8 +191,6 @@ class FAASService
 	
 	@ProxyMethod
 	public List getCityMunicipalityList() {
-		println 'getCityMunicipalityList...'
-		
 		return em.sqlContext.createNamedQuery('faas:getCityMunicipalityList').resultList 
 	}
 	
@@ -702,7 +700,6 @@ class FAASService
      
 	@ProxyMethod
 	public List getMunicipalities() {
-		println 'getMunicipalities...'
 		return em.sqlContext.createNamedQuery('faas:getMunicipalities').resultList 
 	}
 	
@@ -737,8 +734,12 @@ class FAASService
     }
 	
 	@ProxyMethod
-    public void checkLedgerBalanceByDate( faas, refdate ) {
-		def txntype = faas.txntype
+	public void checkLedgerBalanceByDate( faas, refdate ) {
+		checkLedgerBalanceByTxnType(faas.txntype, faas, refdate )
+	}
+	
+	@ProxyMethod
+    public void checkLedgerBalanceByTxnType( txntype, faas, refdate ) {
 		if( txntype == 'MC' ) return 
 		
 		//if province then check only if a ledger exists
@@ -764,7 +765,6 @@ class FAASService
 	@ProxyMethod
 	public boolean isTxnAllowedWithBalance( txntype ) {
 		def rptsetting = rptsettingSvc.open()
-		
 		if( !rptsetting ) {}
 		else if( txntype.matches(/TR|TRE/) && rptsetting.allowtransferwithbalance )  return true
 		else if( txntype == 'CE' && rptsetting.allowcorrectionwithbalance )          return true
