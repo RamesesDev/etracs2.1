@@ -50,7 +50,7 @@ SELECT
 FROM bldgrysetting s, bldgassesslevel bl, rysetting_lgu rl
 WHERE s.objid = bl.bldgrysettingid 
   AND s.objid = rl.objid 
-  AND rl.lguid = $P{lguid} 
+  AND rl.lguid LIKE $P{lguid} 
   AND s.ry = $P{ry} AND bl.code LIKE $P{code} 
 
 [lookupAdditionalItem]  

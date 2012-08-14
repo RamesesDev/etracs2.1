@@ -268,7 +268,7 @@ class TDReportService
     	
     	def bldguses = rpu.info.bldguses;
 			
-		if( rpu.info.predominant as boolean ) {
+		if( rpu.info.useswornamount || rpu.info.predominant ) {
 			def item = [
 				classification	: rpu.classname,
 				actualuse 		: rpu.classname,
@@ -285,7 +285,7 @@ class TDReportService
 					classification	: rpu.classname,
 					actualuse		: it.actualuse.actualusename,
 					assesslevel		: it.assesslevel,
-					marketvalue		: it.marketvalue,
+					marketvalue		: it.marketvalue ,
 					assessedvalue	: it.assessedvalue,
 					area			: it.area,
 				];

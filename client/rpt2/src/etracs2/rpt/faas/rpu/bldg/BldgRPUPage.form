@@ -529,7 +529,7 @@
                         <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                           <Insets value="[0, 0, 10, 0]"/>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="rpu.info.swornstatement"/>
+                        <Property name="name" type="java.lang.String" value="swornstatement"/>
                         <Property name="showCaption" type="boolean" value="false"/>
                         <Property name="value" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                           <Connection code="0" type="code"/>
