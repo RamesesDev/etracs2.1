@@ -60,12 +60,31 @@ class BPDelinquencyController
         }
     }
     
+    def reportname
+    def quarterly
     void preview() {
         mode = 'preview' 
+        reportname = ( quarterly ? 'bpquarterlydelinquency' : 'bpdelinquency' ) 
         reportdata.items = []
         taskmgr.addTask( new DelinquencyTask( reportdata:reportdata, svc:svc, barangay:barangay, updateMessage:updateMessage, onfinish:onfinish ) );
         taskmgr.start()
     }
+    
+    def getReport(){
+        return ( quarterly ? bpquarterlydelinquency : bpdelinquency )
+    }
+    
+    def bpquarterlydelinquency = [
+        getReportName : { reportname },
+        getReportData : { return reportdata.items },
+        getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ); }
+    ] as ServerReportModel
+    
+    def bpdelinquency = [
+        getReportName : { reportname },
+        getReportData : { return reportdata.items },
+        getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ); }
+    ] as ServerReportModel
     
     void generateReport() {
         report.viewReport()
@@ -75,12 +94,6 @@ class BPDelinquencyController
         generateReport()
         ReportUtil.print( report.report, true )
     }
-    
-    def report = [
-        getReportName : { 'bpdelinquency' },
-        getReportData : { return reportdata.items },
-        getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ); }
-    ] as ServerReportModel;
         
     def back() {
         return 'default' 

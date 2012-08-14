@@ -106,7 +106,11 @@ public class BPReportService
 					tradename		: item.tradename,
 					businessaddress	: item.address,
 					amount			: item.totalamount,
-					surcharge		: item.totalsurcharge ,
+					qtr1amount		: item.first_qtr_total,
+					qtr2amount		: item.second_qtr_total,
+					qtr3amount		: item.third_qtr_total,
+					qtr4amount		: item.fourth_qtr_total,
+					surcharge		: item.totalsurcharge,
 					interest		: item.totalinterest,
 					total			: item.grandtotal
 				])
