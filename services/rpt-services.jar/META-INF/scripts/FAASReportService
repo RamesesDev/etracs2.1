@@ -529,13 +529,13 @@ class FaasReportService
 		def bldguses = rpu.info.bldguses
 		
 		bldguses?.each {
-			def assesslevel = numberSvc.format("#,##0", it.assesslevel) + ' %'
+			def assesslevel = numberSvc.format("#,##0", (rpu.info.useswornamount ? rpu.info.assesslevel : it.assesslevel)) + ' %'
 			
 			def item = [
 				actualuse	 : it.actualuse.actualusename,
-				marketvalue	 : it.marketvalue,
+				marketvalue	 : (rpu.info.useswornamount ? rpu.totalmv : it.marketvalue),
 				assesslevel	 : assesslevel,
-				assessedvalue: it.assessedvalue
+				assessedvalue: (rpu.info.useswornamount ? rpu.totalav : it.assessedvalue ),
 			]
 			
 			data.add( item )

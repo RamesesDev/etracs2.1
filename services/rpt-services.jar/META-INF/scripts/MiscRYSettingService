@@ -14,6 +14,9 @@ public class MiscRYSettingService
 	@Service('RYSettingService')
 	def rysettingSvc
 	
+	@Service('Var')
+	def var  
+	
 	def SCHEMA_NAME = 'miscrysetting'
     def SETTING_TYPE = 'misc' 
     
@@ -34,6 +37,9 @@ public class MiscRYSettingService
     public def create( entity ) {
         entity.schemaname = 'miscrysetting'
         entity.schemaversion = '1.0'
+		if( ! entity.lgus ) {
+			entity.lgus = [[lguid:var.lgu_index, lguname:var.lgu_name, settingtype:SETTING_TYPE]]
+		}
 		entity.appliedto = entity.lgus.lguname.join(', ')
         validate( entity )
         em.create( entity.schemaname, entity )

@@ -230,7 +230,7 @@ class RemittanceReportService {
 		}
 		acctlist.collect{ acct ->
 			if( acct.objid ) {
-				header[ 'COL' + colindex ] = acct.accttitle 
+				header[ 'COL' + colindex ] = '(' + acct.acctcode + ')\n' + acct.accttitle 
 				colindex++
 			}
 		}

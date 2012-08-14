@@ -46,6 +46,18 @@ public class BldgRPUController
     def classification
     def errorMsg 
     def useswornamount
+    def swornstatement
+    
+    void setSwornstatement( swornstatement ) {
+        this.swornstatement = swornstatement 
+        rpu.info.swornstatement = swornstatement 
+        if( ! swornstatement ) {
+            useswornamount = false 
+            rpu.info.useswornamount = useswornamount 
+            rpu.info.swornamount = 0.0
+        }
+        recalc()
+    }
     
     void init() {
         rpu.issuedate       = faas.info.issuedate 
@@ -61,6 +73,7 @@ public class BldgRPUController
         depreciation        = rpu.info.depreciation 
         firstfloorbasevalue = rpu.info.firstfloorbasevalue 
         useswornamount      = rpu.info.useswornamount
+        swornstatement      = rpu.info.swornstatement
         percentcompleted    = (rpu.info.percentcompleted ? rpu.info.percentcompleted : 100.0 )
     }
     
@@ -257,6 +270,7 @@ public class BldgRPUController
     }
     
     void recalc() {
+        rpu.lguid = faas.lguid
         def data = svc.calculateAssessment( rpu );
         rpu.clear()
         rpu.putAll(data)

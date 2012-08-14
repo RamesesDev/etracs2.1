@@ -61,8 +61,6 @@ class RPTLedgerService
 	
 	@ProxyMethod
 	public def generateNoticeOfDelinquency( bill ) {
-		println '='*50
-		println bill 
 		bill = billingSvc.generateBill( bill )
 		
 		def curryear = dateSvc.serverYear 
@@ -285,12 +283,26 @@ class RPTLedgerService
     }
     
     void postLedgerItem( faas ) {
-        def ledger = updateLedger( faas  )
-        def ledgeritem = createLedgerItem( ledger ) 
-        closePreviousLedgerItemToYear( ledger, faas )
-        em.update( ledger.schemaname, ledger )
-        em.create( ledgeritem.schemaname, ledgeritem )
-        logSvc.log('CREATE_ITEM', 'RPTLedger', ledger.objid)
+        def ledger = null 
+		def msg = null 
+		try {
+			ledger = updateLedger( faas  )
+		}
+		catch( e) {
+			ledger = null 
+			msg = e.message 
+		}
+		//require validation only for non-province lgu 
+		if( !ledger && var.lgu_type?.toLowerCase() != 'province') {
+			throw new Exception(msg)
+		}
+		if( ledger ) {
+			def ledgeritem = createLedgerItem( ledger ) 
+			closePreviousLedgerItemToYear( ledger, faas )
+			em.update( ledger.schemaname, ledger )
+			em.create( ledgeritem.schemaname, ledgeritem )
+			logSvc.log('CREATE_ITEM', 'RPTLedger', ledger.objid)
+		}
     }
     
     /* ------------------------------------------------------------------------
@@ -313,6 +325,7 @@ class RPTLedgerService
 		ledger.partialbasicint  = 0.0
 		ledger.partialsefint	= 0.0 
         ledger.firstqtrpaidontime = false 
+		ledger.undercompromised = false 
         updateActualUseInfo( ledger )
         return ledger
     }

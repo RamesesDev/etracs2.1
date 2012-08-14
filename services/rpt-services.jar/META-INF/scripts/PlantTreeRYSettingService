@@ -14,6 +14,9 @@ public class PlantTreeRYSettingService
 	@Service('RYSettingService')
 	def rysettingSvc
 	
+	@Service('Var')
+	def var 
+	
 	def SCHEMA_NAME = 'planttreerysetting'
     def SETTING_TYPE = 'planttree' 
     
@@ -38,6 +41,9 @@ public class PlantTreeRYSettingService
     public def create( entity ) {
         entity.schemaname = 'planttreerysetting'
         entity.schemaversion = '1.0'
+		if( ! entity.lgus ) {
+			entity.lgus = [[lguid:var.lgu_index, lguname:var.lgu_name, settingtype:SETTING_TYPE]]
+		}
 		entity.appliedto = entity.lgus.lguname.join(', ')
         entity.planttreeunits = getPlantTreeUnits( entity.objid )
         validate( entity )

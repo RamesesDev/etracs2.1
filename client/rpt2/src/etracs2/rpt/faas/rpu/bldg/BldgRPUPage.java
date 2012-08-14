@@ -284,7 +284,7 @@ public class BldgRPUPage extends javax.swing.JPanel {
         xCheckBox1.setCaption("");
         xCheckBox1.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
         xCheckBox1.setMargin(new java.awt.Insets(0, 0, 10, 0));
-        xCheckBox1.setName("rpu.info.swornstatement");
+        xCheckBox1.setName("swornstatement");
         xCheckBox1.setShowCaption(false);
         xCheckBox1.setValue(0);
         formPanel4.add(xCheckBox1);
