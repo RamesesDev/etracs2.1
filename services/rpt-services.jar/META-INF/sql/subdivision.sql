@@ -77,7 +77,9 @@ WHERE r.prevfaasid = rl.faasid
 [getAffectedRpuNewPin]  
 SELECT newpin FROM subdivisionland WHERE objid = $P{objid} 
 
-  
+[getLedgerByFaasId]  
+SELECT * FROM rptledger WHERE faasid = $P{faasid}
+
 #--------------------------------------------------------------------
 # UPDATES
 #--------------------------------------------------------------------

@@ -247,6 +247,7 @@ class RPTLedgerService
 		ledger.partialbasicint  = 0.0
 		ledger.partialsefint	= 0.0 
         ledger.firstqtrpaidontime = false 
+		ledger.undercompromised = false 
         updateActualUseInfo( ledger )
         return ledger
     }
