@@ -3168,6 +3168,7 @@ CREATE TABLE "realpropertyupdate" (
   "state" varchar(20) default NULL,
   "txnno" varchar(15) NOT NULL,
   "pin" varchar(50) default NULL,
+  "realpropertyid" varchar(50),
   "arpno" varchar(25) default NULL,
   "cadastrallotno" varchar(255) default NULL,
   "surveyno" varchar(30) default NULL,
