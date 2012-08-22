@@ -32,6 +32,7 @@ public class FAASNDInitPage extends javax.swing.JPanel {
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xNumberField2 = new com.rameses.rcp.control.XNumberField();
         xComboBox4 = new com.rameses.rcp.control.XComboBox();
+        xComboBox5 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xNumberField3 = new com.rameses.rcp.control.XNumberField();
         xNumberField4 = new com.rameses.rcp.control.XNumberField();
@@ -88,11 +89,24 @@ public class FAASNDInitPage extends javax.swing.JPanel {
         xComboBox4.setRequired(true);
         formPanel1.add(xComboBox4);
 
+        xComboBox5.setCaption("Municipality");
+        xComboBox5.setCaptionWidth(100);
+        xComboBox5.setExpression("#{lguname}");
+        xComboBox5.setImmediate(true);
+        xComboBox5.setIndex(-10);
+        xComboBox5.setItems("lguList");
+        xComboBox5.setName("lgu");
+        xComboBox5.setPreferredSize(new java.awt.Dimension(0, 22));
+        xComboBox5.setRequired(true);
+        formPanel1.add(xComboBox5);
+
         xComboBox3.setCaption("Barangay");
         xComboBox3.setCaptionWidth(100);
+        xComboBox3.setDepends(new String[] {"lgu"});
+        xComboBox3.setDynamic(true);
         xComboBox3.setExpression("#{lguname}");
         xComboBox3.setIndex(-10);
-        xComboBox3.setItems("barangays");
+        xComboBox3.setItems("lguBarangays");
         xComboBox3.setName("barangay");
         xComboBox3.setPreferredSize(new java.awt.Dimension(0, 22));
         xComboBox3.setRequired(true);
@@ -191,14 +205,14 @@ public class FAASNDInitPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 250, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 272, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 62, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -218,6 +232,7 @@ public class FAASNDInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XComboBox xComboBox4;
+    private com.rameses.rcp.control.XComboBox xComboBox5;
     private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XNumberField xNumberField3;
     private com.rameses.rcp.control.XNumberField xNumberField4;
