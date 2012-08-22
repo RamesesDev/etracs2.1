@@ -247,7 +247,8 @@ public class RPTBillingService
 		bill.item.sefpriorint 	= 0.0
 	}
 	
-	void executeBillingRules( bill ) {
+	@ProxyMethod 
+	public def executeBillingRules( bill ) {
 		def facts = createFacts( bill  )
         def actionList = ruleService.createRuleAction()
 		buildActionCommands( bill, facts, actionList )
@@ -256,6 +257,7 @@ public class RPTBillingService
         ruleService.execute( RULESET, facts, [actionList:actionList], 'DISCOUNT' )
         ruleService.execute( RULESET, facts, [actionList:actionList], 'SUMMARY' )
         summarizeBillInfo( bill )
+		return bill 
 	}
 	
     

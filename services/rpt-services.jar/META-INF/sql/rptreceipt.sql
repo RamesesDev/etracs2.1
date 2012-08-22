@@ -85,3 +85,13 @@ SELECT
 FROM rptledger rl  
 INNER JOIN faaslist fl ON rl.faasid = fl.objid   
 WHERE rl.objid = $P{ledgerid} 
+
+
+[getPaidInstallments]
+SELECT *
+FROM rptcompromise_credit 
+WHERE receiptid = $P{receiptid} 
+
+
+
+
