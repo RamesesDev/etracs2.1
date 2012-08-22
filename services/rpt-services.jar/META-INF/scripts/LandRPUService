@@ -484,6 +484,7 @@ class LandRPUService
     @ProxyMethod
     public List lookupLandAdjustments( lguid, ry, classid, searchText, params) {
 		lguid = (lguid == null ? '%' : lguid )
+		classid = ( classid == null ? '%' : classid )
         def searchValue = (searchText ? searchText+'%' : '%')
         def criteria = [lguid:lguid, ry:ry, classidvalue:classid, classid:'%'+classid+'%', code:searchValue ]
         return getListByName('landrpu:lookupAdjType', criteria, params, 'la.objid') 
