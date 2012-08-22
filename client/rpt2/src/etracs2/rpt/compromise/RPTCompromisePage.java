@@ -143,7 +143,7 @@ public class RPTCompromisePage extends javax.swing.JPanel {
         formPanel1.add(xLabel14);
 
         xLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel15.setText("#{entity.info.startyear}  + \" - \" +  ${entity.info.startqtr}");
+        xLabel15.setText("#{entity.info.startyear}, #{entity.info.startqtr}Q");
         xLabel15.setCaption("Start Year / Qtr");
         xLabel15.setCaptionWidth(120);
         xLabel15.setFont(new java.awt.Font("Arial", 1, 11));
@@ -152,7 +152,7 @@ public class RPTCompromisePage extends javax.swing.JPanel {
         formPanel1.add(xLabel15);
 
         xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel16.setText("#{entity.info.endyear} + \" - \" + ${entity.info.endqtr}");
+        xLabel16.setText("#{entity.info.endyear}, #{entity.info.endqtr}Q");
         xLabel16.setCaption("End Year / Qtr");
         xLabel16.setCaptionWidth(120);
         xLabel16.setFont(new java.awt.Font("Arial", 1, 11));

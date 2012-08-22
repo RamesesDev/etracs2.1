@@ -178,7 +178,7 @@
                         </LineBorder>
                       </Border>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="#{entity.info.startyear}  + &quot; - &quot; +  ${entity.info.startqtr}"/>
+                    <Property name="text" type="java.lang.String" value="#{entity.info.startyear}, #{entity.info.startqtr}Q"/>
                     <Property name="caption" type="java.lang.String" value="Start Year / Qtr"/>
                     <Property name="captionWidth" type="int" value="120"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -199,7 +199,7 @@
                         </LineBorder>
                       </Border>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="#{entity.info.endyear} + &quot; - &quot; + ${entity.info.endqtr}"/>
+                    <Property name="text" type="java.lang.String" value="#{entity.info.endyear}, #{entity.info.endqtr}Q"/>
                     <Property name="caption" type="java.lang.String" value="End Year / Qtr"/>
                     <Property name="captionWidth" type="int" value="120"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">

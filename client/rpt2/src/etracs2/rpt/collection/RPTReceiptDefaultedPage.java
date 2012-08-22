@@ -13,10 +13,11 @@ import java.math.BigDecimal;
  *
  * @author  jzamora
  */
-public class RPTReceiptByCompromiseInstallment extends javax.swing.JPanel {
+@StyleSheet("etracs2/tc/collection/CollectionPage.style")
+public class RPTReceiptDefaultedPage extends javax.swing.JPanel {
     
     /** Creates new form GeneralCollectionPage */
-    public RPTReceiptByCompromiseInstallment() {
+    public RPTReceiptDefaultedPage() {
         initComponents();
     }
     
@@ -242,7 +243,7 @@ public class RPTReceiptByCompromiseInstallment extends javax.swing.JPanel {
         jPanel7.setPreferredSize(new java.awt.Dimension(100, 120));
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Compromise Agreement Information");
+        xTitledBorder1.setTitle("Property Information");
         formPanel3.setBorder(xTitledBorder1);
         formPanel3.setPreferredSize(new java.awt.Dimension(1524, 90));
 
@@ -250,29 +251,29 @@ public class RPTReceiptByCompromiseInstallment extends javax.swing.JPanel {
         formPanel4.setPadding(new java.awt.Insets(0, 0, 0, 0));
         formPanel4.setShowCaption(false);
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel1.setCaption("Txn No.");
+        xLabel1.setCaption("TD No.");
         xLabel1.setCaptionWidth(60);
         xLabel1.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xLabel1.setDepends(new String[] {"selectedItem"});
-        xLabel1.setName("compromise.txnno");
-        xLabel1.setPreferredSize(new java.awt.Dimension(75, 19));
+        xLabel1.setName("selectedItem.tdno");
+        xLabel1.setPreferredSize(new java.awt.Dimension(180, 19));
         formPanel4.add(xLabel1);
 
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel2.setCaption("Taxpayer ");
+        xLabel2.setCaption("PIN");
         xLabel2.setCaptionWidth(60);
         xLabel2.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xLabel2.setDepends(new String[] {"selectedItem"});
-        xLabel2.setName("compromise.secondpartyname");
-        xLabel2.setPreferredSize(new java.awt.Dimension(235, 19));
+        xLabel2.setName("selectedItem.pin");
+        xLabel2.setPreferredSize(new java.awt.Dimension(180, 19));
         formPanel4.add(xLabel2);
 
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel3.setCaption("Lot No.");
-        xLabel3.setCaptionWidth(55);
+        xLabel3.setCaption("Kind");
+        xLabel3.setCaptionWidth(100);
         xLabel3.setDepends(new String[] {"selectedItem"});
-        xLabel3.setName("compromise.cadastrallotno");
-        xLabel3.setPreferredSize(new java.awt.Dimension(120, 19));
+        xLabel3.setName("selectedItem.rputype");
+        xLabel3.setPreferredSize(new java.awt.Dimension(150, 19));
         formPanel4.add(xLabel3);
 
         formPanel3.add(formPanel4);
@@ -281,30 +282,30 @@ public class RPTReceiptByCompromiseInstallment extends javax.swing.JPanel {
         formPanel5.setPadding(new java.awt.Insets(0, 0, 0, 0));
         formPanel5.setShowCaption(false);
         xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel5.setCaption("Txn Date");
+        xLabel5.setCaption("Location");
         xLabel5.setCaptionWidth(60);
         xLabel5.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xLabel5.setDepends(new String[] {"selectedItem"});
-        xLabel5.setName("compromise.txndate");
-        xLabel5.setPreferredSize(new java.awt.Dimension(75, 19));
+        xLabel5.setName("selectedItem.barangay");
+        xLabel5.setPreferredSize(new java.awt.Dimension(180, 19));
         formPanel5.add(xLabel5);
 
         xLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel6.setCaption("TD No.");
+        xLabel6.setCaption("Lot No.");
         xLabel6.setCaptionWidth(60);
         xLabel6.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xLabel6.setDepends(new String[] {"selectedItem"});
-        xLabel6.setName("compromise.tdno");
-        xLabel6.setPreferredSize(new java.awt.Dimension(235, 19));
+        xLabel6.setName("selectedItem.cadastrallotno");
+        xLabel6.setPreferredSize(new java.awt.Dimension(180, 19));
         formPanel5.add(xLabel6);
 
         xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xLabel11.setCaption("Amount");
-        xLabel11.setCaptionWidth(55);
+        xLabel11.setCaption("Assessed Value");
+        xLabel11.setCaptionWidth(100);
         xLabel11.setDepends(new String[] {"selectedItem"});
-        xLabel11.setName("compromise.amount");
-        xLabel11.setPreferredSize(new java.awt.Dimension(120, 19));
+        xLabel11.setName("assessedvalue");
+        xLabel11.setPreferredSize(new java.awt.Dimension(150, 19));
         formPanel5.add(xLabel11);
 
         formPanel3.add(formPanel5);
@@ -348,10 +349,10 @@ public class RPTReceiptByCompromiseInstallment extends javax.swing.JPanel {
         xLabel12.setName("errorMsg");
         jPanel8.add(xLabel12, java.awt.BorderLayout.SOUTH);
 
-        xDataTable1.setHandler("installmentListHandler");
+        xDataTable1.setHandler("listHandler");
         xDataTable1.setImmediate(true);
         xDataTable1.setIndex(-100);
-        xDataTable1.setName("selectedInstallment");
+        xDataTable1.setName("selectedItem");
         jPanel8.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
         jPanel6.add(jPanel8, java.awt.BorderLayout.CENTER);

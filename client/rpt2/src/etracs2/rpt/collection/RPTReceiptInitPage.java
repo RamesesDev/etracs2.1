@@ -39,12 +39,12 @@ public class RPTReceiptInitPage extends javax.swing.JPanel {
         formPanel3 = new com.rameses.rcp.util.FormPanel();
         xRadio3 = new com.rameses.rcp.control.XRadio();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
-        formPanel4 = new com.rameses.rcp.util.FormPanel();
-        xRadio4 = new com.rameses.rcp.control.XRadio();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         formPanel5 = new com.rameses.rcp.util.FormPanel();
         xRadio5 = new com.rameses.rcp.control.XRadio();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
+        formPanel4 = new com.rameses.rcp.util.FormPanel();
+        xRadio4 = new com.rameses.rcp.control.XRadio();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         jLabel1 = new javax.swing.JLabel();
         xButton1 = new com.rameses.rcp.control.XButton();
 
@@ -94,7 +94,7 @@ public class RPTReceiptInitPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("Payment Options");
         formPanel2.setBorder(xTitledBorder2);
-        formPanel2.setPreferredSize(new java.awt.Dimension(480, 200));
+        formPanel2.setPreferredSize(new java.awt.Dimension(5200, 210));
         formPanel2.setShowCaption(false);
         xRadio1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xRadio1.setMnemonic('a');
@@ -136,7 +136,7 @@ public class RPTReceiptInitPage extends javax.swing.JPanel {
         xRadio3.setName("payoption");
         xRadio3.setOpaque(false);
         xRadio3.setOptionValue("advance");
-        xRadio3.setPreferredSize(new java.awt.Dimension(130, 15));
+        xRadio3.setPreferredSize(new java.awt.Dimension(200, 15));
         xRadio3.setShowCaption(false);
         formPanel3.add(xRadio3);
 
@@ -150,11 +150,42 @@ public class RPTReceiptInitPage extends javax.swing.JPanel {
 
         formPanel2.add(formPanel3);
 
+        formPanel5.setCaptionBorder(null);
+        formPanel5.setCaptionPadding(new java.awt.Insets(0, 0, 0, 0));
+        formPanel5.setCellpadding(new java.awt.Insets(0, 30, 0, 0));
+        formPanel5.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        formPanel5.setPadding(new java.awt.Insets(2, 0, 2, 0));
+        formPanel5.setPreferredSize(new java.awt.Dimension(0, 25));
+        formPanel5.setShowCaption(false);
+        xRadio5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xRadio5.setMnemonic('l');
+        xRadio5.setText("Compromise Payment");
+        xRadio5.setCaption("Remote ");
+        xRadio5.setFont(new java.awt.Font("Arial", 0, 12));
+        xRadio5.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xRadio5.setName("payoption");
+        xRadio5.setOpaque(false);
+        xRadio5.setOptionValue("compromise");
+        xRadio5.setPreferredSize(new java.awt.Dimension(200, 15));
+        xRadio5.setShowCaption(false);
+        formPanel5.add(xRadio5);
+
+        xLookupField2.setCaption("Txn No.");
+        xLookupField2.setCaptionWidth(60);
+        xLookupField2.setDepends(new String[] {"payoption"});
+        xLookupField2.setExpression("#{txnno}");
+        xLookupField2.setHandler("lookupCompromise");
+        xLookupField2.setName("compromise");
+        xLookupField2.setPreferredSize(new java.awt.Dimension(200, 21));
+        formPanel5.add(xLookupField2);
+
+        formPanel2.add(formPanel5);
+
         formPanel4.setCaptionBorder(null);
         formPanel4.setCaptionPadding(new java.awt.Insets(0, 0, 0, 0));
         formPanel4.setCellpadding(new java.awt.Insets(0, 30, 0, 0));
         formPanel4.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        formPanel4.setPadding(new java.awt.Insets(5, 0, 5, 0));
+        formPanel4.setPadding(new java.awt.Insets(2, 0, 2, 0));
         formPanel4.setPreferredSize(new java.awt.Dimension(0, 30));
         formPanel4.setShowCaption(false);
         xRadio4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -166,7 +197,7 @@ public class RPTReceiptInitPage extends javax.swing.JPanel {
         xRadio4.setName("payoption");
         xRadio4.setOpaque(false);
         xRadio4.setOptionValue("remote");
-        xRadio4.setPreferredSize(new java.awt.Dimension(130, 15));
+        xRadio4.setPreferredSize(new java.awt.Dimension(200, 15));
         xRadio4.setShowCaption(false);
         formPanel4.add(xRadio4);
 
@@ -181,37 +212,6 @@ public class RPTReceiptInitPage extends javax.swing.JPanel {
         formPanel4.add(xComboBox1);
 
         formPanel2.add(formPanel4);
-
-        formPanel5.setCaptionBorder(null);
-        formPanel5.setCaptionPadding(new java.awt.Insets(0, 0, 0, 0));
-        formPanel5.setCellpadding(new java.awt.Insets(0, 30, 0, 0));
-        formPanel5.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
-        formPanel5.setPadding(new java.awt.Insets(5, 0, 5, 0));
-        formPanel5.setPreferredSize(new java.awt.Dimension(0, 30));
-        formPanel5.setShowCaption(false);
-        xRadio5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        xRadio5.setMnemonic('l');
-        xRadio5.setText("Compromise");
-        xRadio5.setCaption("Remote ");
-        xRadio5.setFont(new java.awt.Font("Arial", 0, 12));
-        xRadio5.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        xRadio5.setName("payoption");
-        xRadio5.setOpaque(false);
-        xRadio5.setOptionValue("compromise");
-        xRadio5.setPreferredSize(new java.awt.Dimension(130, 15));
-        xRadio5.setShowCaption(false);
-        formPanel5.add(xRadio5);
-
-        xLookupField2.setCaption("Txn No.");
-        xLookupField2.setCaptionWidth(60);
-        xLookupField2.setDepends(new String[] {"payoption"});
-        xLookupField2.setExpression("#{txnno}");
-        xLookupField2.setHandler("lookupCompromise");
-        xLookupField2.setName("compromise");
-        xLookupField2.setPreferredSize(new java.awt.Dimension(200, 21));
-        formPanel5.add(xLookupField2);
-
-        formPanel2.add(formPanel5);
 
         formPanel1.add(formPanel2);
 
@@ -232,11 +232,13 @@ public class RPTReceiptInitPage extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 85, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 509, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(434, 434, 434)
+                .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 85, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(108, Short.MAX_VALUE))
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 559, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(58, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)

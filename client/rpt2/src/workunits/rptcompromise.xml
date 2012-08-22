@@ -25,6 +25,7 @@
 import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*
 
 public class RPTCompromiseController 
 {
@@ -33,7 +34,10 @@ public class RPTCompromiseController
     
     @Service('RPTCompromiseService')
     def svc 
-	
+    
+    @Service("ReportParameterService")
+    def svcParams
+    
     @Service('DateService')
     def dateSvc 
     
@@ -138,10 +142,20 @@ public class RPTCompromiseController
         }
     }
     
+    def report = [
+        getReportName : { return 'rptcompromise' },
+        getReportData : { return entity },
+        getParameters : { return svcParams.getStandardParameter( OsirisContext.env.USERNAME ) }
+    ] as ServerReportModel;
+    
     def preview() {
+        report.viewReport()
+        return 'preview' 
     }
     
-    def print() {
+    void print() {
+        report.viewReport()
+        ReportUtil.print( report.report, true )
     }
     
     /*------------------------------------------------------------------------
@@ -230,5 +244,6 @@ public class RPTCompromiseController
     <pages>
         <page name="init" template="etracs2.rpt.compromise.RPTCompromiseInitPage"/>
         <page template="etracs2.rpt.compromise.RPTCompromisePage"/>
+        <page name="preview" template="etracs2.common.PreviewPage" />
     </pages>
 </workunit>

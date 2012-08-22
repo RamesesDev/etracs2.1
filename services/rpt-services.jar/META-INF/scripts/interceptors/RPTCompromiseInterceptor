@@ -34,6 +34,13 @@ public class RPTCompromiseInterceptor
 					receiptamount: receipt.info.amount 
 				])
 			}
+			else if( sys_option.action == 'compromise' && sys_option.type =='installment' ) {
+				svc.updateInstallmentPayment( receipt, receipt._items )
+				svc.closeFullyPaidCompromise( sys_option.compromiseid )
+			}
+			else if( sys_option.action == 'compromise' && sys_option.type =='default_payment' ) {
+				svc.postDefaultPayment( sys_option.compromiseid, receipt, receipt._items )
+			}
 		}
 	}
 	

@@ -121,6 +121,7 @@
 		<field name="sefpaid" type="decimal" required="true" />
 		<field name="sefint" type="decimal" required="true" />
 		<field name="sefintpaid" type="decimal" required="true" />
+		<field name="total" type="decimal" required="true" />
 		<field name="fullypaid" type="boolean" required="true" />
 	</element>
 	
@@ -137,9 +138,11 @@
 	
 	<element name="rptcompromise_credit" tablename="rptcompromise_credit">
 		<field name="objid" primary="true"/>
+		<field name="receiptid" required="true"/>
 		<field name="ledgerid" required="true"/>
 		<field name="rptcompromiseid" required="true"/>
-		<field name="installmentid" required="true"/>
+		<field name="installmentid" />
+		<field name="itemid" />
 		<field name="collectorname" required="true"/>
 		<field name="collectortitle" required="true"/>
 		<field name="orno" required="true"/>

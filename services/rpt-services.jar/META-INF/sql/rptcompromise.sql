@@ -18,6 +18,7 @@ SELECT
 	f.basic + f.basicint + f.sef + f.sefint as total 
 FROM rptcompromise_item f
 WHERE f.rptcompromiseid  = $P{rptcompromiseid}
+ORDER BY f.iyear, f.iqtr 
 
 [getRPTCompromiseInstallments]
 SELECT * 
@@ -64,8 +65,47 @@ DELETE FROM rptcompromise_installment
 WHERE rptcompromiseid = $P{rptcompromiseid} 
 
 [getBasicSefPreviousAccounts]
-
 SELECT objid, systype
 FROM incomeaccount 
 WHERE systype IN ('RPT_BASICPREV','RPT_BASICPREVINT','RPT_SEFPREV','RPT_SEFPREVINT') 
   AND accttitle like '%PREVIOUS%' 
+  
+[getOpenInstallments]
+SELECT  * 
+FROM rptcompromise_installment 
+WHERE rptcompromiseid = $P{rptcompromiseid} 
+  AND (fullypaid = 0 or amount - amtpaid > 0 )
+ORDER BY installmentno 
+
+[updateInstallmentPayment]
+UPDATE rptcompromise_installment SET 
+	fullypaid = CASE WHEN amount = amtpaid + $P{amtpaid} THEN 1 ELSE 0 END ,
+	amtpaid = amtpaid + $P{amtpaid}
+WHERE objid = $P{objid}	 
+	
+	
+[getFaasInfo]	
+SELECT tdno, fullpin, cadastrallotno, barangay, totalmv, totalav 
+FROM faaslist 
+WHERE objid = $P{objid}
+  
+
+[getOpenLedgerById]
+SELECT 
+	objid, taxpayerid, fullpin AS pin, tdno , rputype, assessedvalue, 
+    barangay, classcode, txntype, cadastrallotno, taxpayername, 
+	CASE WHEN lastqtrpaid = 4 AND partialbasic = 0.0 THEN lastyearpaid +1 ELSE lastyearpaid END AS fromyear, 
+	CASE WHEN lastqtrpaid = 4 THEN 1 ELSE lastqtrpaid + 1 END AS fromqtr, 
+    lastyearpaid, lastqtrpaid, 
+	0 AS toyear, 0 AS toqtr, partialbasic, partialbasicint, partialsef,  partialsefint, 
+    0.0 AS basic, 0.0 AS basicint, 0.0 AS basicdisc, 
+    0.0 AS sef, 0.0 AS sefint, 0.0 AS sefdisc, administratorname, administratoraddress 
+FROM rptledger 
+WHERE objid = $P{objid} AND docstate = 'APPROVED'
+
+
+ 
+[getCredits]
+SELECT *
+FROM rptcompromise_credit 
+WHERE receiptid = $P{receiptid} 
