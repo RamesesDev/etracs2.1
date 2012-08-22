@@ -105,3 +105,5 @@ WHERE taxpayerid = $P{taxpayerid}
 select taxpayerid from faaslist where taxpayerid = $P{taxpayerid}  
 
 
+[getFaasByTdNo]
+SELECT * FROM faaslist WHERE tdno = $P{tdno}
