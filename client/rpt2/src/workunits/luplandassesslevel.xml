@@ -21,6 +21,7 @@ class LandAssessLevelLookupController extends LookupModel
     
     def onselect
     def searchText
+    def lguid 
     def ry
     def selected
     
@@ -50,7 +51,7 @@ class LandAssessLevelLookupController extends LookupModel
     List fetchList( Map params ) { 
         def s = search
         if( !s ) s = searchText 
-        def list = svc.lookupAssessLevel( ry, s, params)
+        def list = svc.lookupAssessLevel( lguid, ry, s, params)
         if( list ) return list
         throw new Exception("Record not found.")
     }

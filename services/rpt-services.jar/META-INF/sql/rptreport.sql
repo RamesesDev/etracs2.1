@@ -22,6 +22,7 @@ FROM rptledger
 WHERE barangay = $P{barangay} 
   AND docstate = 'APPROVED' AND taxable = 1  
   AND ( lastyearpaid < $P{currentyr} OR (lastyearpaid = $P{currentyr} AND lastqtrpaid < 4 ) )  
+  AND undercompromised = 0 
 ORDER BY taxpayername, tdno     
  
 
@@ -29,7 +30,7 @@ ORDER BY taxpayername, tdno
 SELECT 
 	objid, tdno, fullpin, barangay, classcode, 
 	totalareasqm, totalareaha, totalmv, totalav, 
-	cadastrallotno, txntype, rputype 
+	cadastrallotno, txntype, rputype, effectivityyear 
 FROM faaslist 
 WHERE taxpayerid = $P{taxpayerid}
   AND docstate = 'CURRENT' 
@@ -39,7 +40,7 @@ ORDER BY fullpin
 SELECT 
 	objid, tdno, fullpin, barangay, classcode, 
 	totalareasqm, totalareaha, totalmv, totalav, 
-	cadastrallotno, txntype, rputype 
+	cadastrallotno, txntype, rputype, effectivityyear 
 FROM faaslist 
 WHERE objid = $P{objid} 
   AND docstate = 'CURRENT'  
@@ -135,6 +136,7 @@ FROM faaslist fl
 WHERE fl.annotated = 1  
   AND fl.docstate = 'CURRENT'  
   AND fa.docstate = 'APPROVED'  
+${orderby} 
 
 #----------------------------------------------------------------------
 #
@@ -666,3 +668,29 @@ WHERE f.txntimestamp < $P{endingtimestamp}
   AND f.taxable = 0   
 GROUP BY e.objid, e.exemptdesc 
 ORDER BY e.orderno  
+
+
+
+[getMasterList]
+SELECT t.* FROM (  
+	SELECT 
+		docstate, ownername, fullpin, tdno, titleno, cadastrallotno,  
+		rputype, classcode, totalareaha, totalareasqm, totalmv, totalav, effectivityyear, 
+		prevtdno, prevowner, prevmv, prevav, 
+		null as cancelledbytdnos, null as cancelreason, canceldate 
+	FROM faaslist 
+	WHERE docstate = 'CURRENT'  
+
+	UNION 
+
+	SELECT 
+		docstate, ownername, fullpin, tdno, titleno, cadastrallotno,   
+		rputype, classcode, totalareaha, totalareasqm, totalmv, totalav, effectivityyear,  
+		prevtdno, prevowner, prevmv, prevav, 
+		cancelledbytdnos, cancelreason, canceldate 
+	FROM faaslist  
+	WHERE docstate = 'CANCELLED'   
+	  AND YEAR(canceldate) = $P{currentyear}  
+) t 
+${orderby} 
+

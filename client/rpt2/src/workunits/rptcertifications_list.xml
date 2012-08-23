@@ -4,6 +4,8 @@
         <invoker folderid="/menu/rpt/cert" caption="Issued Certifications" mnemonic="C" permission="rptcertification_list.view" index="100" />
         <invoker folderid="/txn/rpt/cert" caption="Issued Certifications" mnemonic="C" permission="rptcertification_list.view" index="100" />
         
+        <invoker type="quick_launcher" code="RPTC00" caption="Issued Certifications" mnemonic="C" permission="rptcertification_list.view" index="100" />
+        
     </invokers>
     <code lang="groovy">
 <![CDATA[

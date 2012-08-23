@@ -1,0 +1,7 @@
+"year" [readonly == false] {
+    readonly:false;
+}
+
+"year" [readonly == true] {
+    readonly:true;
+}

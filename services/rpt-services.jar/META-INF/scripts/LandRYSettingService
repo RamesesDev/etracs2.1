@@ -11,8 +11,15 @@ public class LandRYSettingService
 	@Service('LogService')
     def logSvc
 	
+	@Service('RYSettingService')
+	def rysettingSvc
+	
+	@Service('Var')
+	def var 
+	
 	def SCHEMA_NAME = 'landrysetting:landrysetting' 
-    
+	
+	def SETTING_TYPE = 'land' 
     
     @ProxyMethod
     public boolean settingExists() {
@@ -35,16 +42,35 @@ public class LandRYSettingService
     public def create( entity ) {
         entity.schemaname = 'landrysetting:landrysetting'
         entity.schemaversion = '1.0'
+		if( ! entity.lgus ) {
+			entity.lgus = [[lguid:var.lgu_index, lguname:var.lgu_name, settingtype:SETTING_TYPE]]
+		}
+		entity.appliedto = entity.lgus.lguname.join(', ')
         validate( entity )
         em.create( entity.schemaname, entity )
         createAssessLevels( entity )
+		rysettingSvc.createLgus( SETTING_TYPE, entity )
         entity.lcuv = createLCUV( entity );
         logSvc.log('CREATE', 'LandRYSetting', entity.objid )
         return entity 
     }
-    
+	
+	@ProxyMethod
+	public Map copy( objid, newry ) {
+		//allow only if there are still lgus not referenced 
+		def lgus = rysettingSvc.lookupUnreferencedLgu( SETTING_TYPE, newry, null, null )
+		if( ! lgus ) throw new Exception('All LGUs has already been referenced.')
+		
+		def data = reviseSetting(newry+1, newry )
+		data.entity.ry = newry 
+		data.entity.appliedto = null 
+		rysettingSvc.removeLgus( SETTING_TYPE, data.entity.objid )
+		em.update(data.entity.schemaname, data.entity )
+		return open( data.entity.objid )
+	}
+	
     @ProxyMethod
-    public Map copySetting( newry, copyYear ) {
+    public Map reviseSetting( newry, copyYear ) {
         required('Copy Year', copyYear )
         if( newry <= copyYear ) throw new Exception('New Revision Year must be greater than copy year.')
         def setting = em.sqlContext.createNamedQuery('landrysetting:getIdByRy').setParameter('ry', copyYear).singleResult
@@ -62,7 +88,8 @@ public class LandRYSettingService
 		copyAssessLevels( setting.objid, oldsettingid )
         copyLcuvs( setting.objid, oldsettingid )
         copyLandAdjustments( setting.objid, oldsettingid )
-		copyLandActualUseAdjustments( setting.objid, oldsettingid )        
+		copyLandActualUseAdjustments( setting.objid, oldsettingid )      
+		rysettingSvc.copyLgus( SETTING_TYPE, setting.objid, oldsettingid)
         return open( setting.objid )
     }
 	
@@ -135,24 +162,28 @@ public class LandRYSettingService
 	
     @ProxyMethod
     public def update( entity ) {
+		entity.appliedto = entity.lgus.lguname.join(', ')
         validate( entity )
         em.update( entity.schemaname, entity, { diff ->
             logSvc.logB( 'UPDATE', 'LandRYSetting', entity.objid, '', diff )
         } as UpdateChangeHandler )
+		rysettingSvc.createLgus(SETTING_TYPE, entity )
         return entity 
     }
-    
+	
+
+	
     @ProxyMethod 
     public Map open( objid ) {
         def data = [:]
         def entity = em.read('landrysetting', [objid:objid])
         if( !entity ) throw new Exception('Unable to load Revision Setting.\nVerify that the record still exists.' )
-        data.entity = entity 
+		entity.lgus = rysettingSvc.loadLgus( SETTING_TYPE, objid )
+		data.entity  = entity 
         data.assessLevels = loadAssessLevels( objid );
         data.lcuv = loadLCUV( objid );
         data.landadjustments = loadLandAdjustments( objid );
         data.landactualuseadjustments = loadLandActualUseAdjustments( objid );
-        
         return data;
     }
     
@@ -167,6 +198,7 @@ public class LandRYSettingService
         removeLCUVs( objid );
         removeAssessLevels( objid );
         removeRYSetting( objid );
+		rysettingSvc.removeLgus(SETTING_TYPE, objid) 
     }
     
     /*----------------------------------------------------------
@@ -392,7 +424,6 @@ public class LandRYSettingService
     
     void validate( entity ) {
         if( entity.ry <= 0 ) throw new Exception('Revision Year must be greater than zero.')
-        checkDuplicateSetting( entity )
         em.validate(entity.schemaname, entity )
     }
     
@@ -445,4 +476,11 @@ public class LandRYSettingService
 			throw new Exception( msg )
 	}
 	
+	private def getListByQuery(namedQuery, values, params ) {
+		if( ! params ) params = [ _start:0, _limit:50 ]
+		return em.sqlContext.createNamedQuery( namedQuery ).setParameters(values)
+					.setFirstResult( params._start )
+					.setMaxResults( params._limit )
+					.resultList
+	}
 }

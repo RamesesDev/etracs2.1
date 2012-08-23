@@ -1,34 +1,48 @@
 [getList]  
-SELECT o.* FROM bpapplicationlisting o 
+SELECT p.txnno AS permitno, o.* 
+FROM bpapplicationlisting o 
+	LEFT JOIN bppermit p ON o.businessid = p.businessid 
 WHERE  o.docstate = $P{docstate} 
 
+
 [getListByPermitNo]  
-SELECT o.* FROM bpapplicationlisting o 
+SELECT p.txnno AS permitno, o.* 
+FROM bpapplicationlisting o 
+	LEFT JOIN bppermit p ON o.businessid = p.businessid 
 WHERE o.txnno = $P{search} 
 AND   o.docstate = $P{docstate} 
 
 [getListByTradeName]  
-SELECT o.* FROM bpapplicationlisting o  
+SELECT p.txnno AS permitno, o.* 
+FROM bpapplicationlisting o 
+	LEFT JOIN bppermit p ON o.businessid = p.businessid 
 WHERE o.tradename LIKE $P{search}  
 AND   o.docstate = $P{docstate} 
 
 [getListByBusinessName]  
-SELECT o.* FROM bpapplicationlisting o  
+SELECT p.txnno AS permitno, o.* 
+FROM bpapplicationlisting o 
+	LEFT JOIN bppermit p ON o.businessid = p.businessid 
 WHERE o.tradename LIKE $P{search}  
 AND   o.docstate = $P{docstate} 
 
 [getListByBusinessAddress]  
-SELECT o.* FROM bpapplicationlisting o 
+SELECT p.txnno AS permitno, o.* 
+FROM bpapplicationlisting o 
+	LEFT JOIN bppermit p ON o.businessid = p.businessid 
 WHERE o.businessaddress LIKE $P{search}  
 AND   o.docstate = $P{docstate} 
 
 [getListByTaxpayerName]  
-SELECT o.* FROM bpapplicationlisting o 
-WHERE o.taxpayername LIKE $P{search} 
+SELECT p.txnno AS permitno, o.* 
+FROM bpapplicationlisting o 
+	LEFT JOIN bppermit p ON o.businessid = p.businessid WHERE o.taxpayername LIKE $P{search} 
 AND   o.docstate = $P{docstate} 
 
 [getListByTaxpayerAddress]  
-SELECT o.* FROM bpapplicationlisting o 
+SELECT p.txnno AS permitno, o.* 
+FROM bpapplicationlisting o 
+	LEFT JOIN bppermit p ON o.businessid = p.businessid 
 WHERE o.taxpayeraddress LIKE $P{search} 
 AND   o.docstate = $P{docstate} 
 

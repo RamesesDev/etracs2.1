@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/bp/txn" caption="Business Applications" permission="bplicensing.applicationlist" target="window"/>
+        <invoker folderid="/menu/bp/apps" caption="Business Applications" permission="bplicensing.applicationlist" target="window"/>
         <invoker folderid="/txn/bp/apps" caption="Business Applications" permission="bplicensing.applicationlist" target="window"/>
         <!-- 
         <invoker type="home.action" category="Business" caption="Business Applications" permission="bplicensing.applicationlist" target="window" icon="images/folder.png"/>

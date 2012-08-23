@@ -60,7 +60,10 @@ class ETRACSUserService
 	public def getCashierList( searchText, params ) {
 		if( !params ) params = [:];
 		params.searchText = searchText;
-		return getUsersByTagid( CASHIER_ROLE, params );
+		return getUsersByTagid( CASHIER_ROLE, params ).each {
+			it.cashiername = it.formalname
+			it.cashiertitle = it.jobtitle
+		};
 	}
     
 	@ProxyMethod

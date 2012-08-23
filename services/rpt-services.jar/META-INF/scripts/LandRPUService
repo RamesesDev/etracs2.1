@@ -21,6 +21,8 @@ class LandRPUService
 	@Env
 	def env
     
+	def LAND_RPU_ITEM_SCHEMA = 'landrpuitem'
+	
 	
 	@ProxyMethod
 	public Map initGeneralRevision( faas, newrysetting ) {
@@ -29,6 +31,15 @@ class LandRPUService
 		reviseAdjustments( faas, newrysetting )
 		recalculate( faas ) 
 		return faas 
+	}
+	
+	@ProxyMethod 
+	public void insertRPUItems( faas ) {
+		faas.rpu.info.landdetails.each {
+			it.objid  = 'LD' + new UID()
+			it.faasid = faas.objid 
+			em.create(LAND_RPU_ITEM_SCHEMA, it )
+		}
 	}
 	
 	
@@ -448,30 +459,34 @@ class LandRPUService
     * Lookup Support
     ----------------------------------------------------------------------------------*/
     @ProxyMethod
-    public List lookupSubclass( ry, searchText, params) {
+    public List lookupSubclass( lguid, ry, searchText, params) {
+		lguid = (lguid == null ? '%' : lguid )
         def searchValue = (searchText ? searchText+'%' : '%')
-        def criteria = [ry:ry, subclasscode:searchValue]
+        def criteria = [lguid:lguid, ry:ry, subclasscode:searchValue]
         return getListByName('landrpu:lookupSubclass', criteria, params, 's.objid')
     }
     
     @ProxyMethod
-    public List lookupAssessLevel( ry, searchText, params) {
+    public List lookupAssessLevel( lguid, ry, searchText, params) {
+		lguid = (lguid == null ? '%' : lguid )
         def searchValue = (searchText ? searchText+'%' : '%')
-        def criteria = [ry:ry, classcode:searchValue]
+        def criteria = [lguid:lguid, ry:ry, classcode:searchValue]
         return getListByName('landrpu:lookupAssessLevel', criteria, params, 'l.objid')
     }
     
     @ProxyMethod
-    public List lookupStripping( ry, actualuseid, searchText, params) {
+    public List lookupStripping( lguid, ry, actualuseid, searchText, params) {
+		lguid = (lguid == null ? '%' : lguid )
         def searchValue = (searchText ? searchText : '-1')
-        def criteria = [ry:ry, actualuseid:actualuseid, striplevel:searchValue ]
+        def criteria = [lguid:lguid, ry:ry, actualuseid:actualuseid, striplevel:searchValue ]
         return getListByName('landrpu:lookupStripping', criteria, params, 's.objid')
     }
     
     @ProxyMethod
-    public List lookupLandAdjustments( ry, classid, searchText, params) {
+    public List lookupLandAdjustments( lguid, ry, classid, searchText, params) {
+		lguid = (lguid == null ? '%' : lguid )
         def searchValue = (searchText ? searchText+'%' : '%')
-        def criteria = [ry:ry, classidvalue:classid, classid:'%'+classid+'%', code:searchValue ]
+        def criteria = [lguid:lguid, ry:ry, classidvalue:classid, classid:'%'+classid+'%', code:searchValue ]
         return getListByName('landrpu:lookupAdjType', criteria, params, 'la.objid') 
     }
     

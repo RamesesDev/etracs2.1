@@ -39,12 +39,7 @@ class TaxDeclarationReportController
     }
     
     def report =[
-        getReportName : { 
-            if( data.annotated == true || data.annotated == 1 )
-                return "tdreport/tdtruecopyannotated" 
-            else
-                return "tdreport/tdtruecopyreport" 
-        },
+        getReportName : { return 'tdreport' },
         getReportData : { return data; },
         getParameters : { getStandardReportParams(); }
     ] as ServerReportModel;

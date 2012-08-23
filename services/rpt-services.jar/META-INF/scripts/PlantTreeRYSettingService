@@ -11,8 +11,14 @@ public class PlantTreeRYSettingService
 	@Service('LogService')
     def logSvc
 	
+	@Service('RYSettingService')
+	def rysettingSvc
+	
+	@Service('Var')
+	def var 
+	
 	def SCHEMA_NAME = 'planttreerysetting'
-    
+    def SETTING_TYPE = 'planttree' 
     
     @ProxyMethod
     public boolean settingExists() {
@@ -35,15 +41,34 @@ public class PlantTreeRYSettingService
     public def create( entity ) {
         entity.schemaname = 'planttreerysetting'
         entity.schemaversion = '1.0'
+		if( ! entity.lgus ) {
+			entity.lgus = [[lguid:var.lgu_index, lguname:var.lgu_name, settingtype:SETTING_TYPE]]
+		}
+		entity.appliedto = entity.lgus.lguname.join(', ')
         entity.planttreeunits = getPlantTreeUnits( entity.objid )
         validate( entity )
         em.create( entity.schemaname, entity )
+		rysettingSvc.createLgus( SETTING_TYPE, entity )
         logSvc.log('CREATE', 'PlantTreeRYSetting', entity.objid )
         return entity 
     }
+	
+	@ProxyMethod
+	public Map copy( objid, newry ) {
+		//allow only if there are still lgus not referenced 
+		def lgus = rysettingSvc.lookupUnreferencedLgu( SETTING_TYPE, newry, null, null )
+		if( ! lgus ) throw new Exception('All LGUs has already been referenced.')
+		
+		def entity = reviseSetting(newry+1, newry )
+		entity.ry = newry 
+		entity.appliedto = null 
+		rysettingSvc.removeLgus( SETTING_TYPE, entity.objid )
+		em.update(entity.schemaname, entity )
+		return open( entity.objid )
+	}
     
     @ProxyMethod
-    public Map copySetting( newry, copyYear ) {
+    public Map reviseSetting( newry, copyYear ) {
         required('Copy Year', copyYear )
         if( newry <= copyYear ) throw new Exception('New Revision Year must be greater than copy year.')
         def setting = em.sqlContext.createNamedQuery('planttreerysetting:getIdByRy').setParameter('ry', copyYear).singleResult
@@ -71,7 +96,7 @@ public class PlantTreeRYSettingService
 			ptuv.planttreerysettingid = setting.objid 
 			saveUnitValue( ptuv )
 		}
-        
+        rysettingSvc.copyLgus( SETTING_TYPE, setting.objid, settingoldid)
         return open( setting.objid )
     }
     
@@ -91,10 +116,12 @@ public class PlantTreeRYSettingService
     
     @ProxyMethod
     public def update( entity ) {
+		entity.appliedto = entity.lgus.lguname.join(', ')
         validate( entity )
         em.update( entity.schemaname, entity, { diff ->
             logSvc.logB( 'UPDATE', 'PlantTreeRYSetting', entity.objid, '', diff )
         } as UpdateChangeHandler )
+		rysettingSvc.createLgus(SETTING_TYPE, entity )
         return entity 
     }
     
@@ -102,6 +129,7 @@ public class PlantTreeRYSettingService
     public Map open( objid ) {
         def entity = em.read('planttreerysetting', [objid:objid])
         if( !entity ) throw new Exception('Unable to load Revision Setting.\nVerify that the record still exists.' )
+		entity.lgus = rysettingSvc.loadLgus( SETTING_TYPE, objid )
         return entity 
     }
     
@@ -109,6 +137,7 @@ public class PlantTreeRYSettingService
     public void remove( objid ) {
         checkRemoveAllowed( objid ) 
         removeUnitValues( objid )
+		rysettingSvc.removeLgus(SETTING_TYPE, objid) 
         em.delete('planttreerysetting', [objid:objid])
     }
     
@@ -160,7 +189,7 @@ public class PlantTreeRYSettingService
     
     void validate( entity ) {
         if( entity.ry <= 0 ) throw new Exception('Revision Year must be greater than zero.')
-        checkDuplicateSetting( entity )
+        //checkDuplicateSetting( entity )
         em.validate(entity.schemaname, entity )
     }
     

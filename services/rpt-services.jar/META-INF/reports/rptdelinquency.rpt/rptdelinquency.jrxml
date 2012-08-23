@@ -47,6 +47,8 @@
 	<field name="basicnet" class="java.math.BigDecimal"/>
 	<field name="sefnet" class="java.math.BigDecimal"/>
 	<field name="total" class="java.math.BigDecimal"/>
+	<field name="lastyearpaid" class="java.lang.Integer"/>
+	<field name="lastqtrpaid" class="java.lang.Integer"/>
 
 	<variable name="TBASICNET" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{basicnet}]]></variableExpression>
@@ -209,7 +211,7 @@
 			</band>
 		</title>
 		<pageHeader>
-			<band height="17"  isSplitAllowed="true" >
+			<band height="16"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						x="0"
@@ -231,7 +233,7 @@
 					<reportElement
 						x="101"
 						y="0"
-						width="121"
+						width="107"
 						height="16"
 						key="staticText-27"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -246,9 +248,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="222"
+						x="208"
 						y="0"
-						width="43"
+						width="31"
 						height="16"
 						key="staticText-28"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -263,9 +265,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="265"
+						x="239"
 						y="0"
-						width="66"
+						width="38"
 						height="16"
 						key="staticText-29"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -280,7 +282,7 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="331"
+						x="277"
 						y="0"
 						width="170"
 						height="16"
@@ -297,9 +299,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="501"
+						x="447"
 						y="0"
-						width="71"
+						width="64"
 						height="16"
 						key="staticText-32"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -314,9 +316,9 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="572"
+						x="511"
 						y="0"
-						width="71"
+						width="64"
 						height="16"
 						key="staticText-33"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -331,7 +333,7 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="643"
+						x="575"
 						y="0"
 						width="77"
 						height="16"
@@ -345,6 +347,23 @@
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<text><![CDATA[TOTAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="652"
+						y="0"
+						width="67"
+						height="16"
+						key="staticText-37"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[Last Yr/Qtr Paid]]></text>
 				</staticText>
 			</band>
 		</pageHeader>
@@ -375,7 +394,7 @@
 					<reportElement
 						x="101"
 						y="0"
-						width="121"
+						width="107"
 						height="14"
 						key="textField-28"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -390,9 +409,9 @@
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="222"
+						x="208"
 						y="0"
-						width="43"
+						width="31"
 						height="14"
 						key="textField-29"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -407,9 +426,9 @@
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="265"
+						x="239"
 						y="0"
-						width="66"
+						width="38"
 						height="14"
 						key="textField-30"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -424,7 +443,7 @@
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="331"
+						x="277"
 						y="0"
 						width="170"
 						height="14"
@@ -441,9 +460,9 @@
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="501"
+						x="447"
 						y="0"
-						width="71"
+						width="64"
 						height="14"
 						key="textField-33"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -458,9 +477,9 @@
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="572"
+						x="511"
 						y="0"
-						width="71"
+						width="64"
 						height="14"
 						key="textField-34"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -475,7 +494,7 @@
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="643"
+						x="575"
 						y="0"
 						width="77"
 						height="14"
@@ -489,6 +508,23 @@
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{total}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="652"
+						y="0"
+						width="67"
+						height="14"
+						key="textField-40"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{lastyearpaid} + " - " + $F{lastqtrpaid} + 'Q']]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
@@ -672,7 +708,7 @@
 				</textField>
 				<staticText>
 					<reportElement
-						x="392"
+						x="338"
 						y="3"
 						width="109"
 						height="14"
@@ -685,12 +721,12 @@
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="501"
+						x="447"
 						y="3"
-						width="71"
+						width="64"
 						height="14"
 						key="textField-37"/>
-					<box></box>
+					<box rightPadding="4"></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
@@ -698,12 +734,12 @@
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="572"
+						x="511"
 						y="3"
-						width="71"
+						width="64"
 						height="14"
 						key="textField-38"/>
-					<box></box>
+					<box rightPadding="4"></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
@@ -711,12 +747,12 @@
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="643"
+						x="575"
 						y="3"
 						width="77"
 						height="14"
 						key="textField-39"/>
-					<box></box>
+					<box rightPadding="4"></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>

@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
         <invoker folderid="/menu/tc/txn" action="init" caption="RIV (LGU)" permission="riv_lgu.create" index="5"/>
-        <invoker folderid="/menu/tc/txn" action="initCollector" caption="RIV (Collector)" permission="riv.create" index="6"/>
+        <invoker folderid="/menu/tc/txn" action="initCollector" caption="RIV (Collector)" permission="riv.collector" index="6"/>
         <invoker folderid="/menu/tc/txn" action="initRIVSale" caption="RIV (Sale)" permission="riv.salecreate" index="7"/>
         
         <invoker folderid="/txn/tc/txn" action="init" caption="RIV (LGU)" permission="riv_lgu.create" index="5"/>
@@ -215,7 +215,10 @@ class RIVController
     }
     
     def viewRIV(){
-        entity.txndate = entity.txndate.toString()
+        // for report data
+        entity.rivtxnno = entity.txnno
+        entity.rivtxndate = entity.txndate.toString()
+        
         reportName = "RIV";
         report.viewReport();
         
@@ -223,7 +226,10 @@ class RIVController
     }
     
     def viewRIS(){
-        entity.txndate = entity.txndate.toString()
+        // for report data
+        entity.rivtxnno = entity.txnno
+        entity.rivtxndate = entity.txndate.toString()
+    
         reportName = "RIS";
         report.viewReport();
         

@@ -304,6 +304,31 @@ class ConsolidationService
         rp.barangayid        = barangay.objid 
         return rp 
     }   
+	
+	@ProxyMethod
+    public void checkLedgerBalance( faasid, refdate ) {
+		//if province then check only if a ledger exists
+		//in case the ledger does not exists then bypass checking 
+		def ledger = em.sqlContext.createNamedQuery('consolidation:getLedgerByFaasId')
+						.setParameter('faasid', faasid)
+						.singleResult
+						
+        if( !ledger && var.lgu_type?.toLowerCase() != 'province' ) throw new Exception('Cannot open Ledger for FAAS ' + faas.tdno + '.')
+        
+		if( ledger ) {
+			//check clearance against FAAS issuedate 
+			def parseddate = dateSvc.parseDate( refdate, null )
+			if( ledger.docstate == 'PENDING' ) throw new Exception('Ledger is not yet approved.\nLet LandTax approve the ledger before processing the transaction.')
+			if( ledger.docstate == 'CANCELLED') throw new Exception('Ledger has already been cancelled.')
+			if( TO_BOOLEAN( ledger.taxable ) == false ) return 
+			
+			if( faasSvc.isTxnAllowedWithBalance( CONSOLIDATION_TXNTYPE ) ) return
+			
+			def errmsg = 'Ledger is not fully paid.'
+			if( ledger.assessedvalue > 0.0 && ledger.lastyearpaid < parseddate.year ) throw new Exception( errmsg )
+			if( ledger.assessedvalue > 0.0 && ledger.lastqtrpaid < 4 ) throw new Exception( errmsg )
+		}
+    }
     
     /*------------------------------------------------------------------------------------
     * ConsolidatedLand Support 
@@ -470,10 +495,10 @@ class ConsolidationService
         newfaas.info.memoranda      = consolidation.memoranda  
         newfaas.info.autonumber     = consolidation.autonumber
         newfaas.info.issuedate      = consolidation.issuedate 
+		newfaas.info.effectivityyear = consolidation.effectivityyear
+        newfaas.info.effectivityqtr  = consolidation.effectivityqtr
 		newfaas.txntimestamp 		= dateSvc.buildCustomTimeStamp( newfaas.info.issuedate ) 
         newfaas.info.autonumber     = TO_BOOLEAN( consolidation.autonumber )
-        newfaas.info.effectivityyear = consolidation.effectivityyear
-        newfaas.info.effectivityqtr  = consolidation.effectivityqtr
         newfaas.info.titletype       = consolidation.newtitletype
         newfaas.info.titleno         = consolidation.newtitleno
         newfaas.info.titledate       = consolidation.newtitledate
@@ -522,6 +547,8 @@ class ConsolidationService
         newfaas.rpu             = consolidation.rpu 
         newfaas.rpu.fullpin     = newfaas.rp.pin 
         newfaas.previousfaases  = previousfaases      
+		
+		updateFaasEffectivityBasedOnLastYearPaids( consolidation, newfaas, clands ) 
         
         em.validate( newfaas.schemaname, newfaas )
         em.create( newfaas.schemaname, newfaas )
@@ -533,6 +560,30 @@ class ConsolidationService
         
     }
     
+	/* This case allows consolidation processing with balance. 
+	** Set the consolidated faas effectivity info based on the smallest lastyearpaid of the
+	** consolidated lands. However this solution has potential double taxation for 
+	** any of the consolidated lands with earlier payments.
+	** 
+	** Alternative Soluition: Requires that all consolidated lands have the same lastyearpaid 
+	** and lastqtrpaid which would avoid double taxation. However, it most likely will cause
+	** the transaction not to proceed.
+	*/
+	void updateFaasEffectivityBasedOnLastYearPaids( consolidation, newfaas, clands ) {
+		def paymentinfo = em.sqlContext.createNamedQuery('consolidation:getMinLastYearPaidByConsolidation')
+								.setParameter('consolidationid', consolidation.objid)
+								.singleResult
+		if( ! paymentinfo ) {
+			throw new Exception('Consolidated Land ledgers does exists or has already been deleted.')
+		}
+		
+		if( paymentinfo.minlastyearpaid + 1 < consolidation.effectivityyear )
+			newfaas.info.effectivityyear =  paymentinfo.minlastyearpaid + 1
+		else
+			newfaas.info.effectivityyear =  consolidation.effectivityyear 
+			
+		newfaas.info.effectivityqtr = consolidation.effectivityqtr 
+	}
     
     void validateConsolidationInfo( consolidation ) {
         required( 'Memoranda', consolidation.memoranda )

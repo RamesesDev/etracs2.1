@@ -23,6 +23,7 @@ class PlantTreeAssessLevelLookupController extends LookupModel
     def searchText
     def ry 
     def selected
+    def lguid
     
     void init(){
     }
@@ -50,7 +51,7 @@ class PlantTreeAssessLevelLookupController extends LookupModel
     List fetchList( Map params ) { 
         def s = search
         if( !s ) s = searchText 
-        def list = svc.lookupAssessLevel( ry, s, params)
+        def list = svc.lookupAssessLevel( lguid, ry, s, params)
         if( list ) return list
         throw new Exception("Record not found.")
     }

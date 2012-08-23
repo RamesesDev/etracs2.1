@@ -36,6 +36,9 @@
         @Service('RPTReceiptService')
         def svc
         
+        @Service('RPTCompromiseService')
+        def compSvc
+        
         @Service('RPTReceiptHtmlService')
         def htmlSvc
         
@@ -159,6 +162,24 @@
             else if ( payoption == 'bytd' ) {
                 return 'bytd'
             }
+            else if ( payoption == 'compromise' ) {
+                if( compromise.docstate == 'FORPAYMENT' ) {
+                    return 'requirepmt'
+                }
+                else {
+                    bill = compSvc.buildOpenInstallment( compromise )
+                    if( bill.defaulted == true ) {
+                        entity.sys_option = [action:'compromise', type:'default_payment', compromiseid:compromise.objid]
+                        selectAll()
+                        return 'defaulted' 
+                    }
+                    else {
+                        entity.sys_option = [action:'compromise', type:'installment', compromiseid:compromise.objid]
+                        deselectAll()
+                        return 'installment' 
+                    }
+                }
+            }
             else if ( payoption == 'remote' ) {
                 sendRemoteBillingRequest()
                 return 'wait'
@@ -255,6 +276,8 @@
                     
                     if( payoption == 'remote' )
                         processBillToRemote( item )
+                    else if( payoption == 'compromise' )
+                        processDefaultCompromise( item )
                     else 
                         processBillTo( item )
                 }
@@ -340,6 +363,31 @@
             newbill.advancepayment  = (item.toyear > parsedate.year )
             
             newbill = billingSvc.generateBill( newbill )
+            def newitem = newbill.items[0]
+            if( !newitem )  throw new Exception('Cannot process bill for this item.')
+            
+            def toyear = item.toyear
+            def toqtr = item.toqtr
+            
+            item.details.clear()
+            item.putAll( newitem )
+            item.toyear = toyear
+            item.toqtr  = toqtr 
+            item.pay = true
+            item.amount = newitem.total
+            calculateReceiptAmount()
+        }
+        
+        void processDefaultCompromise( item ){
+            def newbill = [:]
+            newbill.putAll( bill )
+            newbill.billtoyear = item.toyear
+            newbill.billtoqtr  = item.toqtr 
+            newbill.fullpayment = ( item.toyear == parsedate.year && item.toqtr == 4 )
+            newbill.qtrlypaymentavailed = ( item.toqtr != 4 )
+            newbill.advancepayment  = (item.toyear > parsedate.year )
+            
+            newbill = compSvc.generateDefaultedBill( compromise, newbill )
             def newitem = newbill.items[0]
             if( !newitem )  throw new Exception('Cannot process bill for this item.')
             
@@ -573,6 +621,108 @@
                 
             ])
         }
+        
+        /*----------------------------------------------------------------------
+        *
+        * Compromise Installment Support 
+        *
+        *------------------------------------------------------------------------*/
+        
+        def selectedInstallment
+        
+        def installmentListHandler = [
+            getRows    : {return 50 },
+            getColumns : { return [
+                new Column(name:'pay', caption:'Pay?', type:'boolean', maxWidth:60, editable:true),
+                new Column(name:'installmentno', caption:'Installment'),
+                new Column(name:'duedate', caption:'Due Date', type:'date'),
+                new Column(name:'amount', caption:'Amount', type:'decimal', format:'#,##0.00'),
+            ]},
+            onColumnUpdate : {item, colname -> 
+                if( 'pay' == colname ) {
+                    def idx = bill.items.indexOf(item)
+                    item.amount = 0.0
+                    if( item.pay ) {
+                        item.amount = item.total
+                        for( int i=0; i < idx; i++ ) {
+                            bill.items[i].pay = item.pay 
+                            bill.items[i].amount = item.total
+                        }
+                    }
+                    for( int i=idx+1; i< bill.items.size(); i++) {
+                        bill.items[i].pay = false
+                        bill.items[i].amount = 0.0
+                    }
+                    installmentListHandler.load()
+                    calculateReceiptAmount()
+                }
+            },
+            fetchList : { return bill.items },
+        ] as SubListModel
+        
+        
+        
+        
+        /*----------------------------------------------------------------------
+        *
+        * Compromise Payment Support 
+        *
+        *------------------------------------------------------------------------*/
+        def compromise 
+        def requiredpayment
+        
+        void setRequiredpayment( requiredpayment ) {
+            try {
+                this.requiredpayment = requiredpayment
+                if( requiredpayment && requiredpayment.type == 'downpayment' ) {
+                    bill = compSvc.loadDownpaymentForPayment( compromise )
+                    entity.sys_option = [action:'compromise', type:'downpayment', compromiseid:compromise.objid]
+                }
+                else if( requiredpayment && requiredpayment.type == 'cypayment' ) {
+                    bill = compSvc.loadCurrentYearPayment( compromise )
+                    entity.sys_option = [action:'compromise', type:'cypayment', compromiseid:compromise.objid]
+                }
+                else {
+                    bill.items.clear()
+                }
+
+                calculateReceiptAmount()
+                paymentRequiredListHandler.load()
+                errorMsg = null 
+            }
+            catch( e ) {
+                errorMsg = e.message 
+                bill.items.clear()
+                paymentRequiredListHandler.load()
+                binding?.refresh( 'errorMsg' )
+            }
+        }
+        
+        def paymentRequiredListHandler = [
+            getColumns   : { return [
+                new Column(name:'basic', caption:'Basic', type:'decimal'),
+                new Column(name:'basicint', caption:'Interest', type:'decimal'),
+                new Column(name:'sef', caption:'SEF', type:'decimal'),
+                new Column(name:'sefint', caption:'Interest', type:'decimal'),
+                new Column(name:'total', caption:'Total', type:'decimal'),
+            ]},
+            fetchList   :{ return bill.items },
+        ] as SubListModel
+        
+        def getLookupCompromise() {
+            return InvokerUtil.lookupOpener('rptcompromise.lookup', [:])
+        }
+        
+        List getRequiredPayments() {
+            def list = []
+            if( compromise.downpaymentrequired  ) {
+                list.add( [type:'downpayment', caption:'Downpayment' ] )
+            }
+            if( compromise.cypaymentrequired ) {
+                list.add( [type:'cypayment', caption:'Current Year Payment' ] )
+            }
+            return list ;
+        }
     }    
 
 
@@ -582,8 +732,11 @@
     <pages>
         <page name="init" template="etracs2.rpt.collection.RPTReceiptInitPage" />
         <page name="main" template="etracs2.rpt.collection.RPTReceiptPage" />
+        <page name="defaulted" template="etracs2.rpt.collection.RPTReceiptDefaultedPage" />
         <page name="bytd" template="etracs2.rpt.collection.RPTReceiptByTDPage" />
         <page name="remote" template="etracs2.rpt.collection.RPTReceiptByRemotePage" />
+        <page name="requirepmt" template="etracs2.rpt.collection.RPTReceiptByCompromiseRequiredPayment" />
+        <page name="installment" template="etracs2.rpt.collection.RPTReceiptByCompromiseInstallment" />
         <page name="wait" template="etracs2.rpt.collection.WaitPage" />
         <page name="view" template="etracs2.tc.collection.CollectionViewPage"/>
         <page name="html" template="etracs2.tc.HtmlPage"/>

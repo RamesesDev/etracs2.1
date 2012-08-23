@@ -1,8 +1,9 @@
 [getList]
-SELECT * FROM business 
-WHERE docstate IN ( 'ACTIVE', 'FOR_RELEASE' ) 
+SELECT a.txnno, b.* FROM business b 
+INNER JOIN bpapplication a ON a.businessid = b.objid
+WHERE b.docstate IN ( 'ACTIVE', 'FOR_RELEASE' ) 
 ORDER BY tradename
-
+ 
 [getListByTradename]
 SELECT a.txnno, b.* FROM business b 
 INNER JOIN bpapplication a ON a.businessid = b.objid 

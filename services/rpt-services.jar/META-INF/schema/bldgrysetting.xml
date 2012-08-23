@@ -10,6 +10,14 @@
 		<field name="straightdepreciation" type="integer" />
 		<field name="calcbldgagebasedondtoccupied"  type="integer" />
         <field name="previd"  />
+		<field name="appliedto"/>
+	</element>
+	
+	<!-- bldgrysetting_lgu -->
+	<element name="bldgrysetting_lgu" tablename="bldgrysetting_lgu">
+		<field name="objid" primary="true"/>
+		<field name="lguid" primary="true"/>
+		<field name="lguname" required="true" />
 	</element>
 	
     <!-- AssessLevels -->

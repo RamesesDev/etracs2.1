@@ -1,0 +1,62 @@
+<workunit>
+    <invokers>
+        <invoker type="rysettinglgu.lookup" action="init" caption="Lookup LGU" target="popup" />
+    </invokers>
+    
+    <code>
+        
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+
+class LookupRYSettingLGUController extends LookupModel 
+{
+    @Service("RYSettingService")
+    def svc;
+    
+    def onselect;
+    def searchText;
+    def selected;
+    def ry
+    def settingtype
+    
+    void init() {;}
+    
+     def ok() {
+        search = null
+        if( onselect ) onselect( selected )
+        return select();
+    }
+    
+    def getListHandler() {
+        return this;
+    }
+    
+    int getRows() { return 20; }
+    
+    Column[] getColumns() {
+        return [
+            new Column(name:"lguname", caption:"LGU Name"),
+            new Column(name:"pin", caption:"PIN")
+        ]
+    }
+    
+    List fetchList( Map params ) { 
+        def s = search
+        if( !s ) s = searchText 
+        def list = svc.lookupUnreferencedLgu( settingtype, ry, s, params )
+        if( list ) return list;
+        throw new Exception("Record not found.");
+    }
+}  
+
+
+]]>
+
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.LookupPage"/>
+    </pages>
+</workunit>

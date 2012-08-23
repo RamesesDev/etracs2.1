@@ -127,7 +127,9 @@ class DelinquencyTask extends com.rameses.rcp.common.Task {
                 if( delinquency ) {
                     reportdata.items.add( delinquency ) 
                 }
-                try { Thread.sleep( 150 ) } catch( e ) { }
+
+                try { Thread.sleep( 50 ) } catch( e ) { }
+                i++
             }
             catch( ex ) {
                 println '-'*50 

@@ -94,7 +94,7 @@ class SubdivisionService
         subdivision.dtapproved      = currdate 
         
         def faas = faasSvc.getFaasInfo( subdivision.motherfaasid )
-        faasSvc.checkLedgerBalanceByDate( faas, faas.issuedate  )
+        faasSvc.checkLedgerBalanceByTxnType( SUBDIVISION_TXNTYPE, faas, faas.issuedate  )
         validateInfo( subdivision )
         em.validate( subdivision.schemaname, subdivision )
         em.create( subdivision.schemaname, subdivision )
@@ -106,7 +106,7 @@ class SubdivisionService
     @ProxyMethod
     public Map update( subdivision) {
         def faas = faasSvc.getFaasInfo( subdivision.motherfaasid )
-        faasSvc.checkLedgerBalance( faas )
+        faasSvc.checkLedgerBalanceByTxnType( SUBDIVISION_TXNTYPE, faas, faas.issuedate )
         validateInfo( subdivision )
         em.validate( subdivision.schemaname, subdivision )
         em.update( subdivision.schemaname, subdivision, { diff ->
@@ -352,8 +352,6 @@ class SubdivisionService
         newfaas.info.memoranda   = (subdivision.memoranda ? subdivision.memoranda : '-' )
         newfaas.info.datacapture = false
         newfaas.info.issuedate   = subdivision.issuedate 
-        newfaas.info.effectivityyear = subdivision.effectivityyear
-        newfaas.info.effectivityqtr  = subdivision.effectivityqtr
         newfaas.info.memoranda      = (subdivision.memoranda ? subdivision.memoranda  : '-')
         newfaas.info.appraisedby    = subdivision.appraisedby 
         newfaas.info.appraisedbytitle    = subdivision.appraisedbytitle 
@@ -364,6 +362,7 @@ class SubdivisionService
         newfaas.info.approvedby     = subdivision.approvedby
         newfaas.info.approvedbytitle = subdivision.approvedbytitle
         newfaas.info.dtapproved      = subdivision.dtapproved
+		updateFAASEffectivityBasedOnMotherLedger(subdivision, newfaas)
     }
     
     /*-------------------------------------------------------------------
@@ -557,6 +556,13 @@ class SubdivisionService
             newfaas.info.txntype        = SUBDIVISION_TXNTYPE
             newfaas.info.txn            = faasSvc.resolveTxnType( SUBDIVISION_TXNTYPE ) 
             newfaas.info.tdno           = sland.newtdno 
+			
+			newfaas.info.titletype		= sland.newtitletype
+			newfaas.info.titleno		= sland.newtitleno
+			newfaas.info.titledate		= sland.newtitledate
+			
+			newfaas.info.memoranda		= sland.memoranda
+			
             newfaas.info.taxpayerid     = tpayinfo.taxpayerid 
             newfaas.info.taxpayerno     = tpayinfo.taxpayerno
             newfaas.info.taxpayername   = tpayinfo.taxpayername 
@@ -616,9 +622,12 @@ class SubdivisionService
             newfaas.info.txn            = faasSvc.resolveTxnType( subdivision.txntype )
             newfaas.info.landfaasid     = landfaas.objid 
             newfaas.info.landfaastaxpayerid = landfaas.info.taxpayerid 
-            newfaas.rp                  = landfaas.rp 
+            newfaas.info.memoranda		= arpu.memoranda
+			
+			newfaas.rp                  = landfaas.rp 
             newfaas.rpu.suffix          = arpu.newsuffix 
             newfaas.rpu.fullpin         = newfaas.rp.pin + '-' + newfaas.rpu.suffix 
+			
             em.create(newfaas.schemaname, newfaas )
             em.create(FAASLIST_SCHEMANAME, newfaas )
             
@@ -628,12 +637,12 @@ class SubdivisionService
     }
     
     def createFaas( subdivision ) {
-        def faas = faasSvc.createFaas()
+		def faas = faasSvc.createFaas()
         faas.info.txntype       = subdivision.txntype 
         faas.info.autonumber    = TO_BOOLEAN( subdivision.autonumber   )
         faas.info.issuedate     = subdivision.issuedate
         faas.info.datacapture   = false 
-        faas.info.effectivityyear = subdivision.effectivityyear
+		faas.info.effectivityyear = subdivision.effectivityyear
         faas.info.effectivityqtr  = subdivision.effectivityqtr
         faas.info.memoranda       = subdivision.memoranda
         faas.info.appraisedby           = subdivision.appraisedby
@@ -645,12 +654,30 @@ class SubdivisionService
         faas.info.approvedby            = subdivision.approvedby
         faas.info.approvedbytitle       = subdivision.approvedbytitle
         faas.info.dtapproved            = subdivision.dtapproved
+		updateFAASEffectivityBasedOnMotherLedger( subdivision, faas )
         
         faas.previousfaases  = [
             [ faasid:subdivision.motherfaasid, tdno:subdivision.mothertdno ]
         ]
         return faas 
     }
+	
+	/* if the lastyearpaid of the mother faas is not equal to effectivity 
+	** then set the effectivity to the lastyearpaid +1
+	** suggesting subdivision was processed with balance 
+	*/
+	void updateFAASEffectivityBasedOnMotherLedger( subdivision, faas ) {
+		def motherledger = em.sqlContext.createNamedQuery('subdivision:getLedgerByFaasId')
+								.setParameter('faasid', subdivision.motherfaasid)
+								.singleResult 
+		if( ! motherledger && var.lgu_type?.toLowerCase != 'province' ) {
+			//bypass checking for transactions done in the province if ledger does not exists 
+			throw new Exception('Mother ledger does not exists or has already been deleted.')
+		}
+		
+		faas.info.effectivityyear = (motherledger.lastqtrpaid == 4 ? motherledger.lastyearpaid + 1 : motherledger.lastyearpaid )
+		faas.info.effectivityqtr = (motherledger.lastqtrpaid == 4 ? 1 : motherledger.lastqtrpaid + 1 )
+	}
     
     
     void moveMessageToProcessedOutbox( refid ) {

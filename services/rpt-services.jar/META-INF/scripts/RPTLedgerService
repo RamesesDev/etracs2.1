@@ -19,7 +19,16 @@ class RPTLedgerService
     
     @Env
     def env 
-    
+	
+	@Service('SequenceService')
+	def sequenceSvc
+	
+    @Service('MessengerService')
+	def msgSvc
+
+	@Service('RPTBillingService')
+	def billingSvc
+	
     def PENDING_STATE = 'PENDING'
     def APPROVED_STATE = 'APPROVED'
     def CANCELLED_STATE = 'CANCELLED'
@@ -35,9 +44,60 @@ class RPTLedgerService
     def LEDGERITEM_SCHEMA = 'rptledger:rptledgeritem' 
     def SCHEMA_VERSION = '1.0'
     
-    @Service('MessengerService')
-	def msgSvc
-
+	def NOTICE_OF_DELINQUENCY_SCHEMA = 'noticeofdelinquency' 
+	
+	@ProxyMethod
+	public def createNoticeOfDelinquency( notice ) {
+		if( notice.objid ) throw new Exception('Notice has already been saved.')
+		def curryear = dateSvc.serverYear
+		def key = 'RPT_NOTICE_DELINQUENCY-' + curryear
+		
+		notice.objid = 'ND' + new UID() 
+		notice.txnno = curryear + '-' + sequenceSvc.getNextFormattedSeries( key )
+		notice.txndate = dateSvc.serverDate 
+		em.create(NOTICE_OF_DELINQUENCY_SCHEMA, notice )
+		return notice
+	}
+	
+	@ProxyMethod
+	public def generateNoticeOfDelinquency( bill ) {
+		bill = billingSvc.generateBill( bill )
+		
+		def curryear = dateSvc.serverYear 
+		def item = bill.items[0]
+		def previtems = item.details.findAll{ it.year < curryear }
+		def curritems = item.details.findAll{ it.year == curryear }
+		
+		def delinquentamount = previtems.total.sum()
+		def currentamount    = curritems.total.sum()
+		if( delinquentamount == null ) delinquentamount = 0.0
+		if( currentamount == null ) currentamount = 0.0 
+		
+		if( delinquentamount <= 0.0 ) throw new Exception('Real Property is not delinquent.')
+		
+		def delinquentyrqtr = '' + (item.lastyearpaid + 1) 
+		if( item.lastqtrpaid != 4 ) {
+			delinquentyrqtr = item.lastyearpaid + '-' + (item.lastqtrpaid + 1) + 'Q'
+		}
+		
+		return [
+			ledgerid		   : item.objid, 
+			taxpayername       : bill.taxpayername,
+			taxpayeraddress    : bill.taxpayeraddress,
+			tdno               : item.tdno,
+			barangay           : item.barangay,
+			assessedvalue      : item.assessedvalue,
+			rputype            : item.rputype,
+			classcode          : item.classcode, 
+			classtitle         : item.classtitle, 
+			cadastrallotno     : item.cadastrallotno,
+			delinquentamount   : delinquentamount,
+			currentamount      : currentamount,
+			total              : item.total,
+			currentyear		   : curryear, 
+			delinquentyrqtr    : delinquentyrqtr,
+		]
+	}
     
     @ProxyMethod
     public List getList( docstate, searchText, params ) {
@@ -223,12 +283,26 @@ class RPTLedgerService
     }
     
     void postLedgerItem( faas ) {
-        def ledger = updateLedger( faas  )
-        def ledgeritem = createLedgerItem( ledger ) 
-        closePreviousLedgerItemToYear( ledger, faas )
-        em.update( ledger.schemaname, ledger )
-        em.create( ledgeritem.schemaname, ledgeritem )
-        logSvc.log('CREATE_ITEM', 'RPTLedger', ledger.objid)
+        def ledger = null 
+		def msg = null 
+		try {
+			ledger = updateLedger( faas  )
+		}
+		catch( e) {
+			ledger = null 
+			msg = e.message 
+		}
+		//require validation only for non-province lgu 
+		if( !ledger && var.lgu_type?.toLowerCase() != 'province') {
+			throw new Exception(msg)
+		}
+		if( ledger ) {
+			def ledgeritem = createLedgerItem( ledger ) 
+			closePreviousLedgerItemToYear( ledger, faas )
+			em.update( ledger.schemaname, ledger )
+			em.create( ledgeritem.schemaname, ledgeritem )
+			logSvc.log('CREATE_ITEM', 'RPTLedger', ledger.objid)
+		}
     }
     
     /* ------------------------------------------------------------------------
@@ -251,6 +325,7 @@ class RPTLedgerService
 		ledger.partialbasicint  = 0.0
 		ledger.partialsefint	= 0.0 
         ledger.firstqtrpaidontime = false 
+		ledger.undercompromised = false 
         updateActualUseInfo( ledger )
         return ledger
     }

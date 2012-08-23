@@ -30,7 +30,7 @@ public class CTCService
 		assessment.total = assessment.items*.amount.sum()
 		if( assessment.total==null ) assessment.total = 0.00
 		initItems( assessment )
-		
+
 		return assessment
 	}
 	

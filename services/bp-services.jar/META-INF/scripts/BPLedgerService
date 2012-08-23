@@ -52,45 +52,71 @@ class BPLedgerService {
 	
 	@ProxyMethod
 	public def buildCapturePayment( payment ) {
-		payment.formattedamtpaid = dcf.format( payment.amtpaid );
 		payment.total = 0.0;
 		payment.txndate
 		payment.reftype = 'OFFLINE';
 		payment.formattedtotal = dcf.format( payment.total );
 		payment.items = [];
-		def app = em.read('bpapplication:bpapplication', [objid: payment.applicationid]);
+		
+		def app = em.read('bpapplication:bpapplication', [objid:payment.applicationid]);
+		def bp = em.read( 'business:business', [objid:payment.businessid] )
 		if( !app.payments ) app.payments = [];
 		if( app.payments.find{ it.refno == payment.refno } )
 			throw new Exception("Payment reference number already exist.");
-			
+		
+		if( !bp ) throw new Exception("Business with objid $app.tradename no longer exists.");
 		def getUnpaidReceivables = { 
 			def list = app.receivables.findAll{ it.amount > it.amtpaid };
 			return list.findAll{ it.iqtr <= payment.qtr || it.applicationtype?.matches('ADDLOB|NEW|RETIRE|RETIRELOB')}
 		}
 		
-		def receivables = getUnpaidReceivables();
+		def bill = [ 
+			ledgerid		: payment.businessid,
+			yearstarted		: bp.yearstarted,
+			lastyearpaid	: bp.lastyearpaid,
+			lastqtrpaid		: bp.lastqtrpaid,
+			taxfees			: [],
+			lobs			: app.lobs,
+			txntype			: app.txntype,
+		]
+		
+		def receivables = getUnpaidReceivables()
 		if( !receivables ) throw new Exception("There are no receivable(s) for the Qtr $payment.qtr");
-		receivables.each{
-			def acct = em.read("incomeacct:incomeacct", [objid: it.acctid]);
-			payment.items << [
-				bpreceivableid: it.objid,
-				amount: it.amount,
-				amtpaid: it.amount, 
-				surcharge: new BigDecimal('0.0'),
-				interest: new BigDecimal('0.0'),
-				discount: new BigDecimal('0.0'),
-				iyear: it.iyear, 
-				iqtr: it.iqtr, 
-				lobname: it.lobname,
-				acctid: acct.objid, 
-				acctno: acct.acctno,
-				accttitle: acct.accttitle,
-				fundid: acct.fundid,
-				fundname: acct.fundname,
-			];
+		receivables.each{ rcvbls ->
+			rcvbls.year = rcvbls.iyear
+			rcvbls.qtr = rcvbls.iqtr
+			bill.taxfees << rcvbls
 		}
 		
-		return payment;
+		bill = bpbillingsvc.buildBill( bill )
+		bill.taxfees.each{ txf ->
+			def acct = em.read( "incomeacct:incomeacct", [objid: txf.acctid] )
+			txf.surcharge = new BigDecimal( numberSvc.round( txf.surcharge ? txf.surcharge : 0.0 ) )
+			txf.interest = new BigDecimal( numberSvc.round( txf.interest ? txf.interest : 0.0 ) )
+			txf.discount = new BigDecimal( numberSvc.round( txf.discount ? txf.discount : 0.0 ) )
+			txf.taxamount = new BigDecimal( numberSvc.round( txf.amount ) )
+			txf.amount = new BigDecimal( numberSvc.round( txf.amount + txf.surcharge + txf.interest - txf.discount ) )
+			
+			payment.items << [
+				bpreceivableid		: txf.objid,
+				iyear				: txf.iyear, 
+				iqtr				: txf.iqtr, 
+				lobname				: txf.lobname,
+				acctid				: acct.objid, 
+				acctno				: acct.acctno,
+				accttitle			: acct.accttitle,
+				fundid				: acct.fundid,
+				fundname			: acct.fundname,
+				taxamount			: txf.taxamount,
+				surcharge			: txf.surcharge,
+				interest			: txf.interest,
+				discount			: txf.discount,
+				amount				: txf.amount,
+				amtpaid				: txf.amount, 
+			]
+		}
+		
+		return payment
 	}
 	
 	@ProxyMethod
@@ -326,6 +352,46 @@ class BPLedgerService {
 				}				
 				
 			 };
+	}	
+	
+	@ProxyMethod     
+	public def getBPLedgerData( businessid ){
+		def bpledger = [ ledgeritems:[] ]
+		em.sqlContext.createNamedQuery('business:getApplicationListByBusinessId')
+			 .setParameters([businessid: businessid])
+			 .resultList.each{ bapp ->
+				bapp.amount = 0.0
+				bapp.amtpaid = 0.0
+				bapp.lobs = em.serializer.read( bapp.lobs )
+				bapp.credits = em.serializer.read( bapp.credits )
+				
+				bapp.receivables = em.serializer.read( bapp.receivables ).each{ rcvbls ->
+					rcvbls.credits = bapp.credits.findAll{ it.bpreceivableid == rcvbls.objid }
+					rcvbls.iqtr = rcvbls.iqtr
+					bapp.amount += rcvbls.amount
+					bapp.amtpaid += rcvbls.amtpaid
+				}
+				 
+				bpledger.ledgeritems << [
+					iyear 	: bapp.iyear,
+					txnno   : bapp.txnno,
+					txntype : bapp.txntype,
+					txnmode : bapp.txnmode,
+					amount 	: bapp.amount, 
+					amtpaid : bapp.amtpaid,
+					surcharge : bapp.credits.surcharge.sum(),
+					interest  : bapp.credits.interest.sum(),
+					discount  : bapp.credits.discount.sum(),
+					docstate  : bapp.docstate.replaceAll( '_', ' ' ),
+					
+					lobs 	: bapp.lobs, 
+					credits : bapp.credits,
+					receivables : bapp.receivables,
+				]
+			}
+			 
+			 return bpledger
+		
 	}
 		
 }

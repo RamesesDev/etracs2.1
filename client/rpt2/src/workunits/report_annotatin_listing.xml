@@ -4,6 +4,11 @@
         <invoker type="rptreport"       action="init" opener="annotationlisting" caption="FAAS Annotation Listing" target="window" permission="rptreport.jat" index="11" />
         <invoker type="rptreport.annotationlisting"   action="init" caption="FAAS Annotation Listing" permission="rptreport.jat" />
         
+        <invoker type="formActions"     action="_close" caption="Close" mnemonic="c" shortcut="ctrl + W" icon="images/cancel.png"/>
+        <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png"/>
+        <invoker type="formActions"     action="preview" caption="Preview" mnemonic="v"             icon="images/doc-view.png"/>
+        
+        
         <invoker type="previewActions"  action="back" caption="Back" icon="images/back.png" immediate="true" />
     </invokers>
     <code>
@@ -22,10 +27,16 @@ class AnnotationListingController
     @Service('RPTReportService') 
     def svc 
     
+    def orderby 
+    
+    def orderbyColumns = [
+        [fieldname:'fl.tdno', caption:'TD No.'],
+        [fieldname:'fl.ownername', caption:'Owner Name'],
+    ]
+    
     def reportdata
     
     void init() {
-        preview()
     }
 
     def preview() {
@@ -34,7 +45,7 @@ class AnnotationListingController
     }
     
     void generateReport() {
-        reportdata = svc.generateAnnotationListing( )
+        reportdata = svc.generateAnnotationListing( orderby )
         report.viewReport()
     }
     
@@ -58,6 +69,7 @@ class AnnotationListingController
         
     </code>
     <pages>
+        <page template="etracs2.rpt.report.OrderByInitPage" />
         <page name="preview" template="etracs2.common.PreviewPage" />
     </pages>
 </workunit>

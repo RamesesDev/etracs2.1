@@ -58,11 +58,11 @@ public class PlantTreeRPUController
     def selectedPlantTree
     
     def getLookupTreeUnitValue() {
-        return InvokerUtil.lookupOpener('planttreeunitvalue.lookup', [ry:rpu.ry] )
+        return InvokerUtil.lookupOpener('planttreeunitvalue.lookup', [lguid:faas.lguid, ry:rpu.ry] )
     }
     
     def getLookupPlantTreeAssessLevel() {
-        return InvokerUtil.lookupOpener('planttreeassesslevel.lookup', [ry:rpu.ry] )
+        return InvokerUtil.lookupOpener('planttreeassesslevel.lookup', [lguid:faas.lguid, ry:rpu.ry] )
     }
     
     def planttreeListHandler = [

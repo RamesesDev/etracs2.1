@@ -13,6 +13,9 @@ class RPTCertificationsService
 	@Service('SequenceService')
 	def seqSvc;
 	
+	@Service('NumberService')
+	def numSvc
+	
 	def SEQUENCE_KEY = 'RPTCERTIFICATION';
 	def SCHEMA_VERSION = '1.0';
 	def SCHEMA_NAME = 'rptcertification';
@@ -80,14 +83,14 @@ class RPTCertificationsService
        
         def taxpayer = em.sqlContext.createNamedQuery( 'rptcertification:searchByTaxpayerid' ).setParameters( param ).singleResult;        
         if( taxpayer )
-            throw new Exception( "There's a Property defined for taxpayer: ${param.taxpayername}. " );
+            throw new Exception( "There is a property registered to ${param.taxpayername}. " );
 		
 		/** header **/
 		param.opener = 'noproperty';
 		param.title = 'NO_PROPERTY'
 		param.putAll( fetchItemHeaders(param) );
 		param.taxpayerName = param.taxpayername
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
+		
 		
         return param;
     }
@@ -97,16 +100,15 @@ class RPTCertificationsService
 		doValiDate( param ); 
 		def taxpayer = em.sqlContext.createNamedQuery( 'rptcertification:searchByTaxpayerid' ).setParameters( param ).singleResult;        
 		if( !taxpayer ) 
-			throw new Exception( "There are no Property defined for taxpayer: ${param.taxpayername}. " );
+			throw new Exception( "There are no properties registered to ${param.taxpayername}. " );
 		
 		def getData = em.sqlContext.createNamedQuery('rptcertification:getLandHolding').setParameters( param ).resultList
 		if( !getData )
-			throw new Exception( "There are no registered lands for taxpayer: ${param.taxpayername}. " );
+			throw new Exception( "There are no land properties registered to ${param.taxpayername}. " );
 				
 		/** header **/
 		param.opener = 'landholding';
 		param.title = 'LAND_HOLDING';
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		param.taxpayerName = param.taxpayername;
 		param.putAll( fetchItemHeaders(param) );
 		
@@ -136,19 +138,19 @@ class RPTCertificationsService
 	@ProxyMethod /** Multiple Property **/
 	public def fetchDataMultipleProperty( def param ){
 		doValiDate( param );
-        
+        def errorMsg = "There are no properties registered to ${param.taxpayername}." 
+		
         def taxpayer = em.sqlContext.createNamedQuery( 'rptcertification:searchByTaxpayerid' ).setParameters( param ).singleResult;        
 		if( !taxpayer ) 
-			throw new Exception( "There are no Property defined for taxpayer: ${param.taxpayername}. " );
+			throw new Exception(errorMsg);
 
         def getData = em.sqlContext.createNamedQuery( 'rptcertification:getMultipleProperty' ).setParameters( param ).resultList;
 		if( !getData )
-			throw new Exception( "There's no Property for Taxpayer: ${param.taxpayername} with CURRENT state. " );
+			throw new Exception(errorMsg);
 		
 		/** header **/
 		param.opener = 'multipleproperty';
 		param.title = 'MULTIPLE_PROPERTY';
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		param.taxpayerName = param.taxpayername;
 		param.putAll( fetchItemHeaders(param) );
 				
@@ -181,16 +183,15 @@ class RPTCertificationsService
         
     	def taxpayer = em.sqlContext.createNamedQuery( 'rptcertification:searchByTaxpayerid' ).setParameters( param ).singleResult;        
 		if( !taxpayer ) 
-			throw new Exception( "There are no Property defined for taxpayer: ${param.taxpayername}. " );	
+			throw new Exception( "There are properties registered to ${param.taxpayername}." );	
     	
     	def getData = em.sqlContext.createNamedQuery( 'rptcertification:getNoImprovements' ).setParameters( param ).resultList;
     	if( !getData )
-		    throw new Exception( "There are no Land Properties with no improvements for taxpayer: ${param.taxpayername}. " ); 
+		    throw new Exception( "There are no land properties with no improvements registered to ${param.taxpayername}. " ); 
 		
 		/** header **/
 		param.opener = 'noimprovement';
 		param.title = 'NO_IMPROVEMENT';
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		param.taxpayerName = param.taxpayername;
 		param.putAll( fetchItemHeaders(param) );
 		
@@ -223,14 +224,13 @@ class RPTCertificationsService
 			doValiDate( param );
 			def taxpayer = em.sqlContext.createNamedQuery( 'rptcertification:searchByTaxpayerid' ).setParameters( param ).singleResult;        
 			if( !taxpayer ) 
-				throw new Exception( "There are no Property defined for taxpayer: ${param.taxpayername}. " );
+				throw new Exception( "There are properties registered to ${param.taxpayername}. " );
 
-			if( !'CURRENT'.equals(param.docstate) )
-				throw new Exception( "TD No. ${param.tdno} docstate: is ${param.docstate}. Only CURRENT is allowed." );    
+			validateState( param )
 			
 			def getData = em.sqlContext.createNamedQuery( 'rptcertification:getNoImprovementsTDNo' ).setParameters( param ).singleResult;	
 			if( !getData )
-				throw new Exception( "There's an Improvement of Property for taxpayer: ${param.taxpayername}. with TD No.: ${param.tdno} " );
+				throw new Exception( "There are improvements for the land with TD No. ${param.tdno} registered to ${param.taxpayername}." );
 			
 		}
 		
@@ -238,37 +238,40 @@ class RPTCertificationsService
 		param.opener = 'noimprovementbytdno';
 		param.title = 'NO_IMPROVEMENT_TDNO';
 		param.faasid = param.objid;
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		param.putAll( fetchDataHeaders(param) );
 
 		return param;
 	}
 	
-	@ProxyMethod /** No Encumbrance by TD No. **/
-	public def fetchDataNoEncumbranceTDNo( def param ){
-		if( param.docstate ){
-			doValiDate( param );
-			
-			def taxpayer = em.sqlContext.createNamedQuery( 'rptcertification:searchByTaxpayerid' ).setParameters( param ).singleResult;        
-			if( !taxpayer ) 
-				throw new Exception( "There are no Property defined for taxpayer: ${param.taxpayername}. " );
-			
-			if( !'CURRENT'.equals(param.docstate) )
-				throw new Exception( "TD No. ${param.tdno} docstate: is ${param.docstate}. Only CURRENT is allowed." );    
-			
-			if( param.annotated != 1)
-				throw new Exception( "There's no Annotations for the particular TD No.: ${param.tdno} " );
+	
+	private void validateState( certification ) {
+		if( certification.docstate != 'CURRENT' ) 
+			throw new Exception('Tax Declaration is not current.')
+	}
+	
+	private void validateOrDate( certification ) {
+		if( ! certification.official ){
+			java.sql.Date date = new java.sql.Date( dtSvc.serverDate.getTime() );
+	    	certification.ordate = java.sql.Date.valueOf( certification.ordate.toString() );
+	        if( certification.ordate.time > date.time )
+    			throw new Exception("O.R. Date must be less than or equal to Current Date of ${date}. ");
 		}
+	}
+	
+	@ProxyMethod /** No Encumbrance by TD No. **/
+	public def fetchDataNoEncumbranceTDNo( def certification ){
+		validateState( certification )
+		validateOrDate( certification )
 		
+		if( certification.annotated == 1 )  {
+			throw new Exception('Tax Declaration is currently annotated.')
+		}
+
 		/** header **/
-		param.opener = 'noencumbrance';
-		param.title = 'NO_ENCUMBRANCE';
-		param.faasid = param.objid;
-		param.taxpayerName = param.taxpayername;
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
-		param.putAll( fetchDataHeaders(param) );
-		
-		return param;
+		certification.opener = 'noencumbrance';
+		certification.title = 'NO_ENCUMBRANCE';
+		certification.faasid = certification.objid;
+		return certification;
 	}
 	
 	@ProxyMethod /** Latest and Existing Property **/
@@ -278,10 +281,9 @@ class RPTCertificationsService
 			
 			def taxpayer = em.sqlContext.createNamedQuery( 'rptcertification:searchByTaxpayerid' ).setParameters( param ).singleResult;        
 			if( !taxpayer ) 
-				throw new Exception( "There are no Property defined for taxpayer: ${param.taxpayername}. " );
+				throw new Exception( "There are no properties registered to ${param.taxpayername}. " );
 			
-			if( !'CURRENT'.equals(param.docstate) )
-				throw new Exception( "TD No. ${param.tdno} docstate: is ${param.docstate}. Only CURRENT is allowed." );    
+			validateState( param) 
 			
 		}
 		
@@ -290,7 +292,6 @@ class RPTCertificationsService
 		param.title = 'LATEST_EXIST_PROPERTY';
 		param.faasid = param.objid;
 		param.taxpayerName = param.taxpayername;
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		param.putAll( fetchDataHeaders(param) );
 		
 		return param;
@@ -302,16 +303,15 @@ class RPTCertificationsService
 
 		def taxpayer = em.sqlContext.createNamedQuery( 'rptcertification:searchByTaxpayerid' ).setParameters( param ).singleResult;        
 		if( !taxpayer ) 
-			throw new Exception( "There are no Properties defined for taxpayer: ${param.taxpayername}. " );
+			throw new Exception( "There are no properties registered to ${param.taxpayername}. " );
 		
 		def getData = em.sqlContext.createNamedQuery( 'rptcertification:getWImproveLand' ).setParameters( param ).resultList;
 		if( !getData )  
-			throw new Exception( "There's no Land Property with improvements for taxpayer: ${param.taxpayername}. " );
+			throw new Exception( "There are no land properties with improvements registered to ${param.taxpayername}. " );
 			
 	    /** header**/
 		param.opener = 'withimproveland';
 		param.title = 'WITH_IMPROVEMENT_LAND';
-		param.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		param.taxpayerName = param.taxpayername;
 		param.putAll( fetchItemHeaders(param) );
 		
@@ -344,14 +344,13 @@ class RPTCertificationsService
 			doValiDate( param );
 			def taxpayer = em.sqlContext.createNamedQuery( 'rptcertification:searchByTaxpayerid' ).setParameters( param ).singleResult;        
 			if( !taxpayer ) 
-				throw new Exception( "There are no Property defined for taxpayer: ${param.taxpayername}. " );
+				throw new Exception( "There are no properties registered to ${param.taxpayername}. " );
 			
-			if( !'CURRENT'.equals(param.docstate) )
-				throw new Exception( "TD No. ${param.tdno} docstate: is ${param.docstate}. Only CURRENT is allowed." );    
+			validateState( param )
 			
 			def getData = em.sqlContext.createNamedQuery( 'rptcertification:getImprovementsTDNo' ).setParameters( param ).singleResult;	
 			if( !getData )
-				throw new Exception( "There's no Improvement of Property for taxpayer: ${param.taxpayername}. with TD No.: ${param.tdno} " );
+				throw new Exception( "There are no improvements for the land with TD No.: ${param.tdno}  registered to ${param.taxpayername}." );
 			
 		}
 		
@@ -366,14 +365,39 @@ class RPTCertificationsService
 		return param;
 	}
 	
+	@ProxyMethod
+	public def createOwnership(certification) {
+		validateState( certification )
+		validateOrDate( certification )
+		if( certification.rputype != 'land' ) throw new Exception('Tax Declaration is not for a land property.')
+		
+		
+		certification.opener = 'ownership';
+		certification.title  = 'OWNERSHIP';
+		
+		//build area in words by areatype 
+		if( certification.classcode == 'AGR' || certification.classcode == 'A') {
+			certification.areainwords = numSvc.format( '#,##0.000000', certification.totalareaha ) 
+			certification.areatype = 'ha'
+		}
+		else {
+			certification.areainwords = numSvc.convertLong( certification.totalareasqm.longValue() ).toUpperCase()
+			certification.areainwords += ' (' + numSvc.format( '#,##0', certification.totalareasqm ) + ')'
+			certification.areatype = 'square meter'
+		}
+		return doSave( certification )
+	}
+	
     @ProxyMethod
     public def doSave( def certification ){
         certification.objid = 'C' + new java.rmi.server.UID();
         certification.schemaname = SCHEMA_NAME;
         certification.schemaversion = SCHEMA_VERSION;
+		certification.docno = seqSvc.getNextFormattedSeries( SEQUENCE_KEY );
 		
 		em.validate( 'rptcertification', certification );
         em.create( 'rptcertification', certification );
+		return certification
     }
 	
 	@ProxyMethod
@@ -392,7 +416,7 @@ class RPTCertificationsService
 		
 	@ProxyMethod
 	public def getDataById( param ){
-		return em.sqlContext.createNamedQuery('rptcertification:getDataById').setParameters( param ).singleResult;
+		return em.read('rptcertification', param )
 	}
 	
 	@ProxyMethod

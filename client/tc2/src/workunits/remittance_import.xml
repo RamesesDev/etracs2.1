@@ -1,0 +1,125 @@
+<workunit>
+    <invokers>
+        <invoker folderid="menu/tc/txn" action="init" caption="Import Remittnace" permission="remittance.import" index="101"/>
+        <invoker folderid="txn/tc/txn" action="init" caption="Import Remittance" permission="remittance.import" index="101" />        
+        
+        <invoker type="initActions" action="_close"  immediate="true" caption="Close" mnemonic="c" icon="images/cancel.png"/>
+        <invoker type="initActions" action="next" shortcut="ctrl N" caption="Next" mnemonic="n" icon="images/next.png"/>
+        
+        <invoker type="formActions" action="_close"  immediate="true" caption="Close" mnemonic="c" icon="images/cancel.png"/>
+        <invoker type="formActions" action="postImport" caption="Post" mnemonic="p"  icon="images/doc-new.png"  visibleWhen="#{mode=='create'}" />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+import com.rameses.util.*
+
+public class ImportRemittanceController 
+{
+    @Binding
+    def binding
+
+    @Service('RemittanceService')
+    def svc 
+
+    def denominationOpener
+    def data 
+    def entity 
+
+    def file
+    def mode 
+
+    def init() {
+        mode = 'create' 
+        return 'init'
+    }
+    
+    def next() {
+        importRemittance()
+        svc.checkDuplicateImportPosting( entity.objid )
+        denominationOpener = InvokerUtil.lookupOpener('cashreceipt:breakdown', [totalAmount:entity.info.totalcash, list:entity.info.denominations, mode:'view']);
+        return 'default'
+    }
+    
+    void postImport() {
+        if( MsgBox.confirm('Post remittance import?') ) {
+            svc.postImportRemittance( data ) 
+            mode = 'view' 
+            MsgBox.alert('Remittance has been successfully imported and posted.')
+        }
+    }
+    
+    
+    void importRemittance() {
+        try {
+            file.eachObject{ data = it }
+            data = CipherUtil.decode( data )
+            data = ObjectDeserializer.instance.read( data)
+            entity = data.remittance
+        }
+        catch( e ) {
+            println '='*50 
+            e.printStackTrace()
+            throw new Exception('Cannot load remittance file. It might be corrupted or invalid.\nKindly re-export the remittance and try importing again.')
+        }
+    }
+    
+
+    def noncashListHandler = [
+        getColumns  : { return [
+            new Column(name:'checkno', caption:'Check No.'),
+            new Column(name:'checkdate', caption:'Check Date'),
+            new Column(name:'bank', caption:'Bank'),
+            new Column(name:'amount', caption:'Amount', type:'decimal'),
+        ]},
+        fetchList : { return data.paymentitems.findAll{ it.paytype != 'CASH' } },
+    ] as SubListModel 
+
+    def remittedFormsListHandler = [
+        getColumns  : { return [
+            new Column(name:'afid', caption:'AF No.'),
+            new Column(name:'receivedfrom', caption:'Received From'),
+            new Column(name:'receivedto', caption:'To'),
+            new Column(name:'receivedqty', caption:'Qty', type:'integer'),
+
+            new Column(name:'beginfrom', caption:'Begin From'),
+            new Column(name:'beginto', caption:'To'),
+            new Column(name:'beginqty', caption:'Qty', type:'integer'),
+
+            new Column(name:'issuedfrom', caption:'Issued From'),
+            new Column(name:'issuedto', caption:'To'),
+            new Column(name:'issuedqty', caption:'Qty', type:'integer'),
+
+            new Column(name:'endingfrom', caption:'Ending From'),
+            new Column(name:'endingto', caption:'To'),
+            new Column(name:'endingqty', caption:'Qty', type:'integer'),
+        ]},
+        fetchList : { return data.remittedforms  },
+    ] as SubListModel
+
+    def remittedReceiptsListHandler = [
+        getColumns  : { return [
+            new Column(name:'afid', caption:'AF No.'),
+            new Column(name:'serialno', caption:'Serial No.'),
+            new Column(name:'txndate', caption:'Txn Date'),
+            new Column(name:'paidby', caption:'Paid By'),
+            new Column(name:'collectiontype', caption:'Collection'),
+            new Column(name:'amount', caption:'Amount'),
+            new Column(name:'voided', caption:'Void?', type:'boolean'),
+        ]},
+        fetchList : { return data.receiptlists },
+    ] as SubListModel
+
+}
+
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.tc.remittance.ImportRemittancePage"/>
+        <page name="init" template="etracs2.tc.remittance.ImportRemittanceInitPage"/>
+    </pages>
+</workunit>

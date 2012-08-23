@@ -1,0 +1,37 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+
+public class XPatchService01
+{
+	@PersistenceContext('main')
+	def em
+	
+	@ProxyMethod
+	public List  getFAASList() {
+		return em.sqlContext.createQuery("SELECT objid FROM faaslist ").resultList 
+	}
+	
+	@ProxyMethod 
+	public List updateFaasPreviousInfo( faaslist ) {
+		def errorlist = []
+		faaslist.each{ faas ->
+			println 'processing faasid -> ' + faas.objid 
+			def info = em.sqlContext.createQuery('SELECT info FROM faas WHERE objid = $P{objid}')
+							.setParameters( faas ).singleResult 
+			if( info ) {
+				info = em.serializer.read( info.info  )
+				info.objid = faas.objid 
+				em.sqlContext.createExecutor('''
+					UPDATE faaslist SET 
+						prevtdno  = $P{prevtdno}, 
+						prevowner = $P{prevowner}, prevpin = $P{prevpin},
+						prevmv = $P{prevmv},       prevav = $P{prevav}
+					WHERE objid = $P{objid} 
+				''')
+				.setParameters(info)
+				.execute()
+			}
+		}
+		return errorlist
+	}
+}

@@ -1,6 +1,7 @@
 -- MIGRATE RPT LEDGERS 
 -- delete from bayombong_etracs..rptledger where objid  in (select objid from etracs_bayombong..RPTLedger);
 
+
 alter table bayombong_etracs..rptledger alter column taxpayername varchar(800);
 alter table bayombong_etracs..rptledger alter column administratorname varchar(255);
 

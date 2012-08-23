@@ -1,19 +1,28 @@
 <schema>
 	<!-- faas database storage -->
 	<element name="faas" tablename="faas">
-		<field name="objid" primary="true"/>
+		<link ref="faasdata"/>
+	</element>
+    
+    <element name="disapprovedfaas" tablename="disapprovedfaas">
+		<link ref="faasdata" />
+		<field name="faasid" required="true" />
+	</element>
+    
+    <element name="faasdata">
+        <field name="objid" primary="true"/>
 		<field name="schemaname" required="true"/>
 		<field name="schemaversion" required="true"/>
 		<field name="docstate" required="true"/>
+		<field name="ledgerid" />
         <field name="message" />
         <field name="sys_dtapproved" />
-        <field name="ledgerid" />
-		<complex name="info" ref="faasinfo" serializer="default"/>
+        <complex name="info" ref="faasinfo" serializer="default"/>
         <complex name="rp" ref="realproperty" serializer="default"/>
 		<complex name="rpu" ref="rpu:rpu" serializer="default" />
-        <complex name="previousfaases" ref="previousfaas" required="false" type="list" serializer="default" />
+		<complex name="previousfaases" ref="previousfaas" required="false" type="list" serializer="default" />
 		<complex name="extended" merge="true" serializer="default" required="false"/>
-	</element>
+    </element>
     
     <!-- realprperty "rp" info -->
     <element name="realproperty">
@@ -131,14 +140,21 @@
         <field name="landfaastaxpayerid" mapfield="info.landfaastaxpayerid"  />
 		<field name="txntype" mapfield="info.txntype" required="true"  />
 		<field name="tdno"  mapfield="info.tdno" />
+		
+		<field name="prevtaxpayerid" mapfield="info.prevtaxpayerid"/>
+		<field name="prevowner" mapfield="info.prevowner"/>
 		<field name="prevtdno"  mapfield="info.prevtdno" />
+		<field name="prevpin"  mapfield="info.prevpin" />
+		<field name="prevmv"  mapfield="info.prevmv" type="decimal" />
+		<field name="prevav"  mapfield="info.prevav" type="decimal" />
+		
 		<field name="issuedate" mapfield="info.issuedate" required="true" />
 		<field name="effectivityyear" mapfield="info.effectivityyear" required="true" type="integer" />
 		<field name="effectivityqtr" mapfield="info.effectivityqtr" required="true" type="integer" />
 		<field name="titleno"  mapfield="info.titleno" />
 		<field name="titletype"  mapfield="info.titletype" />
 		<field name="titledate" mapfield="info.titledate" />
-        <field name="prevtaxpayerid" mapfield="info.prevtaxpayerid"/>
+        
 		<field name="taxpayerid"  mapfield="info.taxpayerid" />
         <field name="taxpayerno" mapfield="info.taxpayerno" />
 		<field name="taxpayername" required="true"  mapfield="info.taxpayername" />
@@ -190,6 +206,8 @@
 		<field name="cancelledbytdnos"  />
 		<field name="txntimestamp"  />
 		<field name="restriction" />
+		<field name="lguid"/>
+		<field name="lguname"/>
 	</element>
     
 	<element name="previousfaas">

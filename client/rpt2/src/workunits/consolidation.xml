@@ -227,6 +227,7 @@ public class ConsolidationController
             if( item.faas.rputype != 'land' ) throw new Exception('Only land properties are allowed.') 
             if( item.faas.docstate != 'CURRENT' ) throw new Exception('Only current FAAS is allowed.')
             checkDuplicateLand( item )
+            svc.checkLedgerBalance( item.faas.objid, consolidation.issuedate )
             item.landfaasid = item.faas.objid 
             item.tdno       = item.faas.tdno
             item.pin        = item.faas.fullpin

@@ -124,7 +124,11 @@ class ProvinceFAASService
         
 		createPIN( faas ) 
 		createEntity( faas )
-		ledgerSvc.post( faas.objid )
+		
+		//default value for post_municipal_rptledger_to_province must be false 
+		if( TO_BOOLEAN( var.post_municipal_rptledger_to_province ) == true ) {
+			ledgerSvc.post( faas.objid )
+		}
 		
 		
         sendToOutbox( faas, 'faas.approve', [
@@ -156,9 +160,9 @@ class ProvinceFAASService
 				entityaddress: faas.info.taxpayeraddress,
 				mailingaddress: null,
 				entitytype : 'individual',
+				lguname    : (faas.rp.lgutype == 'municipality' ? faas.rp?.munidistrict : faas.rp?.provcity ),
 				info       : [:],
 			]
-			println 'entity -> ' + entity 
 			try {
 				em.create( entity.schemaname, entity )
 			}
@@ -429,10 +433,8 @@ class ProvinceFAASService
  	}
     
     def getNextAutonumberTdNo( faas ) {
-        faas.info.autonumber = faas.info.autonumber as boolean 
-        faas.info.autonumber = ( faas.info.datacapture ? false : faas.info.autonumber )
         if( faas.info.datacapture == true ||  faas.info.autonumber == false ) {
-            return 
+            return faas.info.tdno 
         }
         //TD Formatting Options:
         // Y - revision year
@@ -463,8 +465,12 @@ class ProvinceFAASService
     
     
     boolean assignNewTdNo( faas ) {
-		if( ! faas.info.tdno ) return true
-		if( faas.info.datacapture == false ) return true
+		if( faas.info.datacapture == true)  
+			return false
+		if( faas.info.autonumber == true )
+			return true
+		if( ! faas.info.tdno ) 
+			return true 
 		return false
 	}
     

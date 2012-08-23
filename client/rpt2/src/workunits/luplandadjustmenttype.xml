@@ -26,6 +26,7 @@ class LandAdjustmentTypeLookupController extends LookupModel
     def onselect
     
     def searchText
+    def lguid
     def ry
     def classid 
     def selected
@@ -98,16 +99,16 @@ class LandAdjustmentTypeLookupController extends LookupModel
     
     Column[] getColumns() {
         return [
-            new Column(name:"adjtypecode", caption:"Code", maxWidth:80),
-            new Column(name:"adjtypename", caption:"Adjustment Type", maxWidth:200),
-            new Column(name:"expr", caption:"Expression"),
+            new Column(name:"adjtypecode", caption:"Code", maxWidth:60),
+            new Column(name:"adjtypename", caption:"Adjustment Type", maxWidth:800),
+            new Column(name:"expr", caption:"Expression", maxWidth:600),
         ]
     }
     
     List fetchList( Map params ) { 
         def s = search
         if( !s ) s = searchText 
-        def list = svc.lookupLandAdjustments( ry, classid, s, params)
+        def list = svc.lookupLandAdjustments( lguid, ry, classid, s, params)
         if( list ) return list
         throw new Exception("Record not found.")
     }

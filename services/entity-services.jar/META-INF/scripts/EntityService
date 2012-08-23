@@ -14,7 +14,7 @@ class EntityService
 	@Service('LogService')
 	def logService
 	
-	//@Service('MessengerService')
+	@Service('MessengerService')
 	def msgSvc 
 	
 	@Service('Var')

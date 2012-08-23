@@ -43,12 +43,7 @@ class TaxDeclarationReportController
     }
     
     def report =[
-        getReportName : { 
-            if( data.annotated == true || data.annotated == 1  )
-                return "tdreport/tdannotatedreport"
-            else
-                return "tdreport/tdreport" 
-        },
+        getReportName : { return 'tdreport' },
         getReportData : { return data; },
         getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ); }
     ] as ServerReportModel;

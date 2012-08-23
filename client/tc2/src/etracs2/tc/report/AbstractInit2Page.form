@@ -87,6 +87,7 @@
         <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Quarter"/>
+            <Property name="dynamic" type="boolean" value="true"/>
             <Property name="immediate" type="boolean" value="true"/>
             <Property name="items" type="java.lang.String" value="quarterlist"/>
             <Property name="name" type="java.lang.String" value="qtr"/>
@@ -118,8 +119,9 @@
           <Properties>
             <Property name="caption" type="java.lang.String" value="Day"/>
             <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
-              <StringArray count="1">
+              <StringArray count="2">
                 <StringItem index="0" value="month"/>
+                <StringItem index="1" value="qtr"/>
               </StringArray>
             </Property>
             <Property name="dynamic" type="boolean" value="true"/>

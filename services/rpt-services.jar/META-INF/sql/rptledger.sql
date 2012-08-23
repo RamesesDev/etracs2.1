@@ -2,7 +2,7 @@
 SELECT 
 	objid, docstate, tdno, fullpin, barangay, prevtdno, 
 	taxpayerid, taxpayername, taxpayeraddress, rputype, cadastrallotno, 
-	lastyearpaid, lastqtrpaid, assessedvalue , classcode 
+	lastyearpaid, lastqtrpaid, assessedvalue , classcode, undercompromised, faasid 
 FROM rptledger  
 WHERE docstate LIKE $P{docstate} 
 
@@ -10,7 +10,7 @@ WHERE docstate LIKE $P{docstate}
 SELECT 
 	objid, docstate, tdno, fullpin, barangay,  prevtdno, 
 	taxpayerid, taxpayername, taxpayeraddress, rputype, cadastrallotno, 
-	lastyearpaid, lastqtrpaid, assessedvalue  , classcode 
+	lastyearpaid, lastqtrpaid, assessedvalue  , classcode , undercompromised , faasid 
 FROM rptledger 
 WHERE docstate LIKE $P{docstate} AND tdno LIKE $P{tdno} 
 
@@ -18,7 +18,7 @@ WHERE docstate LIKE $P{docstate} AND tdno LIKE $P{tdno}
 SELECT 
 	objid, docstate, tdno, fullpin, barangay,  prevtdno, 
 	taxpayerid, taxpayername, taxpayeraddress, rputype, cadastrallotno, 
-	lastyearpaid, lastqtrpaid , assessedvalue , classcode 
+	lastyearpaid, lastqtrpaid , assessedvalue , classcode , undercompromised , faasid 
 FROM rptledger 
 WHERE docstate LIKE $P{docstate} AND fullpin LIKE $P{fullpin} 
 
@@ -26,7 +26,7 @@ WHERE docstate LIKE $P{docstate} AND fullpin LIKE $P{fullpin}
 SELECT 
 	objid, docstate, tdno, fullpin, barangay,  prevtdno, 
 	taxpayerid, taxpayername, taxpayeraddress, rputype, cadastrallotno, 
-	lastyearpaid, lastqtrpaid , assessedvalue , classcode 
+	lastyearpaid, lastqtrpaid , assessedvalue , classcode , undercompromised , faasid 
 FROM rptledger 
 WHERE docstate LIKE $P{docstate} AND taxpayername LIKE  $P{taxpayername} 
 
@@ -35,7 +35,7 @@ WHERE docstate LIKE $P{docstate} AND taxpayername LIKE  $P{taxpayername}
 SELECT 
 	objid, docstate, tdno, fullpin, barangay,  prevtdno, 
 	taxpayerid, taxpayername, taxpayeraddress, rputype, cadastrallotno, 
-	lastyearpaid, lastqtrpaid , assessedvalue , classcode 
+	lastyearpaid, lastqtrpaid , assessedvalue , classcode , undercompromised , faasid 
 FROM rptledger 
 WHERE docstate LIKE $P{docstate} AND cadastrallotno = $P{cadastrallotno} 
 
@@ -43,7 +43,7 @@ WHERE docstate LIKE $P{docstate} AND cadastrallotno = $P{cadastrallotno}
 SELECT 
 	objid, docstate, tdno, fullpin, barangay,  prevtdno, 
 	taxpayerid, taxpayername, taxpayeraddress, rputype, cadastrallotno, 
-	lastyearpaid, lastqtrpaid , assessedvalue , classcode 
+	lastyearpaid, lastqtrpaid , assessedvalue , classcode , undercompromised , faasid 
 FROM rptledger 
 WHERE docstate LIKE $P{docstate} AND blockno = $P{blockno} 
 

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="landrysetting.create" action="create" caption="Create Land" mnemonic="b" icon="images/doc-new.png" target="window"/>
-        <invoker type="landrysetting.open" action="open" caption="Edit Land" mnemonic="b" icon="images/edit.png" target="window"/>
+        <invoker type="landrysetting.create" action="create" caption="Create Land Revision Setting" mnemonic="b" icon="images/doc-new.png" target="window"/>
+        <invoker type="landrysetting.open" action="open" caption="Edit Land Revision Setting" mnemonic="b" icon="images/edit.png" target="window"/>
+        <invoker type="landrysetting.copy" action="copy" caption="Copy Land Revision Setting" icon="images/edit.png" target="window"/>
+        
         
         <invoker type="formActions" action="_close" caption="Close" icon="images/cancel.png"/>
         <invoker type="formActions" action="save" shortcut="ctrl S" caption="Save" mnemonic="s" icon="images/save.png"/>
@@ -34,7 +36,11 @@ public class LandRYSettingController
     
     def landadjustments = [];
     def landactualuseadjustments = [];
+    def selectedLgu
 
+    void copy() {
+        initOpen( svc.copy( entity.objid, entity.ry ) )
+    }
     
     def create() {
         entity = createEntity();
@@ -49,7 +55,10 @@ public class LandRYSettingController
     }
     
     void open() {
-        def data = svc.open( entity.objid );
+        initOpen( svc.open( entity.objid ) );
+    }
+    
+    void initOpen( data ) {
         entity = data.entity;
         assessLevels = data.assessLevels;
         lcuv = data.lcuv;
@@ -73,7 +82,7 @@ public class LandRYSettingController
             //entity.remove( "lcuv" );
         }
         else {
-            entity = svc.copySetting( entity.ry, copyYear );
+            entity = svc.reviseSetting( entity.ry, copyYear );
             entity.ry = copyYear
         }
         initVariables();
@@ -111,6 +120,43 @@ public class LandRYSettingController
         }
         return 'default'
     }
+    
+    /*---------------------------------------------------------------------
+    *
+    * LGU Support 
+    *
+    ----------------------------------------------------------------------*/
+    def SETTING_TYPE = 'land' 
+    
+    def onselectLgu = {lgu ->
+        if( entity.lgus.find{ it.lguid == lgu.objid } != null ) {
+            throw new Exception( lgu.lguname + ' has already been added.')
+        }
+        entity.lgus.add([
+            objid       : entity.objid,
+            lguid       : lgu.objid,
+            lguname     : lgu.lguname,
+            settingtype : SETTING_TYPE,
+        ])
+        lguListHandler.load()
+    }
+    
+    def getLookupLgu() {
+        return InvokerUtil.lookupOpener('rysettinglgu.lookup', [settingtype:SETTING_TYPE, ry:entity.ry, onselect:onselectLgu])
+    }
+    
+    def lguListHandler = [
+        getColumns : { return [
+            new Column(name:'lguname', caption:'Name'),
+        ]},
+        fetchList : { return entity.lgus },
+        onRemoveItem : { item ->
+            if( MsgBox.confirm('Delete item?')) {
+                entity.lgus.remove( item )
+            }
+        },
+        
+    ] as SubListModel
 
     /*---------------------------------------------------------------------
     *
@@ -574,7 +620,8 @@ public class LandRYSettingController
     Map createEntity() {
         return [
             objid       : 'LRY' + new UID(),
-            ry          : null
+            ry          : null,
+            lgus            : [],
         ]
     }
     
