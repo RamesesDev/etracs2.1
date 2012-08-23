@@ -116,6 +116,7 @@ public class BPBillingService
 		billing.items.sort{ it.appno };	
 		billing.expirydate = calculateExpirydate( bpsetting )    
 		
+		billing.info.billdate = billdate ? dtService.parse('yyyy-MM-dd', billing.billdate) : dtService.serverDate
 		return billing;
 	}
 	
