@@ -37,7 +37,7 @@ public class BPBillingService
 		if( billing.advancepayment ) { 
 			advancepayment = billing.advancepayment
 			billdate = dtService.parseDate( billing.billdate, null )
-			
+
 		}
 		
 		def businesslist = getBusinessByTaxpayer( billing );
@@ -124,12 +124,12 @@ public class BPBillingService
 		billing.items.sort{ it.appno };	
 		billing.expirydate = calculateExpirydate( bpsetting )    
 		
-		billing.info.billdate = dtService.serverDate
+		billing.info.billdate = billdate ? dtService.parse('yyyy-MM-dd', billing.billdate) : dtService.serverDate
 		return billing;
 	}
 	
 	private def calculateExpirydate( def bpsetting ){
-		def currentdate = dtService.parseCurrentDate()
+		def currentdate = billdate ? billdate : dtService.parseCurrentDate()
 		def duedate = getDueDate( bpsetting, currentdate.qtr  )
 		duedate = dtService.parse( 'yyyy-MM-dd', currentdate.year+"-"+duedate.month+"-"+duedate.day );
 		def nextday = duedate + 1 
