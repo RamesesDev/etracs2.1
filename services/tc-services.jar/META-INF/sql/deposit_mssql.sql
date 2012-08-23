@@ -125,7 +125,24 @@ WHERE lr.docstate = 'OPEN'
   AND rl.voided = 0 
 
 
+[getOpenNonCashPaymentsCashierMulti]
+SELECT 
+	p.objid AS paymentitemid, 
+ 	p.paytype, 
+ 	p.particulars, 
+ 	p.amount, 
+ 	'SYSTEM' AS source, 
+ 	p.extended 
+FROM liquidationrcd lr 
+	INNER JOIN liquidationlist l ON lr.liquidationid = l.objid 
+	INNER JOIN paymentitem p ON lr.objid = p.liquidationrcdid 
+	INNER JOIN receiptlist rl ON p.receiptid = rl.objid 
+WHERE lr.docstate = 'OPEN'  
+   AND lr.cashierid = $P{cashierid} 
+   AND rl.voided = 0 
 
+   
+   
 [depositOpenLiquidationRcdByCashier]
 UPDATE liquidationrcd SET	  
 	docstate = 'CLOSED', 
@@ -149,10 +166,10 @@ UPDATE liquidationlist SET
 WHERE docstate = 'OPEN'	 
 
 
-[closeLiquidationByDeposit]
-UPDATE ll SET 
+
+[closeLiquidationListByDeposit]
+UPDATE liquidationlist ll SET 
 	ll.docstate = 'CLOSED' 
-FROM liquidationlist ll
 WHERE ll.objid IN ( 
 	SELECT a.liquidationid FROM 
 	( SELECT lr.liquidationid,  
@@ -169,6 +186,14 @@ WHERE ll.objid IN (
 
 
 
+[closeLiquidationByDeposit]
+UPDATE l SET 
+	l.docstate = ll.docstate 
+FROM liquidation l, liquidationlist  ll, liquidationrcd lr 
+WHERE l.objid = ll.objid 
+  AND l.objid = lr.liquidationid 
+  AND lr.depositid = $P{depositid} 
+  
 
 [getBankAccountList]
 SELECT * FROM bankaccount WHERE fundid = $P{fundid} ORDER BY fund, acctno 

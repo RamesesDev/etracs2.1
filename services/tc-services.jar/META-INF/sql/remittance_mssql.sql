@@ -38,7 +38,6 @@ ORDER BY name
 
 
 [getCollectionSummaryByAF]
-
 SELECT 
 	CASE 
 	WHEN af.objid = '51' AND min(af.aftype) = 'serial' AND min(ia.groupid) IS NULL THEN ( 'AF#' + af.objid + ': ' + min(ri.fundname) ) 
@@ -62,6 +61,10 @@ ORDER BY af.objid, min(ri.fundname), min(ia.groupid)
 SELECT * FROM receiptlist 
 WHERE remittanceid = $P{remittanceid} 
 ORDER BY afid, serialno DESC, txndate DESC
+
+[getReceiptIdsByRemittance]
+SELECT objid, afid FROM receiptlist   
+WHERE remittanceid = $P{remittanceid} 
 
 [getOtherPaymentsByRemittance]
 SELECT pi.* FROM paymentitem pi, receiptlist rl 
@@ -563,3 +566,64 @@ ORDER BY r.serialno
 
 [getFundName]
 SELECT objid, fundname FROM fund ORDER BY fundname 
+
+
+
+[exportRemittance]
+select * from remittance where objid = $P{objid}
+
+[exportRemittanceList]
+select * from remittancelist where objid = $P{objid}
+
+[exportRemittedForm]
+select * from remittedform where remittanceid = $P{objid}
+
+[exportRevenue]
+select * from revenue where remittanceid = $P{objid}
+
+[exportReceipt]
+select * from receipt where remittanceid = $P{objid}
+
+[exportReceiptList]
+select * from receiptlist  where remittanceid = $P{objid}
+
+[exportReceiptItem]
+select * from receiptitem where receiptid in (
+	select objid from receiptlist where remittanceid = $P{objid}
+)
+
+[exportPaymentItem]
+select * from paymentitem where receiptid in (
+	select objid from receiptlist where remittanceid = $P{objid}
+)
+
+[exportAFControls]
+SELECT afc.* 
+FROM afcontrol afc 
+	INNER JOIN remittedform rf ON afc.objid = rf.afcontrolid 
+WHERE rf.remittanceid = $P{objid} 
+
+[exportCraafCredits]
+SELECT cr.* 
+FROM afcontrol afc 
+	INNER JOIN remittedform rf ON afc.objid = rf.afcontrolid 
+	INNER JOIN craaf cr ON afc.afinventorycreditid = cr.afinventorycreditid  
+WHERE rf.remittanceid = $P{objid}
+
+
+
+[getImportedRemittanceById]
+SELECT * FROM remittanceimport WHERE objid = $P{objid} 
+
+[getAFControlByRemittedForm]
+SELECT * FROM afcontrol 
+WHERE afid = $P{afid} 
+  AND collectorid = $P{collectorid} 
+  AND endseries = $P{endseries} 
+  AND balance > 0 
+
+[getCraafCreditByInvCreditId]
+SELECT * FROM craaf WHERE afinventorycreditid = $P{afinventorycreditid} 
+
+[getRemittanceListById]
+SELECT * FROM remittancelist WHERE objid = $P{objid} 

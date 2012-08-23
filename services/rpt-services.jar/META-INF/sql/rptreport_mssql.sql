@@ -22,6 +22,7 @@ FROM rptledger
 WHERE barangay = $P{barangay} 
   AND docstate = 'APPROVED' AND taxable = 1  
   AND ( lastyearpaid < $P{currentyr} OR (lastyearpaid = $P{currentyr} AND lastqtrpaid < 4 ) )  
+  AND undercompromised = 0 
 ORDER BY taxpayername, tdno     
  
 
@@ -135,6 +136,7 @@ FROM faaslist fl
 WHERE fl.annotated = 1  
   AND fl.docstate = 'CURRENT'  
   AND fa.docstate = 'APPROVED'  
+${orderby} 
 
 #----------------------------------------------------------------------
 #

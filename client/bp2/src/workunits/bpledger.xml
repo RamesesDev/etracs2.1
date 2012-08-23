@@ -3,6 +3,7 @@
     
     <invokers>
         <invoker folderid="/menu/bp/txn" caption="Business Ledger" permission="bpadmin.ledger"/>
+        <invoker folderid="/txn/bp/collection" caption="Business Ledger" permission="bpadmin.ledger"/>
         <invoker type="home.action"  caption="Business Ledger" permission="bpadmin.ledger" index="60" target="window" icon="images/folder.png"/>
         
         <invoker type="formActions" action="_close" immediate="true" caption="Close" icon="images/cancel.png" />
