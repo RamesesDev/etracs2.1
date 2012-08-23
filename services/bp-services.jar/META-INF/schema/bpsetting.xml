@@ -12,7 +12,7 @@
 		<field name="name" required="true"/>
 		<field name="department" required="true"/>
 		<field name="title" required="true"/>
-	</element>
+	</element> 
 	
 	<element name="requirement">
 		<field name="requirement"/>
@@ -25,11 +25,21 @@
 		<complex name="qtr2surcharge" ref="duedate" serializer="default" />
 		<complex name="qtr3surcharge" ref="duedate" serializer="default" />
 		<complex name="qtr4surcharge" ref="duedate" serializer="default" />
+		<complex name="interest" ref="interestduedate" type="list" serializer="default" />
 		<complex name="discount" ref="duedate" serializer="default" />
+	</element>
+	
+	<element name="interestduedate"> 
+		<field name="monthname" required="true" />
+		<field name="monthidx" 	type="integer" required="true" />
+		<field name="day" 		type="integer" required="true" />
+		<field name="year" 		type="integer" required="true" />
 	</element>
 	
 	<element name="duedate">
 		<field name="month" type="integer" required="true" />
 		<field name="day" type="integer" required="true" />
 	</element>
+	
+	
 </schema>

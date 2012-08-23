@@ -6,12 +6,16 @@ class BPSettingService
 {	
 	@PersistenceContext('main')
 	def em
-		
+	
+	@Service('DateService')
+	def dtService
+	
 	def SCHEMANAME = 'bpsetting:bpsetting';
 		
 	@ProxyMethod
 	public def getSetting(){
 		def setting = em.read( SCHEMANAME, [objid:'BPSETTING'] );
+		
 		if( !setting ){
 			setting = [
 				objid: 'BPSETTING',
@@ -23,8 +27,10 @@ class BPSettingService
 					qtr2surcharge : [ month:4, day:20 ],
 					qtr3surcharge : [ month:7, day:20 ],
 					qtr4surcharge : [ month:10, day:20 ],
-					discount : [ month:1, day:10 ]
+					interest : getInterestDue(),
+					discount : [ month:1, day:10 ],
 				]
+				 
 			];
 			
 			em.validate( SCHEMANAME, setting );
@@ -38,10 +44,39 @@ class BPSettingService
 		return setting;
 	}
 	
-	@ProxyMethod
+	@ProxyMethod 
 	public def save( def setting ){
+		populateInterestDues( setting )
 		em.update( SCHEMANAME, setting );
 		
 		return getSetting();
+	}
+	
+	private void populateInterestDues( setting ){
+		if( !setting.collection.interest )
+			setting.collection.interest = getInterestDue()
+	}
+	
+	private def getInterestDue(){
+		def cdate = dtService.parseCurrentDate()
+		def getEndMonthDay = { month ->
+			def date = dtService.parse( 'yyyy-MM-dd', cdate.year+"-"+month+"-"+cdate.day)
+			return dtService.parseDate(dtService.getMonthEndDate( date ), "").day
+		} 
+		 
+		return [
+			[idx:1,  monthname:'JANUARY'	,monthidx:1, 	day:getEndMonthDay( 1 ), 	year:cdate.year],
+			[idx:2,  monthname:'FEBRUARY'	,monthidx:2, 	day:getEndMonthDay( 2 ), 	year:cdate.year],
+			[idx:3,  monthname:'MARCH'		,monthidx:3, 	day:getEndMonthDay( 3 ), 	year:cdate.year],
+			[idx:4,  monthname:'APRIL'		,monthidx:4, 	day:getEndMonthDay( 4 ), 	year:cdate.year],
+			[idx:5,  monthname:'MAY'		,monthidx:5, 	day:getEndMonthDay( 5 ), 	year:cdate.year],
+			[idx:6,  monthname:'JUNE'		,monthidx:6, 	day:getEndMonthDay( 6 ), 	year:cdate.year],
+			[idx:7,  monthname:'JULY'		,monthidx:7, 	day:getEndMonthDay( 7 ), 	year:cdate.year],
+			[idx:8,  monthname:'AUGUST'		,monthidx:8, 	day:getEndMonthDay( 8 ), 	year:cdate.year],
+			[idx:9,  monthname:'SEPTEMBER'	,monthidx:9, 	day:getEndMonthDay( 9 ), 	year:cdate.year],
+			[idx:10, monthname:'OCTOBER'	,monthidx:10,	day:getEndMonthDay( 10 ), 	year:cdate.year],
+			[idx:11, monthname:'NOVEMBER'	,monthidx:11, 	day:getEndMonthDay( 11 ), 	year:cdate.year],
+			[idx:12, monthname:'DECEMBER'	,monthidx:12, 	day:getEndMonthDay( 12 ), 	year:cdate.year],
+		]
 	}
 }
