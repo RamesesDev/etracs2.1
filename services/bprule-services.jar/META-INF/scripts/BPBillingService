@@ -34,13 +34,9 @@ public class BPBillingService
 
 	@ProxyMethod
 	public def getBilling( billing ) {
-		if( billing.advancepayment ) { 
-			advancepayment = billing.advancepayment
-			billdate = dtService.parseDate( billing.billdate, null )
-			
-		}
-		
-		def businesslist = getBusinessByTaxpayer( billing );
+		billing.info.billdate = dtService.serverDate
+		validateAdvBill( billing )
+		def businesslist = getBusinessByTaxpayer( billing ); 
 		if( !businesslist ) throw new Exception("There are no businesses registered for this taxpayer.");
 		billing.items = [];
 		billing.grandtotal = 0.0;
@@ -80,16 +76,11 @@ public class BPBillingService
 					bill.fourth_qtr_total = new BigDecimal('0.0');
 					
 					bill.taxfees.each{
-						def duedate = getDueDate( bpsetting, it.qtr );
-						it.discount = ( it.discount ) ? new BigDecimal( it.discount.toString() ) : new BigDecimal('0.0');
-						it.surcharge = ( it.surcharge ) ? new BigDecimal( it.surcharge.toString() ) : new BigDecimal('0.0');
-						it.interest = ( it.interest ) ? new BigDecimal( it.interest.toString() ) : new BigDecimal('0.0');
-						it.amount = ( it.amount ) ? new BigDecimal( it.amount.toString() ) : new BigDecimal('0.0');
-						
-						it.discount = numSvc.round( it.discount )
-						it.surcharge = numSvc.round( it.surcharge )
-						it.interest = numSvc.round( it.interest )
-						it.amount = numSvc.round( it.amount )
+						def duedate = getSurchargeDueDate( bpsetting, it.qtr );
+						it.discount  = 	new BigDecimal( numSvc.round(it.discount  ? it.discount.toString()  : '0.0') )
+						it.surcharge = 	new BigDecimal( numSvc.round(it.surcharge ? it.surcharge.toString() : '0.0') )
+						it.interest  = 	new BigDecimal( numSvc.round(it.interest  ? it.interest.toString()  : '0.0') )
+						it.amount    = 	new BigDecimal( numSvc.round(it.amount    ? it.amount.toString()    : '0.0') )
 						
 						it.total = it.amount + it.surcharge + it.interest - it.discount;
 						it.duedate = it.year+"-"+duedate.month+"-"+duedate.day;
@@ -120,23 +111,44 @@ public class BPBillingService
 		}
 		
 		if( !billing.items ) throw new Exception("Registered businesses are fully paid.");
-		 
+		billing.items = billing.items.findAll{ it.grandtotal > 0.0 }
 		billing.items.sort{ it.appno };	
 		billing.expirydate = calculateExpirydate( bpsetting )    
 		
-		billing.info.billdate = dtService.serverDate
 		return billing;
+	}
+	
+	private void validateAdvBill( billing ){
+		def currentdate = dtService.parseCurrentDate()
+		advancepayment = null 
+		if( billing.advancepayment ) { 
+			advancepayment = billing.advancepayment
+			billdate = dtService.parseDate( billing.billdate, null )
+			billing.info.billdate = billdate.date
+			if( billdate.date.time <= currentdate.date.time )
+				throw new Exception( "Bill date should be later than today." )
+		}
 	}
 	
 	private def calculateExpirydate( def bpsetting ){
 		def currentdate = dtService.parseCurrentDate()
-		def duedate = getDueDate( bpsetting, currentdate.qtr  )
+		def duedate = getSurchargeDueDate( bpsetting, currentdate.qtr  )
 		duedate = dtService.parse( 'yyyy-MM-dd', currentdate.year+"-"+duedate.month+"-"+duedate.day );
 		def nextday = duedate + 1 
-		return ( currentdate.date.time <= nextday.time  ) ? duedate : dtService.getMonthEndDate( currentdate.date )
-	} 
+		def monthenddate = dtService.getMonthEndDate( currentdate.date )
+		def interestduedate = getInterestDueDate( bpsetting, currentdate )
+		if( monthenddate.time != interestduedate.time )
+			monthenddate = getInterestDueDate( bpsetting, currentdate )
+		return ( currentdate.date.time <= nextday.time  ) ? duedate : monthenddate
+	}
 	
-	def getDueDate( def bpsetting, def qtr ){
+	private def getInterestDueDate( bpsetting, currentdate ){
+		def interestdue = bpsetting.collection.interest
+		interestdue = interestdue.find{ it.idx == currentdate.month }
+		return dtService.parse( 'yyyy-MM-dd', interestdue.year+"-"+interestdue.monthidx+"-"+interestdue.day )
+	}
+	
+	private def getSurchargeDueDate( def bpsetting, def qtr ){
 		def collection = bpsetting.collection;
 		if( qtr == 1 ) return collection.qtr1surcharge;
 		else if( qtr == 2 ) return collection.qtr2surcharge;
@@ -150,14 +162,14 @@ public class BPBillingService
 		return (Integer)(month / 3);
 	}
 	
-	private def getBusinessByTaxpayer( billing ) {
+	private def getBusinessByTaxpayer( billing ){
+		def sqlname = ( billing.app.equals('bpledger') ? 'getListByTaxpayeridTradename' : 'getListByTaxpayerid' )
 		def params = [
 			taxpayerid : billing.info.taxpayerid, 
 			tradename : ( billing.info.tradename ? billing.info.tradename : '%' ),
 			barangayid : ( billing.info.barangayid ? billing.info.barangayid : '%' ),
 		]
-		return em.sqlContext.createNamedQuery( 'business:getListByTaxpayerid' )
-					.setParameters( params ).resultList;
+		return em.sqlContext.createNamedQuery( 'business:' + sqlname ).setParameters( params ).resultList;
 	}
 	
 	private def getTaxFeesByBusinessId( buisnessid ) {
@@ -204,15 +216,10 @@ public class BPBillingService
 		ruleService.execute( 'bpbilling', facts, [actionList:actionList], 'SUMMARY' )
 		
 		bill.taxfees.each {
-			it.discount = ( it.discount ) ? new BigDecimal( it.discount.toString() ) : new BigDecimal('0.0');
-			it.surcharge = ( it.surcharge ) ? new BigDecimal( it.surcharge.toString() ) : new BigDecimal('0.0');
-			it.interest = ( it.interest ) ? new BigDecimal( it.interest.toString() ) : new BigDecimal('0.0');
-			it.amount = ( it.amount ) ? new BigDecimal( it.amount.toString() ) : new BigDecimal('0.0');
-			
-			it.discount = numSvc.round( it.discount )
-			it.surcharge = numSvc.round( it.surcharge )
-			it.interest = numSvc.round( it.interest )
-			it.amount = numSvc.round( it.amount )
+			it.discount  = 	numSvc.round(new BigDecimal(it.discount  ? it.discount.toString()  : '0.0'))
+			it.surcharge =  numSvc.round(new BigDecimal(it.surcharge ? it.surcharge.toString() : '0.0'))
+			it.interest  =  numSvc.round(new BigDecimal(it.surcharge ? it.surcharge.toString() : '0.0'))
+			it.amount 	 = 	numSvc.round(new BigDecimal(it.amount 	 ? it.amount.toString()    : '0.0'))
 		}
 		return bill
 	}	
@@ -228,10 +235,10 @@ public class BPBillingService
 	def createCYFact( ) {
 		def cyfact = ruleService.createFact('bpbilling','bp.billing.facts.CurrentYearFact')
 		if( !cyfact ) throw new Exception("Error in creating Current Year Fact.");
-		cyfact.year  = ( advancepayment ) ? billdate.year :dtService.getServerYear()
-		cyfact.qtr   = ( advancepayment ) ? billdate.qtr  :dtService.getServerQtr()
+		cyfact.year  = ( advancepayment ) ? billdate.year  : dtService.getServerYear()
+		cyfact.qtr   = ( advancepayment ) ? billdate.qtr   : dtService.getServerQtr()
 		cyfact.month = ( advancepayment ) ? billdate.month : dtService.getServerMonth()
-		cyfact.day   =( advancepayment ) ? billdate.day : dtService.getServerDay()
+		cyfact.day   = ( advancepayment ) ? billdate.day   : dtService.getServerDay()
 		
 		return cyfact
 	}
