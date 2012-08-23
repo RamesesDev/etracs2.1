@@ -49,6 +49,9 @@ class FAASService
 	
 	@Service('RPTSettingService')
 	def rptsettingSvc
+	
+	@Service('ForTransmittalService')
+	def forTransmittalSvc
 
     def INTERIM_STATE = 'INTERIM'
     def FORAPPROVAL_STATE = 'FORAPPROVAL'
@@ -56,11 +59,11 @@ class FAASService
     def FORPROVAPPROVAL_STATE = 'FORPROVAPPROVAL'
 	def CURRENT_STATE = 'CURRENT'
 	def CANCELLED_STATE = 'CANCELLED'
-    
+	
 	def SCHEMA_NAME = 'faas'
     def SCHEMA_VERSION = '1.0'
     def LISTSCHEMA_NAME = 'faas:faaslist'
-    
+	
     def LAND_TYPE = 'land' 
     def BLDG_TYPE = 'bldg'
     def MACH_TYPE = 'mach'
@@ -213,7 +216,7 @@ class FAASService
             schemaversion : SCHEMA_VERSION,
             docstate      : INTERIM_STATE,
             transmitted   : false,
-            info          : [   datacapture : true, 
+			info          : [   datacapture : true, 
                                 prevmv      : 0.0, 
                                 prevav      : 0.0, 
                                 effectivityqtr  : 1, 
@@ -227,6 +230,8 @@ class FAASService
             rpu           : [ry:ry, classid:'RES', classcode:'RES', classname:'RES',suffix:0,info:[:], taxable:true, totalareasqm:0.0, totalareaha:0.0],
             previousfaases: [],
             lgutype       : var.lgu_type,
+			lguid		  : var.lgu_index,
+			lguname       : var.lgu_name,
         ]
     }
     
@@ -345,7 +350,8 @@ class FAASService
         def faasinfo = getFaasInfo( faasid )
         validateSubmitToProvince( faasinfo )
         def faas = open( faasinfo.objid )
-        updateFaasState( faas, FORPROVAPPROVAL_STATE )
+		insertForTransmittal( faas )
+		updateFaasState( faas, FORPROVAPPROVAL_STATE )
         updateMessage(faas, null )
         updateAttachmentStates( faas, 'FORTRANSMITTAL' )
         sendToOutbox( faas )
@@ -355,27 +361,30 @@ class FAASService
     
     @ProxyMethod
     public Map approve( faasid ) {
-        def faasinfo = getFaasInfo( faasid )
+		def faasinfo = getFaasInfo( faasid )
         validateApprove( faasinfo )
         def faas = open( faasinfo.objid )
         updateAutonumberTdNo( faas  )
         invokeCommonApproveActions( faas )
         logSvc.log('APPROVE','FAAS', faas.objid)
-        return faas 
+		return faas 
     }
     
     @ProxyMethod
     public Map approveByProvince( faasid ) {
-        def faasinfo = getFaasInfo( faasid )
+		def faasinfo = getFaasInfo( faasid )
         validateProvinceApproval( faasinfo )
         def faas = open( faasinfo.objid )
-        updateAutonumberTdNo( faas )
+		if( var.lgu_type?.toLowerCase() == 'province' ) {
+			insertForTransmittal( faas )
+		}
+		updateAutonumberTdNo( faas )
 		assignNextPin( faas ) 
         invokeCommonApproveActions( faas )
         logSvc.log('APPROVEBYPROVINCE','FAAS', faas.objid)
-        return faas 
+		return faas 
     }
-        
+	
     @ProxyMethod
     public Map disapproveByProvince( faasid ) {
         def faasinfo = getFaasInfo( faasid )
@@ -431,9 +440,10 @@ class FAASService
         def faasinfo = getFaasInfo( faasid )
         validateApprove( faasinfo )
         def faas = open( faasinfo.objid )
-        updateAutonumberTdNo( faas  )
+		updateAutonumberTdNo( faas  )
         validateRPUInfo( faas )
         updateFaasState( faas, CURRENT_STATE )
+		insertRPUItems( faas )
         cancelPreviousFaas( faas )
         deleteTxnReference( faas )
         ledgerSvc.postSubdivisionFaas( faas.objid )
@@ -450,6 +460,7 @@ class FAASService
         updateAutonumberTdNo( faas  )
         validateRPUInfo( faas )
         updateFaasState( faas, CURRENT_STATE )
+		insertRPUItems( faas )
         cancelPreviousFaas( faas )
 		deleteTxnReference( faas )
         ledgerSvc.postConsolidatedFaas( faas.objid )
@@ -462,12 +473,18 @@ class FAASService
 		updateFaasState( faas, CURRENT_STATE )
 		updateImprovementLandReference( faas ) 
 		approveCarryOverAnnotations( faas )
+		insertRPUItems( faas )
 		cancelPreviousFaas( faas )
 		deleteTxnReference( faas )
 		ledgerSvc.post( faas.objid )
 		moveOutboxMessageToProcessed( faas.objid )
 		logSvc.log('APPROVE','FAAS', faas.objid)
     }
+	
+	void insertRPUItems( faas ) {
+		if( faas.rpu.rputype == 'land' )
+			landRpuSvc.insertRPUItems( faas )
+	}
     
 	void approveCarryOverAnnotations( faas ){
 		// approve carryover annotations 
@@ -692,6 +709,18 @@ class FAASService
     }
 	
 	@ProxyMethod
+	public List getBarangaysByLguType( parentid, lgutype) {
+		lgutype = lgutype?.toLowerCase()
+		if( 'municipality' == lgutype  ) {
+			return getBarangayListByParentId( parentid )
+		}
+		else if( 'city' == lgutype ) {
+			return em.sqlContext.createNamedQuery('faas:getBarangays').resultList 
+		}
+		return []
+	}
+	
+	@ProxyMethod
     public List getBarangayListByParentId( parentid ) {
 		if( ! parentid ) return []
         return em.sqlContext.createNamedQuery('faas:getBarangayListByParentId')
@@ -713,20 +742,24 @@ class FAASService
     public void checkLedgerBalanceByTxnType( txntype, faas, refdate ) {
 		if( txntype == 'MC' ) return 
 		
+		//if province then check only if a ledger exists
+		//in case the ledger does not exists then bypass checking 
 		def ledger = em.sqlContext.createNamedQuery('faas:getLedgerInfo').setParameter('objid', faas.ledgerid ).singleResult
-        if( !ledger) throw new Exception('Cannot open Ledger for FAAS ' + faas.tdno + '.')
+        if( !ledger && var.lgu_type?.toLowerCase() != 'province' ) throw new Exception('Cannot open Ledger for FAAS ' + faas.tdno + '.')
         
-		//check clearance against FAAS issuedate 
-        def parseddate = dateSvc.parseDate( refdate, null )
-        if( ledger.docstate == 'PENDING' ) throw new Exception('Ledger is not yet approved.\nLet LandTax approve the ledger before processing the transaction.')
-        if( ledger.docstate == 'CANCELLED') throw new Exception('Ledger has already been cancelled.')
-		if( TO_BOOLEAN( ledger.taxable ) == false ) return 
-		
-		if( isTxnAllowedWithBalance( txntype ) ) return
-		
-		def errmsg = 'Ledger is not fully paid.'
-		if( ledger.assessedvalue > 0.0 && ledger.lastyearpaid < parseddate.year ) throw new Exception( errmsg )
-        if( ledger.assessedvalue > 0.0 && ledger.lastqtrpaid < 4 ) throw new Exception( errmsg )
+		if( ledger ) {
+			//check clearance against FAAS issuedate 
+			def parseddate = dateSvc.parseDate( refdate, null )
+			if( ledger.docstate == 'PENDING' ) throw new Exception('Ledger is not yet approved.\nLet LandTax approve the ledger before processing the transaction.')
+			if( ledger.docstate == 'CANCELLED') throw new Exception('Ledger has already been cancelled.')
+			if( TO_BOOLEAN( ledger.taxable ) == false ) return 
+			
+			if( isTxnAllowedWithBalance( txntype ) ) return
+			
+			def errmsg = 'Ledger is not fully paid.'
+			if( ledger.assessedvalue > 0.0 && ledger.lastyearpaid < parseddate.year ) throw new Exception( errmsg )
+			if( ledger.assessedvalue > 0.0 && ledger.lastqtrpaid < 4 ) throw new Exception( errmsg )
+		}
     }
     
 	@ProxyMethod
@@ -1070,7 +1103,13 @@ class FAASService
         if( datacapture == false && checktxntypes.indexOf( txntype ) < 0 ) {
             return ;
         }
-        
+		//if section and parcel are both zero, then
+		//property is unsurveyed, bypass pin checking 
+		//check for patterns 000-00 or 00-000
+        if( fullpin.indexOf('000-00') >= 0 || fullpin.indexOf('00-000') >= 0 ) {
+			return 
+		}
+		
         //check for unique pin and claimno  only
         def data = em.sqlContext.createNamedQuery('faas:getPinClaimno').setParameters([pin:fullpin, claimno:claimno]).singleResult
         if( data ) throw new Exception('PIN ' + fullpin + ' already exists.')
@@ -1221,7 +1260,6 @@ class FAASService
     
     void validateProvinceApproval( faasinfo ) {
         if( faasinfo.docstate == INTERIM_STATE ) throw new Exception('FAAS is still interim.')
-        if( faasinfo.docstate == FORAPPROVAL_STATE ) throw new Exception('FAAS must not be FORAPPROVAL state.')
         if( faasinfo.docstate == CURRENT_STATE) throw new Exception('FAAS is already current.')
         if( faasinfo.docstate == CANCELLED_STATE ) throw new Exception('FAAS has already been cancelled.')
         checkDuplicateTdNo( faasinfo.objid, faasinfo.tdno )
@@ -1566,14 +1604,34 @@ class FAASService
         def params = [objid:faas.objid, message:message]
         em.sqlContext.createNamedExecutor('faas:updateMessage').setParameters( params ).execute() 
     }
+	
+	void insertForTransmittal( faas ) {
+		def fortransmittal = [
+			objid 		: faas.objid,
+			module		: 'rpt',
+			dtposted	: dateSvc.serverDate, 
+			doctype		: 'faas',
+			docno		: ( faas.info.tdno != null ? faas.info.tdno : faas.rpu.fullpin ),  
+			postedbyid	: env.USERID,
+			postedby	: env.USERFORMALNAME,
+			postedbytitle : env.JOBTITLE,
+		]
+		forTransmittalSvc.create( fortransmittal )
+	}
     
     void sendToOutbox( faas ) {	
-		///// if( faas.info.datacapture == false ) {
+		def remote_connection_active = var.remote_connection_active
+		if( !remote_connection_active ) remote_connection_active = 0
+		
+		def remote_connection_debug = var.remote_connection_debug
+		if( ! remote_connection_debug ) remote_connection_debug = 0
+		
+		if( (faas.info.datacapture == false || TO_BOOLEAN(remote_connection_debug) == true ) && TO_BOOLEAN(remote_connection_active) == true) {
 			def attachment = [ faas:faas, attachments:getAttachments( faas.objid) ]
 			def msg = msgSvc.createMessage( 'faas.receive', attachment )
 			msg.refid = faas.objid 
 			msgSvc.send( msg ) 
-		///// }
+		}
     }
     
     void moveOutboxMessageToProcessed( refid ) {

@@ -2,7 +2,10 @@
 SELECT * FROM landassesslevel WHERE objid = $P{objid}
 
 [getRYSetting]
-SELECT * FROM planttreerysetting WHERE ry = $P{ry}
+SELECT * FROM planttreerysetting s, rysetting_lgu rl 
+WHERE s.objid = rl.objid 
+  AND rl.lguid LIKE $P{lguid} 
+  AND ry = $P{ry} 
 
 [getLatestRevisedLandFaas] 
 SELECT objid, docstate, rputype, txntype, taxpayerid, ry   
@@ -21,9 +24,11 @@ WHERE pin = $P{pin}
 SELECT 
 	ptv.objid AS unitvalueid, ptv.code AS unitvaluecode, ptv.name AS unitvaluename, ptv.unitvalue,  
 	pt.objid AS planttreeid, pt.planttreecode, pt.planttreedesc AS planttreename 
-FROM planttreeunitvalue ptv, plantsandtrees pt, planttreerysetting s 
-WHERE ptv.planttreeid = pt.objid  
-  AND ptv.planttreerysettingid = s.objid 
+FROM planttreeunitvalue ptv, plantsandtrees pt, planttreerysetting s, rysetting_lgu rl  
+WHERE ptv.planttreeid = pt.objid   
+  AND ptv.planttreerysettingid = s.objid  
+  AND s.objid = rl.objid  
+  AND rl.lguid LIKE $P{lguid} 
   AND s.ry = $P{ry} 
 ORDER BY ptv.code  
 
@@ -33,9 +38,11 @@ ORDER BY ptv.code
 SELECT 
 	ptv.objid AS unitvalueid, ptv.code AS unitvaluecode, ptv.name AS unitvaluename, ptv.unitvalue, 
 	pt.objid AS planttreeid, pt.planttreecode, pt.planttreedesc AS planttreename 
-FROM planttreeunitvalue ptv, plantsandtrees pt, planttreerysetting s 
+FROM planttreeunitvalue ptv, plantsandtrees pt, planttreerysetting s, rysetting_lgu rl 
 WHERE ptv.planttreeid = pt.objid  
   AND ptv.planttreerysettingid = s.objid 
+  AND s.objid = rl.objid  
+  AND rl.lguid LIKE $P{lguid} 
   AND s.ry = $P{ry} 
   AND ptv.code LIKE $P{code} 
 ORDER BY ptv.code   

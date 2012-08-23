@@ -1,0 +1,258 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+
+public class XMigrationService
+{
+	@PersistenceContext('main')
+	def em
+	
+	@PersistenceContext('system')
+	def sysem
+	
+	@Service('NumberService')
+	def numSvc 
+	
+	@Service('LandRPUService')
+	def landSvc
+	
+	@ProxyMethod
+	public List  getLandFAASList() {
+		return em.sqlContext.createQuery('''
+			SELECT objid 
+			FROM faaslist 
+			WHERE rputype = 'land' 
+			  AND docstate IN ('CURRENT', 'CANCELLED') 
+			  AND NOT EXISTS(SELECT * FROM landrpuitem WHERE faasid = faaslist.objid )
+		''').resultList 
+	}
+	
+	@ProxyMethod 
+	public List postLandRPUItems( faaslist ) {
+		def errorlist = []
+		faaslist.each{ faas ->
+			println 'processing faasid -> ' + faas.objid 
+			try {
+				faas = em.read('faas', faas )
+				if( faas ) {
+					landSvc.insertRPUItems( faas )
+				}
+			}
+			catch(e ) {
+				errorlist.add( e.message )
+			}
+		}
+		return errorlist
+	}
+	
+	
+	
+	
+	@ProxyMethod
+	public void fixRuleOpener() {
+		def ruleIds = sysem.sqlContext.createQuery('SELECT objid FROM rule ORDER BY ruleset, rulename ').resultList 
+		ruleIds.each{ ruleid ->
+			def rule = sysem.read('rule', ruleid )
+			if( rule ) {
+				println 'rule.ruleset -> ' + rule.ruleset
+				if( rule.ruleset == 'bpbilling' ) fixBPBillingRule( rule )
+				else if( rule.ruleset == 'rptbilling' ) fixRPTBillingRule( rule )
+				else if( rule.ruleset == 'bpassessment' ) fixBPAssessmentRule( rule )
+				sysem.update( rule.schemaname, rule ) 
+			}
+		}
+	}
+	
+	@ProxyMethod
+	public List  getFAASList() {
+		return em.sqlContext.createQuery("SELECT objid FROM faaslist ").resultList 
+	}
+	
+	@ProxyMethod
+	public List roundFaasMarketValues( faaslist ) {
+		def errorlist = []
+		faaslist.each{ faas ->
+			println 'processing faasid -> ' + faas.objid 
+			def rpu = em.sqlContext.createQuery('SELECT rpu FROM faas WHERE objid = $P{objid}')
+							.setParameters( faas ).singleResult 
+			if( rpu ) {
+				try {
+					rpu = em.serializer.read( rpu.rpu )
+					def roundListItems = { list ->
+						list.each{ it.marketvalue = numSvc.roundToTen( it.marketvalue ) }
+					}
+					
+					if( rpu.rputype == 'land') {
+						roundListItems( rpu.info.landdetails )
+						roundListItems( rpu.info.planttrees )
+					}
+					else if( rpu.rputype == 'bldg' ) {
+						println 'round bldg...'
+						roundListItems( rpu.info.bldguses)
+					}
+					else if( rpu.rputype == 'mach' ) {
+						println 'round mach...'
+						roundListItems(rpu.info.machuses)
+					}
+					else if( rpu.rputype == 'planttree' ) {
+						println 'round plant/tree...'
+						roundListItems(rpu.info.planttreedetails)
+					}
+					
+					rpu.totalmv = numSvc.roundToTen( rpu.totalmv )
+					
+					// update records 
+					em.sqlContext.createExecutor('UPDATE faaslist SET totalmv = $P{totalmv} WHERE objid = $P{objid}')
+						.setParameters([objid:faas.objid,
+						totalmv:rpu.totalmv])
+						.execute()
+						
+					em.sqlContext.createExecutor('UPDATE faas SET rpu = $P{rpu} WHERE objid = $P{objid}')
+						.setParameters([objid:faas.objid, rpu:em.serializer.write(rpu)])
+						.execute()
+				}
+				catch( e ) {
+					println e.message 
+					errorlist.add( 'FAASID ' + faas.objid + ' -> ' + e.message )
+				}
+			}
+		}
+		return errorlist
+	}
+	
+	@ProxyMethod 
+	public List updateFaasPreviousInfo( faaslist ) {
+		def errorlist = []
+		faaslist.each{ faas ->
+			println 'processing faasid -> ' + faas.objid 
+			def info = em.sqlContext.createQuery('SELECT info FROM faas WHERE objid = $P{objid}')
+							.setParameters( faas ).singleResult 
+			if( info ) {
+				info = em.serializer.read( info.info  )
+				info.objid = faas.objid 
+				em.sqlContext.createExecutor('''
+					UPDATE faaslist SET 
+						prevtdno = $P{prevtdno}, 
+						prevowner = $P{prevowner}, prevpin = $P{prevpin},
+						prevmv = $P{prevmv},       prevav = $P{prevav}
+					WHERE objid = $P{objid} 
+				''')
+				.setParameters(info)
+				.execute()
+			}
+		}
+		return errorlist
+	}
+	
+	void fixBPAssessmentRule( rule ) {
+		rule.conditions.each{ cond ->
+			println 'cond.opener -> ' + cond.opener 
+			if( cond.opener == 'rulecondition.applicationtype' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_apptype'
+			else if( cond.opener == 'rulecondition.barangay' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_barangay'
+			else if( cond.opener == 'rulecondition.businessorg' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_businessorg'
+			else if( cond.opener == 'rulecondition.lob' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_lob'
+			else if( cond.opener == 'rulecondition.lobtype' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_lobapptype'
+			else if( cond.opener == 'rulecondition.lobattribute' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_lobattribute'
+			else if( cond.opener == 'rulecondition.lobclassification' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_lobclassification'
+			else if( cond.opener == 'rulecondition.officetype' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_officetype'
+			else if( cond.opener == 'rulecondition.summary' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_summary'
+			else if( cond.opener == 'rulecondition.taxfee' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_taxfee'
+			else if( cond.opener == 'rulecondition.variable' )
+				cond.opener = 'bp-rule-mgmt:bpassessment_condition_variable'
+		}
+		
+		rule.actions.each{ action ->
+			println 'action.opener -> ' + action.opener
+			if( action.opener == 'ruleaction.requireinfo') { 
+				action.opener = 'bp-rule-mgmt:bpassessment_action_requireinfo'
+				action.actiontype = 'requireinfo'
+			}
+			else if( action.opener == 'ruleaction.taxfeecharge') {
+				action.opener = 'bp-rule-mgmt:bpassessment_action_taxfeecharge'
+				action.actiontype = 'taxfeecharge'
+			}
+			else if( action.opener == 'ruleaction.updatetaxfee') {
+				action.opener = 'bp-rule-mgmt:bpassessment_action_updatetaxfee'
+				action.actiontype = 'updatetaxfee' 
+			}
+		}
+	}
+	
+	
+	void fixBPBillingRule( rule ) {
+		rule.conditions.each{ cond ->
+			println 'cond.fact.name-> ' + cond.fact.name
+			if( cond.fact.name == 'CurrentYearFact' )
+				cond.opener = 'bp-rule-mgmt:bpbilling_condition_currentyearfact'
+			else if( cond.fact.name == 'BPLedgerFact' )
+				cond.opener = 'bp-rule-mgmt:bpbilling_condition_ledgerfact'
+			else if( cond.fact.name == 'TaxFeeFact' )
+				cond.opener = 'bp-rule-mgmt:bpbilling_condition_taxfeefact'
+		}
+		
+		rule.actions.each{ action ->
+			println 'action.actiontype -> ' + action.actiontype
+			if( action.actiontype == 'calcDiscount')
+				action.opener = 'bp-rule-mgmt:bpbilling_action_discount'
+			else if( action.actiontype == 'calcInterest')
+				action.opener = 'bp-rule-mgmt:bpbilling_action_interest'
+			else if( action.actiontype == 'calcSurcharge')
+				action.opener = 'bp-rule-mgmt:bpbilling_action_surcharge'
+		}
+	}
+	
+	void fixRPTBillingRule( rule ) {
+		rule.conditions.each{ cond ->
+			println 'cond.fact.name -> ' + cond.fact.name
+			if( cond.fact.name == 'CurrentYearFact' ) 
+				cond.opener = 'rpt-rule-mgmt:rptbilling_condition_currentyearfact'
+			else if( cond.fact.name == 'AssessedValueFact' ) 
+				cond.opener = 'rpt-rule-mgmt:rptbilling_condition_avfact'
+			else if( cond.fact.name == 'RPTLedgerFact' ) 
+				cond.opener = 'rpt-rule-mgmt:rptbilling_condition_ledgerfact'
+		}
+		
+		rule.actions.each{ action -> 
+			println 'action.actiontype -> ' + action.actiontype
+			if( action.actiontype == 'calcBasic' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basic'
+			else if( action.actiontype == 'calcBasicDisc' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basic_discount'
+			else if( action.actiontype == 'calcBasicInt' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basic_interest'
+			else if( action.actiontype == 'calcBasicPrevInt' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basic_prev_interest'
+			else if( action.actiontype == 'calcBasicPriorInt' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basic_prior_interest'
+			else if( action.actiontype == 'calcBasicPrev' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basicprev'
+			else if( action.actiontype == 'calcBasicPrior' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_basicprior'
+			else if( action.actiontype == 'calcSef' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef'
+			else if( action.actiontype == 'calcSefDisc' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_discount'
+			else if( action.actiontype == 'calcSefInt' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_interest'
+			else if( action.actiontype == 'calcSefPrev' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_prev'
+			else if( action.actiontype == 'calcSefPrevInt' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_prev_interest'
+			else if( action.actiontype == 'calcSefPrior' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_prior'
+			else if( action.actiontype == 'calcSefPriorInt' ) 
+				action.opener = 'rpt-rule-mgmt:rptbilling_action_sef_prior_interest'
+		}
+	}
+	
+	
+}

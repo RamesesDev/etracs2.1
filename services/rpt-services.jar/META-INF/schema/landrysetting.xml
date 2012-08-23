@@ -5,10 +5,10 @@
 		<field name="schemaversion" required="true"/>
 		<field name="ry" required="true" type="integer" />
 		<field name="previd" />
+		<field name="appliedto"/>
 	</element>
 	
 	<!-- AssessLevels -->
-	
 	<element name="assesslevel" tablename="landassesslevel">
 		<field name="objid" primary="true"/>
 		<field name="classcode" required="true"/>
@@ -17,6 +17,8 @@
 		<field name="rate" required="true" type="decimal" />
 		<field name="previd" />
 		<field name="landrysettingid" required="true" />
+		<field name="parentid"/>
+		<field name="parentcode"/>
 		<complex name="ranges" ref="range" type="list" required="false" serializer="default" />
 	</element>	
 	

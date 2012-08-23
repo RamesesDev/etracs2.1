@@ -556,6 +556,13 @@ class SubdivisionService
             newfaas.info.txntype        = SUBDIVISION_TXNTYPE
             newfaas.info.txn            = faasSvc.resolveTxnType( SUBDIVISION_TXNTYPE ) 
             newfaas.info.tdno           = sland.newtdno 
+			
+			newfaas.info.titletype		= sland.newtitletype
+			newfaas.info.titleno		= sland.newtitleno
+			newfaas.info.titledate		= sland.newtitledate
+			
+			newfaas.info.memoranda		= sland.memoranda
+			
             newfaas.info.taxpayerid     = tpayinfo.taxpayerid 
             newfaas.info.taxpayerno     = tpayinfo.taxpayerno
             newfaas.info.taxpayername   = tpayinfo.taxpayername 
@@ -615,9 +622,12 @@ class SubdivisionService
             newfaas.info.txn            = faasSvc.resolveTxnType( subdivision.txntype )
             newfaas.info.landfaasid     = landfaas.objid 
             newfaas.info.landfaastaxpayerid = landfaas.info.taxpayerid 
-            newfaas.rp                  = landfaas.rp 
+            newfaas.info.memoranda		= arpu.memoranda
+			
+			newfaas.rp                  = landfaas.rp 
             newfaas.rpu.suffix          = arpu.newsuffix 
             newfaas.rpu.fullpin         = newfaas.rp.pin + '-' + newfaas.rpu.suffix 
+			
             em.create(newfaas.schemaname, newfaas )
             em.create(FAASLIST_SCHEMANAME, newfaas )
             

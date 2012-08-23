@@ -397,6 +397,7 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
         xButton2.setDefaultCommand(true);
         xButton2.setName("ok");
 
+        xNumberField17.setDepends(new String[] {"basic.*", "item.sef.*"});
         xNumberField17.setEnabled(false);
         xNumberField17.setFieldType(BigDecimal.class);
         xNumberField17.setFont(new java.awt.Font("Arial", 1, 18));

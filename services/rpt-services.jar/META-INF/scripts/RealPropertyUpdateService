@@ -46,8 +46,28 @@ class RealPropertyUpdateService
 	}
 	
 	@ProxyMethod
-	public def approve( entity ) {
-		def faaslist = em.sqlContext.createNamedQuery('realpropertyupdate:get-affected-faas').setParameter('pin', entity.pin).resultList
+	public def createRealPropertyUpdate( param ) {
+		def info = em.read('realproperty', param)
+		
+		def entity = [:]
+		entity.pin = info.pin
+		entity.realpropertyid = info.objid 
+		entity.cadastrallotno = entity.prevcadastrallotno = info.cadastrallotno
+		entity.blockno = entity.prevblockno = info.blockno
+		entity.surveyno = entity.prevsurveyno = info.surveyno
+		entity.houseno = entity.prevhouseno = info.houseno
+		entity.street = entity.prevstreet = info.street
+		entity.purok = entity.prevpurok = info.purok
+		entity.north = entity.prevnorth = info.north
+		entity.east = entity.preveast = info.east
+		entity.south = entity.prevsouth = info.south
+		entity.west = entity.prevwest = info.west
+		
+		return entity
+	}
+	
+	@ProxyMethod
+	public def approve( entity ) {		
 		def newinfo = [
 			cadastrallotno	: entity.cadastrallotno,
 			blockno			: entity.blockno,
@@ -58,31 +78,48 @@ class RealPropertyUpdateService
 			north			: entity.north,
 			east			: entity.east,
 			south			: entity.south,
-			west			: entity.west
+			west			: entity.west,
+			pin				: entity.pin,
 		]
 		
-		for( faas in faaslist ) {
-			def info = em.sqlContext.createNamedQuery('realpropertyupdate:get-faas-rp').setParameter('objid', faas.objid).singleResult
-			info = em.serializer.read( info.rp )
-			info.putAll( newinfo )
-			faas.rp = em.serializer.write( info )
-			em.sqlContext.createNamedExecutor('realpropertyupdate:update-faas-rp').setParameters(faas).execute()
-			
-			info.pin = entity.pin
-			em.sqlContext.createNamedExecutor('realpropertyupdate:update-faaslist-rp').setParameters(info).execute()
-			em.sqlContext.createNamedExecutor('realpropertyupdate:update-faaslist-rp').setParameters(info).execute()
-			
-			info.landfaasid = faas.objid
-			rpSvc.save( info )
+		def realproperty = em.read('realproperty', [objid: entity.realpropertyid])
+		realproperty.putAll( newinfo )
+		em.update('realproperty', realproperty)
+		
+		def sqlctx = em.sqlContext
+		
+		//update the land faas
+		def land = sqlctx.createNamedQuery('realpropertyupdate:find-land').setParameters(realproperty).singleResult
+		if( !land ) throw new Exception("Land FAAS $realproperty.landfaasid not found.");
+		updateRPInfo( land, newinfo )
+		
+		//update all improvements faas
+		def improvements = sqlctx.createNamedQuery('realpropertyupdate:find-improvements').setParameters(land).resultList
+		improvements.each { faas ->
+			updateRPInfo( faas, newinfo )
 		}
 		
 		entity.state = 'APPROVED'
 		return save( entity )
 	}
 	
+	private void updateRPInfo( faas, realproperty ) {
+		def rp = em.serializer.read( faas.rp )
+		rp.putAll( realproperty )
+		//update faas
+		faas.rp = em.serializer.write( rp )
+		em.sqlContext.createNamedExecutor('realpropertyupdate:update-faas-rp').setParameters(faas).execute()
+
+		rp.faasid = faas.objid
+		//update faaslist
+		em.sqlContext.createNamedExecutor('realpropertyupdate:update-faaslist-rp').setParameters(rp).execute()
+		//update rptledger
+		em.sqlContext.createNamedExecutor('realpropertyupdate:update-rpt-ledger-rp').setParameters(rp).execute()
+	}
+	
 	@ProxyMethod
 	public def save( entity ) {
-		if( entity.sate == 'APPROVED' ) {
+		if( entity.state == 'APPROVED' ) {
 			entity.approvedby = env.USER
 			entity.dtapproved = dateSvc.serverDate
 		}
@@ -111,11 +148,12 @@ class RealPropertyUpdateService
 	public def lookupRealProperties( param ) {
 		def qry
 		if( param.searchText ) {
-			qry = em.sqlContext.createNamedQuery('realpropertyupdate:realproperty-list-by-pin').setParameter('pin', param.searchText+'%')
+			qry = em.sqlContext.createNamedQuery('realpropertyupdate:lookup-realproperty-list-by-pin').setParameter('pin', param.searchText)
 		}
 		else {
-			qry = em.sqlContext.createNamedQuery('realpropertyupdate:realproperty-list')
+			qry = em.sqlContext.createNamedQuery('realpropertyupdate:lookup-realproperty-list')
 		}
+		qry.setPagingKeys('r.objid')
 		
 		if( param._start ) qry.setFirstResult( param._start )
 		if( param._limit ) qry.setMaxResults( param._limit )
@@ -123,14 +161,4 @@ class RealPropertyUpdateService
 		return qry.resultList
 	}
 	
-	@ProxyMethod
-	public def getInfo( pin ) {
-		def rpinfo = em.sqlContext.createNamedQuery('realpropertyupdate:get-info').setParameter('pin', pin).singleResult
-		if( !rpinfo ) return;
-		
-		rpinfo = em.serializer.read( rpinfo.rp )
-		rpinfo.pin = pin
-		return rpinfo
-	}
-
 }

@@ -5,6 +5,7 @@
 		<field name="state" />
 		<field name="txnno" />
 		<field name="pin" />
+		<field name="realpropertyid" />
 		<field name="arpno" />
 		<field name="cadastrallotno" />
 		<field name="surveyno" />

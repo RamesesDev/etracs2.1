@@ -12,7 +12,7 @@ import com.rameses.rcp.annotations.*;
 
 class LookupMunicipalityController 
 {
-    @Service('ProvinceLGUService')
+    @Service('LGUService')
     def svc;
     
     def onselect;
@@ -31,11 +31,12 @@ class LookupMunicipalityController
         getColumns : {
             return [
                 new Column(name:"pin", caption:"Index No.", width:120),
-                new Column(name:"name", caption:"LGU Name", width:350),
+                new Column(name:"lguname", caption:"LGU Name", width:350),
             ]
         },
         fetchList : { 
-                def list = svc.lookupMunicipality(searchText);
+                // def list = svc.lookupMunicipality(searchText);
+                def list = svc.getLgusByType('MUNICIPALITY')
                 if( list ) return list;
                 throw new Exception("Records not found.");
 	},

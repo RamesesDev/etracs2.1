@@ -3,7 +3,7 @@
         <folder id="bp" caption="Business Permit" mnemonic="b">
             <folder id="master" caption="Master" mnemonic="m"/>
             <folder id="txn" caption="Transaction" mnemonic="t"/>
-            <folder id="reports" caption="Reports" mnemonic="r"/>
+            <folder id="apps" caption="Applications/Permits" mnemonic="a"/>
         </folder>
     </folder>
     
@@ -14,8 +14,8 @@
     <folder id="txn">
         <folder id="bp" caption="Permits/Licensing">
             <folder id="master" caption="Master Files"/>
-            <folder id="apps" caption="Business Applications/Permits"/>
-            <folder id="txn" caption="Business Transactions"/>
+            <folder id="apps" caption="Applications/Permits"/>
+            <folder id="txn" caption="Transactions"/>
             <folder id="collection" caption="Collection"/>
         </folder>
     </folder>

@@ -5,8 +5,9 @@
 -->
 <workunit>
     <invokers>
-        <invoker type="miscrysetting.create" action="create" caption="Create Miscellaneous RY Settting" target="window" icon="images/doc-new.png"/>
-        <invoker type="miscrysetting.open" action="open" caption="Edit Miscellaneous RY Settting" target="window" icon="images/edit.png"/>
+        <invoker type="miscrysetting.create" action="create" caption="Create Miscellaneous Revision Settting" target="window" icon="images/doc-new.png"/>
+        <invoker type="miscrysetting.open" action="open" caption="Edit Miscellaneous Revision Settting" target="window" icon="images/edit.png"/>
+        <invoker type="miscrysetting.copy" action="copy" caption="Copy Miscellaneous Revision Setting" icon="images/edit.png" target="window"/>
         
         <invoker type="formActions" action="_close" caption="Close" icon="images/cancel.png"/>
         <invoker type="formActions" action="save" shortcut="ctrl S" caption="Save" mnemonic="s" icon="images/save.png"/>
@@ -44,6 +45,12 @@ public class MiscRYSettingController
     /*---------------------------------------------------------------------
     * FormAction Support
     ---------------------------------------------------------------------*/
+    void copy() {
+        entity = svc.copy( entity.objid, entity.ry )
+        initOpen()
+    }
+    
+    
     def create() {
         mode = 'create' 
         entity = createEntity()
@@ -58,8 +65,12 @@ public class MiscRYSettingController
     }
     
     void open() {
-        mode = 'view' 
         entity = svc.open( entity.objid )
+        initOpen()
+    }
+    
+    void initOpen() {
+        mode = 'view' 
         assessLevels = entity.assesslevels
         miscItemValues = entity.miscitemvalues
         entity.remove( 'assesslevels' )
@@ -71,7 +82,7 @@ public class MiscRYSettingController
             entity = svc.create( entity )
         }
         else {
-            entity = svc.copySetting( entity.ry, copyYear );
+            entity = svc.reviseSetting( entity.ry, copyYear );
         }
         initVariables();
         return 'default'
@@ -98,6 +109,42 @@ public class MiscRYSettingController
         return 'default'
     }
     
+    /*---------------------------------------------------------------------
+    *
+    * LGU Support 
+    *
+    ----------------------------------------------------------------------*/
+    def SETTING_TYPE = 'misc' 
+    
+    def onselectLgu = {lgu ->
+        if( entity.lgus.find{ it.lguid == lgu.objid } != null ) {
+            throw new Exception( lgu.lguname + ' has already been added.')
+        }
+        entity.lgus.add([
+            objid       : entity.objid,
+            lguid       : lgu.objid,
+            lguname     : lgu.lguname,
+            settingtype : SETTING_TYPE,
+        ])
+        lguListHandler.load()
+    }
+    
+    def getLookupLgu() {
+        return InvokerUtil.lookupOpener('rysettinglgu.lookup', [settingtype:SETTING_TYPE, ry:entity.ry, onselect:onselectLgu])
+    }
+    
+    def lguListHandler = [
+        getColumns : { return [
+            new Column(name:'lguname', caption:'Name'),
+        ]},
+        fetchList : { return entity.lgus },
+        onRemoveItem : { item ->
+            if( MsgBox.confirm('Delete item?')) {
+                entity.lgus.remove( item )
+            }
+        },
+        
+    ] as SubListModel
     
 
     /*---------------------------------------------------------------------

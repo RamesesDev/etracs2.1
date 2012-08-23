@@ -42,17 +42,19 @@
 	<field name="details" class="java.lang.Object"/>
 	<field name="taxpayername" class="java.lang.String"/>
 	<field name="classcode" class="java.lang.String"/>
+	<field name="administratorname" class="java.lang.String"/>
+	<field name="rputype" class="java.lang.String"/>
 
 
 		<group  name="LEDGERID" >
 			<groupExpression><![CDATA[$F{objid}]]></groupExpression>
 			<groupHeader>
-			<band height="55"  isSplitAllowed="true" >
+			<band height="69"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="283"
-						y="16"
+						x="300"
+						y="30"
 						width="42"
 						height="13"
 						forecolor="#000000"
@@ -71,9 +73,9 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="325"
-						y="16"
-						width="108"
+						x="342"
+						y="30"
+						width="101"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -92,7 +94,7 @@
 					<reportElement
 						mode="Opaque"
 						x="0"
-						y="30"
+						y="44"
 						width="540"
 						height="0"
 						forecolor="#000000"
@@ -119,8 +121,8 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="141"
-						y="16"
+						x="158"
+						y="30"
 						width="25"
 						height="13"
 						forecolor="#000000"
@@ -139,9 +141,9 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="166"
-						y="16"
-						width="116"
+						x="183"
+						y="30"
+						width="117"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -159,9 +161,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="433"
-						y="16"
-						width="36"
+						x="443"
+						y="17"
+						width="38"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -174,14 +176,14 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[Lot No.:]]></text>
+				<text><![CDATA[Class :]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="469"
-						y="16"
-						width="70"
+						x="480"
+						y="17"
+						width="60"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -194,13 +196,13 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{cadastrallotno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{classcode}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="2"
-						y="16"
+						y="30"
 						width="39"
 						height="13"
 						forecolor="#000000"
@@ -220,8 +222,8 @@
 					<reportElement
 						mode="Transparent"
 						x="41"
-						y="16"
-						width="100"
+						y="30"
+						width="117"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -239,7 +241,7 @@
 				<subreport  isUsingCache="true">
 					<reportElement
 						x="0"
-						y="34"
+						y="48"
 						width="540"
 						height="19"
 						key="subreport-1"/>
@@ -271,7 +273,7 @@
 						mode="Transparent"
 						x="75"
 						y="4"
-						width="357"
+						width="368"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -289,9 +291,9 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="433"
+						x="443"
 						y="4"
-						width="36"
+						width="38"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -304,14 +306,14 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[Class :]]></text>
+				<text><![CDATA[Kind :]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="469"
+						x="480"
 						y="4"
-						width="70"
+						width="60"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -324,7 +326,87 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{classcode}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rputype}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="2"
+						y="17"
+						width="73"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-23"/>
+					<box leftPadding="2">					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Administrator :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="75"
+						y="17"
+						width="368"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-28"/>
+					<box leftPadding="2">					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{administratorname}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="443"
+						y="30"
+						width="38"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-24"/>
+					<box leftPadding="2">					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[Lot No.:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="480"
+						y="30"
+						width="60"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-29"/>
+					<box leftPadding="2">					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{cadastrallotno}]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupHeader>

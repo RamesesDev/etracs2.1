@@ -23,6 +23,7 @@ class PlantTreeUnitValueLookupController extends LookupModel
     def searchText
     def ry
     def selected
+    def lguid
     
     void init(){
     }
@@ -52,7 +53,7 @@ class PlantTreeUnitValueLookupController extends LookupModel
     List fetchList( Map params ) { 
         def s = search
         if( !s ) s = searchText 
-        def list = svc.lookupUnitValues( ry, s, params)
+        def list = svc.lookupUnitValues(lguid, ry, s, params)
         if( list ) return list
         throw new Exception("Record not found.")
     }

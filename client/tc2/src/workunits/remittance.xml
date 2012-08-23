@@ -2,7 +2,9 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/tc" action="create" caption="Remit" permission="remittance.create"/>
+        <invoker folderid="/menu/tc/coll" action="create" caption="Remit" permission="remittance.create" index="20" />
+        <invoker folderid="/txn/tc/coll" action="create" caption="Remit" permission="remittance.create" index="20" />
+        
         <invoker type="home.action" action="create" caption="Remit" permission="remittance.create" index="110" icon="images/folder.png" target="window"/>
         
         <invoker type="quick_launcher" code="REMIT01" action="create" caption="Remit" permission="remittance.create"/>
@@ -12,7 +14,8 @@
         <invoker type="formActions" action="next" shortcut="ctrl N" visibleWhen="#{mode == 'init'}" caption="Next" mnemonic="n" icon="images/next.png"/>
         <invoker type="formActions" action="back" shortcut="ctrl B" visibleWhen="#{mode == 'main'}" caption="Back" mnemonic="b" icon="images/back.png"/>
         <invoker type="formActions" action="submit" shortcut="ctrl S" visibleWhen="#{mode == 'main'}" caption="Submit" mnemonic="s" icon="images/doc-submit.png" permission="remittance.submit"/>
-        <invoker type="formActions" action="viewRCD" shortcut="ctrl R" visibleWhen="#{mode == 'view'}" immediate="true" caption="View RCD" mnemonic="r" icon="images/doc-view.png" permission="remittance.create"/>
+        <invoker type="formActions" action="viewRCD" shortcut="ctrl R" visibleWhen="#{mode == 'view'}" immediate="true" caption="View RCD" mnemonic="r" icon="images/doc-view.png"/>
+        <invoker type="formActions" action="exportRemittance" shortcut="ctrl E" visibleWhen="#{mode == 'view'}" immediate="true" caption="Export Remittance" mnemonic="r" icon="images/doc-view.png" />
         <invoker type="formActions" action="viewOtherReports" shortcut="ctrl O" visibleWhen="#{mode == 'view'}" immediate="true" caption="Other Reports" mnemonic="o" icon="images/otherReports.png" permission="remittance.create"/>
         <invoker type="formActions" action="backToMain" shortcut="ctrl B" visibleWhen="#{mode == 'reports' or mode == 'rcd'}" immediate="true" caption="Back" mnemonic="b" icon="images/back.png"/>
         <invoker type="formActions" action="viewReport" shortcut="ctrl V" visibleWhen="#{mode == 'reports'}" immediate="true" caption="View" mnemonic="v" icon="images/doc-view.png" permission="remittance.create"/>
@@ -24,6 +27,9 @@
         import com.rameses.rcp.annotations.*;
         import com.rameses.osiris2.client.*;
         import java.text.DecimalFormat;
+        import java.io.*
+        import javax.swing.JFileChooser;
+        import com.rameses.util.*
         
         public class RemittanceController {
         
@@ -114,6 +120,43 @@
                 binding.refresh();
                 return 'main';
             }
+            
+            void exportRemittance() {
+                if( ! MsgBox.confirm('Export remittance?') ) return;
+                
+                def previouspath = System.getProperty("chooser.previouspath");
+                JFileChooser chooser = new JFileChooser( previouspath );
+                chooser.fileSelectionMode = JFileChooser.FILES_ONLY;
+                def sdf = new java.text.SimpleDateFormat("yyyyMMddHHmmss");
+                def fileName = entity.info.txnno + ".rem";
+                chooser.selectedFile = new File( fileName );
+                int res = chooser.showSaveDialog( null );
+                if( res == JFileChooser.APPROVE_OPTION ){
+                    def data = [
+                        remittance         : svc.exportRemittance( entity.objid ),   
+                        remittancelist     : svc.exportRemittanceList( entity.objid ),   
+                        remittedforms      : svc.exportRemittedForms( entity.objid ),   
+                        revenues           : svc.exportRevenues( entity.objid ),   
+                        receipts           : svc.exportReceipts( entity.objid ),   
+                        receiptlists       : svc.exportReceiptLists( entity.objid ),   
+                        receiptitems       : svc.exportReceiptItems( entity.objid ),                                           
+                        paymentitems       : svc.exportPaymentItems( entity.objid ),  
+                        afcontrols         : svc.exportAFControls( entity.objid),
+                        craafcredits       : svc.exportCraafCredits( entity.objid ),
+                    ]
+
+                    data = ObjectSerializer.instance.toString( data )
+                    data = CipherUtil.encode(data)
+                    def out = chooser.selectedFile.newOutputStream()
+                    def oos = new ObjectOutputStream( out )
+                    oos.writeObject( data )
+                    oos.close()
+    
+                    System.setProperty("chooser.previouspath", chooser.selectedFile.parent );
+                    MsgBox.alert( "Remittance No. $entity.info.txnno was successfully exported." );
+                }                
+            }
+            
             
             def close() {
                 return '_close';

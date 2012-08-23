@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    
+    @description: CTC-Individual (Barangay) TC Plugin
+    
+-->
+<workunit>
+    <invokers>
+        <invoker type="collection" caption="CTC-Individual (Barangay)" afid="0016" appcode="ctc_individual_brgy" permission="collection_ctc_individual_brgy.create"/>
+        <invoker type="tc:ctc_individual_brgy" action="initBarangay" caption="CTC-Individual (Barangay)" afid="0016" permission="collection_ctc_individual_brgy.create"/>
+        
+        <invoker type="initActions" action="back" caption="Back" mnemonic="b"  immediate="true" icon="images/back.png"/>
+        
+        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" permission="collection_ctc_individual_brgy.create"  icon="images/doc-new.png"/>
+        <invoker type="formActions" action="_init" caption="Back" mnemonic="b"  immediate="true" visibleWhen="#{mode == 'create'}" icon="images/back.png"/>
+        <invoker type="formActions" action="create" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" icon="images/save.png"/>
+        <invoker type="formActions" action="update" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'edit'}"  icon="images/save.png"/>
+        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" permission="collection_ctc_individual_brgy.print"/>
+        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view'}" permission="collection_ctc_individual_brgy.void" icon="images/void.png"/>
+        
+        <invoker type="receipt.actions:tc:ctc_individual_brgy" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup" permission="collection_ctc_individual_brgy.edit" icon="images/edit.png"/>
+        <invoker type="receipt.actions:tc:ctc_individual_brgy" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" permission="collection_ctc_individual_brgy.print"/>
+        <invoker type="receipt.actions:tc:ctc_individual_brgy" action="doVoid" caption="Void" mnemonic="v" permission="collection_ctc_individual_brgy.void" icon="images/doc-void.png"/>
+        
+        <invoker type="inquiry:tc:ctc_individual_brgy" action="initInquiry" caption="Inquiry" />
+    </invokers>
+    
+    <code lang="groovy">
+        <![CDATA[
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.reports.*
+        import etracs2.ctc.tc.ui.*
+        
+        
+        public class CTCIndividualBrgyReceiptController extends AbstractCTCIndividualController
+        {
+            @Service("EntityService")
+            def entitySvc
+            
+            @Service("CTCService")
+            def ctcSvc
+            
+            @Service("ReceiptService")
+            def svc
+            
+            @Service('ReportParameterService')
+            def paramsSvc
+            
+            @Service('LguService')
+            def lguSvc
+            
+            @Service('CTCReceiptHtmlService')
+            def htmlSvc
+            
+            @Binding
+            def binding
+        
+            def collectiontitle = 'COMMUNITY TAX CERTIFICATE (INDIVIDUAL) - Barangay'
+            
+            def barangay
+            def orgtype
+            def brgylookup
+            
+            
+            void initBarangay() {
+                super.init();
+                if( OsirisContext.env.CLIENT?.orgtype == 'BARANGAY' ) {
+                    orgtype = OsirisContext.env.CLIENT?.orgtype
+                    def brgy = lguSvc.open( OsirisContext.env.CLIENT.refid );
+                    setBarangay( [objid: brgy.objid, name: brgy.lguname] )
+                }
+                entity.doctype = 'CTCIB'
+                brgylookup = InvokerUtil.lookupOpener('barangay.lookup', [:])
+            }
+            
+            void setBarangay( brgy ) {
+                entity.barangayid = brgy.objid;
+                entity.barangayname = brgy.name;
+                this.barangay = brgy
+            }
+            
+            void calculate() {
+                if( !entity.barangayid ) {
+                    MsgBox.err('Please specify the barangay before calculating.')
+                    binding.focus('barangay')
+                    return;
+                }
+                
+                super.calculate()
+            }
+
+            def getService() { return svc }
+            def getHtmlService() { return htmlSvc }
+            
+            def getCollectionTitle() { return collectiontitle }
+
+            def getParameters() { 
+                return paramsSvc.getStandardParameter( OsirisContext.env.USERNAME )
+            }
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page name="init" template="etracs2.ctc.tc.ui.CTCInitPage"/>
+        <page name="new" template="etracs2.ctc.tc.ui.IndividualPage"/>
+        <page name="view" template="etracs2.tc.collection.CollectionViewPage"/>
+        <page name="html" template="etracs2.tc.HtmlPage"/>
+    </pages>
+</workunit>

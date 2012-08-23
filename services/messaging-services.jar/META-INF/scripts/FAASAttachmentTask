@@ -9,6 +9,9 @@ class FAASAttachmentTask
 {
     @PersistenceContext('main')
     def em 
+	
+	@Service('DynamicHttpInvokerService')
+    def invokerSvc
     
     @Service('Var')
     def var
@@ -19,6 +22,7 @@ class FAASAttachmentTask
         attachmentList.each { attachment -> 
             try {
                 uploadAttachment( attachment )
+				invokerSvc.invokeRemoteService( 'ETRACSFileTransferService', 'uploadComplete', [attachment] as Object[])
             }
             catch( e ) {
                 //log encountered error, just ignore and redeliver attachment 

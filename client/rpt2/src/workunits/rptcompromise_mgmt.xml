@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="menu/mgmt" caption="Compromise Agreements" mnemonic="c" permission="rptcompromise.view" index="500"/>
+        <invoker folderid="/txn/rpt" caption="Compromise Agreements" mnemonic="c" permission="rptcompromise.view" index="500"/>
+        <invoker type="quick_launcher" code="RCA00" caption="Compromise Agreements" mnemonic="c" permission="rptcompromise.view" />
+        
+        <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
+        <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="rptcompromise.create" />
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="rptcompromise.open"/>
+    </invokers>
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+public class RPTCompromiseMgmtController 
+{
+    @Binding 
+    def binding
+    
+    @Service('RPTCompromiseService')
+    def svc 
+    
+    def selectedItem
+    def searchText
+    
+    def create() {
+        return InvokerUtil.lookupOpener('rptcompromise.create', [:])
+    }
+    
+    def open() {
+        return InvokerUtil.lookupOpener('rptcompromise.open', [entity:selectedItem])
+    }
+    
+    
+    void search() {
+        listHandler.load()
+    }
+    
+    def listRefreshHandler = {
+        listHandler.load()
+    }
+    
+    def listHandler = [
+        getRows     : { 
+            return 50 
+        },
+        getColumns  : { return [
+            new Column(name:'docstate', caption:'State'),
+            new Column(name:'txnno', caption:'Txn No.'),
+            new Column(name:'txndate', caption:'Txn Date'),
+            new Column(name:'secondpartyname', caption:'Taxpayer Name'),
+            new Column(name:'term', caption:'Term', type:'integer' ),
+            new Column(name:'numofinstallment', caption:'Installments', type:'integer', format:'##'),
+            new Column(name:'downpayment', caption:'Downpayment', type:'decimal'),
+            new Column(name:'amount', caption:'Amount', type:'decimal' ),
+            new Column(name:'amtpaid', caption:'Amount Paid', type:'decimal'),
+            new Column(name:'enddate', caption:'End Date', maxWidth:80),
+        ]},
+        fetchList  : { 
+            return svc.getList( searchText, it ) 
+        },
+    ] as PageListModel
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.ListSearchPage"/>
+    </pages>
+</workunit>

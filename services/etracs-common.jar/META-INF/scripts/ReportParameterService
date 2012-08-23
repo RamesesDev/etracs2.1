@@ -12,7 +12,7 @@ class ReportParameterService{
 	private def getFDate( def fdt ){
 		def dt = new java.text.SimpleDateFormat( fdt ).format(dateService.serverDate).toString();
 		
-		if( 'dd'.equals(fdt) ){
+		if( 'd'.equals(fdt) || 'dd'.equals(fdt)){
 			if( dt.matches('01|1|21|31') )
 				return dt + 'st';
 			else if( dt.matches('02|2|22') )
@@ -45,10 +45,13 @@ class ReportParameterService{
 			SANGGUNIANG : var.get('sangguinan_name'), 
             LOGOLGU     : var.get('url_logo_lgu'),                    
             LOGOBLGF    : var.get('url_logo_blgf'),                    
+			LGU_NAME     : var.lgu_name, 
             LGUNAME     : var.lgu_formal_name, 
 			LGUFORMALNAME : var.lgu_formal_name, 
 			LGUTYPE		  : var.lgu_type, 
+			LGUADDRESS	  : var.lgu_address, 
             PARENTLGUNAME : parentlguname,
+			PARENTLGUFORMALNAME : var.parent_lgu_formal_name,
 			PROVINCENAME  : var.get('parent_lgu_name'),
 			MUNICIPALNAME : var.get('lgu_name'),
 			CITYNAME	  : var.get('city_name'),
@@ -73,12 +76,12 @@ class ReportParameterService{
 			CHIEFBPLO	: var.get('chief_bplo'),
 			CHIEFBPLOTITLE: var.get('chief_bplo_title'),
 			
-			GIVENAT 	: lguname,
+			GIVENAT 	: var.lgu_address,
 			USERNAME	 : env.USERFORMALNAME,
 			USERJOBTITLE : env.JOBTITLE, 
             PRINTDATE   : dateService.serverDate,
 			PRINTEDBY   : (username) ? username : 'SYSTEM' ,
-			DATE : getFDate( 'dd' ), 
+			DATE : getFDate( 'd' ), 
 			MONTH : getFDate( 'MMMMM' ),
 			YEAR : getFDate( 'yyyy' ),
 			COLLECTING_AGENCY : var.collecting_agency,

@@ -21,4 +21,4 @@ SELECT
 	caption AS varcaption , 
 	arrayvalues AS arrayvalues 
 FROM variable 
-WHERE name IN ('CURRENT_YEAR','CURRENT_QTR', 'NO_LOBS')
+WHERE name IN ('CURRENT_YEAR','CURRENT_QTR', 'NO_LOBS', 'CURRENT_MONTH')

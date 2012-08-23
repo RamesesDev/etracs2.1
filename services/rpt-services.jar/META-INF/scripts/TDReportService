@@ -115,6 +115,12 @@ class TDReportService
 			}
 		}
 		
+		if( td.docstate == 'CURRENT' || td.docstate == 'CANCELLED' ) {
+			td.appraisedby = ( td.appraisedby ? '(SGD.) ' + td.appraisedby : null )
+			td.recommendedby = ( td.recommendedby ? '(SGD.) ' + td.recommendedby : null )
+			td.approvedby = ( td.approvedby ? '(SGD.) ' + td.approvedby : null )
+		}
+		
 		return td;
     }
 	
@@ -148,30 +154,7 @@ class TDReportService
 	void buildAnnotationInfo( td, faas ) {
 		td.annotated  = false 
 		if( IS_TRUE( faas.info.annotated ) ) {
-			def data = em.sqlContext.createNamedQuery('faas:getActiveAnnotationId').setParameter('faasid', faas.objid).singleResult
-			def annotation = em.read('annotation', data )
-			if( ! annotation ) throw new Exception('Annotation record does not exists.')
-			td.annotated 		= true 
-			td.annotationtype 	= annotation.doctype 
-			def mortgagedate 	= null
-			if(annotation.mortgagedate){
-				mortgagedate = dateSvc.parse('yyyy-MM-dd', annotation.mortgagedate )
-			}
-			
-			td.annotation = [
-				annotationfileno		 : annotation.fileno,
-				annotationbank			 : annotation.bank,	
-				annotationloanamount 	 : annotation.loanamount,
-				annotationmortgagedate	 : mortgagedate,
-				annotationorno			 : annotation.orno,
-				annotationordate		 : dateSvc.parse('yyyy-MM-dd', annotation.ordate ),
-				annotationamount 		 : annotation.oramount ,
-				annotationbranchno 	   	 : annotation.branchno,
-				annotationcaseno		 : annotation.caseno,
-				annotationsignedby 		 : annotation.signedby,
-				annotationsignedbytitle  : annotation.signedbytitle
-			]
-			
+			td.annotated = true 
 			def annotationlist = em.sqlContext.createNamedQuery('faas:getActiveAnnotations').setParameter('faasid', faas.objid).resultList
 			td.annotations = []
 			annotationlist.each { anno ->
@@ -285,7 +268,7 @@ class TDReportService
     	
     	def bldguses = rpu.info.bldguses;
 			
-		if( rpu.info.predominant as boolean ) {
+		if( rpu.info.useswornamount || rpu.info.predominant ) {
 			def item = [
 				classification	: rpu.classname,
 				actualuse 		: rpu.classname,
@@ -302,7 +285,7 @@ class TDReportService
 					classification	: rpu.classname,
 					actualuse		: it.actualuse.actualusename,
 					assesslevel		: it.assesslevel,
-					marketvalue		: it.marketvalue,
+					marketvalue		: it.marketvalue ,
 					assessedvalue	: it.assessedvalue,
 					area			: it.area,
 				];

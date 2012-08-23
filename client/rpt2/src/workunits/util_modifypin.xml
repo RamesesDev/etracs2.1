@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/rpt/util" action="init" caption="Modify PIN" target="popup" index="10" permission="rptutil.modifypin" />
+    </invokers>
+    
+    <code lang="groovy">
+
+<![CDATA[        
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+
+public class ModifyPINUtilityController {
+    @Binding
+    def binding
+    
+    @Service('RPTUtilityService') 
+    def svc 
+    
+    @Service('LguService')
+    def lguSvc
+    
+    def faas
+    def pintype
+    def municipality
+    def barangay
+    def section  = 0
+    def parcel = 0
+    def suffix = 0
+    def ssection 
+    def sparcel
+    def newpin
+    def useoldpin = false
+    
+    void init(){
+    }
+    
+    def updatePin() {
+        if( MsgBox.confirm('Update existing PIN with new information?') ) {
+            svc.updatePin([
+                faasid      : faas.objid,
+                rputype     : faas.rputype,
+                docstate    : faas.docstate, 
+                oldpin      : faas.fullpin,
+                tdno        : faas.tdno, 
+                pintype     : pintype,
+                municipality : municipality,
+                barangay    : barangay,
+                section     : section,
+                parcel      : parcel,
+                suffix      : suffix,
+                ssection    : ssection,
+                sparcel     : sparcel,
+                newpin      : newpin, 
+            ])
+            return '_close'
+        }
+        return null 
+    }
+    
+    void setPintype( pintype ) {
+        this.pintype = pintype 
+        updateNewPin()
+    }
+    
+    void setMunicipality( municipality ) {
+        this.municipality = municipality
+        updateNewPin()
+    }
+    
+    void setBarangay( barangay ) {
+        this.barangay = barangay
+        updateNewPin()
+    }
+    
+    void setSection( section ) {
+        this.section = section
+        updateNewPin()
+    }
+    
+    void setParcel( parcel ) {
+        this.parcel = parcel 
+        updateNewPin()
+    }
+    
+    void setSuffix( suffix) {
+        this.suffix = suffix 
+        updateNewPin()
+    }
+    
+    void setUseoldpin( useoldpin ) {
+        this.useoldpin = useoldpin 
+        updateNewPin()
+    }
+    
+    void updateNewPin() {
+        newpin = ''
+        if( municipality ) {
+            newpin = municipality.pin + '-'
+        }
+        else {
+            newpin = '000-00-'
+        }
+        
+        if( barangay && barangay.oldindexno == null) {
+            barangay.oldindexno = barangay.indexno 
+        }
+        
+        if( barangay && useoldpin ) {
+            newpin += barangay?.oldindexno + '-'
+            println 3
+        }
+        else if( barangay) {
+            newpin += barangay?.indexno + '-'
+            println 4
+        }
+        else {
+            newpin += '0000-'
+            println 5
+        }        
+        
+        
+        if( section > 0 ) {
+            ssection = section.toString()
+            ssection = ( pintype == 'new' ? ssection.padLeft(3,'0') : ssection.padLeft(2,'0'))
+            newpin += ssection + '-'
+        }
+        else {
+            ssection = ( pintype == 'new' ? '000' : '00') 
+            newpin += ssection + '-'
+        }
+        
+        if( parcel > 0 ) {
+            sparcel = parcel.toString()
+            sparcel = ( pintype == 'new' ? sparcel.padLeft(2,'0') : sparcel.padLeft(3,'0'))
+            newpin += sparcel
+        }
+        else {
+            sparcel = ( pintype == 'new' ? '00' : '000')
+            newpin += sparcel 
+        }
+        
+        if( suffix > 0){
+            newpin += '-' + suffix.toString().padLeft(4,'0')
+        }
+        
+        binding?.refresh('newpin')
+    }
+    
+    
+    
+ 
+    
+    
+    
+    def onselectFaas = { f ->
+        suffix = 0
+        if( f.rputype != 'land' ) {
+            def idx = f.fullpin.lastIndexOf('-') + 1
+            def len = f.fullpin.length()-1
+            try {
+                suffix = Integer.parseInt( f.fullpin[ idx..len] )
+            }
+            catch( e ) {
+                suffix = 0
+            }
+            binding.refresh('suffix ')
+        }
+    }
+    
+    def getLookupFaas() {
+        return InvokerUtil.lookupOpener('faas.lookup',[onselect:onselectFaas])
+    }
+    
+    List getPinTypeList() {
+        return ['new', 'old']
+    }
+    
+    List getMunicipalityList() {
+        return lguSvc.getLgusByType('MUNICIPALITY')
+    }
+    
+    List getBarangayList() {
+        return lguSvc.getLgusByParent( municipality?.objid )
+    }
+    
+}
+
+]]>
+</code>
+    
+    <pages>
+        <page template="etracs2.rpt.utils.ModifyPinPage" />
+    </pages>
+</workunit>
+

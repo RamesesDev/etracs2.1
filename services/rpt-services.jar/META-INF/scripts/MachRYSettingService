@@ -10,9 +10,15 @@ public class MachRYSettingService
     
 	@Service('LogService')
     def logSvc
+	
+	@Service('Var')
+	def var 
     
-    
+	@Service('RYSettingService')
+	def rysettingSvc
+	
 	def SCHEMA_NAME = 'machrysetting'
+	def SETTING_TYPE = 'mach' 
 	
     @ProxyMethod
     public boolean settingExists() {
@@ -32,15 +38,34 @@ public class MachRYSettingService
     public def create( entity ) {
         entity.schemaname = 'machrysetting'
         entity.schemaversion = '1.0'
+		if( ! entity.lgus ) {
+			entity.lgus = [[lguid:var.lgu_index, lguname:var.lgu_name, settingtype:SETTING_TYPE]]
+		}
+		entity.appliedto = entity.lgus.lguname.join(', ')
         validate( entity )
         em.create( entity.schemaname, entity )
         createAssessLevels( entity )
+		rysettingSvc.createLgus( SETTING_TYPE, entity )
         logSvc.log('CREATE', 'MachRYSetting', entity.objid )
         return entity 
     }
     
+	@ProxyMethod
+	public Map copy( objid, newry ) {
+		//allow only if there are still lgus not referenced 
+		def lgus = rysettingSvc.lookupUnreferencedLgu( SETTING_TYPE, newry, null, null )
+		if( ! lgus ) throw new Exception('All LGUs has already been referenced.')
+		
+		def entity = reviseSetting(newry+1, newry )
+		entity.ry = newry 
+		entity.appliedto = null 
+		rysettingSvc.removeLgus( SETTING_TYPE, entity.objid )
+		em.update(entity.schemaname, entity )
+		return open( entity.objid )
+	}
+	
     @ProxyMethod
-    public Map copySetting( newry, copyYear ) {
+    public Map reviseSetting( newry, copyYear ) {
         required('Copy Year', copyYear )
         if( newry <= copyYear ) throw new Exception('New Revision Year must be greater than copy year.')
         def setting = em.sqlContext.createNamedQuery('machrysetting:getIdByRy').setParameter('ry', copyYear).singleResult
@@ -70,16 +95,18 @@ public class MachRYSettingService
         	it.machrysettingid = setting.objid;
         	saveForex( it );
         }
-        
+        rysettingSvc.copyLgus( SETTING_TYPE, setting.objid, settingoldid)
         return open( setting.objid )
     }
     
     @ProxyMethod
     public def update( entity ) {
-        validate( entity )
+        entity.appliedto = entity.lgus.lguname.join(', ')
+		validate( entity )
         em.update( entity.schemaname, entity, { diff ->
             logSvc.logB( 'UPDATE', 'MachRYSetting', entity.objid, '', diff )
         } as UpdateChangeHandler )
+		rysettingSvc.createLgus(SETTING_TYPE, entity )
         return entity 
     }
     
@@ -89,6 +116,7 @@ public class MachRYSettingService
         if( !entity ) throw new Exception('Unable to load Revision Setting.\nVerify that the record still exists.' )
         entity.assesslevels = getAssessLevels( entity.objid )
         entity.forexes = getForexes( entity.objid )
+		entity.lgus = rysettingSvc.loadLgus( SETTING_TYPE, objid )
         return entity 
     }
     
@@ -97,6 +125,7 @@ public class MachRYSettingService
         checkRemoveAllowed( objid ) 
         removeAssessLevels( objid )
         removeForexes( objid )
+		rysettingSvc.removeLgus(SETTING_TYPE, objid) 
         em.delete('machrysetting', [objid:objid])
     }
     
@@ -199,7 +228,7 @@ public class MachRYSettingService
     
     void validate( entity ) {
         if( entity.ry <= 0 ) throw new Exception('Revision Year must be greater than zero.')
-        checkDuplicateSetting( entity )
+        //checkDuplicateSetting( entity )
         em.validate(entity.schemaname, entity )
     }
     

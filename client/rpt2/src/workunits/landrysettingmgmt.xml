@@ -6,10 +6,9 @@
         <invoker type="quick_launcher" code="GRY00" target="window" caption="Land Revision Setting" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" />
+        <invoker type="formActions" action="copy" shortcut="ctrl C" visibleWhen="#{selectedItem != null }" immediate="true" caption="Copy" mnemonic="c" icon="images/doc-new.png" />
         <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null }" immediate="true" caption="Open" mnemonic="e" icon="images/open.png" />
-        <!-- 
         <invoker type="formActions" action="delete" shortcut="ctrl D" visibleWhen="#{selectedItem != null}" immediate="true" caption="Delete" mnemonic="d" icon="images/doc-delete.png" />
-        -->
     </invokers>
     <code lang="groovy">
 <![CDATA[        
@@ -38,6 +37,13 @@ public class LandRYSettingMgmtController
         return InvokerUtil.lookupOpener('landrysetting.open', [entity:selectedItem])
     }
     
+    def copy() {
+        if( MsgBox.confirm('Copy revision year ' + selectedItem.ry + '?' ) ) {
+            return InvokerUtil.lookupOpener('landrysetting.copy', [entity:selectedItem])
+        }
+        return null
+    }
+    
     void delete() {
         if( selectedItem && MsgBox.confirm('Delete setting?') ) {
             svc.remove( selectedItem.objid )
@@ -52,7 +58,8 @@ public class LandRYSettingMgmtController
     def listHandler = [
         getRows    : { return 50 },
         getColumns : { return [
-            new Column(name:'ry', caption:'Revision Year', alignment:'left', format:'0000'),
+            new Column(name:'ry', caption:'Revision Year', alignment:'left', format:'0000', maxWidth:200),
+            new Column(name:'appliedto', caption:'Applied To'),
         ]},
         fetchList  : { return svc.getList( searchText ) },
     ] as SubListModel

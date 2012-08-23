@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" caption="No Encumbrance by TD No." target="window" index="5" permission="noencumbrance.open" />
-        <invoker type="noencumbrance.view"  caption="No Encumbrance by TD No." index="5" action="doPreview" permission="noencumbrance.view"/>
+        <invoker type="rptcertifications" action="init" caption="No Encumbrance by TD" target="window" index="5" permission="noencumbrance.open" />
+        <invoker type="noencumbrance.view"  caption="No Encumbrance by TD" index="5" action="doPreview" permission="noencumbrance.view"/>
         
-        <invoker folderid="/menu/rpt/cert" caption="No Encumbrance by TD No." target="window" index="60" permission="noencumbrance.open" />
-        <invoker folderid="/txn/rpt/cert" caption="No Encumbrance by TD No." target="window" index="60" permission="noencumbrance.open" />
+        <invoker folderid="/menu/rpt/cert" action="init" caption="No Encumbrance by TD" target="window" index="60" permission="noencumbrance.create" />
+        <invoker folderid="/txn/rpt/cert" action="init" caption="No Encumbrance by TD" target="window" index="60" permission="noencumbrance.create" />
+        <invoker type="quick_launcher" code="RCNE" action="init" caption="No Encumbrance by TD" target="window" index="60" permission="noencumbrance.create" />
         
        <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />
@@ -21,7 +22,6 @@
     <![CDATA[
         import com.rameses.rcp.annotations.*
         import com.rameses.rcp.common.*
-        import com.rameses.osiris2.client.*
         import com.rameses.osiris2.client.*;
         import com.rameses.osiris2.reports.*;
         
@@ -33,6 +33,9 @@
             @Service('RPTCertificationsService')
             def svc;
         
+            @Service('DateService')
+            def dtSvc;
+
             @Binding 
             def binding;
             
@@ -41,17 +44,27 @@
             def mode = '_default';
             def faas;
             
-            void setFaas( faas ){
-                if( faas ){
-                    this.faas = faas;
-                    certification.putAll( faas );
-                    certification.requestedby = faas.taxpayername;
-                    binding.refresh("certification.*");
-                }
+            void init() {
+                certification.certifiedby = svcParams.getStandardParameter( OsirisContext.env.USERNAME ).ASSESSORNAME;
+                certification.certifiedbytitle = svcParams.getStandardParameter( OsirisContext.env.USERNAME ).ASSESSORTITLE;
+                certification.byauthority = svcParams.getStandardParameter( OsirisContext.env.USERNAME ).ASSESSOROFFICETITLE
+                certification.purpose = "whatever legal purposes it may serve him/her"; 
+                certification.serverDate = new java.sql.Date( dtSvc.serverDate.getTime() );
+                certification.caption = 'No Encumbrance by TD No.'
+            }
+            
+            def onselectFaas = { faas ->
+                if( faas.docstate != 'CURRENT') throw new Exception('TD No. is not current.')
+                if( faas.annotated == 1 ) throw new Exception('TD No. is currently annotated.')
+
+                this.faas = faas;
+                certification.putAll( faas );
+                certification.requestedby = faas.taxpayername;
+                binding.refresh("certification.*");
             }
             
             def getLookupFaas(){
-                return InvokerUtil.lookupOpener("faas.lookup", [:] );
+                return InvokerUtil.lookupOpener("faas.lookup", [onselect:onselectFaas] );
             }
             
             public void setOfficialuse( o ){
@@ -67,29 +80,29 @@
             }
             
             def report =[
-                    getReportName : { "rpt/td/certification/NoEncumbranceByTDCertification" },
+                    getReportName : { "rptcertifications/noencumbrance" },
                     getReportData : { return certification; },
                     getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ); }
                 ] as ServerReportModel;
             
             public def doPreview(){
-                certification.putAll( svc.fetchDataNoEncumbranceTDNo(certification) );
                 report.viewReport();
                 mode = '_default'
                 return "preview";
             }
             
-            public void doSave(){
+            public def doSave(){
                 certification.putAll( svc.fetchDataNoEncumbranceTDNo(certification) );
-                svc.doSave( certification );
-                mode = 'certified'
+                certification.putAll( svc.doSave( certification ) )
+                return doPreview()
             }
-            
+                        
+            @Close
             public def doClose(){
                 mode = '_default';
                 certification = [:];
-                td = null;
-                
+                faas = null
+                init()
                 return '_close';
             }
         }

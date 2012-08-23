@@ -138,7 +138,7 @@ ORDER BY p.pathbytitle, a.acctcode
 
 [getStatementOfRevenueDetailedSRE]  
 SELECT  
-	concat(p.pathbytitle, '/', IFNULL(a.acctcode,'unmapped'), ' - ' , IFNULL(a.accttitle,'unmapped' ) ) AS pathtitle,   
+	concat(p.pathbytitle, '/', IFNULL(a.acctcode,'-'), ' - ' , IFNULL(a.accttitle,'unmapped' ) ) AS pathtitle,   
 	p.acctcode as parentcode, 
 	p.accttitle as parenttitle,	
 	a.acctcode AS glacctcode,   
@@ -155,10 +155,10 @@ WHERE r.liquidationtimestamp LIKE $P{txntimestamp}
 GROUP BY p.pathbytitle, ia.acctcode, ia.accttitle 
 ORDER BY concat(p.pathbytitle, '/', IFNULL(a.acctcode,'unmapped'), ' - ' , IFNULL(a.accttitle,'unmapped' ) ), ia.acctno, ia.accttitle  
 
-
+ 
 [getStatementOfRevenueDetailedNGAS]  
 SELECT  
-	concat(p.pathbytitle, '/', IFNULL(a.acctcode,'unmapped'), ' - ' , IFNULL(a.accttitle,'unmapped' ) ) AS pathtitle,   
+	concat(p.pathbytitle, '/', IFNULL(a.acctcode,'-'), ' - ' , IFNULL(a.accttitle,'unmapped' ) ) AS pathtitle,   
 	p.acctcode as parentcode, 
 	p.accttitle as parenttitle,	
 	a.acctcode AS glacctcode,   

@@ -43,7 +43,6 @@ class StatementOfRevenueDetailedController
         year = parsedate.year 
         qtr  = parsedate.qtr 
         month = svc.getMonth( parsedate.month )
-        day   = parsedate.day 
     }
     
     def preview() {
@@ -81,6 +80,7 @@ class StatementOfRevenueDetailedController
     }
     
     List getMonthlist() {
+        month = null 
         return svc.getMonthList( qtr )
     }
     

@@ -136,6 +136,9 @@ public class FAASController
         if( isProvinceLgu() ) {
             return 'newprov'
         }
+        else {
+            lgu = [objid:faas.lguid, lguname:faas.lguname]
+        }
         return 'new'
     }
     
@@ -308,8 +311,11 @@ public class FAASController
     def municipality
     def section = 0
     def parcel = 0
+    def lgu
     
     def create() {
+        faas.lguid = lgu.objid
+        faas.lguname = lgu.lguname 
         faas.rp.barangayid = barangay.objid
         faas.rp.barangay = barangay.lguname
         faas.rp.barangayindex = barangay.indexno 
@@ -319,7 +325,6 @@ public class FAASController
         faas = svc.validateCreate( faas )
         return 'default'
     } 
-    
     
     void setSectionInfo() {
         String ssection = section+''
@@ -333,7 +338,7 @@ public class FAASController
         String sparcel = parcel+''
         if( ! sparcel ) throw new Exception('Parcel is required.')
         def parcellength = ( faas.rp.pintype == 'new' ? 2 : 3 )
-        if( sparcel.length() > parcellength ) throw new Exception('Parcel must be ' +  sectionlength +' digits long.')
+        if( sparcel.length() > parcellength ) throw new Exception('Parcel must be ' +  parcellength +' digits long.')
         faas.rp.parcel = sparcel.padLeft( parcellength, '0' )
     }
     
@@ -353,11 +358,16 @@ public class FAASController
     List getPinTypes() { return ['new', 'old'] }
     List getMunicipalities() { return svc.getMunicipalities() }
     
+    def getLguList() {
+        return svc.getCityMunicipalityList()
+    }   
+    
     List getBarangays(){ 
-        if( isProvinceLgu() ) {
-            return svc.getBarangayListByParentId( municipality?.objid )
-        }
         return svc.getBarangays()
+    }
+    
+    List getLguBarangays() {
+        return svc.getBarangaysByLguType( lgu.objid, lgu.lgutype )
     }
     
     List getQuarters() { return [1,2,3,4] }
@@ -371,6 +381,7 @@ public class FAASController
     
     boolean getShowApproveAction() {
         if( faas.lgutype?.toLowerCase() == 'municipality'  ) return false
+        if( faas.lgutype?.toLowerCase() == 'province'  ) return false
         if( faas.docstate != 'FORAPPROVAL' ) return false
         return true
     }
@@ -388,15 +399,19 @@ public class FAASController
     }
     
     boolean getShowApprovedByProvinceAction() {
-        if( faas.lgutype?.toLowerCase() != 'municipality'  ) return false
-        if( faas.docstate != 'FORPROVAPPROVAL' ) return false
-        return true
+        def lgutype = faas.lgutype?.toLowerCase()
+        if( lgutype == 'city'  ) return false
+        if( lgutype == 'municipality' && faas.docstate == 'FORPROVAPPROVAL' ) return true
+        if( lgutype == 'province' && faas.docstate == 'FORAPPROVAL' ) return true
+        return false
     }
     
     boolean getShowDisapproveByProvinceAction() {
-        if( faas.lgutype != 'municipality'  ) return false
-        if( faas.docstate != 'FORPROVAPPROVAL' ) return false
-        return true
+        def lgutype = faas.lgutype?.toLowerCase()
+        if( lgutype == 'city'  ) return false
+        if( lgutype == 'municipality' && faas.docstate == 'FORPROVAPPROVAL' ) return true
+        if( lgutype == 'province' && faas.docstate == 'FORAPPROVAL' ) return true
+        return false
     }
     
     /*-----------------------------------------------------------------------------

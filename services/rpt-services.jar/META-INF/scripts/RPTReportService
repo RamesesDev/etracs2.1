@@ -51,22 +51,39 @@ class RPTReportService
 			barangay		: item.barangay,
 			basicnet		: item.basicnet,
 			sefnet			: item.sefnet,
-			total			: item.total 
+			total			: item.total,
+			lastyearpaid    : item.lastyearpaid,
+			lastqtrpaid     : item.lastqtrpaid,
 		]
+	}
+	
+	@ProxyMethod 
+	public List generateMasterList( year, orderby  ) { 
+		def orderbyclause = ''
+		if( orderby ) {
+			orderbyclause = 'ORDER BY ' + orderby.fieldname 
+		}
+		return em.sqlContext.createNamedQuery('rptreport:getMasterList')
+					.setVars( [orderby:orderbyclause] )
+					.setParameter('currentyear', dateSvc.serverYear )
+					.resultList 
 	}
     
     @ProxyMethod
 	public def generateNotice( notice ) {
 		notice.items = []
+		def rptsetting 	= em.sqlContext.createNamedQuery('rptreport:getRPTSetting').singleResult
 		if(  notice.faasid ) {
 			notice.items = em.sqlContext.createNamedQuery('rptreport:getNoticeItemsByFaasid').setParameter('objid', notice.faasid).resultList
 		}
 		else {
-			def rptsetting 	= em.sqlContext.createNamedQuery('rptreport:getRPTSetting').singleResult
-			notice.ry 		= rptsetting?.ry 
 			notice.items 	= em.sqlContext.createNamedQuery( 'rptreport:getNoticeItemsByTaxpayerId' ).setParameter('taxpayerid', notice.taxpayerid).resultList
 		}
 		if( ! notice.items ) throw new Exception('Records not found.\nPleas verify that FAAS records are current.')
+		
+		notice.ry 		        = notice.items[0].effectivityyear 
+		notice.effectivityyear	= notice.items[0].effectivityyear 
+		
 		
 		notice.docno 			= seqSvc.getNextFormattedSeries( 'NOTICEOFASSESSMENT' )
 		notice.objid			= notice.docno 
@@ -141,8 +158,16 @@ class RPTReportService
 	}
 	
 	@ProxyMethod 
-	public def generateAnnotationListing( ) {
-		def list = em.sqlContext.createNamedQuery('rptreport:getAnnotationListing').resultList
+	public def generateAnnotationListing( orderby ) {
+		def list = []
+		def orderbyclause = ''
+		if( orderby ) {
+			orderbyclause = ' ORDER BY ' + orderby.fieldname 
+		}
+		
+		list = em.sqlContext.createNamedQuery('rptreport:getAnnotationListing')
+						.setVars( [orderby:orderbyclause ])
+						.resultList
 		if( ! list ) throw new Exception('Records not found.')
 		return list 
 	}
@@ -151,7 +176,7 @@ class RPTReportService
 		def period = 'JAN - MAR, ' + year 
 		if( qtr == 2 ) period = 'APR - JUN, ' + year 
 		else if( qtr == 3 ) period = 'JUL - SEP, ' + year 
-		else if( qtr == 4 ) period = 'OCT - NOV, ' + year 
+		else if( qtr == 4 ) period = 'OCT - DEC, ' + year 
 		return period 
 	}
 	
@@ -167,7 +192,7 @@ class RPTReportService
 		}
 		
 		def params = [ lguindex:var.lgu_index ]
-		params.txntimestamp	= calculateCurrentTimeStamp( year, qtr, month )
+		params.txntimestamp	= calculateCurrentTimeStamp( year, qtr, month ).replace('%','Z') //temporary fix 
 		
 		def taxables = em.sqlContext.createNamedQuery('rptreport:getReportOnRPATaxable').setParameters(params).resultList 
 		

@@ -46,6 +46,18 @@ public class BldgRPUController
     def classification
     def errorMsg 
     def useswornamount
+    def swornstatement
+    
+    void setSwornstatement( swornstatement ) {
+        this.swornstatement = swornstatement 
+        rpu.info.swornstatement = swornstatement 
+        if( ! swornstatement ) {
+            useswornamount = false 
+            rpu.info.useswornamount = useswornamount 
+            rpu.info.swornamount = 0.0
+        }
+        recalc()
+    }
     
     void init() {
         rpu.issuedate       = faas.info.issuedate 
@@ -61,6 +73,7 @@ public class BldgRPUController
         depreciation        = rpu.info.depreciation 
         firstfloorbasevalue = rpu.info.firstfloorbasevalue 
         useswornamount      = rpu.info.useswornamount
+        swornstatement      = rpu.info.swornstatement
         percentcompleted    = (rpu.info.percentcompleted ? rpu.info.percentcompleted : 100.0 )
     }
     
@@ -97,7 +110,7 @@ public class BldgRPUController
     }
     
     def getLookupBldgType() {
-        return InvokerUtil.lookupOpener('bldgtype.lookup', [ ry:rpu.ry])
+        return InvokerUtil.lookupOpener('bldgtype.lookup', [lguid:faas.lguid, ry:rpu.ry])
     }
     
     void setBldgtype( bldgtype ) {
@@ -110,7 +123,7 @@ public class BldgRPUController
     
     def getLookupBldgKind() {
         required( 'Building Type', rpu.info.bldgtype )
-        return InvokerUtil.lookupOpener('bldgtypebldgkind.lookup', [bldgtypeid:rpu.info.bldgtype.bldgtypeid])
+        return InvokerUtil.lookupOpener('bldgtypebldgkind.lookup', [lguid:faas.lguid, bldgtypeid:rpu.info.bldgtype.bldgtypeid])
     }
     
     void setBldgkind( bldgkind ) {
@@ -197,7 +210,7 @@ public class BldgRPUController
     }
     
     def getLookupActualUse() {
-        return InvokerUtil.lookupOpener('bldgactualuse.lookup', [ry:rpu?.ry])
+        return InvokerUtil.lookupOpener('bldgactualuse.lookup', [lguid:faas.lguid, ry:rpu?.ry])
     }
     
     def bldguseListHandler = [
@@ -253,10 +266,11 @@ public class BldgRPUController
     
     def defineFloorInfo() {
         index = rpu.info.bldguses.indexOf( selectedBldgUse )
-        return InvokerUtil.lookupOpener('bldgrpufloor.open',[rpu:rpu, bldguse:selectedBldgUse, onupdate:floorUpdateHandler])
+        return InvokerUtil.lookupOpener('bldgrpufloor.open',[lguid:faas.lguid, allowEdit:allowEdit, rpu:rpu, bldguse:selectedBldgUse, onupdate:floorUpdateHandler])
     }
     
     void recalc() {
+        rpu.lguid = faas.lguid
         def data = svc.calculateAssessment( rpu );
         rpu.clear()
         rpu.putAll(data)
@@ -282,7 +296,7 @@ public class BldgRPUController
     def lookupMaterial
     
     def getLookupMaterial(){
-        return InvokerUtil.lookupOpener('structurematerial.lookup',[item:selectedStructure])
+        return InvokerUtil.lookupOpener('structurematerial.lookup',[ item:selectedStructure])
     }
 
     def structureListHandler = [
@@ -316,10 +330,26 @@ public class BldgRPUController
                 item.material = [materialname:'']
             }
         },
+        onRemoveItem : { item -> removeBldgStructure( item ) },
         fetchList : { return rpu.bldgstructures },
     ] as SubListModel
     
     
+    def removeBldgStructure( item ) {
+        if( !item.material ) return 
+        if( MsgBox.confirm('Delete selected item?') ) {
+            rpu.bldgstructures.each{
+                if( it.structureid == item.structureid ){
+                    it.material = [:]
+                    it.materialid = null
+                    it.materialcode = null
+                    it.materialname = null
+                }
+                
+            }
+        }
+    }
+     
     
     /*---------------------------------------------------------------
     *

@@ -32,11 +32,6 @@ class RPTReportController
     
     def year 
     def month
-    def provrate = 35.0
-    def munirate = 40.0
-    def brgyrate = 25.0
-    def cityrate = 70.0
-    def citybrgyrate = 30.0
     def lgutype
     
     def reportdata
@@ -55,24 +50,7 @@ class RPTReportController
     }
     
     void generateReport() {
-        if( lgutype == 'city' ) {
-            required( 'City Rate', cityrate )
-            required( 'Barangay Rate', citybrgyrate )
-            validateRate( 'City Rate', cityrate )
-            validateRate( 'Barangay Rate', citybrgyrate )
-            if( cityrate + citybrgyrate != 100.00 ) throw new Exception( 'Total City and Barangay Rates must be equal to 100.' )
-        }
-        else {
-            required( 'Province Rate', provrate )
-            required( 'Municipality Rate', munirate )
-            required( 'Barangay Rate', citybrgyrate )
-            validateRate( 'Province Rate', provrate )
-            validateRate( 'Municipality Rate', munirate )
-            validateRate( 'Barangay Rate', brgyrate )
-            if( provrate + munirate + brgyrate != 100.00 ) throw new Exception( 'Total Province, Municipality and Barangay Rates must be equal to 100.' )
-        }
-    
-        reportdata = svc.generateRPTCReport( lgutype, year, month, provrate, munirate, brgyrate, cityrate, citybrgyrate )
+        reportdata = svc.generateRPTCollectionReport(year, month )
         report.viewReport()
     }
     

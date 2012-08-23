@@ -42,7 +42,7 @@ public class MiscRPUController
     void init() {
         classificationList = classSvc.lookup( null, null) 
         exemptionList = exemptSvc.lookup(null, null) 
-        actualuseList = svc.lookupAssessLevel( rpu.ry )
+        actualuseList = svc.lookupAssessLevel( faas.lguid, rpu.ry )
         classification = classificationList.find{ it.classid == rpu.classid }
         exemption = exemptionList.find{ it.exemptid == rpu.exemptid }
         actualuse = actualuseList.find{ it.assesslevelid == rpu.info.actualuseid }
@@ -62,7 +62,7 @@ public class MiscRPUController
     def rate = 0.0;
     
     def getLookupMisc() {
-        return InvokerUtil.lookupOpener('miscitemvalue.lookup', [ry:rpu.ry] )
+        return InvokerUtil.lookupOpener('miscitemvalue.lookup', [lguid:faas.lguid, ry:rpu.ry] )
     }
 
     def miscListHandler = [

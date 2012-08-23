@@ -60,7 +60,11 @@ ORDER BY rl.afid, ri.fundname, ia.groupid
 [getReceiptsByRemittance]
 SELECT * FROM receiptlist 
 WHERE remittanceid = $P{remittanceid} 
-ORDER BY afid, serialno DESC, txndate DESC
+ORDER BY afid, serialno DESC, txndate DESC 
+
+[getReceiptIdsByRemittance]
+SELECT objid, afid FROM receiptlist   
+WHERE remittanceid = $P{remittanceid} 
 
 [getOtherPaymentsByRemittance]
 SELECT pi.* FROM paymentitem pi, receiptlist rl 
@@ -363,7 +367,8 @@ SELECT
 	SUM(CASE WHEN voided =0 THEN amount ELSE 0 END ) AS amount 
 FROM receiptlist 
 WHERE remittanceid = $P{remittanceid} 
-GROUP BY afid, stubno 
+GROUP BY afid, afcontrolid 
+ORDER BY afid, fromserialno 
 
 [fetchOtherPayments]
 SELECT  
@@ -468,6 +473,7 @@ SELECT
 	rl.taxpayername, 
 	rl.tdno, 
 	r.serialno AS orno, 
+	rl.municityname, 
 	rl.barangay, 
 	rl.classcode AS classification, 
 	IFNULL((SELECT SUM( basic ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ), 0.0) AS currentyear, 
@@ -482,7 +488,7 @@ FROM remittancelist rem
 WHERE rem.objid = $P{objid}
   AND r.doctype = 'RPT'  
   AND r.voided = 0  
-ORDER BY r.serialno, rl.tdno    
+ORDER BY rl.municityname, r.serialno, rl.tdno    
 
 
 [getAbstractCollectionSEF]
@@ -493,6 +499,7 @@ SELECT
 	rl.taxpayername, 
 	rl.tdno, 
 	r.serialno AS orno, 
+	rl.municityname, 
 	rl.barangay, 
 	rl.classcode AS classification, 
 	IFNULL((SELECT SUM( sef ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ),0.0) AS currentyear, 
@@ -507,7 +514,7 @@ FROM remittancelist rem
 WHERE rem.objid = $P{objid}
   AND r.doctype = 'RPT'  
   AND r.voided = 0  
-ORDER BY r.serialno, rl.tdno 
+ORDER BY rl.municityname, r.serialno, rl.tdno 
 
 
 [getAbstractCollectionManualBASIC]
@@ -518,6 +525,7 @@ SELECT
 	rp.taxpayername,
 	rp.tdno,
 	r.serialno AS orno,
+	rp.municityname,
 	rp.barangay,
 	rp.classcode AS classification, 
 	rp.basic AS currentyear, 
@@ -531,7 +539,7 @@ FROM remittancelist rem
 WHERE rem.objid = $P{objid} 
   AND r.doctype = 'RPT' 
   AND r.voided = 0 
-ORDER BY r.serialno   
+ORDER BY rp.municityname, r.serialno   
   
   
 
@@ -544,6 +552,7 @@ SELECT
 	rp.taxpayername,
 	rp.tdno,
 	r.serialno AS orno,
+	rp.municityname,
 	rp.barangay,
 	rp.classcode AS classification, 
 	rp.sef AS currentyear, 
@@ -557,7 +566,68 @@ FROM remittancelist rem
 WHERE rem.objid = $P{objid} 
   AND r.doctype = 'RPT' 
   AND r.voided = 0  
-ORDER BY r.serialno   
+ORDER BY rp.municityname, r.serialno   
 
 [getFundName]
 SELECT objid, fundname FROM fund ORDER BY fundname 
+
+
+
+[exportRemittance]
+select * from remittance where objid = $P{objid}
+
+[exportRemittanceList]
+select * from remittancelist where objid = $P{objid}
+
+[exportRemittedForm]
+select * from remittedform where remittanceid = $P{objid}
+
+[exportRevenue]
+select * from revenue where remittanceid = $P{objid}
+
+[exportReceipt]
+select * from receipt where remittanceid = $P{objid}
+
+[exportReceiptList]
+select * from receiptlist  where remittanceid = $P{objid}
+
+[exportReceiptItem]
+select * from receiptitem where receiptid in (
+	select objid from receiptlist where remittanceid = $P{objid}
+)
+
+[exportPaymentItem]
+select * from paymentitem where receiptid in (
+	select objid from receiptlist where remittanceid = $P{objid}
+)
+
+[exportAFControls]
+SELECT afc.* 
+FROM afcontrol afc 
+	INNER JOIN remittedform rf ON afc.objid = rf.afcontrolid 
+WHERE rf.remittanceid = $P{objid} 
+
+[exportCraafCredits]
+SELECT cr.* 
+FROM afcontrol afc 
+	INNER JOIN remittedform rf ON afc.objid = rf.afcontrolid 
+	INNER JOIN craaf cr ON afc.afinventorycreditid = cr.afinventorycreditid  
+WHERE rf.remittanceid = $P{objid}
+
+
+
+[getImportedRemittanceById]
+SELECT * FROM remittanceimport WHERE objid = $P{objid} 
+
+[getAFControlByRemittedForm]
+SELECT * FROM afcontrol 
+WHERE afid = $P{afid} 
+  AND collectorid = $P{collectorid} 
+  AND endseries = $P{endseries} 
+  AND balance > 0 
+
+[getCraafCreditByInvCreditId]
+SELECT * FROM craaf WHERE afinventorycreditid = $P{afinventorycreditid} 
+
+[getRemittanceListById]
+SELECT * FROM remittancelist WHERE objid = $P{objid} 

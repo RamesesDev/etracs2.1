@@ -72,7 +72,7 @@ public class RemittancePage extends javax.swing.JPanel {
         xTextField2.setCaptionWidth(140);
         xTextField2.setFont(new java.awt.Font("Arial", 1, 14));
         xTextField2.setName("entity.info.txnno");
-        xTextField2.setPreferredSize(new java.awt.Dimension(160, 21));
+        xTextField2.setPreferredSize(new java.awt.Dimension(200, 21));
         xTextField2.setReadonly(true);
         formPanel3.add(xTextField2);
 
@@ -101,7 +101,7 @@ public class RemittancePage extends javax.swing.JPanel {
         xDateField1.setInputFormat("MM-dd-yyyy");
         xDateField1.setName("entity.info.txndate");
         xDateField1.setOutputFormat("MM-dd-yyyy");
-        xDateField1.setPreferredSize(new java.awt.Dimension(160, 21));
+        xDateField1.setPreferredSize(new java.awt.Dimension(200, 21));
         xDateField1.setReadonly(true);
         formPanel3.add(xDateField1);
 

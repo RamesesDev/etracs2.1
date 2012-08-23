@@ -1,0 +1,60 @@
+<workunit>
+    <invokers>
+        <invoker type="barangay.lookup" caption="Barangay Lookup" target="popup"/>
+    </invokers>
+    <code>
+    <![CDATA[
+
+    import com.rameses.rcp.annotations.*
+    import com.rameses.rcp.common.*
+    import com.rameses.osiris2.client.*
+
+    class CitizenshipLookupController
+    {
+        @Binding
+        def binding
+
+        @Service('LGUService')
+        def svc 
+
+        def searchText
+        def selected
+        def onselect
+        def listHandler = this
+        
+        def brgylist
+
+        def ok() {
+            if( ! selected ) throw new Exception('Please select an item.')
+            if( onselect ) onselect( selected )
+            return '_close' 
+        }
+
+        Column[] getColumns() {
+            return [
+                new Column(name: "name", caption: "Barangay")
+            ]
+        }
+        
+        List fetchList( Map param ) 
+        {
+            if( brgylist == null ) 
+                brgylist = svc.getBarangays()
+            
+            def end = param._start + param._limit
+            
+            if( end > brgylist.size()-1 )  
+                end = brgylist.size()-1
+            
+            return brgylist[ (param._start)..(end) ]
+        }
+
+    }
+
+
+    ]]>
+    </code>
+    <pages>
+        <page template="etracs2.common.ListPage"/>
+    </pages>
+</workunit>

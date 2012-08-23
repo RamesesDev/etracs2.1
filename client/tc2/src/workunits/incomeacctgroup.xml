@@ -2,6 +2,7 @@
     <invokers>
         <invoker type="tc.master" action="init" caption="Income Account Groups" permission="incomeacctgroup.viewlist" icon="images/folder.png" target="window" index="3"/>
         <invoker folderid="/menu/tc/master" action="init" caption="Income Account Groups" permission="incomeacctgroup.viewlist" target="window"/>
+        <invoker folderid="/txn/tc/master" action="init" caption="Income Account Groups" permission="incomeacctgroup.viewlist" target="window" index="20"/>
         
         <invoker type="quick_launcher" code="ACCTGRP" action="init" caption="Income Account Groups" permission="incomeacctgroup.viewlist" />
         

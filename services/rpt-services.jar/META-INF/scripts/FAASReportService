@@ -81,7 +81,7 @@ class FaasReportService
 			def item = [
 				classification	: rpu.classname,
 				subclass		: it.specificclassname + '  (' + it.subclassname + ')',
-				actualuse 		: it.actualusename,
+				actualuse 		: it.assesslevelname,
 				area			: ( it.areatype == 'HA' ? it.areaha : it.areasqm ),
 				unitvalue		: it.unitvalue,
 				basemarketvalue	: it.basemarketvalue,
@@ -211,7 +211,7 @@ class FaasReportService
 		landdetails?.each{
 			item = [
 				classification	: rpu.classname,
-				actualuse 		: it.actualusename,
+				actualuse 		: it.assesslevelname,
 				marketvalue		: it.marketvalue,
 				assesslevel		: it.assesslevel,
 				assessedvalue	: it.assessedvalue
@@ -483,7 +483,7 @@ class FaasReportService
 		bldgstructures?.each {
 			def item = [
 				structurename : it.structurename,
-				materialname  : it.materialname
+				materialname  : ( !it.materialname ? it.material?.materialname : it.materialname )
 			]
 			
 			data.add( item )
@@ -529,13 +529,13 @@ class FaasReportService
 		def bldguses = rpu.info.bldguses
 		
 		bldguses?.each {
-			def assesslevel = numberSvc.format("#,##0", it.assesslevel) + ' %'
+			def assesslevel = numberSvc.format("#,##0", (rpu.info.useswornamount ? rpu.info.assesslevel : it.assesslevel)) + ' %'
 			
 			def item = [
 				actualuse	 : it.actualuse.actualusename,
-				marketvalue	 : it.marketvalue,
+				marketvalue	 : (rpu.info.useswornamount ? rpu.totalmv : it.marketvalue),
 				assesslevel	 : assesslevel,
-				assessedvalue: it.assessedvalue
+				assessedvalue: (rpu.info.useswornamount ? rpu.totalav : it.assessedvalue ),
 			]
 			
 			data.add( item )

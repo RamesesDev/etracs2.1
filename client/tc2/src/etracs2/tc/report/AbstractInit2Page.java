@@ -61,6 +61,7 @@ public class AbstractInit2Page extends javax.swing.JPanel {
         formPanel1.add(xNumberField1);
 
         xComboBox1.setCaption("Quarter");
+        xComboBox1.setDynamic(true);
         xComboBox1.setImmediate(true);
         xComboBox1.setItems("quarterlist");
         xComboBox1.setName("qtr");
@@ -79,7 +80,7 @@ public class AbstractInit2Page extends javax.swing.JPanel {
         formPanel1.add(xComboBox2);
 
         xComboBox3.setCaption("Day");
-        xComboBox3.setDepends(new String[] {"month"});
+        xComboBox3.setDepends(new String[] {"month", "qtr"});
         xComboBox3.setDynamic(true);
         xComboBox3.setImmediate(true);
         xComboBox3.setItems("daylist");

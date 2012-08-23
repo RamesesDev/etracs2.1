@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="menu/mgmt" caption="For Transmittals" mnemonic="f" permission="fortransmittalmgmt.view" index="400"/>
+        <invoker folderid="/txn/rpt" caption="For Transmittals" mnemonic="t" permission="fortransmittalmgmt.view" index="400"/>
+        <invoker type="quick_launcher" code="FTR00" caption="For Transmittals" mnemonic="f" permission="fortransmittalmgmt.view" />
+        
+        <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
+    </invokers>
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+
+public class ForTransmittalMgmtController 
+{
+    @Binding 
+    def binding
+    
+    @Service('ForTransmittalService')
+    def svc 
+    
+    def selectedItem
+    def searchText
+    
+    void search() {
+        listHandler.load()
+    }
+    
+    def listRefreshHandler = {
+        listHandler.load()
+    }
+    
+    def listHandler = [
+        getRows     : { 
+            return 50 
+        },
+        getColumns  : { return [
+            new Column(name:'module', caption:'Module', maxWidth:100),
+            new Column(name:'doctype', caption:'Doc Type', maxWidth:150),
+            new Column(name:'docno', caption:'Doc No.', maxWidth:150),
+            new Column(name:'postedby', caption:'Posted By'),
+            new Column(name:'postedbytitle', caption:'Job Title'),
+            new Column(name:'dtposted', caption:'Date Posted', maxWidth:120),
+            new Column(name:'numdays', caption:'Days', maxWidth:200),
+        ]},
+        fetchList  : { 
+            return svc.getList( searchText, it ) 
+        },
+    ] as PageListModel
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.ListSearchPage"/>
+    </pages>
+</workunit>

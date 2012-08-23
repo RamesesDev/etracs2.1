@@ -54,6 +54,15 @@ public class RPTLedgerController
     def ledgerItems
     def payments = []
     
+    def invokerparam = [
+        getParams :  { return [bill:createBillInfo()] }
+    ] as InvokerParameter
+    
+    def getFormActions() {
+        return InvokerUtil.lookupActions('rptledger:formActions', invokerparam )
+    }
+    
+    
     void open() {
         ledger = svc.open( ledger.objid )
         ledgerItems = ledger.ledgerItems 
@@ -109,6 +118,7 @@ public class RPTLedgerController
         buildBillReportInfo()
         return 'preview'
     }
+    
     
     def report = [
         getReportName : { return 'rptbilling/rptbilling' },

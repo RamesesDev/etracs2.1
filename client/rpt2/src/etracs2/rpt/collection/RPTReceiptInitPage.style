@@ -21,3 +21,11 @@
 "remotedomain" [ payoption == 'remote'] {
     enabled:true;
 }
+
+"compromise" [ true == true]{
+    enabled:false;
+}
+
+"compromise" [ payoption == 'compromise'] {
+    enabled:true;
+}
