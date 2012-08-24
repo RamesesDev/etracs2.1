@@ -77,6 +77,7 @@ class RPTUtilityService
 			municityid 	: info.municipality.objid,
 			municityname : info.municipality.lguname ,
 			faasid 		: info.faasid,
+			barangay	: info.barangay.lguname, 
 		]
 		em.sqlContext.createNamedExecutor('rptutility:updateLedgerPin').setParameters( params ).execute()
 	}
