@@ -40,7 +40,10 @@ public class BPBillingService
 		if( billing.advancepayment ) { 
 			advancepayment = billing.advancepayment
 			billdate = dtService.parseDate( billing.billdate, null )
-
+		}
+		else {
+			//always set to null because the service is cached
+			billdate = null;
 		}
 		
 		def businesslist = getBusinessByTaxpayer( billing );
