@@ -27,6 +27,9 @@ public class BPBillingService
 	@Service("BPSettingService")
 	def bpSettingService;
 	
+	@Service("IncomeAcctService")
+	def incomeSvc;
+	
 	def setting;
 	def advancepayment
 	def billdate
@@ -96,12 +99,6 @@ public class BPBillingService
 						if( it.qtr == 2 ) bill.second_qtr_total += it.total;
 						if( it.qtr == 3 ) bill.third_qtr_total += it.total;
 						if( it.qtr == 4 ) bill.fourth_qtr_total += it.total;
-					}
-					
-					bill.taxfees.sort{ a, b ->
-						def sa = a.year+'-'+a.qtr;
-						def sb = b.year+'-'+b.qtr;
-						return sa <=> sb;
 					}
 					
 					billing.grandtotal += bill.grandtotal;
@@ -224,11 +221,37 @@ public class BPBillingService
 		ruleService.execute( 'bpbilling', facts, [actionList:actionList], 'SUMMARY' )
 		
 		bill.taxfees.each {
-			it.discount  = 	numSvc.round(new BigDecimal(it.discount  ? it.discount.toString()  : '0.0'))
-			it.surcharge =  numSvc.round(new BigDecimal(it.surcharge ? it.surcharge.toString() : '0.0'))
-			it.interest  =  numSvc.round(new BigDecimal(it.interest  ? it.interest.toString() : '0.0'))
-			it.amount 	 = 	numSvc.round(new BigDecimal(it.amount 	 ? it.amount.toString()    : '0.0'))
+			it.discount = ( it.discount ) ? new BigDecimal( it.discount.toString() ) : new BigDecimal('0.0');
+			it.surcharge = ( it.surcharge ) ? new BigDecimal( it.surcharge.toString() ) : new BigDecimal('0.0');
+			it.interest = ( it.interest ) ? new BigDecimal( it.interest.toString() ) : new BigDecimal('0.0');
+			it.amount = ( it.amount ) ? new BigDecimal( it.amount.toString() ) : new BigDecimal('0.0');
+			
+			it.discount = numSvc.round( it.discount )
+			it.surcharge = numSvc.round( it.surcharge )
+			it.interest = numSvc.round( it.interest )
+			it.amount = numSvc.round( it.amount )
+			
+			//this is a temporary fix for this code
+			//- load the incomeaccount systype if not not available
+			if( it.acctsystype == null ) {
+				def acct = incomeSvc.open( it.acctid );
+				it.acctsystype = acct.systype;
+			}
+			
+			//set business tax sortorder to 1
+			it.sortorder = it.acctsystype == 'BUSINESS_TAX' ? 1 : 0;
 		}
+		
+		bill.taxfees.sort{ a, b ->
+		if( a.sortorder == b.sortorder ) {
+				def a_year = a.year+'-'+a.qtr;
+				def b_year = b.year+'-'+b.qtr;
+				return a_year <=> b_year;
+			}
+			
+			return a.sortorder - b.sortorder;
+		}
+		
 		return bill
 	}	
 	
