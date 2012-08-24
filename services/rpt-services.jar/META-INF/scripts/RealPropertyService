@@ -17,7 +17,6 @@ class RealPropertyService
 		if( !land ) throw new Exception("Faas with objid $realproperty.landfaasid not found.");
 		
 		def old = sqlctx.createNamedQuery('realproperty:find-by-landfaasid').setParameters(realproperty).singleResult;
-
 		if( old ) realproperty.objid = old.objid;
 		if( !realproperty.objid ) realproperty.objid = "RP" + new UID()
 		return em.save( 'realproperty:realproperty', realproperty )

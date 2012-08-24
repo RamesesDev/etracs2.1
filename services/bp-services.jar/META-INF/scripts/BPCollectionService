@@ -154,7 +154,6 @@ class BPCollectionService{
 				partialpmt -= it.amount 
 			}
 		}
-
 		entity._items.sort { a, b ->
 			def sA = a.iyear+''+a.iqtr;
 			def sB = b.iyear+''+b.iqtr;

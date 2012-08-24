@@ -221,7 +221,7 @@ class SubdivisionService
 		approveSubdividedLands( subdivision )
 		approveAffectedRpus( subdivision )
 		cancelMotherLand( subdivision )
-		moveMessageToProcessedOutbox( subdivision.objid  )
+		//moveMessageToProcessedOutbox( subdivision.objid  )
 		txnSvc.delete( subdivision.motherfaasid )
 		subdivision.docstate = APPROVED_STATE
 		em.update( subdivision.schemaname, subdivision )

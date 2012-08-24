@@ -71,9 +71,10 @@ class BPApplicationServiceInterceptor {
 				varname: it.varname,
 				vartype: it.vartype,
 				value: it.value,
-				arrayvalues: it.arrayvalues,
+				arrayvalues: it.arrayvalues ? em.serializer.write(it.arrayvalues) : null,
 				requiredbeforeprint: it.requiredbeforeprint
 			];
+			
 			em.validate("bplisting:appinfolisting", info);
 			em.create("bplisting:appinfolisting", info);
 		}

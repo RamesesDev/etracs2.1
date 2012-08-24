@@ -32,12 +32,13 @@ class BusinessMgmtService{
 		return sdf.parse( date );
 	}
 
-	def getResultList( def list, def qryname, def docstate, def searchText, def param ){
+	def getResultList( def list, def qryname, def docstate, def searchText, def param, def pagingkeys = null ){
 		list.clear();
 		def qry = em.sqlContext.createNamedQuery( qryname );
 		
-		if( searchText ) qry.setParameter('search', searchText);
-		if( docstate ) qry.setParameter('docstate', docstate);
+		if( pagingkeys != null ) 	qry.setPagingKeys( pagingkeys );
+		if( searchText ) 			qry.setParameter('search', searchText);
+		if( docstate ) 				qry.setParameter('docstate', docstate);
 		
 		qry.setFirstResult( param._start );
 		qry.setMaxResults( param._limit );
@@ -52,17 +53,17 @@ class BusinessMgmtService{
 		if( !docstate ){
 			if( !searchText )  return getResultList(list, 'bpmgmt:getRetiredList', 'RETIRED', searchText, param);
 			if( getResultList( list, 'bpmgmt:getRetiredListByPermitNo', 'RETIRED', searchText, param ) ) return list;
-			if( getResultList( list, 'bpmgmt:getRetiredListByBusinessName', 'RETIRED', searchText+'%', param ) ) return list;
+			if( getResultList( list, 'bpmgmt:getRetiredListByTradeName', 'RETIRED', searchText+'%', param ) ) return list;
 			if( getResultList( list, 'bpmgmt:getRetiredListByTaxpayerName', 'RETIRED', searchText+'%', param ) ) return list;
 			if( getResultList( list, 'bpmgmt:getRetiredListByBusinessAddress', 'RETIRED', searchText+'%', param ) ) return list;
 			if( getResultList( list, 'bpmgmt:getRetiredListByTaxpayerAddress', 'RETIRED', searchText+'%', param ) ) return list;
 		}else if( docstate == 'EXPIRED' ){
-			if( !searchText )  return getResultList(list, 'bpmgmt:getForRenewalList', null, searchText, param);
-			if( getResultList( list, 'bpmgmt:getForRenewalListByPermitNo', null, searchText, param ) ) return list;
-			if( getResultList( list, 'bpmgmt:getForRenewalListByTradeName', null, searchText+'%', param ) ) return list;
-			if( getResultList( list, 'bpmgmt:getForRenewalListByTaxpayerName', null, searchText+'%', param ) ) return list;
-			if( getResultList( list, 'bpmgmt:getForRenewalListByBusinessAddress', null, searchText+'%', param ) ) return list;
-			if( getResultList( list, 'bpmgmt:getForRenewalListByTaxpayerAddress', null, searchText+'%', param ) ) return list;
+			if( !searchText )  return getResultList(list, 'bpmgmt:getForRenewalList', null, searchText, param, 'bpl.objid');
+			if( getResultList( list, 'bpmgmt:getForRenewalListByPermitNo', null, searchText, param, 'bpl.objid' ) ) return list;
+			if( getResultList( list, 'bpmgmt:getForRenewalListByTradeName', null, searchText+'%', param, 'bpl.objid' ) ) return list;
+			if( getResultList( list, 'bpmgmt:getForRenewalListByTaxpayerName', null, searchText+'%', param, 'bpl.objid' ) ) return list;
+			if( getResultList( list, 'bpmgmt:getForRenewalListByBusinessAddress', null, searchText+'%', param, 'bpl.objid' ) ) return list;
+			if( getResultList( list, 'bpmgmt:getForRenewalListByTaxpayerAddress', null, searchText+'%', param, 'bpl.objid' ) ) return list;
 		}
 		else{
 			if( !searchText )  return getResultList(list, 'bpmgmt:getList', docstate, searchText, param);

@@ -384,6 +384,7 @@ class LandRPUService
 			//this is a transition to deprecate the actual use adjustment button.
 			//if classid is null, allow the addition to retain previous behaviour
 			def classid = adjustment.adj.classid 
+
 			if( 
 				!classid || classid == it.actualuseid || classid == it.actualusecode || adjustall == true || 
 				classid == it.assesslevelid || classid == it.assesslevelparentid
