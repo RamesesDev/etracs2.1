@@ -127,6 +127,9 @@ public class BPBillingService
 			if( billdate.date.time <= currentdate.date.time )
 				throw new Exception( "Bill date should be later than today." )
 		}
+		else {
+			billdate = null 
+		}
 	}
 	
 	private def calculateExpirydate( def bpsetting ){
