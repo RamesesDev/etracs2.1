@@ -589,14 +589,15 @@ class BPV1MigrationService
 					def qtramt = fixAmount( amt / 4 );
 					for(def i=1; i<=3; ++i) {
 						def b = [:]
-						if( i > 1 ) b.objid = b.objid + i
 						b.putAll( rcv )
+						if( i > 1 ) b.objid = b.objid + i
 						b.iqtr = i
 						b.amount = qtramt
 						b.amtpaid = (amtpaid > qtramt ? qtramt : amtpaid)
 						amtpaid -= b.amtpaid
 						bprcvlist << b
 					}
+					rcv.objid = rcv.objid + '4'
 					rcv.amtpaid = amtpaid
 					rcv.iqtr = 4
 					rcv.amount = amt - (qtramt * 3)

@@ -27,17 +27,23 @@ public class BPBillingService
 	@Service("BPSettingService")
 	def bpSettingService;
 	
+	@Service("IncomeAcctService")
+	def incomeSvc;
+	
 	def setting;
 	def advancepayment
 	def billdate
 	
 
 	@ProxyMethod
-	public def getBilling( billing ) {
+	public def getBilling( billing ) {		
 		if( billing.advancepayment ) { 
 			advancepayment = billing.advancepayment
 			billdate = dtService.parseDate( billing.billdate, null )
-			
+		}
+		else {
+			//always set to null because the service is cached
+			billdate = null;
 		}
 		
 		def businesslist = getBusinessByTaxpayer( billing );
@@ -106,12 +112,6 @@ public class BPBillingService
 						if( it.qtr == 4 ) bill.fourth_qtr_total += it.total;
 					}
 					
-					bill.taxfees.sort{ a, b ->
-						def sa = a.year+'-'+a.qtr;
-						def sb = b.year+'-'+b.qtr;
-						return sa <=> sb;
-					}
-					
 					billing.grandtotal += bill.grandtotal;
 					billing.items << bill;
 				}
@@ -124,12 +124,12 @@ public class BPBillingService
 		billing.items.sort{ it.appno };	
 		billing.expirydate = calculateExpirydate( bpsetting )    
 		
-		billing.info.billdate = dtService.serverDate
+		billing.info.billdate = billdate ? dtService.parse('yyyy-MM-dd', billing.billdate) : dtService.serverDate
 		return billing;
 	}
 	
 	private def calculateExpirydate( def bpsetting ){
-		def currentdate = dtService.parseCurrentDate()
+		def currentdate = billdate ? billdate : dtService.parseCurrentDate()
 		def duedate = getDueDate( bpsetting, currentdate.qtr  )
 		duedate = dtService.parse( 'yyyy-MM-dd', currentdate.year+"-"+duedate.month+"-"+duedate.day );
 		def nextday = duedate + 1 
@@ -213,7 +213,28 @@ public class BPBillingService
 			it.surcharge = numSvc.round( it.surcharge )
 			it.interest = numSvc.round( it.interest )
 			it.amount = numSvc.round( it.amount )
+			
+			//this is a temporary fix for this code
+			//- load the incomeaccount systype if not not available
+			if( it.acctsystype == null ) {
+				def acct = incomeSvc.open( it.acctid );
+				it.acctsystype = acct.systype;
+			}
+			
+			//set business tax sortorder to 1
+			it.sortorder = it.acctsystype == 'BUSINESS_TAX' ? 1 : 0;
 		}
+		
+		bill.taxfees.sort{ a, b ->
+		if( a.sortorder == b.sortorder ) {
+				def a_year = a.year+'-'+a.qtr;
+				def b_year = b.year+'-'+b.qtr;
+				return a_year <=> b_year;
+			}
+			
+			return a.sortorder - b.sortorder;
+		}
+		
 		return bill
 	}	
 	
