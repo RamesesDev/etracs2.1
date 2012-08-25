@@ -7,7 +7,7 @@
     <invokers>
         <invoker type="rptledger.open" action="open" target="window"/>
         
-        <invoker type="formActions" action="_close" caption="Close" mnemonic="b" icon="images/cancel.png" immediate="true" />
+        <invoker type="formActions" action="doClose" caption="Close" mnemonic="b" icon="images/cancel.png" immediate="true" />
         <invoker type="formActions" action="approve" caption="Approve" shortcut="ctrl A" visibleWhen="#{ledger.docstate == 'PENDING'}" mnemonic="a" icon="images/approve.png" permission="rptledger.approve" />
         <invoker type="formActions" action="capturePayment" caption="Capture Payment" shortcut="ctrl m" visibleWhen="#{ledger.docstate == 'APPROVED'}" mnemonic="M" icon="images/capturePayment.png" permission="rptledger.capturepayment"/>        
         <invoker type="formActions" action="previewBill" caption="Preview" visibleWhen="#{ledger.docstate == 'APPROVED'}" mnemonic="v" icon="images/doc-view.png" permission="rptledger.previewbill" />        
@@ -48,11 +48,15 @@ public class RPTLedgerController
     @Service("ReportParameterService")
     def reportSvc
     
+    def onrefreshList   //ledger management handler 
+    
     
     def ledger 
     def selectedItem
     def ledgerItems
     def payments = []
+    
+    def approve_invoked = false 
     
     def invokerparam = [
         getParams :  { return [bill:createBillInfo()] }
@@ -60,6 +64,13 @@ public class RPTLedgerController
     
     def getFormActions() {
         return InvokerUtil.lookupActions('rptledger:formActions', invokerparam )
+    }
+    
+    def doClose() {
+        if( onrefreshList && approve_invoked ) {
+            onrefreshList()
+        }
+        return '_close'
     }
     
     
@@ -75,6 +86,7 @@ public class RPTLedgerController
     void approve() {
         if( MsgBox.confirm('Approve ledger?') ) {
             ledger = svc.approve( ledger.objid )
+            approve_invoked = true 
         }
     }
     

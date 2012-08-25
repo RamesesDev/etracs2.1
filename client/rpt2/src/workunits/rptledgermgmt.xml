@@ -45,8 +45,13 @@ public class LedgerMgmtController
         return actionList 
     }
     
+    
+    def onrefreshListHandler = {
+        search()
+    }
+    
     def open() {
-        return InvokerUtil.lookupOpener('rptledger.open', [ledger:selectedItem])
+        return InvokerUtil.lookupOpener('rptledger.open', [ledger:selectedItem, onrefreshList:onrefreshListHandler])
     }
     
     
