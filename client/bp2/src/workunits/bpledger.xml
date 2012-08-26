@@ -214,7 +214,7 @@
             }
             
             def previewbilling(){
-                entity.app = 'bpledger'
+                if( !application ) throw new Exception( 'Select an application' )
                 reportname = 'bp/billing'
                 generateReport()
             }
@@ -224,11 +224,17 @@
                 generateReport()
             }
             
+            void setApplication( application ){
+                this.application = application
+            }
+            
             def generateReport() {
                 entity.info = [
-                    taxpayerid : entity.business.taxpayerid,
-                    tradename  : ( entity.business.tradename ? entity.business.tradename : '%' ),
-                    barangayid : ( entity.business.barangayid ? entity.business.barangayid : '%' )
+                    applicationid : application.objid,
+                    appno         : application.txnno,
+                    taxpayerid    : application.taxpayerid,
+                    tradename     : ( application.tradename ? application.tradename : '%' ),
+                    barangayid    : ( application.barangayid ? application.barangayid : '%' )
                 ]
                 reportdata = ( reportname.equals('bp/bpledger') ? svc.getBPLedgerData( entity.businessid ) : billingSvc.getBilling( entity ) )
                 report.viewReport()

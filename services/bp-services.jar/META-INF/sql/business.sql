@@ -18,25 +18,40 @@ WHERE b.taxpayername LIKE CONCAT( $P{taxpayername}, '%' )
 AND b.docstate = 'ACTIVE' 
 ORDER BY b.tradename, b.taxpayername
 
+[getList1]
+SELECT a.txnno, b.* FROM business b 
+INNER JOIN bpapplication a ON a.objid = b.applicationid 
+WHERE b.docstate IN ( 'ACTIVE', 'FOR_RELEASE' ) 
+ORDER BY tradename
+
+[getListByTradename1]
+SELECT a.txnno, b.* FROM business b 
+INNER JOIN bpapplication a ON a.objid = b.applicationid 
+WHERE b.tradename LIKE CONCAT( $P{tradename}, '%' ) 
+AND b.docstate = 'ACTIVE' 
+ORDER BY b.tradename, b.taxpayername
+
+[getListByOwnername1]
+SELECT a.txnno, b.* FROM business b 
+INNER JOIN bpapplication a ON a.objid = b.applicationid 
+WHERE b.taxpayername LIKE CONCAT( $P{taxpayername}, '%' ) 
+AND b.docstate = 'ACTIVE' 
+ORDER BY b.tradename, b.taxpayername
+
 [getListByTaxpayerid]
 SELECT b.*  
 FROM business b  
 	INNER JOIN bpapplicationlisting bl ON b.applicationid = bl.objid   
 WHERE b.taxpayerid = $P{taxpayerid}  
+  AND b.applicationid = $P{applicationid} 
   AND b.docstate in ('ACTIVE', 'EXPIRED') 
   AND bl.barangayid LIKE $P{barangayid}   
 ORDER BY b.tradename, b.taxpayername 
 
-[getListByTaxpayeridTradename]
-SELECT b.*  
-FROM business b  
-	INNER JOIN bpapplicationlisting bl ON b.applicationid = bl.objid   
-WHERE b.taxpayerid = $P{taxpayerid}  
-  AND b.tradename LIKE $P{tradename} 
-  AND b.docstate in ('ACTIVE', 'EXPIRED') 
-  AND bl.barangayid LIKE $P{barangayid}   
-ORDER BY b.tradename, b.taxpayername 
-
+[getChildAppByAppId]
+SELECT objid FROM bpapplication 
+WHERE objid = $P{applicationid} 
+ AND parentid IS NULL 
 
 [getBusinessByTaxpayerIdTrade]
 SELECT b.*  

@@ -17,5 +17,18 @@ class BusinessService {
 		businesslist = em.sqlContext.createNamedQuery( "business:getListByOwnername" ).setParameters( [taxpayername:searchText] ).resultList;
 		return businesslist;
 	}
+	 
+	@ProxyMethod
+	public def getList1( searchText ) { 
+		def result = []
+		if ( !searchText ) return getQueryResult( "getList1", [:] ) 
+		if( (result = getQueryResult( "getListByTradename1", [tradename:searchText] )) ) return result
+		if( (result = getQueryResult( "getListByOwnername1", [taxpayername:searchText] )) ) return result
+		return result
+	}
+	
+	private def getQueryResult( criteria, params ){
+		return em.sqlContext.createNamedQuery( "business:" + criteria ).setParameters( params ).resultList
+	}
 	
 }

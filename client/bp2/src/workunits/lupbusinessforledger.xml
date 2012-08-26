@@ -35,7 +35,6 @@
             
             public Column[] getColumns(){
                 return [
-                    new Column(name:"txnno", caption:"Application No."),
                     new Column(name:"tradename", caption:"Trade Name"),
                     new Column(name:"businessaddress", caption:"Address"),
                     new Column(name:"taxpayername", caption:"Owner Name"),
@@ -46,7 +45,7 @@
             public List fetchList(Map param) { 
                 def s = search
                 if( !s ) s = searchText 
-                def list = svc.getList(s , null);
+                def list = svc.getList1(s);
                 if( list ) return list
                 throw new Exception("Record not found.")
             }

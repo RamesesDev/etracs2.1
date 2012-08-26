@@ -30,6 +30,7 @@ public class BPBillingInitPage extends javax.swing.JPanel {
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xLookupField2 = new com.rameses.rcp.control.XLookupField();
         xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
         xSeparator2 = new com.rameses.rcp.control.XSeparator();
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
@@ -47,6 +48,7 @@ public class BPBillingInitPage extends javax.swing.JPanel {
         xTitledBorder1.setTitle("Taxpayer Information");
         formPanel1.setBorder(xTitledBorder1);
         xLookupField2.setCaption("Name");
+        xLookupField2.setCaptionWidth(85);
         xLookupField2.setExpression("#{taxpayername}");
         xLookupField2.setHandler("lookupTaxpayer");
         xLookupField2.setHint("Search Tax payer");
@@ -57,15 +59,26 @@ public class BPBillingInitPage extends javax.swing.JPanel {
 
         xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("TextField.shadow")));
         xLabel1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        xLabel1.setCaption("Tradename");
+        xLabel1.setCaption("Application No.");
+        xLabel1.setCaptionWidth(85);
         xLabel1.setDepends(new String[] {"entity.info.taxpayername"});
-        xLabel1.setExpression("#{entity.info.tradename}");
+        xLabel1.setExpression("#{entity.info.appno}");
         xLabel1.setPreferredSize(new java.awt.Dimension(0, 21));
         formPanel1.add(xLabel1);
+
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("TextField.shadow")));
+        xLabel3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        xLabel3.setCaption("Tradename");
+        xLabel3.setCaptionWidth(85);
+        xLabel3.setDepends(new String[] {"entity.info.taxpayername"});
+        xLabel3.setExpression("#{entity.info.tradename}");
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 21));
+        formPanel1.add(xLabel3);
 
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("TextField.shadow")));
         xLabel2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         xLabel2.setCaption("Address");
+        xLabel2.setCaptionWidth(85);
         xLabel2.setDepends(new String[] {"entity.info.taxpayername"});
         xLabel2.setExpression("#{entity.info.businessaddress}");
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 36));
@@ -117,6 +130,7 @@ public class BPBillingInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XSeparator xSeparator2;
     // End of variables declaration//GEN-END:variables
