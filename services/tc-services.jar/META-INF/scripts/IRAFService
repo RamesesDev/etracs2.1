@@ -309,7 +309,9 @@ class IRAFService
 			def prevAf = em.sqlContext.createNamedQuery("iraf:getAFInventoryByIRAFIdOrderByStubNo")
 						   .setParameters([irafid: iraf.objid, afid:af.objid ])
 						   .singleResult;
-
+			
+			def stubfrom = ( ri.stubfrom ? ri.stubfrom : 1 ) 
+			def stubto = ( ri.stubfrom ? (ri.stubfrom+ri.qtyreceived)-1 : ri.qtyreceived )
 			def afinventory = [
 				objid : "AFI" + new UID(),
 				schemaname: "afinventory:afinventory",
@@ -321,10 +323,10 @@ class IRAFService
 				afid: ri.afid,
 				aftype: ri.aftype,
 				afunit: af.unit,
-				stubfrom: (prevAf) ? prevAf.stubto + 1 : 1,
+				stubfrom: (prevAf) ? prevAf.stubto + 1 : stubfrom ,
 				aflength: (af.serieslength) ? af.serieslength : 7,
-				stubto: (prevAf) ? (prevAf.stubto + ri.qtyreceived) : ri.qtyreceived,
-				currentstub: (prevAf) ? prevAf.stubto + 1 : 1,
+				stubto: (prevAf) ? (prevAf.stubto + ri.qtyreceived) : stubto,
+				currentstub: (prevAf) ? prevAf.stubto + 1 : stubfrom,
 				stubprefix: iraf.txnno,
 				qtyonhand: ri.qtyreceived,
 				qtyissued: 0,
@@ -377,7 +379,7 @@ class IRAFService
 				def af =  em.sqlContext.createNamedQuery("af:getById")
 							.setParameters( [objid: ri.afid] )
 							.singleResult;
-						
+						 
 				def afinventorycredit = [
 					objid: "AFIC" + new UID(),
 					schemaname: 'afinventorycredit:afinventorycredit',
@@ -393,7 +395,8 @@ class IRAFService
 					aflength: afinventory.aflength,
 					prefix: afinventory.prefix,
 					suffix: afinventory.suffix,
-					stubno: afinventory.stubprefix + '-' + afinventory.currentstub,
+					//stubno: afinventory.stubprefix + '-' + afinventory.currentstub,
+					stubno: afinventory.currentstub,
 					startseries: 0,
 					endseries: 0,
 					qtyissued: 0,

@@ -38,6 +38,7 @@ public class IRAFAddItemLGUPage extends javax.swing.JPanel {
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xNumberField3 = new com.rameses.rcp.control.XNumberField();
+        xNumberField4 = new com.rameses.rcp.control.XNumberField();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField2 = new com.rameses.rcp.control.XTextField();
@@ -91,9 +92,16 @@ public class IRAFAddItemLGUPage extends javax.swing.JPanel {
         xNumberField3.setReadonly(true);
         formPanel1.add(xNumberField3);
 
-        xNumberField1.setCaption("Recived Qty");
+        xNumberField4.setCaption("Recived Qty");
+        xNumberField4.setCaptionWidth(130);
+        xNumberField4.setName("item.qtyreceived");
+        xNumberField4.setPreferredSize(new java.awt.Dimension(0, 19));
+        xNumberField4.setRequired(true);
+        formPanel1.add(xNumberField4);
+
+        xNumberField1.setCaption("Start Stub No.");
         xNumberField1.setCaptionWidth(130);
-        xNumberField1.setName("item.qtyreceived");
+        xNumberField1.setName("item.stubfrom");
         xNumberField1.setPreferredSize(new java.awt.Dimension(0, 19));
         xNumberField1.setRequired(true);
         formPanel1.add(xNumberField1);
@@ -135,6 +143,7 @@ public class IRAFAddItemLGUPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XNumberField xNumberField3;
+    private com.rameses.rcp.control.XNumberField xNumberField4;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;
     // End of variables declaration//GEN-END:variables
