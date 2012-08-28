@@ -133,12 +133,13 @@ class RPTReceiptService
 	
 	void sendRemoteCollectionMessage( receipt, rptpaymentlist, rptpaymentdetaillist, receiverid, receivername     ) {
 		def data = [paymentlist:rptpaymentlist, paymentdetailist:rptpaymentdetaillist]
-		def msg = msgSvc.createMessage( 'rptreceipt_post_remote_collection', data)
+		def action =  'rptreceipt_post_remote_collection'
+		def msg = msgSvc.createMessage( action, data)
 		msg.receiverid = receiverid
 		msg.receivername  = receivername
 		msgSvc.send( msg )
 	}
-		
+	
 	@ProxyMethod
 	public void postRemoteRPTCollection( msg ) {
 		msg.attachment.paymentlist.each { rptpayment ->

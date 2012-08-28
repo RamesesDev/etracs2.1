@@ -20,6 +20,10 @@ class MessengerService
 	@Service('DomainService')
 	def domainSvc
 	
+	@Resource('MessagingService')
+	def res 
+	
+	
 	def INBOX_SCHEMA_NAME = 'message:inbox' 
 	def OUTBOX_SCHEMA_NAME = 'message:outbox' 
 	def SCHEMA_VERSION = '1.0'
@@ -27,6 +31,18 @@ class MessengerService
 	def OPEN_STATE = 'OPEN'
 	def PROCESSED_STATE = 'PROCESSED'
 	
+	
+	/*-------------------------------------------------------------------------------- 
+	* OpenFire Support: method to send message to openfire clients 
+	-------------------------------------------------------------------------------- */
+	@ProxyMethod
+	public void sendMessage( receiverid, msg ) {
+		println 'Sending OpenFire message to -> ' + receiverid 
+		def req = [
+			responseUsername : receiverid,
+		]
+		res.notify( req, msg )
+	}
 	
 	
 	/*-------------------------------------------------------------------------------- 
@@ -43,6 +59,7 @@ class MessengerService
 	public void send( msg  ) {
 		em.validate( OUTBOX_SCHEMA_NAME, msg )
 		em.create(OUTBOX_SCHEMA_NAME, msg ) 
+		broadcastUsingOpenFire( msg, 'etracs' )
     }
 	
 	@ProxyMethod
@@ -164,6 +181,13 @@ class MessengerService
         }
 	}
 	
+	void broadcastUsingOpenFire( msg, module ) {
+		def messaging_openfire_active = (var.messaging_openfire_active ? var.messaging_openfire_active : 0 )
+		if( TO_BOOLEAN( messaging_openfire_active ) == true ) {
+			sendMessage(msg.receiverid, [receiverid:msg.receiverid, module:module, action:msg.action] )
+		}
+	}
+	
 	def getMessageInfo( msgid ) {
 		def msg = em.sqlContext.createNamedQuery('messenger:getMessageInfo')
 						.setParameter('objid', msgid )
@@ -173,5 +197,9 @@ class MessengerService
 		return msg 
 	}
 	
+	boolean TO_BOOLEAN( value ) {
+		if( value instanceof Boolean ) return value 
+		return '1/y/yes/true/t'.indexOf( value.toString().toLowerCase() ) >= 0
+	}
 
 }

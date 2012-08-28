@@ -370,7 +370,7 @@ class ProvinceFAASService
 		def msg = msgSvc.createMessage( action, data )
 		msg.receiverid = receiverid 
 		msg.receivername = receivername 
-		msgSvc.send( msg )        
+		msgSvc.send( msg )   
     }
     
     void updatePinInfo( faas, newPin, newSectionNo, newParcelNo ) {

@@ -1,0 +1,16 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*
+
+
+class OnMessageInterceptor 
+{
+	@Service('InboundMessageTask')
+	def inboundTask 
+	
+	
+	@Before(pattern="ResponseMessageHandler.onMessage.*") 
+	public void beforeOnMessage( evt ) {
+		inboundTask.fetchMessage( null ) 
+	}
+		
+}
