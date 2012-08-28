@@ -27,22 +27,12 @@ public class BPDelinquencyInitPage extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        formPanel1 = new com.rameses.rcp.util.FormPanel();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xButton1 = new com.rameses.rcp.control.XButton();
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Initial Information");
-        formPanel1.setBorder(xTitledBorder1);
-        xComboBox1.setCaption("Barangay");
-        xComboBox1.setCellPadding(new java.awt.Insets(10, 10, 0, 0));
-        xComboBox1.setEmptyText("ALL BARANGAYS");
-        xComboBox1.setExpression("#{barangayname}");
-        xComboBox1.setItems("barangaylist");
-        xComboBox1.setName("barangay");
-        xComboBox1.setPreferredSize(new java.awt.Dimension(250, 22));
-        formPanel1.add(xComboBox1);
+        xPanel1 = new com.rameses.rcp.control.XPanel();
+        formPanel1 = new com.rameses.rcp.util.FormPanel();
+        xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
 
         xLabel1.setForeground(new java.awt.Color(153, 0, 0));
         xLabel1.setFont(new java.awt.Font("Arial", 1, 11));
@@ -52,6 +42,49 @@ public class BPDelinquencyInitPage extends javax.swing.JPanel {
         xButton1.setText("Preview");
         xButton1.setName("preview");
 
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setTitle("Initial Information");
+        xPanel1.setBorder(xTitledBorder1);
+
+        xComboBox1.setCaption("Barangay");
+        xComboBox1.setCellPadding(new java.awt.Insets(10, 10, 0, 0));
+        xComboBox1.setEmptyText("ALL BARANGAYS");
+        xComboBox1.setExpression("#{barangayname}");
+        xComboBox1.setItems("barangaylist");
+        xComboBox1.setName("barangay");
+        xComboBox1.setPreferredSize(new java.awt.Dimension(250, 22));
+        formPanel1.add(xComboBox1);
+
+        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox1.setText("Show quarterly amount?");
+        xCheckBox1.setCheckValue(1);
+        xCheckBox1.setDepends(new String[] {"selectedItem"});
+        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox1.setName("quarterly");
+
+        org.jdesktop.layout.GroupLayout xPanel1Layout = new org.jdesktop.layout.GroupLayout(xPanel1);
+        xPanel1.setLayout(xPanel1Layout);
+        xPanel1Layout.setHorizontalGroup(
+            xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(xPanel1Layout.createSequentialGroup()
+                .add(xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xPanel1Layout.createSequentialGroup()
+                        .add(104, 104, 104)
+                        .add(xCheckBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(xPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(34, Short.MAX_VALUE))
+        );
+        xPanel1Layout.setVerticalGroup(
+            xPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(xPanel1Layout.createSequentialGroup()
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(xCheckBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(87, Short.MAX_VALUE))
+        );
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -59,23 +92,23 @@ public class BPDelinquencyInitPage extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(xLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                    .add(layout.createSequentialGroup()
+                        .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 264, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 376, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(130, Short.MAX_VALUE))
+                    .add(xPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 174, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(xPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(14, 14, 14)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(86, Short.MAX_VALUE))
+                    .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(99, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -83,8 +116,10 @@ public class BPDelinquencyInitPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XLabel xLabel1;
+    private com.rameses.rcp.control.XPanel xPanel1;
     // End of variables declaration//GEN-END:variables
     
 }

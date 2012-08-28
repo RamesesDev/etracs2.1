@@ -6,8 +6,8 @@
         <invoker type="home.action"  caption="Business Ledger" permission="bpadmin.ledger" index="60" target="window" icon="images/folder.png"/>
         
         <invoker type="formActions" action="_close" immediate="true" caption="Close" icon="images/cancel.png" />
-        <invoker type="formActions" action="previewledger" caption="Preview Ledger" mnemonic="v" shortcut="ctrl + V" icon="images/doc-view.png" />
-        <invoker type="formActions" action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png" />
+        <invoker type="formActions" action="previewbilling" caption="Preview Billing" mnemonic="b" icon="images/doc-view.png"/>
+        <invoker type="formActions" action="previewledger"  caption="Preview Ledger"  mnemonic="v" icon="images/doc-view.png" />
         
         <invoker type="previewActions"  action="back" caption="Back" icon="images/back.png" immediate="true" />
     </invokers>
@@ -23,6 +23,9 @@
 
             @Service('BPLedgerService')
             def svc;
+            
+            @Service('BPBillingService')
+            def billingSvc
             
             @Service( 'ReportParameterService')
             def paramSvc
@@ -166,7 +169,6 @@
                         amtpaid     : 0.0,
                         total       : 0.0
                     ];
-                    //return new PopupOpener( name:"bp2:bpledgercapturepayment", caption:"Capture Payment", action:"init", params:[entity:paymentInfo] );
                     return InvokerUtil.lookupOpener( 'bp2:bpledgercapturepayment', [entity:paymentInfo] );
                 }
             }
@@ -177,42 +179,59 @@
                     svc.deleteCapturePayment( payment );
                 }
             }
-             
-            def report = [
-                getReportName : { return 'bp/bpledger' }, 
+            
+            def getReport(){
+                return ( reportname.equals('bp/bpledger') ? bpledgerreport : billingreport )
+            }
+            
+            def getParameters(){
+                def params = paramSvc.getStandardParameter( OsirisContext.env.USERNAME )
+                params.TRADENAME = entity.business.tradename
+                params.BUSINESSADDRESS = entity.business.businessaddress
+                params.OWNERNAME = entity.business.taxpayername
+                params.OWNERADDRESS = entity.business.taxpayeraddress
+
+                return params
+            }
+            
+            def billingreport = [
+                getReportName : { return reportname }, 
                 getReportData : { return reportdata },
-                getParameters : { 
-                    def params = paramSvc.getStandardParameter( OsirisContext.env.USERNAME )
-                    params.TRADENAME = entity.business.tradename
-                    params.BUSINESSADDRESS = entity.business.businessaddress
-                    params.OWNERNAME = entity.business.taxpayername
-                    params.OWNERADDRESS = entity.business.taxpayeraddress
-                    
-                    return params
-                }
-            ] as ServerReportModel;
+                getParameters : { getParameters()   }
+            ] as ServerReportModel
             
-            def bpledger
-            void setApplication( app ){
-                this.application = app
-                bpledger = app
-            }
-            
+            def bpledgerreport = [
+                getReportName : { return reportname }, 
+                getReportData : { return reportdata },
+                getParameters : { getParameters()   }
+            ] as ServerReportModel
+
             def reportdata
-            void generateReport() {
-                reportdata = svc.getBPLedgerData( entity.businessid )
-                report.viewReport()
-            }
-            
+            def reportname
             void print(){
                 generateReport()
                 ReportUtil.print( report.report, true )
             }
             
-            def previewledger(){
+            def previewbilling(){
+                reportname = 'bp/billing'
                 generateReport()
-                
-                return 'preview' 
+            }
+            
+            def previewledger(){
+                reportname = 'bp/bpledger'
+                generateReport()
+            }
+            
+            def generateReport() {
+                entity.info = [
+                    taxpayerid : entity.business.taxpayerid,
+                    tradename  : ( entity.business.tradename ? entity.business.tradename : '%' ),
+                    barangayid : ( entity.business.barangayid ? entity.business.barangayid : '%' )
+                ]
+                reportdata = ( reportname.equals('bp/bpledger') ? svc.getBPLedgerData( entity.businessid ) : billingSvc.getBilling( entity ) )
+                report.viewReport()
+                return 'preview'
             }
             
             def back(){

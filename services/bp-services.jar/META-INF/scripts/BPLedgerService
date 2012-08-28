@@ -386,7 +386,7 @@ class BPLedgerService {
 					
 					lobs 	: bapp.lobs, 
 					credits : bapp.credits,
-					receivables : bapp.receivables,
+					receivables : bapp.receivables.sort{ it.iqtr },
 				]
 			}
 			 
