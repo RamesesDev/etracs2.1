@@ -27,7 +27,7 @@ class TransmittalService
 		entity.postedbytitle = env.JOBTITLE
 		
 		em.validate( FOR_TRANSMITTAL_SCHEMA_NAME, entity )
-		em.create(FOR_TRANSMITTAL_SCHEMA_NAME, entity )
+		em.save(FOR_TRANSMITTAL_SCHEMA_NAME, entity )
 	}
 	
 	def getListByQuery( namedQuery, criteria, params ) {

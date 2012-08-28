@@ -58,6 +58,7 @@ class AFControlActivateController
                 new Column(name:'startseries', caption:'Start Series', format:'0000000'),
                 new Column(name:'endseries', caption:'End Series', format:'0000000'),
                 new Column(name:'currentseries', caption:'Current Series', format:'0000000'),
+                new Column(name:'balance', caption:'Balance', type:'integer'),
                 new Column(name:'mode', caption:'Mode'),
             ]
         },

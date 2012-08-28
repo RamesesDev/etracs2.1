@@ -348,10 +348,22 @@ class RPTCertificationsService
 			
 			validateState( param )
 			
-			def getData = em.sqlContext.createNamedQuery( 'rptcertification:getImprovementsTDNo' ).setParameters( param ).singleResult;	
-			if( !getData )
-				throw new Exception( "There are no improvements for the land with TD No.: ${param.tdno}  registered to ${param.taxpayername}." );
+			def faasinfo = em.sqlContext.createNamedQuery('rptcertification:getFaasByTdNo')
+							.setParameter('tdno', param.tdno)
+							.singleResult 
 			
+			if( ! faasinfo ) throw new Exception('Cannot open FAAS record.')
+			if( faasinfo.rputype != 'land') throw new Exception('Certification with Improvement is applicable only for Land properties.')
+			
+			def faas = em.read( faasinfo.schemaname, faasinfo )
+			if( ! faas ) throw new Exception('Cannot open FAAS record.')
+			
+			if( ! faas.rpu.info.planttrees ) {
+				def getData = em.sqlContext.createNamedQuery( 'rptcertification:getImprovementsTDNo' ).setParameters( param ).singleResult;	
+				if( !getData ) {
+					throw new Exception( "There are no improvements for the land with TD No.: ${param.tdno}  registered to ${param.taxpayername}." );
+				}
+			}
 		}
 		
 		/** header **/

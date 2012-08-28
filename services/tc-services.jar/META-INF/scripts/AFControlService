@@ -126,7 +126,7 @@ class AFControlService
 				collectorid: afcontrol.collectorid,
 				collectorname: afcontrol.collectorname,
 				collectortitle: afcontrol.collectortitle,
-				objid: craafcredit.objid
+				objid: (craafcredit ? craafcredit.objid : afcontrol.afinventorycreditid )
 		]
 				
 		em.sqlContext.createNamedExecutor( 'afcontrol:updateCraafToTransferById' ).setParameters( craaf ).execute()

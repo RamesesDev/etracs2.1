@@ -37,7 +37,7 @@ public class ModifyPINUtilityController {
     void init(){
     }
     
-    def updatePin() {
+    void updatePin() {
         if( MsgBox.confirm('Update existing PIN with new information?') ) {
             svc.updatePin([
                 faasid      : faas.objid,
@@ -55,9 +55,23 @@ public class ModifyPINUtilityController {
                 sparcel     : sparcel,
                 newpin      : newpin, 
             ])
-            return '_close'
+            clearInfo()
+            binding?.focus('faas')
         }
-        return null 
+    }
+    
+    void clearInfo() {
+        faas         = null
+        pintype      = 'new' 
+        municipality = null
+        barangay     = null    
+        section      = 0
+        parcel       = 0
+        suffix       = 0
+        ssection     = null 
+        sparcel      = null 
+        newpin       = null 
+        useoldpin    = false
     }
     
     void setPintype( pintype ) {

@@ -228,51 +228,51 @@ public class RPTManualCollectionDetailPage {
     
     
     void setBasic( basic ) {
-        this.basic = basic
-        item.basic = basic
-        item.sef = basic
+        this.basic = (basic == null ? 0.0 : basic)
+        item.basic = this.basic
+        item.sef = this.basic
         calculateTotals()
     }
     
     void setBasicdisc( basicdisc ) {
-        this.basicdisc = basicdisc
-        item.basicdisc = basicdisc
-        item.sefdisc = basicdisc
+        this.basicdisc = ( basicdisc == null ? 0.0 : basicdisc )
+        item.basicdisc = this.basicdisc
+        item.sefdisc = this.basicdisc
         calculateTotals()
     }
     
     void setBasicint( basicint ) {
-        this.basicint = basicint
-        item.basicint = basicint
-        item.sefint = basicint
+        this.basicint = ( basicint == null ? 0.0 : basicint )
+        item.basicint = this.basicint
+        item.sefint = this.basicint
         calculateTotals()
     }
     
     void setBasicprev( basicprev ) {
-        this.basicprev = basicprev
-        item.basicprev = basicprev
-        item.sefprev = basicprev
+        this.basicprev = ( basicprev == null ? 0.0 : basicprev )
+        item.basicprev = this.basicprev
+        item.sefprev = this.basicprev
         calculateTotals()
     }
     
     void setBasicprevint( basicprevint ) {
-        this.basicprevint = basicprevint
-        item.basicprevint = basicprevint
-        item.sefprevint = basicprevint
+        this.basicprevint = ( basicprevint == null ? 0.0 : basicprevint )
+        item.basicprevint = this.basicprevint
+        item.sefprevint = this.basicprevint
         calculateTotals()
     }
     
     void setBasicprior( basicprior ) {
-        this.basicprior = basicprior
-        item.basicprior = basicprior
-        item.sefprior = basicprior
+        this.basicprior = ( basicprior == null ? 0.0 : basicprior )
+        item.basicprior = this.basicprior
+        item.sefprior = this.basicprior
         calculateTotals()
     }
     
     void setBasicpriorint( basicpriorint ) {
-        this.basicpriorint = basicpriorint
-        item.basicpriorint = basicpriorint
-        item.sefpriorint = basicpriorint
+        this.basicpriorint = ( basicpriorint == null ? 0.0 : basicpriorint )
+        item.basicpriorint = this.basicpriorint
+        item.sefpriorint = this.basicpriorint
         calculateTotals()
     }
     

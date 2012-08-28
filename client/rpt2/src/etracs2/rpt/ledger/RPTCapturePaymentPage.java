@@ -134,25 +134,33 @@ public class RPTCapturePaymentPage extends javax.swing.JPanel {
         formPanel4.setBorder(xTitledBorder3);
         xNumberField2.setCaption("Basic");
         xNumberField2.setCaptionWidth(90);
-        xNumberField2.setName("payment.basic");
+        xNumberField2.setFieldType(BigDecimal.class);
+        xNumberField2.setName("basic");
+        xNumberField2.setPattern("#,##0.00");
         xNumberField2.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel4.add(xNumberField2);
 
         xNumberField4.setCaption("Discount");
         xNumberField4.setCaptionWidth(90);
-        xNumberField4.setName("payment.basicdisc");
+        xNumberField4.setFieldType(BigDecimal.class);
+        xNumberField4.setName("basicdisc");
+        xNumberField4.setPattern("#,##0.00");
         xNumberField4.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel4.add(xNumberField4);
 
         xNumberField5.setCaption("Penalty");
         xNumberField5.setCaptionWidth(90);
-        xNumberField5.setName("payment.basicint");
+        xNumberField5.setFieldType(BigDecimal.class);
+        xNumberField5.setName("basicint");
+        xNumberField5.setPattern("#,##0.00");
         xNumberField5.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel4.add(xNumberField5);
 
         xNumberField8.setCaption("Partial");
         xNumberField8.setCaptionWidth(90);
-        xNumberField8.setName("payment.basicpartial");
+        xNumberField8.setFieldType(BigDecimal.class);
+        xNumberField8.setName("basicpartial");
+        xNumberField8.setPattern("#,##0.00");
         xNumberField8.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel4.add(xNumberField8);
 
@@ -161,24 +169,28 @@ public class RPTCapturePaymentPage extends javax.swing.JPanel {
         formPanel5.setBorder(xTitledBorder4);
         xNumberField3.setCaption("SEF");
         xNumberField3.setCaptionWidth(80);
+        xNumberField3.setDepends(new String[] {"basic"});
         xNumberField3.setName("payment.sef");
         xNumberField3.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel5.add(xNumberField3);
 
         xNumberField6.setCaption("Discount");
         xNumberField6.setCaptionWidth(80);
+        xNumberField6.setDepends(new String[] {"basicdisc"});
         xNumberField6.setName("payment.sefdisc");
         xNumberField6.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel5.add(xNumberField6);
 
         xNumberField7.setCaption("Penalty");
         xNumberField7.setCaptionWidth(80);
+        xNumberField7.setDepends(new String[] {"basicint"});
         xNumberField7.setName("payment.sefint");
         xNumberField7.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel5.add(xNumberField7);
 
         xNumberField10.setCaption("Partial");
         xNumberField10.setCaptionWidth(80);
+        xNumberField10.setDepends(new String[] {"basicparital"});
         xNumberField10.setName("payment.sefpartial");
         xNumberField10.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel5.add(xNumberField10);

@@ -145,15 +145,24 @@
                         craafcredits       : svc.exportCraafCredits( entity.objid ),
                     ]
 
-                    data = ObjectSerializer.instance.toString( data )
-                    data = CipherUtil.encode(data)
-                    def out = chooser.selectedFile.newOutputStream()
-                    def oos = new ObjectOutputStream( out )
-                    oos.writeObject( data )
-                    oos.close()
-    
-                    System.setProperty("chooser.previouspath", chooser.selectedFile.parent );
-                    MsgBox.alert( "Remittance No. $entity.info.txnno was successfully exported." );
+                    def out = null 
+                    def oos = null 
+                    try {
+                        data = ObjectSerializer.instance.toString( data )
+                        data = CipherUtil.encode(data)
+                        out = chooser.selectedFile.newOutputStream()
+                        oos = new ObjectOutputStream( out )
+                        oos.writeObject( data )
+                        oos.close()
+                        System.setProperty("chooser.previouspath", chooser.selectedFile.parent )
+                        MsgBox.alert( "Remittance No. $entity.info.txnno was successfully exported." )
+                    }
+                    catch( e) {
+                        throw e 
+                    }
+                    finally{
+                        try{ out.close() }catch(e) { }
+                    }
                 }                
             }
             

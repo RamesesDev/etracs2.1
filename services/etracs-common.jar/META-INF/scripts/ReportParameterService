@@ -51,6 +51,7 @@ class ReportParameterService{
 			LGUTYPE		  : var.lgu_type, 
 			LGUADDRESS	  : var.lgu_address, 
             PARENTLGUNAME : parentlguname,
+			PARENTLGUFORMALNAME : var.parent_lgu_formal_name,
 			PROVINCENAME  : var.get('parent_lgu_name'),
 			MUNICIPALNAME : var.get('lgu_name'),
 			CITYNAME	  : var.get('city_name'),

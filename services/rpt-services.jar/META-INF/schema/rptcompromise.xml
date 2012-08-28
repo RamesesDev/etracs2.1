@@ -1,0 +1,153 @@
+<schema>
+	<element name="rptcompromise" tablename="rptcompromise">
+		<field name="objid" primary="true"/>
+		<!-- DRAFT, FORPROCESSING, FORAPPROVAL, APPROVED, DEFAULTED, CLOSED -->
+		<field name="docstate" required="true"/>
+		<field name="txnno" />
+		<field name="txndate" />
+		<field name="faasid" required="true" />
+		<field name="ledgerid" required="true" />
+		
+		<complex name="info" ref="info" serializer="default" />
+		<complex name="signatories" ref="signatory" type="list" serializer="default"/>
+		<complex name="extended" merge="true" serializer="default" required="false" />
+	</element>
+	
+	<element name="signatory">
+		<element name="name" required="true"/>
+		<element name="address" />
+	</element>
+	
+	<element name="info">
+		<field name="lastyearpaid" type="integer" required="true" />
+		<field name="lastqtrpaid" type="integer" required="true" />
+		<field name="startyear" type="integer" required="true" />
+		<field name="startqtr" type="integer" required="true" />
+		<field name="endyear" type="integer" required="true" />
+		<field name="endqtr" type="integer" required="true" />
+		<field name="enddate" required="true" />
+		
+		<field name="cypaymentrequired" type="boolean" required="true" />
+		<field name="cypaymentorno" />
+		<field name="cypaymentordate" />
+		<field name="cypaymentoramount" />
+		
+		<field name="downpaymentrequired" type="boolean" required="true" />
+		<field name="downpaymentrate" type="decimal" required="true" />
+		<field name="downpayment" type="decimal" required="true" />
+		<field name="downpaymentorno" />
+		<field name="downpaymentordate" />
+		
+		<field name="term" type="integer" required="true" />
+		<field name="numofinstallment" type="integer" required="true" />
+		<field name="amount" type="decimal" required="true" />
+		<field name="amtforinstallment" type="decimal" required="true" />
+		<field name="amtpaid" type="decimal" required="true" />
+		
+		<field name="firstpartyname" required="true" />
+		<field name="firstpartytitle" required="true" />
+		<field name="firstpartyaddress" required="tue" />
+		<field name="firstpartyctcno" required="true" />
+		<field name="firstpartyctcissued" required="true" />
+		<field name="firstpartyctcdate" required="true" />
+		<field name="firstpartynationality" required="true" />
+		<field name="firstpartystatus" required="tue" />
+		<field name="firstpartygender" required="tue" />
+		
+		<field name="secondpartyrepresentative" required="true" />
+		<field name="secondpartyname" required="true" />
+		<field name="secondpartyaddress" required="tue" />
+		<field name="secondpartyctcno" required="true" />
+		<field name="secondpartyctcissued" required="true" />
+		<field name="secondpartyctcdate" required="true" />
+		<field name="secondpartynationality" required="true" />
+		<field name="secondpartystatus" required="tue" />
+		<field name="secondpartygender" required="tue" />
+		
+		<field name="dtsigned"  />
+		
+		<field name="notarizeddate" />
+		<field name="notarizedby" />
+		<field name="notarizedbytitle" />
+	</element>
+	
+	<element name="rptcompromise_list" tablename="rptcompromise_list">
+		<field name="objid" primary="true"/>
+		<field name="docstate" required="true"/>
+		<field name="txnno" />
+		<field name="txndate" />
+		<field name="faasid" required="true" />
+		<field name="ledgerid" required="true" />
+		
+		<field name="enddate" required="true" mapfield="info.enddate"/>
+		<field name="startyear" required="true" type="integer" mapfield="info.startyear"/>
+		<field name="startqtr" required="true" type="integer" mapfield="info.startqtr"/>
+		<field name="endyear" required="true" type="integer" mapfield="info.endyear"/>
+		<field name="endqtr" required="true" type="integer" mapfield="info.endqtr"/>
+		<field name="term" type="integer" required="true" mapfield="info.term"/>
+		<field name="numofinstallment" type="integer" required="true" mapfield="info.numofinstallment"/>
+		<field name="amount" type="decimal" required="true" mapfield="info.amount"/>
+		<field name="amtpaid" type="decimal" required="true" mapfield="info.amtpaid"/>
+		<field name="downpaymentrate" type="decimal" required="true" mapfield="info.downpaymentrate"/>
+		<field name="downpayment" type="decimal" required="true" mapfield="info.downpayment"/>
+		<field name="amtforinstallment" type="decimal" required="true" mapfield="info.amtforinstallment"/>
+		
+		<field name="downpaymentrequired" type="boolean" required="true" mapfield="info.downpaymentrequired"/>
+		<field name="cypaymentrequired" type="boolean" required="true" mapfield="info.cypaymentrequired"/>
+		
+		<field name="firstpartyname" required="true" mapfield="info.firstpartyname"/>
+		<field name="firstpartytitle" required="true" mapfield="info.firstpartytitle"/>
+		<field name="secondpartyrepresentative" required="true" mapfield="info.secondpartyrepresentative"/>
+		<field name="secondpartyname" required="true" mapfield="info.secondpartyname"/>
+		<field name="secondpartyaddress" required="tue" mapfield="info.secondpartyaddress"/>
+	</element>
+	
+	<element name="rptcompromise_item" tablename="rptcompromise_item">
+		<field name="objid" primary="true"/>
+		<field name="rptcompromiseid" required="true"/>
+		<field name="iyear" type="integer" required="true" />
+		<field name="iqtr" type="integer" required="true" />
+		<field name="ledgerid" required="true" />
+		<field name="faasid" required="true" />
+		<field name="assessedvalue" type="decimal" required="true" />
+		<field name="tdno" required="true" />
+		<field name="classcode" required="true" />
+		<field name="actualusecode" required="true" />
+		<field name="basic" type="decimal" required="true" />
+		<field name="basicpaid" type="decimal" required="true" />
+		<field name="basicint" type="decimal" required="true" />
+		<field name="basicintpaid" type="decimal" required="true" />
+		<field name="sef" type="decimal" required="true" />
+		<field name="sefpaid" type="decimal" required="true" />
+		<field name="sefint" type="decimal" required="true" />
+		<field name="sefintpaid" type="decimal" required="true" />
+		<field name="total" type="decimal" required="true" />
+		<field name="fullypaid" type="boolean" required="true" />
+	</element>
+	
+	<element name="rptcompromise_installment" tablename="rptcompromise_installment">
+		<field name="objid" primary="true"/>
+		<field name="ledgerid" required="true"/>
+		<field name="rptcompromiseid" required="true"/>
+		<field name="installmentno" type="integer" required="true"/>
+		<field name="duedate" required="true"/>
+		<field name="amount" type="decimal" required="true"/>
+		<field name="amtpaid" type="decimal" required="true"/>
+		<field name="fullypaid" type="boolean" required="true"/>
+	</element>
+	
+	<element name="rptcompromise_credit" tablename="rptcompromise_credit">
+		<field name="objid" primary="true"/>
+		<field name="receiptid" required="true"/>
+		<field name="ledgerid" required="true"/>
+		<field name="rptcompromiseid" required="true"/>
+		<field name="installmentid" />
+		<field name="itemid" />
+		<field name="collectorname" required="true"/>
+		<field name="collectortitle" required="true"/>
+		<field name="orno" required="true"/>
+		<field name="ordate" required="true"/>
+		<field name="amount" type="decimal" required="true"/>
+		<field name="voided" type="boolean" required="true"/>
+	</element>
+</schema>

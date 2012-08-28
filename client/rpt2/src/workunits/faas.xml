@@ -96,7 +96,7 @@ public class FAASController
     def var
     
     
-    def faas 
+    def faas = [:]
     def mode
     
     @FormId

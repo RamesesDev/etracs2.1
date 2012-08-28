@@ -1,0 +1,9 @@
+"entity.info.first.*|entity.info.second.*|entity.info.notarized.*|selectedWitness|entity.info.downpaymentor.*|entity.info.cypaymentor.*|entity.info.cypaymentamount" [true == true] {
+    enabled:false;
+}
+
+
+"entity.info.first.*|entity.info.second.*|entity.info.notarized.*|selectedWitness" [ (mode =='edit' || mode=='create') && entity.docstate =='DRAFT' ]{
+    enabled:true;
+}   
+

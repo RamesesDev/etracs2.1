@@ -18,6 +18,9 @@ class RPTReceiptService
 	@Service('MessengerService')
 	def msgSvc
 	
+	@Service('RPTCompromiseService')
+	def compromiseSvc
+	
 	@Env
 	def env
 	
@@ -130,12 +133,13 @@ class RPTReceiptService
 	
 	void sendRemoteCollectionMessage( receipt, rptpaymentlist, rptpaymentdetaillist, receiverid, receivername     ) {
 		def data = [paymentlist:rptpaymentlist, paymentdetailist:rptpaymentdetaillist]
-		def msg = msgSvc.createMessage( 'rptreceipt_post_remote_collection', data)
+		def action =  'rptreceipt_post_remote_collection'
+		def msg = msgSvc.createMessage( action, data)
 		msg.receiverid = receiverid
 		msg.receivername  = receivername
 		msgSvc.send( msg )
 	}
-		
+	
 	@ProxyMethod
 	public void postRemoteRPTCollection( msg ) {
 		msg.attachment.paymentlist.each { rptpayment ->
@@ -343,10 +347,19 @@ class RPTReceiptService
     @ProxyMethod
     public void voidReceipt( receiptid, reason ) {
         //TODO: check if this is the latest receipt for the ledgers
-        receiptSvc.voidReceipt( receiptid, reason )
-        voidRPTPayments( receiptid )
-		postRemoteVoid( receiptid, reason )
-		postProvinceVoidMessage( receiptid, reason )
+		receiptSvc.voidReceipt( receiptid, reason )
+		
+		def receipt = open( receiptid )
+		
+		def sys_option = receipt.sys_option
+		if( sys_option == null || sys_option.action != 'compromise' ) {
+			voidRPTPayments( receiptid )
+			postRemoteVoid( receiptid, reason )
+			postProvinceVoidMessage( receiptid, reason )
+		}
+		else if( sys_option.action == 'compromise') {
+			compromiseSvc.voidCompromisePayment( receipt, sys_option )
+		}
     }
 	
 	@ProxyMethod
@@ -631,7 +644,7 @@ class RPTReceiptService
     }
     
     void buildItemsFromMap( receipt, item, field, mapgroup) {
-        mapgroup.keySet().each { mkey ->
+		mapgroup.keySet().each { mkey ->
             if( mkey ) {
                 def acctinfo = em.sqlContext.createNamedQuery('rptreceipt:getIncomeAccountInfo').setParameter('objid', mkey).singleResult
                 if( !acctinfo ) throw new Exception("Account with ID No. $mkey does not exists.")

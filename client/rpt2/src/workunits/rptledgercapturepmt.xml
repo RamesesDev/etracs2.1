@@ -51,10 +51,38 @@ public class RPTLedgerCapturePmtController  {
         ]
     }
     
+    def basic = 0.0
+    def basicdisc = 0.0
+    def basicint = 0.0
+    def basicpartial = 0.0 
+    
+    void setBasic( basic ) {
+        this.basic = (basic == null ? 0.0 : basic )
+        payment.basic = this.basic 
+        payment.sef = this.basic
+    }
+    
+    void setBasicdisc( basicdisc ) {
+        this.basicdisc = (basicdisc == null ? 0.0 : basicdisc )
+        payment.basicdisc = this.basicdisc 
+        payment.sefdisc = this.basicdisc
+    }
+    
+    void setBasicint( basicint ) {
+        this.basicint = (basicint == null ? 0.0 : basicint )
+        payment.basicint = this.basicint 
+        payment.sefint = this.basicint
+    }
+    
+    void setBasicpartial( basicpartial ) {
+        this.basicpartial = (basicpartial == null ? 0.0 : basicpartial )
+        payment.basicpartial = this.basicpartial 
+        payment.sefpartial = this.basicpartial
+    }
+    
     def ok() {
         if( payment.toyear < payment.fromyear ) throw new Exception('To Year must be greater than or equal to from year.') 
         if( payment.toyear == payment.fromyear && payment.toqtr < payment.fromqtr ) throw new Exception('To Qtr must be greater than or equal to from qtr.') 
-        initNullValues()
         checkNegative( 'Basic', payment.basic )
         checkNegative( 'Basic Discount', payment.basicdisc )
         checkNegative( 'Basic Penalty', payment.basicint )
@@ -63,7 +91,7 @@ public class RPTLedgerCapturePmtController  {
         checkNegative( 'SEF Discount', payment.sefdisc )
         checkNegative( 'SEF Penalty', payment.sefint )
         checkNegative( 'SEF Partial', payment.sefpartial )
-        if( payment.basicdisc > payment.basic ) throw new Exception('Basic Dmust be less than Basic.')
+        if( payment.basicdisc > payment.basic ) throw new Exception('Basic Discount must be less than Basic.')
         if( payment.sefdisc > payment.sef ) throw new Exception('SEF Discount must be less than SEF.')
         
         payment.period = determinePaidPeriod( payment )
@@ -93,20 +121,9 @@ public class RPTLedgerCapturePmtController  {
         return [1,2,3,4]
     }
     
-    void initNullValues() {
-        if( payment.basic == null ) payment.basic = 0.0
-        if( payment.basicint == null ) payment.basicint = 0.0
-        if( payment.basicdisc == null ) payment.basicdisc = 0.0
-        if( payment.basicpartial == null ) payment.basicpartial = 0.0
-        
-        if( payment.sef == null ) payment.sef = 0.0
-        if( payment.sefint == null ) payment.sefint = 0.0
-        if( payment.sefdisc == null ) payment.sefdisc = 0.0
-        if( payment.sefpartial == null ) payment.sefpartial = 0.0
-    }
-    
     void checkNegative( caption, value ) {
         if( value == null ) throw new Exception( caption + ' must not be null.')
+        if( value < 0.0 ) throw new Exception( 'Negative value for ' + caption + ' is not allowed.')
     }
 }
 

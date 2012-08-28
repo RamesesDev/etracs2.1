@@ -67,9 +67,9 @@ public class HomePage extends javax.swing.JPanel {
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 14));
         jLabel4.setForeground(new java.awt.Color(0, 51, 153));
-        jLabel4.setText("version 2.0");
+        jLabel4.setText("version 2.1");
         jPanel2.add(jLabel4);
-        jLabel4.setBounds(344, 78, 206, 22);
+        jLabel4.setBounds(344, 78, 270, 22);
 
         jPanel2.add(jPanel4);
         jPanel4.setBounds(174, -48, 10, 10);

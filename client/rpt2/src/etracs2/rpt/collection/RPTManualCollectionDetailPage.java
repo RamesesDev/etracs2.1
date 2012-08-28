@@ -394,7 +394,6 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
         xButton2.setMnemonic('o');
         xButton2.setText("OK");
         xButton2.setCaption("OK");
-        xButton2.setDefaultCommand(true);
         xButton2.setName("ok");
 
         xNumberField17.setDepends(new String[] {"basic.*", "item.sef.*"});

@@ -5,7 +5,8 @@ SELECT * FROM pin WHERE pin = $P{pin}
 UPDATE rptledger SET 
 	fullpin = $P{newpin},
 	municityid = $P{municityid},
-	municityname = $P{municityname}
+	municityname = $P{municityname},
+	barangay = $P{barangay} 
 WHERE faasid = $P{faasid} 
 
 [updateRealProperty]
