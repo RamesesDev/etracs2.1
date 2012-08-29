@@ -19,6 +19,10 @@ public class BPReportService
 	def var 
 	
 	
+	@ProxyMethod 
+	public List generateLobListing() {
+		return em.sqlContext.createNamedQuery('bpreport:generateLobListing').resultList 
+	}
 	
 	@ProxyMethod
 	public List getTaxpayerMasterList( year ) {

@@ -1,0 +1,1 @@
+- Add "bpreport.loblisting" permission in the bp2 module

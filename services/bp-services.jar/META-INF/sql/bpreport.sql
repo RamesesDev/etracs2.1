@@ -106,8 +106,13 @@ WHERE ba.txntype = $P{txntype}
   AND ba.objid = pa.objid 
 ORDER BY pa.amount DESC  
 
-
-
+[generateLobListing]
+SELECT 
+	lc.name as classification,
+	l.name as lobname 
+FROM lob l
+INNER JOIN lobclassification lc ON l.classificationid = lc.objid 
+ORDER BY lc.name, l.name 
 
 
 
