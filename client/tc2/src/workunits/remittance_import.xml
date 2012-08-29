@@ -81,6 +81,7 @@ public class ImportRemittanceController
     def remittedFormsListHandler = [
         getColumns  : { return [
             new Column(name:'afid', caption:'AF No.'),
+            new Column(name:'stubno', caption:'Stub No.'),
             new Column(name:'receivedfrom', caption:'Received From'),
             new Column(name:'receivedto', caption:'To'),
             new Column(name:'receivedqty', caption:'Qty', type:'integer'),
