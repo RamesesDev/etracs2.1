@@ -67,7 +67,8 @@ class IssuedReceiptController
                 docstate : 'OPEN',
                 searchText: searchText 
             ]
-            
+            total = svc.getIssuedTotal( searchParam )
+            binding?.refresh('total')
             return svc.getList( searchParam, it ) 
         },
     ] as PageListModel
