@@ -152,7 +152,7 @@ class RPTLedgerHtmlService
 						<th>Mode</th>
 						<th>Receipt No.</th>
 						<th>Receipt Date</th>
-						<th>Collector</th>
+						<th>Paid By</th>
 						<th>Period</th>
 						<th>Basic</th>
 						<th>Discount</th>
@@ -182,7 +182,7 @@ class RPTLedgerHtmlService
 					<td>$it.mode</td>
 					<td>$it.receiptno</td>
 					<td>$it.receiptdate</td>
-					<td>$it.collectorname</td>
+					<td>$it.paidby</td>
                     <td>${it.period ? it.period : '-' }</td>
 					<td class="numeric">$basic</td>
                     <td class="numeric">$basicdisc</td>
