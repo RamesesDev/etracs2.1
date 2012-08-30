@@ -274,7 +274,16 @@ class RPTReceiptService
     
     
 	void summarizeBasicAccounts( rctitems, itm ) {
-		def basicitem  			= rctitems.find{ it.systype == 'RPT_BASIC'}
+		def curryear = dateSvc.serverYear 
+		
+		def collectadvanceastrust = (var.rpt_advance_payment_collected_as_trust ? var.rpt_advance_payment_collected_as_trust : 0)
+		def basicitem  = rctitems.find{ it.systype == 'RPT_BASIC'}
+		if( TO_BOOLEAN( collectadvanceastrust ) == true && itm.toyear > curryear ) {
+			basicitem  = rctitems.find{ it.systype == 'RPT_BASICADVANCE'}
+			if( ! basicitem ) {
+				throw new Exception('Basic Advance Account is not defined.')
+			}
+		}
 		def basicintitem  		= rctitems.find{ it.systype == 'RPT_BASICINT'}
 		def basicprevitem  		= rctitems.find{ it.systype == 'RPT_BASICPREV'}
 		def basicprevintitem  	= rctitems.find{ it.systype == 'RPT_BASICPREVINT'}
@@ -302,7 +311,17 @@ class RPTReceiptService
 	}
 	
 	void summarizeSEFAccounts( rctitems, itm ) {
-		def sefitem  			= rctitems.find{ it.systype == 'RPT_SEF'}
+		def curryear = dateSvc.serverYear 
+		
+		def collectadvanceastrust = (var.rpt_advance_payment_collected_as_trust ? var.rpt_advance_payment_collected_as_trust : 0)
+		def sefitem  = rctitems.find{ it.systype == 'RPT_SEF'}
+		if( TO_BOOLEAN(collectadvanceastrust) == true && itm.toyear > curryear ) {
+			sefitem  = rctitems.find{ it.systype == 'RPT_SEFADVANCE'}
+			if( ! sefitem ) {
+				throw new Exception('SEF Advance Account is not defined.')
+			}
+		}
+		
 		def sefintitem  		= rctitems.find{ it.systype == 'RPT_SEFINT'}
 		def sefprevitem  		= rctitems.find{ it.systype == 'RPT_SEFPREV'}
 		def sefprevintitem  	= rctitems.find{ it.systype == 'RPT_SEFPREVINT'}
@@ -673,6 +692,6 @@ class RPTReceiptService
     
 	boolean TO_BOOLEAN( value ) {
 		if( value instanceof Boolean ) return value 
-		return '1/y/yes/true/t'.indexOf( value.toString().toLowerCase() ) >= 0
+		return '1/y/yes/true/t'.indexOf( value.toString().trim().toLowerCase() ) >= 0
 	}
 }
