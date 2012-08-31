@@ -1,0 +1,6 @@
+{
+	title: 		'Administration',
+	pagetitle: 	'Administration Panel',
+	master: 	'default',
+	secured:	true,
+}

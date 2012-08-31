@@ -1,0 +1,14 @@
+<table width="100%">
+	<tr>
+		<td colspan="2">
+			<%if( PROJECT.logo_small ) {%>
+				<img src="${PROJECT.logo_small}" ></img>
+			<% } else {%>
+				place small logo
+			<% } %>
+		</td>
+		<td align="right">
+			@headerlogin()
+		</td>
+	</tr>
+</table>

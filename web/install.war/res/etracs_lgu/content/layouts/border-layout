@@ -1,0 +1,23 @@
+<table>
+	<tr>
+		<td colspan="3">
+			${_north}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			${_west}
+		</td>
+		<td>
+			${_content}
+		</td>
+		<td>
+			${_east}
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+			${_south}
+		</td>
+	</tr>
+</table>

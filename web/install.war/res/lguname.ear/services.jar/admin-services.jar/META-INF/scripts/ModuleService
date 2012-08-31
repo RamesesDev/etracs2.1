@@ -1,0 +1,75 @@
+import com.rameses.annotations.*;
+
+class ModuleService 
+{
+	final static def VERSION_INCREMENT_FACTOR = 0.0001
+
+	@PersistenceContext("system")
+	def em;
+
+	@ProxyMethod
+	public def getList(def params) {
+		def qry = em.sqlContext.createNamedQuery( "module:list" );
+		if(params) {
+			if(params._start) qry.setFirstResult( params._start );
+			if(params._limit) qry.setMaxResults( params._limit );
+			qry.setParameters( params );
+		}
+		return qry.resultList;
+	}
+	
+	@ProxyMethod
+	public def getCustomModuleList(def params) {
+		def qry = em.sqlContext.createNamedQuery( 'module:custom-list' )
+		if( params ) {
+			if(params._start) qry.setFirstResult( params._start )
+			if(params._limit) qry.setMaxResults( params._limit )
+			qry.setParameters( params )
+		}
+		return qry.resultList
+	}
+	
+	@ProxyMethod
+	public def getJarFile(param) {
+		return em.sqlContext.createNamedQuery('module:get-jarfile-by-filename')
+		         .setParameters(param)
+				 .singleResult?.jarfile
+	}
+	
+	@ProxyMethod
+	public def save(def o) {
+		if( !o.type ) o.type = 'system';
+		if( o.version == 0 ) {
+			def old = em.sqlContext.createNamedQuery('module:get-module-version').setParameters(o).singleResult;
+			if( old )
+				o.version = old.version + VERSION_INCREMENT_FACTOR
+			else
+				o.version = 1.0000;
+		}
+		return em.save( "module", o );
+	}
+	
+	@ProxyMethod
+	public def read(def o) {
+		return em.read( "module", o );
+	}
+
+	@ProxyMethod
+	public def remove(def o) {
+		def old = read( o );
+		if( old.type == 'system' )
+			throw new Exception('Cannot delete system module.');
+		
+		em.sqlContext.createNamedExecutor('module:remove-roleclass-entry').setParameters(o).execute();
+		em.delete( "module", o );
+	}
+	
+	@ProxyMethod
+	public def getPermissionsByRoleclass( classname ) {
+		return em.sqlContext.createNamedQuery('module:get-module-permissions-by-roleclass')
+			              .setParameters([roleclass: classname])
+						  .resultList;
+	}
+	
+	
+}

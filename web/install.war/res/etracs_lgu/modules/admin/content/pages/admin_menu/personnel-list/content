@@ -1,0 +1,103 @@
+<script type="text/javascript">
+	\$register({id:"personnel:create", title:"New Personnel", page:"${PAGE.path}/create", context:"personnel_create", options: {width:600, height:400}});
+	
+	\$put( 
+		"personnellist", 
+		new function() 
+		{
+			var svc = Service.lookup( "admin/PersonnelService" );
+
+			var self = this;
+
+			this.selectedItem;
+			
+			this.qry = {};
+			
+			this.listModel = {
+				rows: 10,
+				fetchList: function(o) {
+					o.staffno = (self.qry.staffno) ? self.qry.staffno : null;
+					o.firstname = (self.qry.firstname) ? self.qry.firstname : null;
+					o.lastname = (self.qry.lastname) ? self.qry.lastname : null;
+					return svc.getList( o );	
+				}
+			}
+
+			this.reloadList = function() {
+				self.listModel.load();	
+			}
+			
+			var refreshList = function() {
+				self.listModel.refresh(true);
+			}
+
+			this.propertyChangeListener = {
+				orgUnit : function(o) { self.reloadList() }
+			}
+			
+			this.add = function() {
+				return new PopupOpener( "personnel:create", {mode:"create", saveHandler: refreshList });
+			}
+			
+			this.reset = function() {
+				this.qry = {};
+				self.reloadList();
+			}
+			
+			this.show_search = true;
+			this.toggleSearch = function() {
+				this.show_search = !this.show_search;
+			}
+		}
+	);
+</script>
+
+<div style="border:1px solid lightgrey;padding:10px;" r:context="personnellist" r:visibleWhen="#{show_search != true}">
+	<table width="100%">
+		<tr>
+			<td>
+				<b>Search Criteria: &nbsp;&nbsp;</b>
+				<label r:context="personnellist" r:visibleWhen="#{qry.staffno}">Staff no like '#{qry.staffno}'.</label>
+				<label r:context="personnellist" r:visibleWhen="#{qry.lastname}">Last name like '#{qry.lastname}'.</label>
+				<label r:context="personnellist" r:visibleWhen="#{qry.firstname}">First name like '#{qry.firstname}'.</label>
+			</td>
+			<td rowspan="2" valign="top" align="right">
+				<a r:context="personnellist" r:name="toggleSearch">Show Search</a> 
+			</td>
+		</tr>
+	</table>
+</div>	
+<div style="border:1px solid lightgrey;padding:10px;" r:context="personnellist" r:visibleWhen="#{show_search == true}">
+	<table width="100%">
+		<tr>
+			<td><input type="text" r:context="personnellist" r:name="qry.staffno" textcase="upper"/></td>
+			<td><input type="text" r:context="personnellist" r:name="qry.lastname" textcase="upper"/></td>
+			<td><input type="text" r:context="personnellist" r:name="qry.firstname" textcase="upper"/></td>
+			<td rowspan="2" valign="top">
+				<button r:context="personnellist" r:name="reloadList" r:immediate="true">Search</button>
+				<button r:context="personnellist" r:name="reset" r:immediate="true">Reset</button>
+			</td>
+			<td rowspan="2" valign="top" align="right">
+				<a r:context="personnellist" r:name="toggleSearch">Hide</a> 
+			</td>
+		</tr>
+		<tr>
+			<td><i>Staff No</i></td>
+			<td><i>Last Name</i></td>
+			<td><i>First Name</i></td>
+		<tr>
+	</table>
+</div>
+
+<%
+def cols = [
+	[name:"staffno",caption:"Staff No."],
+	[name:"lastname",caption:"Last Name"],
+	[name:"firstname",caption:"First Name"],
+	[html:"""<img src="/res/admin/#{item.canlogin? 'checked' : 'unchecked'}.png"/>"""],
+	[html:"""<a href="#admin:personnel?objid=#{item.objid}">View</a>"""],
+];
+%>
+
+@grid(context:"personnellist", model: "listModel", name:"selectedItem", cols: cols)
+

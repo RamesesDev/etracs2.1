@@ -1,0 +1,66 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import java.rmi.server.UID
+
+class CTCAssessmentRuleInterceptor 
+{
+    @Service('RuleTextBuilderService')
+    def helper 
+
+	@Before(pattern="RuleService\\.buildRuleText.*", eval="#{args[0].ruleset == 'ctcassessment'}")
+	public void buildRuleText( evt ) {
+		def rule = evt.args[0]
+		rule.ruletext = doBuildRuleText( rule )
+	}
+	
+	def doBuildRuleText( rule ) {
+		def s = new StringBuffer()
+		s << 'package ' + rule.packagename + ';\n\n'
+		s << 'import ctc.assessment.facts.*\n';
+		s << 'import java.util.*\n\n';
+		s << 'global com.rameses.rules.common.RuleAction ruleActionHandler\n\n'
+		
+		//create an individual rule for each action
+		//to avoid the clash of variable names for each rule action
+		rule.actions.eachWithIndex { action, idx ->
+			s << 'rule "' + rule.rulename + '_' + idx + '"\n'
+			s << 'agenda-group "' + rule.agendagroup + '"\n'
+			s << 'no-loop\n'
+			s << 'salience ' + rule.salience + '\n\n'
+			s << 'when\n'
+			
+			rule.conditions.each { cond ->
+				s << helper.buildFactCondition( cond, null )
+			}		
+			s << 'then\n'
+			
+			def varlist = helper.getAllVariableNames( rule )
+			s << buildActionText( rule, varlist, action )
+			s << 'end\n\n'
+		}
+		
+		
+		return s.toString()
+	}
+	
+	def buildActionText( rule, varlist, action ) {
+        def s = new StringBuffer();
+		s << 'Map data = new HashMap();\n'
+        s << 'data.put("acctid", "' + action.acctid + '");\n'
+        s << 'data.put("accttitle", "' + action.accttitle + '");\n'
+        s << 'data.put("expr", "' + action.expr + '");\n'
+		s << 'data.put("type", "' + action.actiontype + '");\n'
+
+        s << 'Map vars = new HashMap();\n'
+        varlist.each {
+            s << 'vars.put("' + it + '", ' + it + ');\n'
+        }
+		s << 'data.put("vars", vars);\n'
+		
+        s << 'ruleActionHandler.setContext( drools );\n'
+        s << 'ruleActionHandler.execute("compute", data);\n'
+		
+		return s.toString()
+	}
+	
+}

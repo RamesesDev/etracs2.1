@@ -17,5 +17,5 @@
 	</tr>
 </table>
 <br>
-<a r:context="installer" r:name="_step1" class="button">Back</a>&nbsp;&nbsp;
+<a r:context="installer" r:name="back" class="button" r:immediate="true">Back</a>&nbsp;&nbsp;
 <a r:context="installer" r:name="verifyAdminInfo"class="button">Next</a>

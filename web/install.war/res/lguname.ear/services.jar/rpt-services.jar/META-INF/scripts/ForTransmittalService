@@ -1,0 +1,42 @@
+import com.rameses.annotations.*
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+
+class TransmittalService
+{
+    @PersistenceContext('main')
+    def em
+	
+	@Env
+	def env 
+    
+	def FOR_TRANSMITTAL_SCHEMA_NAME = 'fortransmittal:fortransmittal'
+	
+	@ProxyMethod
+	public List getList( search, params )  {
+		if( ! search ) 
+			return getListByQuery('fortransmittal:getList', search, params)
+		return getListByQuery('fortransmittal:getListByDocno', [docno:search], params)
+	}
+	
+	@ProxyMethod
+	public def create( entity ) {
+		entity.schemaname 	= FOR_TRANSMITTAL_SCHEMA_NAME
+		entity.postedbyid 	= env.USERID 
+		entity.postedby   	= env.USERFORMALNAME
+		entity.postedbytitle = env.JOBTITLE
+		
+		em.validate( FOR_TRANSMITTAL_SCHEMA_NAME, entity )
+		em.save(FOR_TRANSMITTAL_SCHEMA_NAME, entity )
+	}
+	
+	def getListByQuery( namedQuery, criteria, params ) {
+        if( ! params ) params = [ _start:0, _limit:25]
+		return em.sqlContext.createNamedQuery( namedQuery )
+						.setParameters( criteria )
+						.setFirstResult( params._start )
+						.setMaxResults( params._limit )
+						.resultList
+	}
+    
+}

@@ -1,0 +1,46 @@
+<schema>
+	<element name="rpttransmittal" tablename="rpttransmittal">
+		<field name="objid" primary="true"/>
+		<!-- OPEN -->
+		<field name="docstate" required="true" />
+		<field name="lguid" required="true"/>
+		<field name="lguname" required="true"/>
+		<field name="txnno" required="true"/>
+		<field name="txndate" required="true"/>
+		<field name="createdby" required="true"/>
+		<field name="icount" type="integer" required="true"/>
+	</element>
+	
+	<element name="rpttransmittal_item" tablename="rpttransmittal_item">
+		<link ref="item_info"/>		
+	</element>
+	
+	<element name="rpttransmittal_import" tablename="rpttransmittal_import">
+		<field name="objid" primary="true"/>
+		<field name="lguid" required="true"/>
+		<field name="lguname" required="true"/>
+		<field name="transmittalno" required="true"/>
+		<field name="transmittaldate" required="true"/>
+		<field name="createdby" required="true"/>
+		<field name="icount" type="integer" required="true"/>
+		<field name="importedby" required="true"/>
+		<field name="dtimported" required="true"/>
+	</element>
+	
+	<element name="rpttransmittal_import_item" tablename="rpttransmittal_import_item">
+		<link ref="item_info"/>
+	</element>
+	
+	<element name="item_info">
+		<field name="objid" primary="true"/>
+		<field name="module" required="true" />
+		<field name="docid" primary="true"/>
+		<field name="doctype" required="true"/>
+		<field name="docno" required="true"/>
+		<field name="dtposted" required="true"/>
+		<field name="postedbyid" required="true"/>
+		<field name="postedby" required="true"/>
+		<field name="postedbytitle" required="true"/>
+	</element>
+	
+</schema>

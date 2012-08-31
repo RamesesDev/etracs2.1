@@ -1,0 +1,13 @@
+<% for( o in PAGE.imports ) { %>
+	<%if( o.endsWith("css")) {%>
+		<link href="${o}" type="text/css" rel="stylesheet" />			
+	<%}%>
+	
+	<%if (o.endsWith("js")) {%>
+		<script src="${o}"></script>	
+	<%}%>
+<%}%>
+		
+	
+
+

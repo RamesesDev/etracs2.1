@@ -1,0 +1,9 @@
+<table>
+	<tr>
+		<td>
+			<b>Role Classes : </b>
+			<select r:context="rolelist" r:items="roleClasses" r:name="roleClass" r:itemLabel="name" r:allowNull="true" r:emptyText="- All -"></select>
+			<button r:context="rolelist" r:name="add">+Add</button>
+		</td>
+	</tr>
+</table>

@@ -1,0 +1,26 @@
+<schema>
+	<element name="noticeofdelinquency" tablename="noticeofdelinquency">
+		<field name="objid" primary="true"/>
+		<field name="ledgerid" required="true"/>
+		<field name="txnno" required="true"/>
+		<field name="txndate" required="true"/>
+		<field name="tdno" required="true"/>
+		<field name="taxpayername" required="true"/>
+		<field name="taxpayeraddress" required="true"/>
+		<field name="rputype" required="true"/>
+		<field name="barangay" required="true"/>
+		<field name="cadastrallotno" required="true"/>
+		<field name="classcode" required="true"/>
+		<field name="classtitle" />
+		<field name="assessedvalue" type="decimal" required="true" />
+		<field name="delinquentamount" type="decimal" required="true" />
+		<field name="currentamount" type="decimal" required="true" />
+		<field name="total" type="decimal" required="true" />
+		<field name="currentyear" type="integer" required="true" />
+		<field name="delinquentyrqtr" required="true" />
+		<complex name="extended" merge="true" serializer="default" required="false"/>
+	</element>
+</schema>
+
+
+

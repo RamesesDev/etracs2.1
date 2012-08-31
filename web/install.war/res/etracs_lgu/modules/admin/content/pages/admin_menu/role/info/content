@@ -1,0 +1,65 @@
+<% def context="role_info"; %>
+
+<script>
+	\$put( "${context}", 
+		new function() {
+			var svc = Service.lookup("admin/RoleclassService");
+			var roleSvc = Service.lookup("admin/RoleService");
+			
+			var self = this;
+	
+			this.saveHandler;
+			this.permissionHandler;
+			this.role = { excluded: [] }
+			this.roleClasses;
+			this.mode = 'create';
+	
+			this.onload = function() {
+				this.roleClasses = svc.getList( {} );
+			}
+	
+			this.save = function() {
+				this.role = roleSvc.create( this.role );
+				if(this.saveHandler) this.saveHandler( this.role );
+				this.mode = 'edit';
+				return '_close';
+			}
+			
+			this.update = function() {
+				this.role = roleSvc.update( this.role );
+				return '_close';
+			}
+			
+			this.propertyChangeListener = {
+				'role.name' : function(value) {
+					self.role.name = value.trim().replace(new RegEx("\\s+"), '_');
+					self._controller.refresh();
+				}
+			}; 
+		}
+	);
+</script>
+
+
+<div r:context="${context}" r:visibleWhen="#{mode == 'create'}">
+	@form( context: context, fields: [
+		[type: "combo", name: "role.roleclass", items: "roleClasses", itemKey: "name", itemLabel: "description", caption: "Role Class", allowNull: true, required: true],
+		[type: "text", name: "role.name", required: true, caption: "Name", style: "width:350px", maxlength: "50"],
+		[type: "textarea", name: "role.description", required: true, caption: "Description", style: "width:350px; height: 50px"],
+	])
+</div>
+<div r:context="${context}" r:visibleWhen="#{mode != 'create'}">
+	<%
+	def fields = [
+		[type:"label", caption:"Role Class", value: "#{role.roleclass}"],
+		[type:"label", caption:"Name", value: "#{role.name}"],
+		[type:"textarea", name: "role.description", caption:"Description", style: "width:350px;height:50px"],
+	];
+	%>
+	@form( context: context, fields: fields )
+</div>
+
+<div style="text-align: right">
+	<button r:context="${context}" r:name="save" r:visibleWhen="#{mode == 'create'}">Save</button>
+	<button r:context="${context}" r:name="update" r:visibleWhen="#{mode != 'create'}">Save</button>
+</div>

@@ -1,0 +1,158 @@
+<style>
+	.headmenu {
+		padding:4px;
+		padding-right:8px;
+		padding-left:8px;
+		color:black;
+		font-size:11px;
+	}
+	.headmenu_selected {
+		background-color:red;
+		padding:4px;
+		padding-right:8px;
+		padding-left:8px;
+		color:white;
+		font-size:11px;
+	}
+	.personnel-info {
+		border:1px solid lightgrey;
+		width:500px;
+		padding:10px;
+		margin-top: 5px;
+		position: relative;
+	}
+	.personnel-info .options {
+		position: absolute;
+		top: 0; right: 5px;
+		padding: 3px;
+	}
+	.personnel-info .options a {
+		text-decoration: none;
+	}
+</style>
+
+<%
+def personneljson = "{}";
+try {
+	def svc = SERVICE.lookup("admin/PersonnelService");
+	def personnel = svc.read( PARAMS );
+	if( personnel )
+		personneljson = com.rameses.anubis.JsonUtil.toString(personnel);
+}
+catch(e) {
+	e.printStackTrace();
+}
+%>
+
+<script>
+	\$register({id:"personnel:positions", page:"${PAGE.path}/positions", context:"personnelpositions"});
+	\$register({id:"personnel:edit", title:"Edit Personnel", page:"${PAGE.path}/edit", context:"personnel_edit", options: {width:600, height:400}});
+	\$register({id:"personnel:create-useraccount", title:"New Login Account", page:"${PAGE.path}/create-useraccount", context:"useraccount", options: {width:600, height:265}});
+	\$register({id:"personnel:change-password", title:"Change Password", page:"${PAGE.path}/change-password", context:"changepass", options: {width:600, height:265}});
+	
+	\$put( 
+		"personnelinfo", 
+		new function() 
+		{
+			var svc = Service.lookup( "admin/PersonnelService" );
+			var usvc = Service.lookup("admin/UserAccountService");
+			var self = this;
+			
+			this.info = <%=personneljson%>;
+			
+			this.positionListModel = {
+				fetchList: function(p) {
+					return svc.getPositions( self.info.objid );
+				}
+			}
+			
+			this.selectedPosition;
+			this.unassignPosition = function() {
+				if( confirm("You are about to unassign this position. Continue?") ) {
+					var psvc = Service.lookup("admin/JobpositionService");		
+					psvc.unassign( {objid: this.selectedPosition.objid } );
+					this.positionListModel.refresh(true);
+				}
+			}
+			
+			this.viewPermissions = function() {
+				var jobid = this.selectedPosition.objid;
+				var rsvc = Service.lookup( "admin/JobPermissionService" );	
+				var result = rsvc.getPermissionsForAdmin({objid: jobid, role: this.selectedPosition.role });
+				var params = {};
+				params.modules = result.modules;
+				params.saveHandler = function(x) {
+					var p = {objid: jobid, modules: x };
+					rsvc.updatePermissions( p );
+					return "_close"; 
+				};
+				var p= new PopupOpener("admin:permission", params);
+				p.title = "Job Role Permissions";
+				return p;
+			}
+			
+			this.useraccount;
+			this.removeLogin = function() {
+				if( confirm("Are you sure you want to remove this login account?") )
+				{
+					usvc.remove( this.useraccount );
+					this.useraccount = null;
+				}
+			}
+			
+			this.viewUserAccount = function() {
+				if(!this.useraccount) {
+					this.useraccount = usvc.getAccount( {objid:this.info.objid} );
+				}
+				return "useraccount";
+			}
+			
+			this.createUserAccount = function() {
+				var info  = {
+					objid: this.info.objid,
+					lastname: this.info.lastname,
+					firstname: this.info.firstname,
+					middlename: this.info.middlename,
+					usertype: "personnel",
+					email: this.info.email
+				}
+				var h = function(account) {
+					self.useraccount = usvc.createLoginAccount(account);	
+				}
+				return new PopupOpener( "personnel:create-useraccount", {saveHandler:h, info: info} );
+			}
+			
+			this.changePassword = function() {
+				var info  = {
+					username: this.useraccount.uid,
+					uid: this.useraccount.uid,
+				}
+				var h = function(account) {
+					usvc.changePassword(account);	
+				}
+				return new PopupOpener( "personnel:change-password", {saveHandler:h, info: info} );
+			}
+			
+			this.edit = function() {
+				var h = function() {
+					self._controller.refresh();
+				}
+				return new PopupOpener( "personnel:edit", {saveHandler:h, info: this.info} );
+			}
+		},
+		{
+			"default": "${PAGE.path}/data",
+			"positions": "${PAGE.path}/positions",
+			"useraccount": "${PAGE.path}/useraccount",
+		}
+	);
+</script>
+
+
+<a r:context="personnelinfo" r:name="_default">Information</a> |
+<a r:context="personnelinfo" r:name="_positions">Position(s)</a> |
+<a r:context="personnelinfo" r:name="viewUserAccount">Login Account</a>
+
+<div r:controller="personnelinfo"></div>
+
+

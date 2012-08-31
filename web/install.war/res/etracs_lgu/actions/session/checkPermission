@@ -1,0 +1,10 @@
+def request = SESSION.request;
+PARAMS.jobid = request.getParameter("jobid");
+
+//add SESSIONID to the session's env
+SESSION.session.env.SESSIONID = SESSION.session.sessionid;
+
+def svc = SERVICE.lookup('user-service/AuthorizationService');
+def  result = svc.checkPermission( PARAMS );
+
+return result.allowed != false;

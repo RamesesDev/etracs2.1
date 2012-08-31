@@ -1,0 +1,23 @@
+<web-app>
+	<!--
+    <servlet>
+        <servlet-name>updates-jsp</servlet-name>
+        <jsp-file>/updates.jsp</jsp-file>
+    </servlet>
+	
+	<servlet>
+        <servlet-name>ext-module-jsp</servlet-name>
+        <jsp-file>/ext-module.jsp</jsp-file>
+    </servlet>
+	
+    <servlet-mapping>
+        <servlet-name>updates-jsp</servlet-name>
+        <url-pattern>/modules/updates.xml</url-pattern>
+    </servlet-mapping>
+	
+	<servlet-mapping>
+        <servlet-name>ext-module-jsp</servlet-name>
+        <url-pattern>/modules/ext-module/*</url-pattern>
+    </servlet-mapping>
+	-->
+</web-app>

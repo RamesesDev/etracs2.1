@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		@head/import-fonts('opensans')
+		@head/favicon()
+		@head/standard()
+		@head/css('inbox')
+		@@head/page-imports()
+	</head>
+	
+	<body>
+		<table class="inbox-layout" cellpadding="0" cellspacing="0">
+			<tr>
+				<td class="inbox-header" colspan="2">${_inbox_header}</td>
+			</tr>
+			<tr>
+				<td class="inbox-sidebar" valign="top">${_inbox_sidebar}</td>
+				<td class="inbox-content" valign="top" id="content">
+					
+				</td>
+			</tr>	
+			<tr>
+				<td class="inbox-footer" colspan="2">${_inbox_footer}</td>
+			</tr>
+		<table>
+	</body>
+</html>
+

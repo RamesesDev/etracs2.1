@@ -1,0 +1,13 @@
+<title>${PAGE.title}</title>
+
+<% for( o in PAGE.tags ) { %>
+<meta name="${o.name}" content="${o.content}" />
+<% } %>
+
+<link href="/js/lib/css/jquery-ui/jquery.css" type="text/css" rel="stylesheet" />
+<link href="/js/lib/css/rameses-lib.css" type="text/css" rel="stylesheet" />
+<script src="/js/lib/jquery-all.js"></script>
+<script src="/js/lib/rameses-ext-lib.js"></script>
+<script src="/js/lib/rameses-ui.js"></script>
+<script>var _MODULE_NAME = "${(MODULE.name) ? MODULE.name : ''}";</script>
+<script src="/js/lib/rameses-remote-proxy.js"></script>

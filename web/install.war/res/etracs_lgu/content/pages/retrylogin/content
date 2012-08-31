@@ -1,0 +1,13 @@
+<h2>Administration Panel Login</h2>
+<div class="hr"></div>
+<div class="error section">
+	<p>The username or password is incorrect.</p>
+</div>
+<div id="login-box" class="centered form">
+	@formlogin()
+</div>
+<script>
+	\$(function(){
+		\$("#login-box form input[name='username']").focus();
+	});
+</script>

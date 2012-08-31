@@ -1,0 +1,10 @@
+{
+	appid:		'settings',
+	title: 		'Settings',
+	fragment: 	true,
+	sortorder:	0,
+	master:		'fragment_document',
+	options: {
+		toolbar: []
+	}
+}

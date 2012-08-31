@@ -1,0 +1,115 @@
+
+<script>
+	\$register({id:"jobposition:create", context:"jobposition_create", page: "${PAGE.path}/create", title: 'Add New', options: {width:600, height:440}});	
+	\$register({id:"jobposition:edit", context:"jobposition_edit", page: "${PAGE.path}/edit", title: 'Edit', options: {width:600, height:440}});	
+	
+	\$put( "jobpositionlist", 
+		new function() {
+			var svc = Service.lookup( "admin/OrgunitService" );
+			var jobpossvc = Service.lookup( "admin/JobpositionService" );
+	
+			var self = this;
+	
+			this.selectedItem;
+			this.orgUnits;
+			this.orgUnit;
+	
+			this.onload = function() {
+				this.orgUnits = svc.getUserOrgunits({});
+			}	
+
+			this.listModel = {
+				rows: 10,
+				fetchList: function(o) {
+					if(self.orgUnit) o.orgunitid = self.orgUnit.objid;
+					return jobpossvc.getList( o );	
+				}
+			}
+	
+			var refreshList = function() {
+				self.listModel.refresh(true);	
+			}
+	
+			var permissionViewer = function( jobpos ) {
+				var jobid = jobpos.objid;
+				var rsvc = Service.lookup( "admin/JobPermissionService" );	
+				var result = rsvc.getPermissionsForAdmin({objid: jobid, role: jobpos.role });
+				var params = {};
+				params.modules = result.modules;
+				params.title = "Job Position: (" + jobpos.code +") " + jobpos.title;
+				params.saveHandler = function(x) {
+					var p = {objid: jobid, modules: x };
+					rsvc.updatePermissions( p );
+					return "_close"; 
+				};
+				var p= new PopupOpener("admin:permission", params);
+				p.title = "Job Role Permissions";
+				return p;
+			}
+
+			this.add = function() {
+				if(!this.orgUnit)
+					throw new Error("Please select an org unit first");
+				return new PopupOpener( "jobposition:create", {saveHandler:refreshList, 
+					jobposition : {orgunitid: this.orgUnit.objid, orgunitcode: this.orgUnit.code } } );
+			}
+
+			this.edit = function() {
+				return new PopupOpener( "jobposition:edit", {
+					saveHandler:refreshList, 
+					objid:this.selectedItem.objid
+				} );
+			}
+	
+			this.propertyChangeListener = {
+				orgUnit : function(o) { self.listModel.refresh(true); }
+			}
+	
+			this.selectAssignee = function() {
+				var h = function(x) {
+					jobpossvc.assign( {objid: self.selectedItem.objid, assigneeid: x.objid } );
+					refreshList();
+				}
+				return new PopupOpener( "admin:personnel-lookup" , {selectHandler: h});
+			}
+	
+			this.removeAssignee = function() {
+				if( confirm( "You are about to remove this assigned position. Continue?") ) {
+					jobpossvc.unassign( {objid: self.selectedItem.objid  } );
+					refreshList();
+				}
+			}
+			
+			this.viewPermissions = function() {
+				return permissionViewer( this.selectedItem );
+			}
+		}
+	);
+</script>
+
+
+<%
+def cols = [
+	[name:"code", caption:"Code"],
+	[name:"title", caption:"Title"],
+	[caption:"Assignee", html: """
+		<div r:context="jobpositionlist" r:visibleWhen="#{item.assignee == null}">
+			<i>Vacant</i>
+			<a r:context="jobpositionlist" r:name="selectAssignee">[Assign]</a>
+		</div>
+		<div r:context="jobpositionlist" r:visibleWhen="#{item.assignee != null}">
+			#{item.assignee}
+			<a r:context="jobpositionlist" r:name="removeAssignee"> [Unassign]</a>
+		</div>
+	"""],
+	[html: """ <a r:context="jobpositionlist" r:name="viewPermissions">Permissions</a> """],
+	[html: """
+		<a r:context="jobpositionlist" r:name="edit">
+			<img src="/res/admin/edit.gif"/>
+		</a>
+	"""],
+];
+%>
+@grid( context: "jobpositionlist", model: "listModel", name: "selectedItem", cols: cols )
+
+

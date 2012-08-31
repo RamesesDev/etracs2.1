@@ -1,0 +1,8 @@
+{
+	name:		'admin:personnel',
+	title: 		'Personnel Info',
+	fragment: 	true,
+	master:		'fragment_document',
+	hidden:		true,
+	sortorder:	20
+}

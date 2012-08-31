@@ -1,0 +1,80 @@
+<script type="text/javascript">
+	\$put(
+		"taskinfo",
+		new function()
+		{
+			this.task = {servicetype:"script"}
+			this.saveHandler;
+			this.mode = 'create';
+			this.restart;
+			
+			this.save = function() {
+				if( this.restart ) this.task.currentdate = null;
+				this.saveHandler( this.task );
+				return "_close";
+			}
+		}
+	);
+</script>
+
+<table>
+	<tr>
+		<td>Task ID:</td>
+		<td> <input type="text" r:context="taskinfo" r:name="task.id" r:required="true" r:caption="ID"/></td>
+	</tr>
+	<tr>
+		<td>Description:</td>
+		<td> <input type="text" r:context="taskinfo" r:name="task.description"/></td>
+	</tr>
+	<tr>
+		<td>Service:</td>
+		<td> <input type="text" r:context="taskinfo" r:name="task.service" r:required="true" r:caption="Service name"/></td>
+	</tr>
+	<tr>
+		<td>Method:</td>
+		<td> <input type="text" r:context="taskinfo" r:name="task.method" r:required="true" r:caption="Method"/></td>
+	</tr>
+	<tr>
+		<td>Service Type:</td>
+		<td> <input type="text" r:context="taskinfo" r:name="task.servicetype" r:required="true" r:caption="Service Type"/></td>
+	</tr>
+	<tr>
+		<td>Parameters:</td>
+		<td> <textarea r:context="taskinfo" r:name="task.parameters" r:caption="Parameters"></textarea></td>
+	</tr>
+	<tr>
+		<td>App Host:</td>
+		<td> <input type="text" r:context="taskinfo" r:name="task.apphost" r:required="true" r:caption="App Host"/></td>
+	</tr>
+	<tr>
+		<td>App Context:</td>
+		<td> <input type="text" r:context="taskinfo" r:name="task.appcontext" r:required="true" r:caption="App Context"/></td>
+	</tr>
+	<tr>
+		<td>Allowed Host:</td>
+		<td> <input type="text" r:context="taskinfo" r:name="task.allowedhost" r:caption="Allowed Host"/></td>
+	</tr>
+	<tr>
+		<td>Start date:</td>
+		<td> <span r:type="datetime" r:context="taskinfo" r:name="task.startdate" r:required="true" r:caption="Start Date"/></td>
+	</tr>
+	<tr>
+		<td>End date :</td>
+		<td><span r:type="datetime" r:context="taskinfo" r:name="task.enddate" r:caption="End Date" r:options="{maxYear: (new Date()).getFullYear() + 3}"/></td>
+	</tr>
+	<tr r:context="taskinfo" r:visibleWhen="#{mode == 'edit'}">
+		<td>Restart Task :</td>
+		<td>
+			<input type="checkbox" r:context="taskinfo" r:name="restart" />
+		</td>
+	</tr>
+	<tr>
+		<td>Interval:</td>
+		<td> <input type="text" r:context="taskinfo" r:name="task.interval" r:required="true" r:caption="Interval"/></td>
+	</tr>
+</table>
+
+
+<div style="text-align:right">
+	<input type="button" r:context="taskinfo" r:name="save" value="Save" /> 
+</div>

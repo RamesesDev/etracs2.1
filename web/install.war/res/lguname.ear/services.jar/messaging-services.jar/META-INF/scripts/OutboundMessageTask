@@ -1,0 +1,61 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+import com.rameses.invoker.client.*
+
+class OutboundMessageTask
+{
+    @PersistenceContext('main')
+    def em 
+    
+    @Service('DynamicHttpInvokerService')
+    def invokerSvc
+    
+    @Service('Var')
+    def var
+	
+	@Service('MessengerService')
+	def msgSvc 
+    
+    def OUTBOX_SCHEMA = 'message:outbox'
+    def PROCESSEDOUTBOX_SCHEMA = 'message:processedoutbox'
+		
+	@ProxyMethod
+	public def deliverMessage( task ) {
+        def messageIds = getOutboxMessages()
+		println 'Receive ' + messageIds.size() + ' message(s) for delivery.'
+		messageIds.each{ msg ->
+			println 'Packaging message ' + msg.objid 
+			msg =  em.read( OUTBOX_SCHEMA, msg )
+			try {
+				println 'Sending message to remote -> ' + msg.receivername 
+				def retval = invokerSvc.invokeRemoteService( 'RemoteInboxService', 'receive', [msg] as Object[])
+				if( retval.status == 'ok' ) {
+					msg.message = 'Successfully processed.'
+					msg.status = [iserror:false, errormsg:'', date:new Date()]
+					moveMessageToProcessedOutbox( msg )
+				}
+				else {
+					msgSvc.errorProcessing( msg, status.msg )
+				}
+			}
+			catch( e ) {
+				logMessage( msg, e.message )
+			}
+		}
+        return true
+	}
+    
+    def getOutboxMessages() {
+        return em.sqlContext.createNamedQuery('messenger:getOutboxMessageId').resultList 
+    }
+	
+    void moveMessageToProcessedOutbox( msg ) {
+        em.create( PROCESSEDOUTBOX_SCHEMA, msg )
+        em.delete( OUTBOX_SCHEMA, msg )
+    }
+	
+	void logMessage( msg, errorMsg ) {
+		em.message = errorMsg 
+        em.update( msg.schemaname, msg )
+    }
+}

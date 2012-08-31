@@ -1,0 +1,43 @@
+<app>
+    <env>
+		app.title=ETRACS 2.0 (@lguname)
+        app.host=@server_address
+        app.context=@appname
+		app.help=http://@server_address/help 
+
+		#app.debugMode=true
+		app.loader=com.rameses.osiris2.client.OsirisAppLoader
+		readTimeout=50000
+		connectionTimeout=5000
+    </env>    
+    <modules>
+		<module file="client-common-lib.jar" />
+		<module file="client-system.jar"/>
+		<module file="rule-mgmt.jar"/>
+		
+		<module file="osiris2-client-ui.jar"/>
+		<module file="osiris2-framework.jar"/>
+		<module file="osiris2-report.jar" />
+		<module file="rameses-client-ui.jar"/>
+		<module file="rameses-client-ui-support.jar" />
+		<module file="rameses-common.jar"  />		
+        <module file="rameses-jdbc.jar" />
+		
+
+		<module file="cashreceipt.jar" />
+		<module file="shared.jar" />
+		
+		<!-- register modules below -->
+        <module file="etracs2-common.jar"/>
+		<module file="etracs2-entity.jar"/>
+        <module file="tc2.jar"/>
+        <module file="bp2.jar"/>
+        <module file="bp-rule-mgmt.jar"/>
+        <module file="rpt2.jar"/>
+        <module file="rpt-rule-mgmt.jar"/>
+        <module file="ctc2.jar"/>
+        <module file="ctc-rule-mgmt.jar"/>
+
+    </modules>
+</app>
+

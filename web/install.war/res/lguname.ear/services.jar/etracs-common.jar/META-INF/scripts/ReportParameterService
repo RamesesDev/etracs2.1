@@ -1,0 +1,95 @@
+import com.rameses.annotations.*
+import com.rameses.common.*
+
+class ReportParameterService{
+	
+	@Service('Var')
+	def var;
+	
+	@Service('DateService')
+	def dateService;
+	
+	private def getFDate( def fdt ){
+		def dt = new java.text.SimpleDateFormat( fdt ).format(dateService.serverDate).toString();
+		
+		if( 'd'.equals(fdt) || 'dd'.equals(fdt)){
+			if( dt.matches('01|1|21|31') )
+				return dt + 'st';
+			else if( dt.matches('02|2|22') )
+				return dt + 'nd';
+			else if(dt.matches('03|3|23')) 
+				return dt + 'rd';
+			else return dt + 'th';
+		}
+		
+		return dt;
+	}
+	
+	@Env
+	def env 
+	
+	@ProxyMethod
+	public def getStandardParameter( def username ){
+		def lguname = var.get('lgu_name');
+        def parentlguname = var.get('parent_lgu_name');
+        
+		//set default item count 
+		def itemcount = 10
+		if( var.receipt_item_printout_count ) {
+			itemcount = Integer.parseInt(var.receipt_item_printout_count)
+		}
+		def receiptitemcount = itemcount 
+		
+		return [
+			DOMAIN		: var.get('lgu_formal_name'),
+			SANGGUNIANG : var.get('sangguinan_name'), 
+            LOGOLGU     : var.get('url_logo_lgu'),                    
+            LOGOBLGF    : var.get('url_logo_blgf'),                    
+			LGU_NAME     : var.lgu_name, 
+            LGUNAME     : var.lgu_formal_name, 
+			LGUFORMALNAME : var.lgu_formal_name, 
+			LGUTYPE		  : var.lgu_type, 
+			LGUADDRESS	  : var.lgu_address, 
+            PARENTLGUNAME : parentlguname,
+			PARENTLGUFORMALNAME : var.parent_lgu_formal_name,
+			PROVINCENAME  : var.get('parent_lgu_name'),
+			MUNICIPALNAME : var.get('lgu_name'),
+			CITYNAME	  : var.get('city_name'),
+			PROVINCIALTREASURERNAME	: var.provincial_treasurer_name,
+			PROVINCIALTREASURERTITLE		: var.provincial_treasurer_title,
+			
+            TREASURERNAME   : var.get('treasurer_name'),
+            TREASURERTITLE  : var.get('treasurer_title'),
+            TREASUREROFFICENAME  : var.get('treasury_officename'),
+			
+			ASSESSORNAME : var.get('assessor_name'),
+			ASSESSORTITLE : var.get('assessor_title'),
+			ASSESSOROFFICENAME: var.get('assessor_officename'),
+			ASSTASSESSORNAME : var.get('asst_assessor_name'),
+			ASSTASSESSORTITLE : var.get('asst_assessor_title'),
+			
+			MAYOROFFICENAME : var.get('mayor_office_name'),
+			MAYORNAME   : var.get('mayor_name'),
+			MAYORTITLE  : var.get('mayor_title'),
+			SECRETARYNAME	: var.secretary_name,
+			SECRETARYTITLE	: var.secretary_title,
+			CHIEFBPLO	: var.get('chief_bplo'),
+			CHIEFBPLOTITLE: var.get('chief_bplo_title'),
+			
+			GIVENAT 	: var.lgu_address,
+			USERNAME	 : env.USERFORMALNAME,
+			USERJOBTITLE : env.JOBTITLE, 
+            PRINTDATE   : dateService.serverDate,
+			PRINTEDBY   : (username) ? username : 'SYSTEM' ,
+			DATE : getFDate( 'd' ), 
+			MONTH : getFDate( 'MMMMM' ),
+			YEAR : getFDate( 'yyyy' ),
+			COLLECTING_AGENCY : var.collecting_agency,
+			RECEIPTITEMCOUNT : receiptitemcount,
+			
+			SECRETARYNAME	: var.secretary_name,
+			SECRETARYTITLE	: var.secretary_title
+		];
+	}
+	
+}

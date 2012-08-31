@@ -1,0 +1,119 @@
+<% def context = "rolelist"; %>
+
+<script>
+	\$register({id:"role:info", context:"role_info", page: "${PAGE.path}/info", options: {width: 570, height: 270}});
+	
+	\$put( 
+		"${context}", 
+		new function() {
+			var roleClassSvc = Service.lookup( "admin/RoleclassService" );
+			var svc = Service.lookup( "admin/RoleService" );
+	
+			var self = this;
+	
+			this.selectedItem;
+			this.roleClasses; 
+			this.roleClass;
+	
+			this.onload = function() {
+				this.roleClasses = roleClassSvc.getList({});
+			}
+			
+			this.listModel = {
+				rows: 10,
+				fetchList: function(o) {
+					o.exclude_system = true;
+					if( self.roleClass ) {
+						o.roleclass = self.roleClass.name;
+					}
+					else {
+						o.roleclass = null;
+					}	
+					return svc.getList( o );	
+				}
+			}
+	
+			var refreshList = function() {
+				self.listModel.refresh(true);	
+			}
+			
+			var reloadList = function() {
+				self.listModel.load();
+			}
+	
+			this.add = function() {
+				var params = {saveHandler:refreshList,permissionHandler:permissionHandler};
+				var rc = this.roleClass;
+				params.role = { roleclass: (rc ? rc.name : null), excluded: [] };
+				return new PopupOpener( "role:info", params, {title:"Add"} );
+			}
+			
+			this.edit = function() {
+				return new PopupOpener( "role:info", {saveHandler:refreshList, permissionHandler:permissionHandler, mode:'edit', role: this.selectedItem}, {title:"Edit"} );
+			}
+			
+			var permissionHandler = function( role ) {
+				var rsvc = Service.lookup( "admin/RolePermissionService" );
+				var result = rsvc.getPermissionsForAdmin({role: role }) ;
+				var params = {};
+				params.modules = result.modules;
+				params.saveHandler = function(x) {
+					var p = {role: role, modules: x };
+					rsvc.updatePermissions( p );
+					return "_close"; 
+				};
+				params.title = "Role : " + role;
+				var p= new PopupOpener("admin:permission", params);
+				p.title = "Role Permissions";
+				return p;
+			}
+
+			this.viewPermissions = function() {
+				return permissionHandler( this.selectedItem.name );
+			}
+	
+			this.propertyChangeListener = {
+				"roleClass" : function(o) {
+					reloadList();
+				}
+			}
+			
+			this.removeRole = function() {
+				if( confirm("You are about to remove this role. Continue?") ) {
+					svc.remove( this.selectedItem );
+					refreshList();
+				}	
+			}
+			
+		}
+	);
+</script>
+
+
+<%
+def cols = [
+	[name: "name", caption: "Role"],
+	[name: "roleclass", caption: "Role Class"],
+	[name: "description", caption: "Description"],
+	[width: "10", html: """
+		<a r:context="rolelist" r:name="viewPermissions">
+			permissions
+		</a>
+	"""],
+	[width: "10", html: """
+		<a r:context="rolelist" r:name="edit" r:visibleWhen="#{item.system != 1}">
+			<img src="/res/admin/edit.gif"/>
+		</a>
+	"""],
+	[width:"10", html: """
+		<a r:context="rolelist" r:name="removeRole" title="Remove Role" r:visibleWhen="#{item.system != 1}">
+			<img src="/res/admin/trash.gif"/>
+		</a>
+	"""],
+];
+%>
+@grid( context: context, model: 'listModel', name: 'selectedItem', cols: cols )
+
+
+
+

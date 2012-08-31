@@ -1,0 +1,44 @@
+html {
+	height:100%;
+}
+body  {
+	background-color: #ffffff;
+	margin: 0;
+	margin-left: 200px;
+	font-family: 'Open Sans', Arial;
+	font-size: 11;
+	height: 100%;
+}
+.master-layout {
+	width:80%;
+	height: 100%;
+}
+.master-header {
+	height: 120px;
+	vertical-align: top;
+	border-bottom: 1px solid lightgrey;	
+}
+.master-footer {
+	height: 100px;
+}
+.master-content {
+	padding-top:20px;
+	vertical-align:top;
+}
+.dropdown-login {
+	text-decoration: none;
+	font-size: 15px;
+}
+.navbar td {
+	padding-left:15px;
+}
+.navbar .gap {
+	padding:0;
+	width: 0;
+}
+.navbar a {
+	text-decoration: none;
+}
+.page-title {
+	font-size: 20pt;
+}

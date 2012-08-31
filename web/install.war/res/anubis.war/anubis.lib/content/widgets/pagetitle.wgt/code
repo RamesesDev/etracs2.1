@@ -1,0 +1,8 @@
+<%
+	def title = OPTIONS.title;
+	if(!title) {
+		if( OPTIONS.id ) title = ANUBIS.getFileInfo( OPTIONS.id )?.title;
+		if(!title) title = PAGE.title;
+	}	
+%>
+<div class="page-title">${title}</div>

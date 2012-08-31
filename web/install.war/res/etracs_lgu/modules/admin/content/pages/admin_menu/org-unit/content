@@ -1,0 +1,64 @@
+<script>
+	\$register({id: "orgunit:info", context: "orgunitinfo", page: '${PAGE.path}/info', options:{width:400, height:220}});
+
+	\$put( 
+		"orgunit-mgmt", 
+		new function() {
+			var svc = Service.lookup( "admin/OrgunitService" );
+	
+			var self = this;
+	
+			this.selectedItem;
+			this.orgTypes;
+			
+			this.orgType;
+	
+			this.onload = function() {
+				this.orgTypes = svc.getOrgtypes();
+				if(this.orgTypes && this.orgTypes.length > 0 ) {
+					this.orgType = this.orgTypes[0];
+				}
+			}
+	
+			this.listModel = {
+				rows: 10,
+				fetchList: function(o) {
+					o.orgtype = self.orgType.name;
+					return svc.getList( o );	
+				}
+			}
+	
+			var refreshList = function() {
+				self.listModel.refresh(true);	
+			}
+	
+			this.add = function() {
+				var params = {saveHandler:refreshList, orgunit : {orgtype: this.orgType.name }};
+				return new PopupOpener( "orgunit:info", params, {title: "Add"} );
+			}
+
+			this.edit = function() {
+				var params = {saveHandler:refreshList, orgunit:this.selectedItem, mode:"edit" };
+				return new PopupOpener( "orgunit:info", params, {title: "Edit"} );
+			}
+	
+			this.propertyChangeListener = {
+				orgType : function(o) { self.listModel.load(); }
+			}
+			
+			this.isSystemOrgType = function() {
+				return this.orgType && this.orgType.system==1;
+			}
+		}
+	);
+</script>
+
+<%
+def cols = [
+	[name: "code", caption: "Code", width: "20%"],
+	[name: "title", caption: "Title", width: "60%"],
+	[html: "<a r:context='orgunit-mgmt' r:name='edit' r:visibleWhen='#{!isSystemOrgType()}'>Edit</a>"]
+];
+%>
+@grid(context: "orgunit-mgmt", model: "listModel", name: "selectedItem", cols: cols)
+

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		@head/import-fonts('opensans')
+		@head/favicon()
+		@head/standard()
+		@head/css('login')
+		@@head/page-imports()
+	</head>
+	
+	<body>
+		<div class="centered">
+			<div class="section">
+				<img src="/res/etracs.png" height="60px"/>
+			</div>
+			<div class="login-box">
+				${_content}
+			</div>
+			<div class="section clearfix">
+				<div class="left">
+					&copy; 2012 
+					<a href="http://www.ramesesinc.com" target="_blank">
+						Rameses Systems Inc. 
+					</a>
+				</div>
+				<div class="right">
+					<a href="http://www.ramesesinc.com" target="_blank">
+						<img src="/res/rameses.png" height="25px"/>
+					</a>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+

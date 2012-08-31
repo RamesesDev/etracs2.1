@@ -1,0 +1,9 @@
+{
+	title: 		'Org. Units',
+	context:	'orgunit-mgmt',
+	fragment: 	true,
+	sortorder:	3,
+	secured:	true,
+	permission:	'orgunit:orgunit.viewList',
+	layout:		'document-layout',
+}

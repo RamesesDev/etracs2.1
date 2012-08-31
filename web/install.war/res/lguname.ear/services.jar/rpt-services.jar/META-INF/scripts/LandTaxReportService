@@ -1,0 +1,575 @@
+import com.rameses.annotations.*
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+import java.rmi.server.UID
+
+class LandTaxReportService
+{
+    @PersistenceContext('main')
+    def em
+     
+	@Service('DateService')
+    def dateSvc
+	
+	@Service('NumberService')
+    def numSvc
+	
+	@Service('Var')
+	def var 
+	
+	@Env
+	def env
+	
+	@ProxyMethod 
+	public def getLguType() {
+		if( ! var.lgu_type  ) throw new Exception('LGU Type is not set.')
+		return var.lgu_type.toLowerCase() 
+	}
+
+	@ProxyMethod 
+	public def generateTaxClearance( clearance ) {
+		def parsedate = dateSvc.parseCurrentDate()	
+		
+		required( 'At least one property for clearance', clearance.items )
+		validateClearedItems( clearance )
+		
+		//validate receipt info 
+		def ordate = dateSvc.parse('yyyy-MM-dd', clearance.ordate )
+        if( ordate > dateSvc.serverDate ) {
+            throw new Exception('O.R. Date must be before or equal to current date.')
+        }
+		
+		//additional info 
+        clearance.issueday		= formalizeNumber( parsedate.day )
+		clearance.issuemonth	= getMonth( parsedate.month ).name 
+		clearance.issueyear		= parsedate.year +''
+		clearance.issueplace	= var.lgu_formal_name 
+		clearance.clearedyear	= clearance.year+''
+		
+		//load payment info 
+		clearance.items.each{ item ->
+			item.paymentlist = []
+			if( TO_BOOLEAN( item.taxable ) == true ) {
+				def pmtlist = em.sqlContext.createNamedQuery('landtaxreport:getRPTClearancePaymentInfo')
+									.setParameters([ledgerid:item.ledgerid, year:clearance.year] )
+									.resultList 
+				pmtlist.each { pmt ->
+					pmt.ordate = dateSvc.format( 'MM-dd-yyyy', pmt.ordate )
+					if( pmt.period == 'Q1-Q4' ) {
+						pmt.period = 'FULL ' + clearance.year 
+					}
+					else {
+						pmt.period + ' ' + clearance.year 
+					}
+				}
+				item.paymentlist.addAll(  pmtlist )
+			}
+			else {
+				item.paymentlist.add([
+					period : 'EXEMPT '  + clearance.year 
+				])
+			}
+		}
+		return clearance 
+	}
+	
+	
+	
+	void validateClearedItems( clearance )  {
+		clearance.items.each {
+			it.taxable = TO_BOOLEAN( it.taxable) 
+			if( it.taxable && it.assessedvalue > 0 ) {
+				if( it.lastyearpaid < clearance.year ) 
+					throw new Exception("TD No. $it.tdno is not cleared for the year $clearance.year.")
+				else if( it.lastyearpaid == clearance.year && it.lastqtrpaid < clearance.qtr )
+					throw new Exception("TD No. $it.tdno is not cleared for the year $clearance.year - Q$clearance.qtr.")
+			}
+		}
+	}
+	
+	boolean TO_BOOLEAN( boolvalue ) {
+		if( boolvalue instanceof Boolean ) 
+			return boolvalue 
+		if( '1/y/yes/t/true'.indexOf( boolvalue.toString().toLowerCase() ) >= 0 ) {
+			return true 
+		}
+		return false 
+	}
+	
+	
+	@ProxyMethod
+	public def generateAbstractOfCollection( year, qtr, month, day, type, collector ) {
+		def parsedate = dateSvc.parseCurrentDate()		
+		if( year > parsedate.year ) throw new Exception('Year must not exceed current year.')
+		
+		def params = [
+			txntimestamp : resolveTimeStamp( year, qtr, month, day ),
+			collectorid  : ( collector ? collector.collectorid : '%' ),
+		]
+		
+		def items = []
+		
+		//type -> BASIC, SEF 
+		if( type == null || type == 'BASIC'  ) {
+			items.addAll(
+				em.sqlContext.createNamedQuery('landtaxreport:getAbstractCollectionBASIC')
+						.setParameters( params ).resultList 
+			)
+			items.addAll(
+				em.sqlContext.createNamedQuery('landtaxreport:getAbstractCollectionManualBASIC')
+						.setParameters( params ).resultList 
+			)
+		}
+		if( type == null || type == 'SEF'  ) {
+			items.addAll(
+				em.sqlContext.createNamedQuery('landtaxreport:getAbstractCollectionSEF')
+						.setParameters( params ).resultList 
+			)
+			items.addAll(
+				em.sqlContext.createNamedQuery('landtaxreport:getAbstractCollectionManualSEF')
+						.setParameters( params ).resultList 
+			)
+		}
+		if( ! items ) throw new Exception('No records found.')
+		
+		return [
+			title 	: buildTitle( year, qtr, month, day, type, collector  ),
+			period 	: buildPeriod( year, qtr, month, day ),
+			items  	: items 
+		]
+	}
+	
+	
+	@ProxyMethod
+	public def generateBarangayShare( year, month, currentrate, previousrate ) {
+		def parsedate = dateSvc.parseCurrentDate()		
+		if( year > parsedate.year ) throw new Exception('Year must not exceed current year.')
+		def rptc = loadRPTCShares()
+		
+		def onlinepayments = em.sqlContext.createNamedQuery('landtaxreport:getBasicSummaryByMonth')
+								.setParameters( [iyear:year, imonth:month ] )
+								.resultList 
+		def manualpayments = em.sqlContext.createNamedQuery('landtaxreport:getManualBasicSummaryByMonth')
+								.setParameters( [iyear:year, imonth:month ] )
+								.resultList 
+		
+		def brgyshares = em.sqlContext.createNamedQuery('landtaxreport:getBarangayList').resultList 
+		
+		def initBrgyBasicAmt = { brgy ->
+			brgy.basiccurrent 	= 0.0
+			brgy.basicprevious 	= 0.0
+			brgy.basictotal		= 0.0
+			brgy.basiccurrentshare 	= 0.0
+			brgy.basicpreviousshare = 0.0
+			brgy.totalshare			= 0.0
+		}
+		
+		def addupPayments = { brgy, payments ->
+			def pmt = payments.find{ it.barangay == brgy.barangay }
+			if( pmt ) {
+				brgy.basiccurrent += pmt.basiccurrent
+				brgy.basicprevious += pmt.basicprevious
+				brgy.basictotal += pmt.basictotal
+			}
+		}
+		
+		brgyshares.each{ brgy ->
+			initBrgyBasicAmt( brgy )
+			addupPayments( brgy, onlinepayments )
+			addupPayments( brgy, manualpayments )
+			
+			//calculate shares
+			brgy.basiccurrentshare  = numSvc.round( brgy.basiccurrent * rptc.brgy_basicshare  )
+			brgy.totalshare         = numSvc.round( brgy.basictotal * rptc.brgy_basicshare  )
+			brgy.basicpreviousshare = numSvc.round( brgy.totalshare - brgy.basiccurrentshare )
+		}
+		
+		//adjust rounding-off discrepancies
+		def rawtotal   = numSvc.round( brgyshares.basictotal.sum() * rptc.brgy_basicshare )
+		def totalshare = brgyshares.totalshare.sum() 
+		def totaldiff  = rawtotal - totalshare
+
+		//adjust last barangay previous share 
+		for(int i=brgyshares.size() - 1; i>=0; i--) {
+			if( brgyshares[i].totalshare > 0 ) {
+				brgyshares[i].totalshare += totaldiff 
+				brgyshares[i].basicpreviousshare += totaldiff  
+				break;
+			}
+		}
+		
+		
+		return [
+			period 	: 'For the month of ' + getMonthName( month ) + ', ' + year ,
+			items 	: brgyshares, 
+		]
+	}
+	
+		
+	
+	def initCollectionHandler = { item, taxability ->
+		item.taxability 		= taxability 
+		item.basiccurrent 		= 0.0
+		item.basicdisc			= 0.0
+		item.basicprev 			= 0.0
+		item.basiccurrentint	= 0.0
+		item.basicprevint		= 0.0
+		item.basicgross			= 0.0
+		item.basicnet			= 0.0
+		item.sefcurrent 		= 0.0
+		item.sefdisc			= 0.0
+		item.sefprev 			= 0.0
+		item.sefcurrentint		= 0.0
+		item.sefprevint			= 0.0
+		item.sefgross			= 0.0
+		item.sefnet				= 0.0
+		item.grandtotal			= 0.0
+		item.netgrandtotal		= 0.0
+		return item 
+	}
+	
+	def summarizeRPTCollection = { item, collectionlist ->
+		def collection = collectionlist.find{ it.classid == item.classid || it.classcode == item.classcode  }
+		if( collection ) {
+			item.keySet().each{ key ->
+				if( ! (item[key] instanceof String) ) {
+					item[key] = collection[key]
+				}
+			}
+		}
+	}
+		
+	@ProxyMethod
+	public def generateRPTCollectionReport( year, month ) {
+		def rptc = loadRPTCShares()
+		
+		def txntimestamp = resolveTimeStamp( year, month.qtr, month.month, null )
+		def onlinerptcs = em.sqlContext.createNamedQuery('landtaxreport:getOnlineRPTC').setParameter('txntimestamp', txntimestamp).resultList 
+		def manualrptcs = em.sqlContext.createNamedQuery('landtaxreport:getManualRPTC').setParameter('txntimestamp', txntimestamp).resultList 
+		
+		//add manualrptcs to onlinerptcs 
+		manualrptcs.each{ manual ->
+			def online = onlinerptcs.find{  it.classcode == manual.classcode }
+			if( online ) {
+				online.keySet().each{ key -> 
+					if( online[key] instanceof String )
+						online[key] = manual[key]
+					else 
+						online[key] += manual[key]
+				}
+			}
+			else {
+				onlinerptcs.add( manual )
+			}
+		}
+		
+		def taxablelist = getTaxableList( initCollectionHandler )
+		taxablelist.each{ 
+			summarizeRPTCollection( it, onlinerptcs )
+		}
+		
+		return [
+			title 		 : 'MONTHLY REAL PROPERTY TAX COLLECTION',
+			period 		 : 'FOR THE MONTH OF ' + getMonthName( month.month ) + ', ' + year,
+			periodtype 	 : 'MONTH',
+			provcity     : (var.lgu_type == 'city' ? var.lgu_name : var.parent_lgu_name ),
+			municipality : (var.lgu_type == 'city' ? null : var.lgu_name ),
+			brgycount	 : getBrgyCount(),
+			items 		 : taxablelist,
+			dispositions : buildDispositions( taxablelist, rptc ),
+		]
+		
+	}
+	
+	def doBuildDisposition( classname, items, basicshare, sefshare ) {
+		return [
+			classname 		: classname,
+			basiccurrent	: numSvc.round( items.basiccurrent.sum() * basicshare ),
+			basicdisc		: numSvc.round( items.basicdisc.sum() * basicshare ),
+			basicprev		: numSvc.round( items.basicprev.sum() * basicshare ),
+			basiccurrentint	: numSvc.round( items.basiccurrentint.sum() * basicshare ),
+			basicprevint	: numSvc.round( items.basicprevint.sum() * basicshare ),
+			basicgross		: numSvc.round( items.basicgross.sum() * basicshare ),
+			basicnet		: numSvc.round( items.basicnet.sum() * basicshare ),
+			sefcurrent		: numSvc.round( items.sefcurrent.sum() * sefshare ),
+			sefdisc			: numSvc.round( items.sefdisc.sum() * sefshare ),
+			sefprev			: numSvc.round( items.sefprev.sum() * sefshare ),
+			sefcurrentint	: numSvc.round( items.sefcurrentint.sum() * sefshare ),
+			sefprevint		: numSvc.round( items.sefprevint.sum() * sefshare ),
+			sefgross		: numSvc.round( items.sefgross.sum() * sefshare ),
+			sefnet			: numSvc.round( items.sefnet.sum() * sefshare ),
+			grandtotal		: numSvc.round( items.basicgross.sum() * basicshare + items.sefgross.sum() * sefshare ),
+			netgrandtotal	: numSvc.round( items.basicnet.sum() * basicshare + items.sefnet.sum() * sefshare),
+		]
+	}
+	
+	def buildDispositionAdjust( classname, items, dispositions ) {
+		def adjusted = [
+			classname 		: classname,
+			basiccurrent	: numSvc.round( items.basiccurrent.sum() - dispositions.basiccurrent.sum()),
+			basicdisc		: numSvc.round( items.basicdisc.sum() - dispositions.basicdisc.sum() ),
+			basicprev		: numSvc.round( items.basicprev.sum() - dispositions.basicprev.sum() ),
+			basiccurrentint	: numSvc.round( items.basiccurrentint.sum() - dispositions.basiccurrentint.sum()),
+			basicprevint	: numSvc.round( items.basicprevint.sum() - dispositions.basicprevint.sum()),
+			basicgross		: numSvc.round( items.basicgross.sum() - dispositions.basicgross.sum()),
+			basicnet		: numSvc.round( items.basicnet.sum() - dispositions.basicnet.sum()),
+			
+			sefcurrent		: numSvc.round( items.sefcurrent.sum() - dispositions.sefcurrent.sum()),
+			sefdisc			: numSvc.round( items.sefdisc.sum() - dispositions.sefdisc.sum() ),
+			sefprev			: numSvc.round( items.sefprev.sum() - dispositions.sefprev.sum() ),
+			sefcurrentint	: numSvc.round( items.sefcurrentint.sum() - dispositions.sefcurrentint.sum()),
+			sefprevint		: numSvc.round( items.sefprevint.sum() - dispositions.sefprevint.sum()),
+			sefgross		: numSvc.round( items.sefgross.sum() - dispositions.sefgross.sum()),
+			sefnet			: numSvc.round( items.sefnet.sum() - dispositions.sefnet.sum()),
+			
+			grandtotal		: numSvc.round( items.grandtotal.sum() - dispositions.grandtotal.sum() ),
+			netgrandtotal	: numSvc.round( items.netgrandtotal.sum() - dispositions.netgrandtotal.sum() ),
+		]
+		//zero out negative values 
+		if( adjusted.basiccurrent < 0.0 ) adjusted.basiccurrent = 0.0;
+		if( adjusted.basicdisc < 0.0 ) adjusted.basicdisc = 0.0;
+		if( adjusted.basicprev < 0.0 ) adjusted.basicprev = 0.0;
+		if( adjusted.basiccurrentint < 0.0 ) adjusted.basiccurrentint = 0.0;
+		if( adjusted.basicprevint < 0.0 ) adjusted.basicprevint = 0.0;
+		if( adjusted.basicgross < 0.0 ) adjusted.basicgross = 0.0;
+		if( adjusted.basicnet < 0.0 ) adjusted.basicnet = 0.0;
+		
+		if( adjusted.sefcurrent < 0.0 ) adjusted.sefcurrent = 0.0;
+		if( adjusted.sefdisc < 0.0 ) adjusted.sefdisc = 0.0;
+		if( adjusted.sefprev < 0.0 ) adjusted.sefprev = 0.0;
+		if( adjusted.sefcurrentint < 0.0 ) adjusted.sefcurrentint = 0.0;
+		if( adjusted.sefprevint < 0.0 ) adjusted.sefprevint = 0.0;
+		if( adjusted.sefgross < 0.0 ) adjusted.sefgross = 0.0;
+		if( adjusted.sefnet < 0.0 ) adjusted.sefnet = 0.0;
+		return adjusted 
+	}
+	
+	def buildDispositions( items, rptc ){
+		def dispositionlist = []
+		if( lguType == 'city') {
+			dispositionlist.add( doBuildDisposition( 'CITY', items, rptc.city_basicshare, rptc.city_sefshare ) )
+			dispositionlist.add( buildDispositionAdjust( 'BARANGAY', items, dispositionlist ) )
+		}
+		else {
+			dispositionlist.add( doBuildDisposition( 'PROVINCE', items, rptc.prov_basicshare, rptc.prov_sefshare ) )
+			dispositionlist.add( doBuildDisposition( 'MUNICIPALITY', items, rptc.muni_basicshare, rptc.muni_sefshare ) )
+			dispositionlist.add( buildDispositionAdjust( 'BARANGAY', items, dispositionlist ) )
+		}
+		return dispositionlist
+	}
+	
+	@ProxyMethod
+	public List getNumDays( year, month ) {
+		if ( !month && month < 0 ) return []
+		
+		Calendar cal = Calendar.getInstance()
+        cal.set( year, month, 1)
+        int maxday = cal.getActualMaximum(cal.DAY_OF_MONTH)
+		def numdays = []
+		1.upto( maxday ) { numdays.add( it ) }
+		return numdays 
+	}
+	
+	@ProxyMethod
+	public List getMonthList( qtr ) {
+		def months = [
+			[name:'JANUARY', 	month:1, qtr:1 ],
+			[name:'FEBRUARY', 	month:2, qtr:1 ],
+			[name:'MARCH', 		month:3, qtr:1 ],
+			
+			[name:'APRIL', 	month:4, qtr:2 ],
+			[name:'MAY', 	month:5, qtr:2 ],
+			[name:'JUNE', 	month:6, qtr:2 ],
+			
+			[name:'JULY', 		month:7, qtr:3 ],
+			[name:'AUG', 		month:8, qtr:3 ],
+			[name:'SEPTEMBER', 	month:9, qtr:3 ],
+			
+			[name:'OCTOBER', 	month:10, qtr:4 ],
+			[name:'NOVEMBER', 	month:11, qtr:4 ],
+			[name:'DECEMBER', 	month:12, qtr:4 ],
+		]
+		
+		if( ! qtr ) return months 
+		return months.findAll{ it.qtr == qtr }
+	}
+	
+	@ProxyMethod
+	public def getMonth( imonth ) {
+		def monthlist = getMonthList( null )
+		return monthlist.find{ it.month == imonth }
+	}
+	
+	@ProxyMethod
+	public List getCollectorList() {
+		return em.sqlContext.createNamedQuery('landtaxreport:getCollectorList').resultList 
+	}
+	
+	
+	
+	
+	def getMonthName( month ) {
+		def months = getMonthList( null )
+		def mon = months.find{ it.month == month }
+		if( mon ) return mon.name 
+		throw new Exception("Month $month is not defined." )
+	}
+	
+	
+	def getQuarterName( qtr ) {
+		if( qtr == 1 ) return '1ST QUARTER'
+		else if( qtr == 2 ) return '2ND QUARTER'
+		else if( qtr == 3 ) return '3RD QUARTER'
+		return '4TH QUARTER'
+	}
+	
+	
+	def buildTitle( year, qtr, month, day, type, collector  ) {
+		def stype = ( type ? type + ' ' : '' )
+		def collectorname = ( collector ? ' of ' + collector.collectorname : '' )
+		if( day ) return 'Daily ' + stype + 'Abstract of Realty Tax Collection ' + collectorname
+		if( month ) return 'Monthly ' + stype + 'Abstract of Realty Tax Collection ' + collectorname
+		if( qtr ) return 'Quarterly ' + stype + 'Abstract of Realty Tax Collection ' + collectorname
+		return 'Annual ' + stype + 'Abstract of Realty Tax Collection ' + collectorname
+	}
+	
+	def buildPeriod( year, qtr, month, day ) {
+		if( day ) return 'For the day ' + getMonthName( month ) + ' ' + day + ', ' + year 
+		if( month ) return 'For the month of ' + getMonthName( month ) + ', ' + year 
+		if( qtr ) return 'For the ' + getQuarterName( qtr ) + ' of ' + year 
+		return 'For the Year ' + year 
+	}
+	
+	def resolveTimeStamp( year, qtr, month, day ) {
+		//build timestamp progressively based on the passed values, e.g.,
+		//if month is null then timestamp is resolve upto the qtr info, such as "20111%" for 1st qtr
+		//if month is notnull thne it is resolve upto the month, such as "2011102%" for 2nd qtr 
+		def timestamp = year + '' + qtr 
+		if( month != null ) timestamp += padLeft( month, 2 )
+		if( day != null ) timestamp += padLeft( day, 2 )
+		if( month == null  || day == null ) timestamp += '%'
+		return timestamp
+		
+	}
+	
+	String padLeft( val, len ) {
+		return "$val".padLeft( len, '0' )
+	}
+	
+	
+	List getTaxableList( initHandler ) {
+		int lineno = 1
+		int charindex = 'a' 
+		def classifications = em.sqlContext.createNamedQuery('landtaxreport:getClassificationList').resultList
+		def firstspecial = classifications.find{ it.special == 1 }
+		classifications.add( classifications.indexOf( firstspecial), [classid:'SPECIAL', classname:'SPECIAL', special:0] )
+		def taxables = classifications.collect{ initHandler(it, 'TAXABLE') }
+		taxables.each { data ->
+			if( data.special == 0 ) {
+				data.classname = lineno + '. ' + data.classname 
+				lineno += 1
+			}
+			else {
+				data.classname = '   ' + ((char)charindex) + '. ' + data.classname 
+				charindex += 1
+			}
+		}
+		return taxables 
+	}
+	
+	List getExemptionList( initHandler ) {
+		int lineno = 1 
+		def exempts  = em.sqlContext.createNamedQuery('landtaxreport:getExemptionList').resultList
+		exempts.collect{ initHandler(it, 'EXEMPT') }
+		exempts.each { data -> 
+			data.classname = lineno + '. ' + data.classname 
+			lineno += 1
+		}
+		return exempts 
+	}
+
+	def getBrgyCount() {
+		def brgy = em.sqlContext.createNamedQuery('landtaxreport:getBrgyCount').singleResult
+		return TO_INT( brgy.brgycount )
+	}
+	
+	int TO_INT( val ) {
+		if ( val instanceof Integer ) return val 
+		return (int) val 
+	}
+	
+	void required( caption, value ) {
+		if( ! value )  throw new Exception( caption + ' is required.')
+	}
+	
+	def formalizeNumber( num ) {
+		def snum = numSvc.format('#0', num )
+		if( snum == '11' ) return snum + 'TH'
+		else if( snum == '12' ) return snum + 'TH'
+		else if( snum.endsWith('1') ) return snum + 'ST'
+		else if( snum.endsWith('2') ) return snum + 'ND'
+		else if( snum.endsWith('3') ) return snum + 'RD'
+		else return snum + 'TH' 
+	}
+	
+	
+	def loadRPTCShares() {
+		def prov_basicshare = 0.0
+		def prov_sefshare   = 0.0
+		def muni_basicshare = 0.0
+		def muni_sefshare   = 0.0
+		def city_basicshare = 0.0
+		def city_sefshare   = 0.0
+		def brgy_basicshare = 0.0
+		def brgy_sefshare   = 0.0
+		
+		if( ! var.rptc_barangay_basic_rate ) throw new Exception('Barangay Basic Rate is not set.')
+		if( ! var.rptc_barangay_sef_rate ) throw new Exception('Barangay SEF Rate is not set.')
+		brgy_basicshare = toDecimal( 'Barangay Basic Rate', var.rptc_barangay_basic_rate )
+		brgy_sefshare = toDecimal( 'Barangay SEF Rate', var.rptc_barangay_sef_rate )
+		
+		if( lguType == 'city' ) {
+			if( ! var.rptc_city_basic_rate ) throw new Exception('City Basic Rate is not set.')
+			if( ! var.rptc_city_sef_rate ) throw new Exception('City SEF  Rate is not set.')
+			city_basicshare = toDecimal( 'City Basic Rate', var.rptc_city_basic_rate )
+			city_sefshare   = toDecimal( 'City SEF Rate', var.rptc_city_sef_rate )
+			
+			if( city_basicshare + brgy_basicshare != 100 ) throw new Exception('Basic Share rate total must be equal to 100 percent.')
+			if( city_sefshare + brgy_sefshare != 100 ) throw new Exception('SEF Share rate total must be equal to 100 percent.')
+		}
+		else {
+			if( ! var.rptc_province_basic_rate ) throw new Exception('Province Basic Rate is not set.')
+			if( ! var.rptc_province_sef_rate ) throw new Exception('Province SEF Rate is not set.')
+			if( ! var.rptc_municipality_basic_rate ) throw new Exception('Municipal Basic Rate is not set.')
+			if( ! var.rptc_municipality_sef_rate ) throw new Exception('Municipal SEF Rate is not set.')
+			
+			prov_basicshare = toDecimal( 'Province Basic Rate', var.rptc_province_basic_rate )
+			prov_sefshare = toDecimal( 'Province SEF Rate', var.rptc_province_sef_rate )
+			muni_basicshare = toDecimal( 'Municipality Basic Rate', var.rptc_municipality_basic_rate )
+			muni_sefshare = toDecimal( 'Municipality SEF Rate', var.rptc_municipality_sef_rate )
+			
+			if( prov_basicshare + muni_basicshare + brgy_basicshare  != 100 ) throw new Exception('Basic Share rate total must be equal to 100 percent.')
+			if( prov_sefshare + muni_sefshare + brgy_sefshare != 100 ) throw new Exception('SEF Share rate total must be equal to 100 percent.')
+		}
+		return [
+			prov_basicshare : prov_basicshare / 100.0,
+			prov_sefshare   : prov_sefshare / 100.0,
+			muni_basicshare : muni_basicshare / 100.0,
+			muni_sefshare   : muni_sefshare / 100.0,
+			city_basicshare : city_basicshare / 100.0,
+			city_sefshare   : city_sefshare / 100.0,
+			brgy_basicshare : brgy_basicshare / 100.0,
+			brgy_sefshare   : brgy_sefshare / 100.0,
+		]
+	}
+	
+	def toDecimal( sharename, val ) {
+		try {
+			return new BigDecimal( val )
+		}
+		catch( e) {
+			throw new Exception('Invalid ' + sharename + ' value.')
+		}
+	}
+	
+}	

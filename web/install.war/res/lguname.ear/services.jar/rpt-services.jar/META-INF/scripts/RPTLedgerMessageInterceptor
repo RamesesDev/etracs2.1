@@ -1,0 +1,66 @@
+import com.rameses.annotations.*
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+
+class RPTLedgerMessageInterceptor
+{
+	@PersistenceContext('main')
+	def em
+    
+	@Service('LogService')
+    def logSvc
+    
+    @Service('RPTLedgerService')
+    def svc 
+	
+	@Service('MessengerService')
+	def msgSvc
+	
+	@After(pattern='MessengerService.onreceive') 
+	public void interceptOnReceive( evt ) {
+        def msg = evt.result 
+		if( msg.action == 'province-rptledger.approve') approveProvinceRPTLedger( msg ) 
+	}
+    
+    void approveProvinceRPTLedger( msg ) {
+		def ledger = msg.attachment.ledger
+        try {
+			deleteProvinceRPTLedger( ledger )
+			createApprovedProvinceLedger( ledger )
+			updateFAASLedgerReference( ledger )
+            msgSvc.processedSuccessfully( msg )
+            logSvc.log('ONLINE-APPROVAL', 'RPTLedger', ledger.objid  )
+        }
+        catch( e ) {
+            println '='*50
+            e.printStackTrace()
+            msgSvc.errorProcessing( msg, e.message )
+            throw e 
+        }
+    }
+    
+	void deleteProvinceRPTLedger( ledger ) {
+		em.sqlContext.createNamedExecutor('rptledger:deleteProvinceRPTLedgerItem').setParameter('faasid', ledger.faasid).execute()
+		em.sqlContext.createNamedExecutor('rptledger:deleteProvinceRPTLedger').setParameter('faasid', ledger.faasid).execute()
+	}
+	
+	void createApprovedProvinceLedger( ledger ){
+		em.create( ledger.schemaname, ledger )
+		ledger.ledgerItems.each{
+			em.create(it.schemaname, it )
+		}
+	}
+	
+	void updateFAASLedgerReference( ledger ) {
+		em.sqlContext.createNamedExecutor('rptledger:updateFAASLedgerReference')
+				.setParameters([ledgerid:ledger.objid, objid:ledger.faasid])
+				.execute()
+				
+		em.sqlContext.createNamedExecutor('rptledger:updateFAASListLedgerReference')
+				.setParameters([ledgerid:ledger.objid, objid:ledger.faasid])
+				.execute()
+	}
+
+}
+
+

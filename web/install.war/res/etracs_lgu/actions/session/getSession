@@ -1,0 +1,9 @@
+import com.rameses.anubis.web.*;
+import com.rameses.anubis.*;
+
+def request = AnubisContext.currentContext.request;
+def sessionVar = CookieUtil.getCookie( "SESSIONID", request );
+
+return sessionVar ? [SESSIONID: sessionVar.value] : null;
+
+

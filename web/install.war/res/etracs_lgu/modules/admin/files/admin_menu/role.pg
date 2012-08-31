@@ -1,0 +1,9 @@
+{
+	title: 		'Roles',
+	context:	'rolelist',
+	fragment: 	true,
+	sortorder:	2,
+	secured:	true,
+	permission:	'role:role.viewList',
+	layout:		'document-layout',
+}

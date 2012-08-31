@@ -1,0 +1,9 @@
+{
+	title: 		'Job Positions',
+	context:	'jobpositionlist',
+	fragment: 	true,
+	sortorder:	4,
+	secured:	true,
+	permission:	'jobposition:jobposition.viewList',
+	layout:		'document-layout',
+}

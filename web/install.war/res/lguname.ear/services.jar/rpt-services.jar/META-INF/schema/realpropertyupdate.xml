@@ -1,0 +1,37 @@
+<schema>
+	
+	<element name="realpropertyupdate" tablename="realpropertyupdate">
+		<field name="objid" primary="true"/>
+		<field name="state" />
+		<field name="txnno" />
+		<field name="pin" />
+		<field name="realpropertyid" />
+		<field name="arpno" />
+		<field name="cadastrallotno" />
+		<field name="surveyno" />
+		<field name="houseno" />
+		<field name="street" />
+		<field name="purok" />
+		<field name="north" />
+		<field name="south" />
+		<field name="east" />
+		<field name="west" />
+		<field name="blockno" />
+		<field name="prevarpno" />
+		<field name="prevcadastrallotno" />
+		<field name="prevsurveyno" />
+		<field name="prevhouseno" />
+		<field name="prevstreet" />
+		<field name="prevpurok" />
+		<field name="prevnorth" />
+		<field name="prevsouth" />
+		<field name="preveast" />
+		<field name="prevwest" />
+		<field name="prevblockno" />
+		<field name="lastmodifiedby" />
+		<field name="dtlastmodified" />
+		<field name="approvedby" />
+		<field name="dtapproved" />
+	</element>
+    
+</schema>
