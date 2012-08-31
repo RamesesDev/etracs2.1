@@ -93,8 +93,16 @@
             if( bill == null ) {
                 throw new Exception('At least one ledger for payment is required.')
             }
-            
             def itemsForPayment = bill.items.findAll{ it.pay == true && it.amount > 0}
+            
+            if( payoption == 'advance' )  {
+                def notadvlist = itemsForPayment.findAll{ it.fromyear <= parsedate.year }
+                if( notadvlist ) {
+                    throw new Exception('TD No. ' + notadvlist[0].tdno + ' is not an advance payment.')
+                }
+            }
+            
+            
             if( itemsForPayment.size() == 0 ) {
                 throw new Exception('At least one ledger for payment is required.')
             }
