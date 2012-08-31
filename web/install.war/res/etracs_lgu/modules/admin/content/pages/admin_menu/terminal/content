@@ -1,0 +1,60 @@
+<script>
+	\$put( 
+		"terminal", 
+		new function() {
+			var svc = Service.lookup( "admin/TerminalService" );
+
+			var self = this;
+
+			this.selectedItem;
+
+			this.listModel = {
+				rows: 15,
+				fetchList: function(o) {
+					return svc.getList( o );	
+				}
+			}
+
+			var reloadList = function() {
+				self.listModel.refresh(true);	
+			}
+
+			this.add = function() {
+				MsgBox.prompt(
+					"Enter the no. of terminal keys to generate", 
+					function(text) {
+						var size = parseInt(text);
+						if( isNaN(size) ) return;
+						svc.allocate( {size: size} );	
+						reloadList();
+					}
+				);
+			}
+			
+			this.unassign = function() {
+				if( !this.selectedItem ) return;
+				MsgBox.confirm(
+					"You are about to unassign this terminal. Continue?",
+					function(){
+						svc.unregister( self.selectedItem );
+						reloadList();
+					}
+				);
+			}
+
+		}
+	);
+</script>
+
+<%
+def cols = [
+	[name:"terminalid", caption:"Terminal ID"],
+	[name:"macaddress", caption:"Mac Address"],
+	[name:"dtregistered", caption:"Date Registered"],
+	[name:"registeredby", caption:"Registered By"],
+	[html: """
+		<a r:context="terminal" r:name="unassign" r:visibleWhen="#{!!item.macaddress}">Unassign</a>
+	"""]
+];
+%>
+@grid( context: 'terminal', model: 'listModel', cols: cols )

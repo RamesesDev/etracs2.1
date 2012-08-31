@@ -1,0 +1,23 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+
+public class WebLOBSearchService 
+{
+	@PersistenceContext("main")
+	def em;
+	
+	
+	@ProxyMethod
+	public def search( searchkey ) {
+		if(searchkey==null) searchkey = '';
+		searchkey = '%'+searchkey.replaceAll(/\s+/, '%')+'%';
+		
+		def qry = em.sqlContext
+		            .createNamedQuery('lob:getListByName')
+					.setParameter('name', searchkey);
+				
+		qry.setMaxResults(10);
+		return qry.resultList;
+	}
+}

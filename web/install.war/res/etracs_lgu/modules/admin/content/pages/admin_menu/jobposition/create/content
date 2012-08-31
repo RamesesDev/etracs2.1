@@ -1,0 +1,73 @@
+<script>		
+	\$put( 
+		"jobposition_create", 
+		new function() {
+			var svc = Service.lookup("admin/JobpositionService");
+			this.saveHandler;
+			this.jobposition;
+			var self = this;
+			
+			this.selectedRoleclass;
+				
+			var roleSvc;
+	
+			this.onload = function() {
+				this.jobposition.objid = "<%="JOBP"+new java.rmi.server.UID()%>";
+				this.jobposition.jobstatus = "R";
+				this.jobposition.tags = [];
+			}
+			
+			this.getRoleClasses = function() {
+				var roleClassSvc = Service.lookup("admin/RoleclassService");
+				return roleClassSvc.getList({});	
+			}
+
+			this.getRoles = function() {
+				if( !this.selectedRoleclass ) return [];
+				if( !roleSvc ) roleSvc = Service.lookup("admin/RoleService");
+				return roleSvc.getRolesByClass( {roleclass: this.selectedRoleclass.name} );  
+			}
+	
+			this.save = function() {
+				this.jobposition = svc.create( this.jobposition );
+				this.saveHandler();
+				return "_close";
+			}
+			
+			this.propertyChangeListener = {
+				"selectedRoleclass" : function(x) {
+					self.jobposition.roleclass = x.name;
+					self.jobposition.tags = [];
+				}
+			}
+		}
+	);
+</script>
+
+<%
+def fields = [
+	[type:"text", name:"jobposition.code", caption:"Code"],
+	[type:"text", name:"jobposition.title", caption:"Title", size:"50"],
+	[type:"radio", name:"jobposition.jobstatus", caption:"Job Status", options:"{R:'Regular', D:'Delegated'}"],
+	[type:"combo", name:"selectedRoleclass", caption:"Role Class", items:"getRoleClasses()", allowNull:"true", itemLabel:"name"],
+	[type:"combo", name:"jobposition.role", caption:"Role", items:"getRoles()", allowNull:"true", itemKey:"name", itemLabel:"name", depends:"selectedRoleclass"],
+	
+	[type:"label", caption:"Tags", html: """
+		<table r:context="jobposition_create" r:items="selectedRoleclass.tags" r:varName="item" r:depends="selectedRoleclass"> 
+			<tr>
+				<td>
+					<label>
+						<input type="checkbox" r:context="jobposition_create" r:name="jobposition.tags" r:mode="set" r:checkedValue="#{item}"/>
+						#{item}
+					</label>
+				</td>
+			</tr>
+		</table>
+	"""]
+];
+%>
+@form( context: 'jobposition_create', fields: fields )
+
+<div style="text-align: right">
+	<button r:context="jobposition_create" r:name="save">Save</button>
+</div>

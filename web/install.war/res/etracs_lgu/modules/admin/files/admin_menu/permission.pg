@@ -1,0 +1,7 @@
+{
+	name:		'admin:permission',
+	context:	'permission',
+	options:	{width: 820, height: 550},
+	fragment: 	true,
+	hidden: 	true
+}

@@ -1,0 +1,32 @@
+import com.rameses.annotations.*;
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+import java.rmi.server.UID;
+
+class RPTOfficersService
+{
+	@PersistenceContext('main')
+	def em
+	
+	@Service('ETRACSUtilService') 
+	def util
+	
+	@Service('LogService')
+	def logService
+	
+	@Service('ETRACSUserService')
+	def userSvc 
+	
+	def schemaname = 'rptofficers:rptofficers';
+	def schemaversion = '1.0';
+	
+    @ProxyMethod
+    public List lookup( searchText, officerType, params ) {
+		params.searchText = searchText;
+		return userSvc.getUsersByTagid( officerType, params ).each{
+			it.title = it.remove('jobtitle');
+			it.name = it.formalname 
+		};
+    }
+	
+}

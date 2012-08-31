@@ -1,0 +1,49 @@
+/*
+* @author    : jzamora
+* @copyright : Rameses Systems Inc
+* @date      : Aug 6, 2012
+*/
+
+import com.rameses.annotations.*;
+import com.rameses.common.*
+import java.rmi.server.*
+
+public class RPTCompromiseInterceptor
+{
+	@Service("RPTCompromiseService")
+	def svc
+    
+	@After(pattern="RPTReceiptService.create.*")
+	public void afterCreate( evt ) {
+		def receipt = evt.result
+		if( receipt.sys_option ) {
+			def sys_option = receipt.sys_option
+			if( sys_option.action == 'compromise' && sys_option.type =='downpayment' ) {
+				svc.updateDownpaymentReceiptInfo([
+					compromiseid : sys_option.compromiseid,
+					receiptno	 : receipt.info.serialno,
+					receiptdate	 : receipt.info.txndate,
+					receiptamount: receipt.info.amount 
+				])
+			}
+			else if( sys_option.action == 'compromise' && sys_option.type =='cypayment' ) {
+				svc.updateCYPaymentReceiptInfo([
+					compromiseid : sys_option.compromiseid,
+					receiptno	 : receipt.info.serialno,
+					receiptdate	 : receipt.info.txndate,
+					receiptamount: receipt.info.amount 
+				])
+			}
+			else if( sys_option.action == 'compromise' && sys_option.type =='installment' ) {
+				svc.updateInstallmentPayment( receipt, receipt._items )
+				svc.closeFullyPaidCompromise( sys_option.compromiseid )
+			}
+			else if( sys_option.action == 'compromise' && sys_option.type =='default_payment' ) {
+				svc.postDefaultPayment( sys_option.compromiseid, receipt, receipt._items )
+			}
+		}
+	}
+	
+	
+
+}

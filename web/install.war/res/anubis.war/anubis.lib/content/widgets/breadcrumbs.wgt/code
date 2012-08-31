@@ -1,0 +1,24 @@
+<style>
+	.breadcrumbs-gap { padding: 5px; }
+</style>
+<% 
+	def startpage = OPTIONS.startpage ? OPTIONS.startpage : "/";
+	def path = PAGE.path;
+	if(path.startsWith("/")) path = path.substring(1);
+	String[] arr = path.split("/");
+	def spath = "";
+	boolean flag_pass = false;
+	for( int i =0;i < arr.length; i++) {
+		spath = spath + "/" + arr[i];
+		if( spath == startpage )  continue;
+		def file = ANUBIS.getFileInfo( spath + ".pg" );
+		def href = (file.href) ? file.href : file.path;
+		if(file) {
+			if(flag_pass) print '<span class="breadcrumbs-gap">/</span>';
+			print '<a class="breadcrumbs" href="' + href + '">';
+			print file.title;
+			print '</a>'
+			flag_pass = true;
+		}
+	}
+%>

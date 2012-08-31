@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="init-db" name="Load MySQL">
+    
+    <target name="init-db">
+        <!-- restore etracs2.sql -->
+        <antcall target="do-restore">
+            <param name="db_name" value="${main_dbname}"/>
+            <param name="sqlfile" value="db/${db_scheme}/etracs.sql"/>
+        </antcall>
+        
+        <!-- restore system.sql -->
+        <antcall target="do-restore">
+            <param name="db_name" value="${system_dbname}"/>
+            <param name="sqlfile" value="db/${db_scheme}/system.sql"/>
+        </antcall>
+    </target>
+    
+    <target name="do-restore">
+        <echo>Loading ${sqlfile} ${basedir}</echo>
+		<delete file="tmp.sql"/>
+        <copy file="${sqlfile}" tofile="tmp.sql"/>
+        <replace file="tmp.sql" token="@dbname" value="${db_name}"/>
+
+        <!-- the target db must already exist -->
+        <sql userid="${db_user}" password="${db_pwd}" 
+             url="${db_url}" 
+             driver="${db_driver}">
+            <transaction src="tmp.sql" />
+        </sql>
+        
+        <delete file="tmp.sql"/>
+    </target>
+    
+</project>

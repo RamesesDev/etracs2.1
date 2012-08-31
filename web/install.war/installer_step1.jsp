@@ -7,7 +7,7 @@
 	</tr>
 	<tr>
 		<td class="caption">DB Host</td>
-		<td class="input-column"><input type="text" r:context="installer" r:name="info.dbhost" style="width:100%"/></td>
+		<td class="input-column"><input type="text" r:context="installer" r:name="info.dbhost" size="40"/></td>
 		<td><label r:context="installer" r:visibleWhen="#{errors.dbhost}" class="err-label">DB host is required</label></td>
 	</tr>
 	<tr>
@@ -27,5 +27,5 @@
 	</tr>
 </table>
 <br>
-<a r:context="installer" r:name="_default"class="button">Back</a>&nbsp;&nbsp;
+<a r:context="installer" r:name="back" class="button" r:immediate="true">Back</a>&nbsp;&nbsp;
 <a r:context="installer" r:name="verifyDbInfo"class="button">Next</a>

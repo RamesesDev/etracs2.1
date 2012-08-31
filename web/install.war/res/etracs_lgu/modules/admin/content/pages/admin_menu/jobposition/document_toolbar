@@ -1,0 +1,9 @@
+<table>
+	<tr>
+		<td>
+			<b>Org. Unit : </b>
+			<select r:context="jobpositionlist" r:items="orgUnits" r:name="orgUnit" r:itemLabel="title" r:allowNull="true" r:emptyText="- Select an org unit -"></select>
+			<button r:context="jobpositionlist" r:name="add">+Add</button>
+		</td>
+	</tr>
+</table>

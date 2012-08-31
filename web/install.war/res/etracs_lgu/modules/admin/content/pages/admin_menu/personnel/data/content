@@ -1,0 +1,21 @@
+<div class="personnel-info">
+	<div class="options">
+		<a r:context="personnelinfo" r:name="edit" title="Edit">
+			<img src="/res/admin/edit.gif"/>
+			Edit
+		</a>
+	</div>
+	
+	<%
+	def fields = [
+		[type:"label", caption:"Staff No.", value:"#{info.staffno}"],
+		[type:"label", caption:"Last Name", value:"#{info.lastname}"],
+		[type:"label", caption:"First Name", value:"#{info.firstname}"],
+		[type:"label", caption:"Middle Name", value:"#{info.middlename}"],
+		[type:"label", caption:"Birthdate", value:"#{info.birthdate}"],
+		[type:"label", caption:"Gender", value:"#{!info.gender ? '' : info.gender == 'M' ? 'Male' : 'Female'}"],
+		[type:"label", caption:"Email", value:"#{info.email}"],
+	];
+	%>
+	@form(context:"personnelinfo", fields: fields)
+</div>

@@ -1,0 +1,6 @@
+<%
+	def templateid = OPTIONS.id;
+	def data = OPTIONS.data;
+%>
+
+${ ANUBIS.getTemplate( templateid, data) }

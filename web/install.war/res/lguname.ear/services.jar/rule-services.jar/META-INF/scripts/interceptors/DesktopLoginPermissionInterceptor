@@ -1,0 +1,24 @@
+import com.rameses.annotations.*;
+
+public class DesktopLoginPermissionInterceptor
+{
+	
+	@After(pattern="LoginService.login.*", eval="env.CLIENTTYPE=='desktop'", index=1000)
+	public void loadProfile( evt )
+	{
+		def profile = evt.result
+		if( !profile || !profile.permissions ) return
+		
+		def hasrule = false
+		for( it in profile.permissions ) {
+			if( it.matches(/.*-rule-mgmt\:.*/) ) {
+				hasrule = true
+				break
+			}
+		};
+		
+		if( hasrule ) {
+			profile.permissions << 'rule-mgmt:.*';
+		}
+	}
+}

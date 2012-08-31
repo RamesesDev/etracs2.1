@@ -1,0 +1,10 @@
+import com.rameses.annotations.*;
+
+public class AuthorizationService
+{
+	@ProxyMethod
+	public def checkPermission( def map ) { return [:] }
+	
+	@ProxyMethod
+	public def getPermissions( def map )  { return [:] }
+}

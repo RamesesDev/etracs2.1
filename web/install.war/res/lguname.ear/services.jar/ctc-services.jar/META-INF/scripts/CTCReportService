@@ -1,0 +1,55 @@
+import com.rameses.annotations.*;
+
+
+public class CTCReportService
+{
+	@PersistenceContext("main")
+	def em;
+	
+	
+	@ProxyMethod
+	public List buildAbstractCtc0016( remittanceid ) {
+		def sql = '''
+			SELECT
+				rl.remittanceno,
+				rl.remittancedate,
+				rl.serialno,
+				rl.collectorname,
+				rl.collectortitle,
+				rl.voided,
+				rl.payorname,
+				rl.amount as total,
+				r.extended
+			FROM receiptlist rl
+			INNER JOIN receipt r ON r.objid = rl.objid
+			WHERE rl.remittanceid = ? and r.doctype='CTCI'
+			ORDER BY rl.serialno 
+		''';
+		
+		def list = em.sqlContext.createQuery(sql).setParameter(1, remittanceid).resultList.each {
+			def ext = em.serializer.read( it.extended )
+			
+			if( it.voided == 1 ) {
+				it.payorname = '*** VOID ***'
+				it.basictax = 0.00
+				it.additionaltax = 0.00
+				it.penalty = 0.00
+				it.total = 0.00
+			}
+			else {
+				it.basictax = ext.tax.basic
+				it.penalty = ext.tax.interest
+				it.additionaltax = 0.00
+				if( ext.tax.property ) it.additionaltax += ext.tax.property
+				if( ext.tax.business ) it.additionaltax += ext.tax.business
+				if( ext.tax.salary )   it.additionaltax += ext.tax.salary
+			}
+		};
+		
+		if( list.size() == 0) {
+			throw new Exception("No CTC-Individual collection found for the specified remittance.");
+		}
+		return list;
+	}
+	
+}

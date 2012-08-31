@@ -1,0 +1,6 @@
+<%
+	def actions = OPTIONS.actions;
+	actions.each {
+%>
+	<a r:name="${it.action}" r:context="${it.context}" r:visibleWhen="${it.visibleWhen}">${it.title}</a>
+<% 	} %>

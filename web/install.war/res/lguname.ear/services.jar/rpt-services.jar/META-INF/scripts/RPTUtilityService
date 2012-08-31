@@ -1,0 +1,125 @@
+import com.rameses.annotations.*
+import java.rmi.server.UID
+
+class RPTUtilityService
+{
+	@PersistenceContext('main')
+	def em
+    
+	@Service('LogService')
+	def logSvc
+	
+	@ProxyMethod
+	//info: faasid, oldpin, tdno, pintype, municipality, barangay, 
+	//      section, parcel, suffix, newpin, ssection, sparcel 
+	public void updatePin( info ) {
+		validatePin( info )
+		checkDuplicatePin(info)
+		updateFaasPinInfo( info )
+		updateLedgerinInfo( info )
+		updateRealPropertyPinInfo( info )
+		modifyPin(info )
+		logSvc.log('MODIFY_PIN', 'FAAS', info.faasid  )
+	}
+	
+	void validatePin( info ) {
+        if( info.rputype == 'bldg' && (info.suffix < 1000 || info.suffix > 1999)) {
+            throw new Exception('Building Suffix must be between 1001 and 1999.')
+        }
+        if( info.rputype == 'mach' && (info.suffix < 2000 || info.suffix > 2999)) {
+            throw new Exception('Building Suffix must be between 2001 and 2999.')
+        }
+        if( info.rputype == 'planttree' && (info.suffix < 3000 || info.suffix > 6999)) {
+            throw new Exception('Building Suffix must be between 3001 and 6999.')
+        }
+        if( info.rputype == 'misc' && (info.suffix < 7000 || info.suffix > 7999)) {
+            throw new Exception('Building Suffix must be between 7001 and 7999.')
+        }
+    }
+	
+	void modifyPin(info ) {
+		//insert new pin 
+		em.sqlContext.createNamedExecutor('rptutility:insertPin')
+					.setParameter( 'pin', info.newpin )
+					.setParameter('docstate', info.docstate )
+					.execute()
+		//delete old pin 
+		em.sqlContext.createNamedExecutor('rptutility:deletePin')
+					.setParameter( 'pin', info.oldpin )
+					.execute()
+	}
+	
+	void updateFaasPinInfo( info ){
+		def faas = em.read('faas', [objid:info.faasid] )
+		if( ! faas ) throw new Exception('FAAS ' + info.tdno + ' does not exists or has already been deleted.')
+		if( info.suffix > 0 ) {
+			faas.rp.pin = info.newpin[0..-6]
+		}
+		else {
+			faas.rp.pin = info.newpin 
+		}
+		faas.rp.section 	= info.ssection 
+		faas.rp.parcel 		= info.sparcel 
+		faas.rp.pintype 	= info.pintype 
+		faas.rp.munidistrictindex	= info.municipality.indexno
+		faas.rp.munidistrict		= info.municipality.lguname 
+		faas.rp.barangayindex		= info.barangay.indexno 
+		faas.rp.barangay			= info.barangay.lguname 
+		faas.rp.barangayid			= info.barangay.objid 
+		faas.rpu.fullpin			= info.newpin 
+		em.update('faas', faas )
+		em.update('faas:faaslist', faas )
+	}
+	
+	void updateLedgerinInfo( info ){
+		def params = [
+			newpin 		: info.newpin,
+			municityid 	: info.municipality.objid,
+			municityname : info.municipality.lguname ,
+			faasid 		: info.faasid,
+		]
+		em.sqlContext.createNamedExecutor('rptutility:updateLedgerPin').setParameters( params ).execute()
+	}
+	
+	void updateRealPropertyPinInfo( info ){
+		if( info.suffix == 0 ) {
+			def rp = [
+				munidistrict  	: info.municipality.lguname,
+				barangay		: info.barangay.lguname,
+				barangayid		: info.barangay.objid,
+				pintype			: info.pintype,
+				pin				: info.newpin,
+				munidistrictindex : info.municipality.indexno,
+				barangayindex	: info.barangay.indexno,
+				section			: info.ssection,
+				parcel			: info.sparcel,
+			]
+			em.sqlContext.createNamedExecutor('rptutility:updateRealProperty').setParameters( rp ).execute()
+		}
+	}
+		
+	void checkDuplicatePin( info ) {
+		// if land  then  section and parcel must not be zero
+		// if improvement then section and parcel and suffix must not be zero 
+		if( info.suffix == 0 && info.section > 0 && info.parcel > 0) {
+			checkDuplicate( info )
+		}
+		else if( info.suffix == 0 && info.section == 0 && info.parcel > 0) {
+			checkDuplicate( info )
+		}
+		else if( info.suffix > 0 && info.section > 0 && info.parcel > 0 && info.suffix > 0) {
+			checkDuplicate( info )
+		}
+		else if( info.suffix > 0 && info.section > 0 && info.parcel == 0 && info.suffix > 0) {
+			checkDuplicate( info )
+		}
+		else if( info.suffix > 0 && info.section == 0 && info.parcel == 0 && info.suffix > 0) {
+			checkDuplicate( info )
+		}
+	}
+    
+	void checkDuplicate( info ) {
+		def pin = em.sqlContext.createNamedQuery('rptutility:getPin').setParameter('pin', info.newpin).singleResult
+		if( pin ) throw new Exception('New PIN ' + info.newpin + ' already exists.')
+	}
+}

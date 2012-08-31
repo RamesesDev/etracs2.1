@@ -1,0 +1,21 @@
+import com.rameses.annotations.*;
+
+
+public class AuthenticationServiceInterceptor 
+{
+	
+	@Service("LoginService")
+	def svc;
+
+	@After(pattern="AuthenticationService.authenticate.*") 
+	public void afterAuthenticate( evt ) 
+	{
+		def params = evt.args[0];
+		
+		def login_result = svc.login( params );
+		login_result.SESSIONID = login_result.sessionid + "!!" + login_result.userid;
+		
+		evt.result.putAll( login_result );
+	}
+	
+}

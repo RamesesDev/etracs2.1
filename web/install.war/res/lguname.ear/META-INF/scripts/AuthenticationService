@@ -1,0 +1,7 @@
+import com.rameses.annotations.*;
+
+public class AuthenticationService
+{
+	@ProxyMethod
+	public def authenticate( def map ) { return [:] }
+}

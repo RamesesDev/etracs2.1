@@ -1,0 +1,164 @@
+import com.rameses.annotations.*;
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+import java.rmi.server.UID;
+
+class RealPropertyUpdateService
+{
+	@PersistenceContext('main')
+	def em
+	
+	@Service('LogService')
+	def logService
+	
+	@Service('SequenceService')
+	def seqSvc
+	
+	@Service('DateService')
+	def dateSvc
+	
+	@Service('RealPropertyService')
+	def rpSvc
+	
+	@Env
+	def env
+	
+	
+	@ProxyMethod
+	public def getList( param ) {
+		def qry
+		if( param.searchText || param.state ) {
+			if( param.searchText == null ) param.searchText = ''
+			param.pin = param.searchText + '%'
+			if( param.state )
+				qry = em.sqlContext.createNamedQuery('realpropertyupdate:list-by-pin-state').setParameters(param)
+			else
+				qry = em.sqlContext.createNamedQuery('realpropertyupdate:list-by-pin').setParameters(param)
+		}
+		else {
+			qry = em.sqlContext.createNamedQuery('realpropertyupdate:list')
+		}
+		
+		if( param._start ) qry.setFirstResult( param._start )
+		if( param._limit ) qry.setMaxResults( param._limit )
+		
+		return qry.resultList
+	}
+	
+	@ProxyMethod
+	public def createRealPropertyUpdate( param ) {
+		def info = em.read('realproperty', param)
+		
+		def entity = [:]
+		entity.pin = info.pin
+		entity.realpropertyid = info.objid 
+		entity.cadastrallotno = entity.prevcadastrallotno = info.cadastrallotno
+		entity.blockno = entity.prevblockno = info.blockno
+		entity.surveyno = entity.prevsurveyno = info.surveyno
+		entity.houseno = entity.prevhouseno = info.houseno
+		entity.street = entity.prevstreet = info.street
+		entity.purok = entity.prevpurok = info.purok
+		entity.north = entity.prevnorth = info.north
+		entity.east = entity.preveast = info.east
+		entity.south = entity.prevsouth = info.south
+		entity.west = entity.prevwest = info.west
+		
+		return entity
+	}
+	
+	@ProxyMethod
+	public def approve( entity ) {		
+		def newinfo = [
+			cadastrallotno	: entity.cadastrallotno,
+			blockno			: entity.blockno,
+			surveyno		: entity.surveyno,
+			houseno			: entity.houseno,
+			street			: entity.street,
+			purok			: entity.purok,
+			north			: entity.north,
+			east			: entity.east,
+			south			: entity.south,
+			west			: entity.west,
+			pin				: entity.pin,
+		]
+		
+		def realproperty = em.read('realproperty', [objid: entity.realpropertyid])
+		realproperty.putAll( newinfo )
+		em.update('realproperty', realproperty)
+		
+		def sqlctx = em.sqlContext
+		
+		//update the land faas
+		def land = sqlctx.createNamedQuery('realpropertyupdate:find-land').setParameters(realproperty).singleResult
+		if( !land ) throw new Exception("Land FAAS $realproperty.landfaasid not found.");
+		updateRPInfo( land, newinfo )
+		
+		//update all improvements faas
+		def improvements = sqlctx.createNamedQuery('realpropertyupdate:find-improvements').setParameters(land).resultList
+		improvements.each { faas ->
+			updateRPInfo( faas, newinfo )
+		}
+		
+		entity.state = 'APPROVED'
+		return save( entity )
+	}
+	
+	private void updateRPInfo( faas, realproperty ) {
+		def rp = em.serializer.read( faas.rp )
+		rp.putAll( realproperty )
+		//update faas
+		faas.rp = em.serializer.write( rp )
+		em.sqlContext.createNamedExecutor('realpropertyupdate:update-faas-rp').setParameters(faas).execute()
+
+		rp.faasid = faas.objid
+		//update faaslist
+		em.sqlContext.createNamedExecutor('realpropertyupdate:update-faaslist-rp').setParameters(rp).execute()
+		//update rptledger
+		em.sqlContext.createNamedExecutor('realpropertyupdate:update-rpt-ledger-rp').setParameters(rp).execute()
+	}
+	
+	@ProxyMethod
+	public def save( entity ) {
+		if( entity.state == 'APPROVED' ) {
+			entity.approvedby = env.USER
+			entity.dtapproved = dateSvc.serverDate
+		}
+		else {
+			entity.lastmodifiedby = env.USER
+			entity.dtlastmodified = dateSvc.serverDate
+		}
+		
+		if( !entity.txnno ) {
+			def year = dateSvc.serverYear
+			def series = seqSvc.getNextFormattedSeries( 'RPUPDATE-' + year );
+			entity.txnno = year + '-' + series
+			return em.create('realpropertyupdate', entity)
+		}
+		else {
+			return em.update('realpropertyupdate', entity)
+		}
+	}
+	
+	@ProxyMethod
+	public def read( objid ) {
+		return em.read('realpropertyupdate', [objid: objid])
+	}
+	
+	@ProxyMethod
+	public def lookupRealProperties( param ) {
+		def qry
+		if( param.searchText ) {
+			qry = em.sqlContext.createNamedQuery('realpropertyupdate:lookup-realproperty-list-by-pin').setParameter('pin', param.searchText)
+		}
+		else {
+			qry = em.sqlContext.createNamedQuery('realpropertyupdate:lookup-realproperty-list')
+		}
+		qry.setPagingKeys('r.objid')
+		
+		if( param._start ) qry.setFirstResult( param._start )
+		if( param._limit ) qry.setMaxResults( param._limit )
+		
+		return qry.resultList
+	}
+	
+}

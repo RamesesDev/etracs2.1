@@ -1,0 +1,56 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import java.rmi.server.UID
+
+class CTCCollectionInterceptor 
+{
+
+	@Service("EntityService")
+	def entitySvc;
+	
+	@Service("CTCService")
+	def ctcSvc;
+	
+	
+	@Before(pattern="ReceiptService.create.*", eval="#{args[0].doctype == 'CTCI' || args[0].doctype == 'CTCIB' || args[0].doctype == 'CTCC'}") 
+	public void beforeCreate( evt ) {
+		def receipt = evt.args[0]
+		def payer = receipt.info.payer
+		if( !payer ) return
+		
+		if( payer.objid )
+			payer = entitySvc.update( payer )
+		else
+			payer = entitySvc.create( payer )
+			
+		receipt.info.payorid = payer.objid
+		receipt.info.payorname = payer.entityname
+		receipt.info.payoraddress = payer.entityaddress
+		receipt.info.paidby = payer.entityname
+		receipt.info.paidbyaddress = payer.entityaddress
+		
+		if( receipt.info.mode == 'CAPTURE' ) ctcSvc.buildCaptureItems( receipt )
+	}
+	
+	@Before(pattern="ReceiptService.update.*", eval="#{args[0].doctype == 'CTCI' || args[0].doctype == 'CTCIB' || args[0].doctype == 'CTCC'}") 
+	public void beforeUpdate( evt ) {
+		def receipt = evt.args[0]
+		def payer = receipt.info.payer
+		if( !payer ) return
+		
+		payer = entitySvc.update( payer )
+		receipt.info.payorid = payer.objid
+		receipt.info.payorname = payer.entityname
+		receipt.info.payoraddress = payer.entityaddress
+		receipt.info.paidby = payer.entityname
+		receipt.info.paidbyaddress = payer.entityaddress
+		
+		if( receipt.taxnmode == 'CAPTURE' ) ctcSvc.buildCaptureItems( receipt )
+	}
+	
+	@After(pattern="ReceiptService.open", eval="#{result.doctype == 'CTCI' || result.doctype == 'CTCIB' || result.doctype == 'CTCC'}")
+	public void afterOpenReceipt( evt ){
+		def receipt = evt.result
+	}
+	
+}

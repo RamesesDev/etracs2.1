@@ -1,0 +1,64 @@
+<% def context="lgu"; %>
+
+<h2>LGU Information</h2>
+
+<%
+
+def fields = [
+	[type: "label", caption: "Index No.", value:"#{entity.indexno}"],
+	[type: "label", caption: "Name", value:"#{entity.lguname}"],
+];
+
+%>
+@form( context: context, fields: fields)
+
+<h3>Province</h3>
+<%
+
+fields = [
+	[type: "label", caption: "Index No.", value:"#{province.indexno}"],
+	[type: "label", caption: "Name", value:"#{province.lguname}"],
+];
+
+%>
+@form( context: context, fields: fields)
+
+
+
+<table>
+	<tr>
+		<td><h3 class="left">Barangay Information</h3></td>
+		<td valign="top">
+			<button r:context="${context}" r:name="addBarangay">+Add</button>
+		</td>
+	</tr>
+</table>
+
+<%
+
+def cols = [
+	[caption: "Index No.", name: "indexno", width:"100px"],
+	[caption: "Name", name: "lguname"],
+	[caption: "Has Org?", html: """
+		<label r:context="${context}" r:visibleWhen="#{!!item.orgunit}">
+			<img src="/res/admin/checked.png"/>
+		</label>
+		<label r:context="${context}" r:visibleWhen="#{!item.orgunit}">
+			<img src="/res/admin/unchecked.png"/>
+		</label>
+	"""],
+	[html: """
+		<a r:context="${context}" r:name="editBarangay" title="Edit">
+			<img src="/res/admin/edit.gif"/>
+		</a>
+	"""],
+	[html: """
+		<a r:context="${context}" r:name="removeBarangay" title="Remove">
+			<img src="/res/admin/trash.gif"/>
+		</a>
+	"""],
+];
+
+%>
+@grid( context: context, model: 'barangayModel', name: 'selectedBarangay', cols: cols )
+

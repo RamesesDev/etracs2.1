@@ -1,0 +1,6 @@
+{
+	title: 		'Tools',
+	pagetitle: 	'System Tools',
+	master: 	'default',
+	secured:	true,
+}

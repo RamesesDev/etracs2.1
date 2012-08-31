@@ -1,0 +1,3 @@
+print "user info is ${PARAMS}" ;
+print "GETTING SESSION INFO FOR ${SESSION.sessionid}";
+return [name:"guest" ];

@@ -1,0 +1,34 @@
+<script>
+		
+	\$put( 
+		"sysvar_edit", 
+		new function() {
+			var svc = Service.lookup( "admin/Var");
+			this.saveHandler;	
+			this.info;
+			
+			this.save = function() {
+				this.saveHandler(this.info);
+				return "_close";
+			}
+		}
+	);
+	
+</script>
+
+<%
+
+def fields = [
+	[type:"label", caption:"Name", value: "#{info.name}"],
+	[type:"text", caption:"Value", name: "info.value", textcase:"none", size: "40"],
+	[type:"label", caption:"Description", value: "#{info.description}"],
+];
+
+%>
+
+@form(context: 'sysvar_edit', fields: fields)
+
+
+<div style="text-align: right">
+	<button r:context="sysvar_edit" r:name="save">Save</button>
+</div>

@@ -1,0 +1,10 @@
+<table>
+	<tr>
+		<td>
+			${_fragment1}
+		</td>
+		<td>
+			${_fragment2}
+		</td>
+	</tr>
+</table>
