@@ -33,6 +33,7 @@ public class AddTaxFeeActionPage extends javax.swing.JPanel {
         xLookupField1.setCaption("Account");
         xLookupField1.setExpression("#{accttitle}");
         xLookupField1.setHandler("accountLookup");
+        xLookupField1.setIndex(-100);
         xLookupField1.setName("account");
         xLookupField1.setPreferredSize(new java.awt.Dimension(0, 19));
         xLookupField1.setRequired(true);
