@@ -214,7 +214,7 @@ create index "ix_rptledger_tdno" on rptledgeritem ("tdno");
 
 create index "ix_rptpaymentmanual_receiptid" on rptpaymentmanual ("receiptid");
 
-create unique index "macaddress_unique" on terminal ("macaddress");
+-- create unique index "macaddress_unique" on terminal ("macaddress");
 
 create index "ix_txnlog_refid" on txnlog ("refid");
 
