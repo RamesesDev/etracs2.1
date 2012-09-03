@@ -267,7 +267,7 @@
                     // if( item.toqtr < 0 || item.toqtr > 4 ) throw new Exception('To Qtr must be between 1 and 4.')
                     
                     int maxtoyear = parsedate.year + 3
-                    def collect_advance_as_trust = ( var.rpt_advance_payment_collected_as_trust ? var.rpt_advance_payment_collected_as_trust : 0)
+                    def collect_advance_as_trust = ( var.rpt_advance_payment_collected_as_trust ? var.rpt_advance_payment_collected_as_trust : '0')
                     if( collect_advance_as_trust.trim() == '1' && item.toyear > parsedate.year && item.fromyear <= parsedate.year ) {
                         showError('Advance Payment should be collected separately for this version.')
                         item.toyear = parsedate.year 
