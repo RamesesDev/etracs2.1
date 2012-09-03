@@ -227,45 +227,41 @@ class IRAFController
     def reportName = 'RIV'
     def getReportData() {
         def list
-        def startseries
-        def endseries
-        def flag
+        def isNewItem
+        def result = []
+        
         entity.requesteditems.each{ itm ->
             list = entity.rcvitems.findAll{ it.afid == itm.afid }
-            flag = false
-            list?.each { i ->
-                if( !flag ) {
-                    i.afunit = itm.afunit
-                    i.qtyrequested = itm.qtyrequested
-                    
-                    if( ! "LGU".equals(entity.info.rivtype) )
-                        i.qtyreceived = list.size()
-                        
-                    flag = true
-                }
-                else {
-                    i.afunit = null
-                    i.qtyrequested = null
-                    i.afid = null
-                    
-                    if( ! "LGU".equals(entity.info.rivtype) )
-                        i.qtyreceived = null
+            def map = list.groupBy{ it.afinventoryid }
+            isNewItem = true
+          
+            map.each{key, val ->
+                def item = [:]
+                if( isNewItem ) {
+                    item.afunit = itm.afunit
+                    item.qtyrequested = itm.qtyrequested
+                    item.afid = val[0].afid
+                    isNewItem = false
+                }else {
+                    item.afunit = null
+                    item.qtyrequested = null
+                    item.afid = null
                 }
                 
-                if( "nonserial".equals(itm.aftype) )
-                    i.series = ""
-                else if( i.prefix ) {
-                    startseries = i.prefix + '-' + i.startseries
-                    endseries = i.prefix + '-' + i.endseries
-                    i.series = startseries + " - " + endseries
-                }
-                else if( i.suffix ) {
-                    startseries = i.startseries + "-" + i.suffix
-                    endseries = i.endseries + "-" + i.suffix
-                    i.series = startseries + " - " + endseries
-                }
+                if( "LGU".equals(entity.info.rivtype) )
+                    item.qtyreceived = val[0].qtyreceived
                 else
-                    i.series = i.startseries + " - " + i.endseries
+                    item.qtyreceived = val.size()
+                    
+                if( "nonserial".equals(itm.aftype) )
+                    item.series = ""
+                else
+                    getSeries( val, item )
+                    
+                if( val[0].stubno )
+                    item.stubno = val[0].stubno + ' - ' + val[val.size() - 1].stubno
+                    
+                result.add( item )
             }
         }
     
@@ -276,8 +272,26 @@ class IRAFController
             requestedbytitle     : entity.rivrequestedbytitle,
             rivtype              : entity.info.rivtype,
             info                 : [approvedby : entity.info.preparedby, approvedbytitle : entity.info.preparedbytitle],
-            items                : entity.rcvitems
+            items                : result
         ]
+    }
+    
+    void getSeries( val, item ) {
+        def startseries
+        def endseries
+        
+        if( val[0].prefix ) {
+            startseries = val[0].prefix + '-' + val.startseries.min()
+            endseries = val[0].prefix + '-' + val.endseries.max()
+            item.series = startseries + " - " + endseries
+        }
+        else if( val[0].suffix ) {
+            startseries = val.startseries.min() + "-" + val[0].suffix
+            endseries = val.endseries.max() + "-" + val[0].suffix
+            item.series = startseries + " - " + endseries
+        }
+        else
+            item.series = val.startseries.min() + " - " + val.endseries.max()
     }
     
     def getReport() {

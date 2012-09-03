@@ -171,7 +171,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="9"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{series} + (($F{stubno} != null)? " (" + $F{stubno} + ")" : "")]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($F{series} != null)? $F{series}: "") + (($F{stubno} != null)? " (" + $F{stubno} + ")" : "")]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
