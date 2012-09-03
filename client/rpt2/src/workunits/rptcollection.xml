@@ -298,6 +298,7 @@
                         processBillTo( item )
                 }
                 calculateReceiptAmount()
+                clearError()
             }
             catch( e ) {
                 e.printStackTrace()
@@ -366,6 +367,11 @@
         
         void showError( msg ) {
             errorMsg = msg
+            binding.refresh('errorMsg')
+        }
+        
+        void clearError() {
+            errorMsg = null 
             binding.refresh('errorMsg')
         }
         
