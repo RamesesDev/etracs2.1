@@ -1,0 +1,5 @@
+Change Log:
+
+- Fix rpt advance payment account mapping and add "rpt_advance_payment_collected_as_trust" sys_var option
+- Add "bpreport.loblisting" permission in the bp2 module
+

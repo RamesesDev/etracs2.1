@@ -69,25 +69,29 @@ SELECT MIN(fromyear) AS minfromyear FROM rptledgeritem WHERE parentid = $P{paren
 
 [getPayments]
 SELECT 
-	r.*,  
+	rp.*,  
 	basic + basicint - basicdisc AS basicnet,   
 	sef + sefint - sefdisc AS sefnet,  
-	basic + basicint - basicdisc + sef + sefint - sefdisc AS total  
-FROM rptpayment r 
-WHERE rptledgerid = $P{ledgerid} 
-ORDER BY fromYear DESC, fromqtr DESC   
+	basic + basicint - basicdisc + sef + sefint - sefdisc AS total ,
+	r.paidby, r.paidbyaddress 
+FROM rptpayment rp  
+	LEFT JOIN receiptlist r ON rp.receiptid = r.objid 
+WHERE rp.rptledgerid = $P{ledgerid} 
+ORDER BY rp.fromYear DESC, rp.fromqtr DESC   
 
 
 [getPaymentsWithLguInfo]
 SELECT
-	objid, mode, receiptno, receiptdate, collectorname, period, collectingagency, 
-	basic, basicdisc, basicint, sef, sefdisc, sefint, 
-	basic + basicint - basicdisc AS basicnet,    
-	sef + sefint - sefdisc AS sefnet,  
-	basic + basicint - basicdisc + sef + sefint - sefdisc AS total 
-FROM rptpayment 
-WHERE rptledgerid = $P{ledgerid}  
-ORDER BY fromYear DESC, fromqtr DESC    
+	rp.objid, rp.mode, rp.receiptno, rp.receiptdate, rp.collectorname, rp.period, rp.collectingagency, 
+	rp.basic, rp.basicdisc, rp.basicint, rp.sef, rp.sefdisc, rp.sefint, 
+	rp.basic + rp.basicint - rp.basicdisc AS basicnet,    
+	rp.sef + rp.sefint - rp.sefdisc AS sefnet,  
+	rp.basic + rp.basicint - rp.basicdisc + rp.sef + rp.sefint - rp.sefdisc AS total,
+	r.paidby, r.paidbyaddress 
+FROM rptpayment rp 
+	LEFT JOIN receiptlist r ON rp.receiptid = r.objid 
+WHERE rp.rptledgerid = $P{ledgerid}  
+ORDER BY rp.fromYear DESC, rp.fromqtr DESC       
 
 
 [updateFaasLedgerId]

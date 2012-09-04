@@ -10,6 +10,7 @@
 package rulemgmt;
 
 import com.rameses.osiris2.client.InvokerUtil;
+import com.rameses.rcp.annotations.Binding;
 import com.rameses.rcp.common.MsgBox;
 import com.rameses.rcp.common.Opener;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import java.util.Map;
  * @author Elmo
  */
 public abstract class FactConditionHandler extends RuleConditionHandler {
+    @Binding()
+    private com.rameses.rcp.framework.Binding binding;
     
     public abstract String getFactname();
     public abstract FactField[] getFields();
@@ -144,6 +147,7 @@ public abstract class FactConditionHandler extends RuleConditionHandler {
         this.usevar = false;
         this.fieldvar = null;
         this.valueHandler = null;
+        binding.focus("selectedField");
     }
     
     public Map getSelectedConstraint() {

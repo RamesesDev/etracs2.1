@@ -59,6 +59,14 @@ public class RPTLedgerPage extends javax.swing.JPanel {
         xButton3 = new com.rameses.rcp.control.XButton();
         jPanel3 = new javax.swing.JPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
+        formPanel6 = new com.rameses.rcp.util.FormPanel();
+        xNumberField2 = new com.rameses.rcp.control.XNumberField();
+        xNumberField4 = new com.rameses.rcp.control.XNumberField();
+        xNumberField5 = new com.rameses.rcp.control.XNumberField();
+        formPanel7 = new com.rameses.rcp.util.FormPanel();
+        xNumberField3 = new com.rameses.rcp.control.XNumberField();
+        xNumberField6 = new com.rameses.rcp.control.XNumberField();
+        xNumberField7 = new com.rameses.rcp.control.XNumberField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -245,7 +253,7 @@ public class RPTLedgerPage extends javax.swing.JPanel {
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
+                    .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -258,7 +266,7 @@ public class RPTLedgerPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -269,6 +277,70 @@ public class RPTLedgerPage extends javax.swing.JPanel {
         jTabbedPane1.addTab("FAAS History", jPanel2);
 
         xDataTable2.setHandler("paymentListHandler");
+        xDataTable2.setImmediate(true);
+        xDataTable2.setName("selectedPayment");
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder4 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder4.setTitle("Basic Payment Breakdown");
+        formPanel6.setBorder(xTitledBorder4);
+        formPanel6.setCaptionFont(new java.awt.Font("Arial", 0, 14));
+        xNumberField2.setCaption("Basic");
+        xNumberField2.setDepends(new String[] {"selectedPayment"});
+        xNumberField2.setFont(new java.awt.Font("Arial", 0, 14));
+        xNumberField2.setName("selectedPayment.basic");
+        xNumberField2.setPattern("#,##0.00");
+        xNumberField2.setPreferredSize(new java.awt.Dimension(150, 19));
+        xNumberField2.setReadonly(true);
+        formPanel6.add(xNumberField2);
+
+        xNumberField4.setCaption("Discount");
+        xNumberField4.setDepends(new String[] {"selectedPayment"});
+        xNumberField4.setFont(new java.awt.Font("Arial", 0, 14));
+        xNumberField4.setName("selectedPayment.basicdisc");
+        xNumberField4.setPattern("#,##0.00");
+        xNumberField4.setPreferredSize(new java.awt.Dimension(150, 19));
+        xNumberField4.setReadonly(true);
+        formPanel6.add(xNumberField4);
+
+        xNumberField5.setCaption("Penalty");
+        xNumberField5.setDepends(new String[] {"selectedPayment"});
+        xNumberField5.setFont(new java.awt.Font("Arial", 0, 14));
+        xNumberField5.setName("selectedPayment.basicint");
+        xNumberField5.setPattern("#,##0.00");
+        xNumberField5.setPreferredSize(new java.awt.Dimension(150, 19));
+        xNumberField5.setReadonly(true);
+        formPanel6.add(xNumberField5);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder5 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder5.setTitle("SEF Payment Breakdown");
+        formPanel7.setBorder(xTitledBorder5);
+        formPanel7.setCaptionFont(new java.awt.Font("Arial", 0, 14));
+        xNumberField3.setCaption("SEF");
+        xNumberField3.setDepends(new String[] {"selectedPayment"});
+        xNumberField3.setFont(new java.awt.Font("Arial", 0, 14));
+        xNumberField3.setName("selectedPayment.sef");
+        xNumberField3.setPattern("#,##0.00");
+        xNumberField3.setPreferredSize(new java.awt.Dimension(150, 19));
+        xNumberField3.setReadonly(true);
+        formPanel7.add(xNumberField3);
+
+        xNumberField6.setCaption("Discount");
+        xNumberField6.setDepends(new String[] {"selectedPayment"});
+        xNumberField6.setFont(new java.awt.Font("Arial", 0, 14));
+        xNumberField6.setName("selectedPayment.sefdisc");
+        xNumberField6.setPattern("#,##0.00");
+        xNumberField6.setPreferredSize(new java.awt.Dimension(150, 19));
+        xNumberField6.setReadonly(true);
+        formPanel7.add(xNumberField6);
+
+        xNumberField7.setCaption("Penalty");
+        xNumberField7.setDepends(new String[] {"selectedPayment"});
+        xNumberField7.setFont(new java.awt.Font("Arial", 0, 14));
+        xNumberField7.setName("selectedPayment.sefint");
+        xNumberField7.setPattern("#,##0.00");
+        xNumberField7.setPreferredSize(new java.awt.Dimension(150, 19));
+        xNumberField7.setReadonly(true);
+        formPanel7.add(xNumberField7);
 
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -276,14 +348,23 @@ public class RPTLedgerPage extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .add(formPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(formPanel7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE))
+                    .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(formPanel6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 104, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(formPanel7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 104, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jTabbedPane1.addTab("Credits", jPanel3);
@@ -295,9 +376,9 @@ public class RPTLedgerPage extends javax.swing.JPanel {
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 672, Short.MAX_VALUE)
+                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
                     .add(jPanel1Layout.createSequentialGroup()
-                        .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                        .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(formPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 293, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -313,7 +394,7 @@ public class RPTLedgerPage extends javax.swing.JPanel {
                     .add(formPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
                 .addContainerGap())
         );
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -327,6 +408,8 @@ public class RPTLedgerPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel3;
     private com.rameses.rcp.util.FormPanel formPanel4;
     private com.rameses.rcp.util.FormPanel formPanel5;
+    private com.rameses.rcp.util.FormPanel formPanel6;
+    private com.rameses.rcp.util.FormPanel formPanel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -354,6 +437,12 @@ public class RPTLedgerPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel8;
     private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XNumberField xNumberField1;
+    private com.rameses.rcp.control.XNumberField xNumberField2;
+    private com.rameses.rcp.control.XNumberField xNumberField3;
+    private com.rameses.rcp.control.XNumberField xNumberField4;
+    private com.rameses.rcp.control.XNumberField xNumberField5;
+    private com.rameses.rcp.control.XNumberField xNumberField6;
+    private com.rameses.rcp.control.XNumberField xNumberField7;
     // End of variables declaration//GEN-END:variables
     
 }

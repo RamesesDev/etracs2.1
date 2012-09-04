@@ -1,0 +1,45 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/report/bp" action="generateReport" caption="Line of Business Listing" target="window" index="0" permission="bpreport.loblisting" />
+        <invoker type="previewActions"  action="_close" caption="Close" icon="images/close.png" immediate="true" />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class LOBListingReportController
+{
+    @Binding
+    def binding
+    
+    @Service("ReportParameterService")
+    def svcParams;
+    
+    @Service('BPReportService') 
+    def svc 
+    
+    def reportdata 
+    
+    void generateReport() {
+        reportdata = svc.generateLobListing()
+        report.viewReport()
+    }
+    
+    def report = [
+        getReportName : { 'lob_listing' },
+        getReportData : { return reportdata },
+        getParameters : { return svcParams.getStandardParameter( OsirisContext.env.USERNAME ) }
+    ] as ServerReportModel;
+        
+}
+]]>        
+        
+    </code>
+    <pages>
+        <page template="etracs2.common.PreviewPage" />
+    </pages>
+</workunit>

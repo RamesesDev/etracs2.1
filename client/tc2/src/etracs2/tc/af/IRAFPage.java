@@ -7,7 +7,6 @@
 package etracs2.tc.af;
 
 import com.rameses.rcp.ui.annotations.StyleSheet;
-import java.awt.FlowLayout;
 
 /**
  *
@@ -19,7 +18,6 @@ public class IRAFPage extends javax.swing.JPanel {
     /** Creates new form AccountPage */
     public IRAFPage() {
         initComponents();
-        jPanel11.setLayout( new FlowLayout( FlowLayout.LEFT ) );
     }
     
     /** This method is called from within the constructor to
@@ -53,9 +51,8 @@ public class IRAFPage extends javax.swing.JPanel {
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
         xDataTable3 = new com.rameses.rcp.control.XDataTable();
         jLabel1 = new javax.swing.JLabel();
-        jPanel11 = new javax.swing.JPanel();
-        xButton2 = new com.rameses.rcp.control.XButton();
         xButton1 = new com.rameses.rcp.control.XButton();
+        xButton2 = new com.rameses.rcp.control.XButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -199,44 +196,46 @@ public class IRAFPage extends javax.swing.JPanel {
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
         jLabel1.setText("Delivered Item(s)");
 
-        jPanel11.setOpaque(false);
-        jPanel11.setPreferredSize(new java.awt.Dimension(100, 34));
+        xButton1.setMnemonic('a');
+        xButton1.setText("Add");
+        xButton1.setName("add");
+        xButton1.setPreferredSize(new java.awt.Dimension(50, 50));
+
         xButton2.setMnemonic('c');
         xButton2.setText("Cancelled Series");
         xButton2.setDepends(new String[] {"receivedItem"});
         xButton2.setName("viewCancelledSeries");
-        xButton2.setPreferredSize(new java.awt.Dimension(130, 30));
+        xButton2.setPreferredSize(new java.awt.Dimension(70, 40));
         xButton2.setVisibleWhen("#{entity.docstate == 'APPROVED' && entity.info.rivtype == 'LGU' && receivedItem != null && receivedItem.aftype == 'serial'}");
-        jPanel11.add(xButton2);
-
-        xButton1.setMnemonic('a');
-        xButton1.setText("Add");
-        xButton1.setName("add");
-        xButton1.setPreferredSize(new java.awt.Dimension(70, 30));
-        jPanel11.add(xButton1);
 
         org.jdesktop.layout.GroupLayout jPanel8Layout = new org.jdesktop.layout.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel8Layout.createSequentialGroup()
+                .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 111, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(530, Short.MAX_VALUE))
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel8Layout.createSequentialGroup()
                 .add(jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 287, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
-                    .add(xDataTable3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel11, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 287, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(xDataTable3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE))
                 .add(0, 0, 0))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel8Layout.createSequentialGroup()
-                .add(xDataTable3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                .add(xDataTable3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                .add(xDataTable2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 42, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 26, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
         );
         jPanel7.add(jPanel8, java.awt.BorderLayout.CENTER);
 
@@ -271,7 +270,6 @@ public class IRAFPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;

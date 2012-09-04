@@ -50,6 +50,9 @@
         
         @Service('RPTBillingService')
         def billingSvc
+        
+        @Service('Var')
+        def var
     
         def currdate 
         def parsedate 
@@ -90,8 +93,16 @@
             if( bill == null ) {
                 throw new Exception('At least one ledger for payment is required.')
             }
-            
             def itemsForPayment = bill.items.findAll{ it.pay == true && it.amount > 0}
+            
+            if( payoption == 'advance' )  {
+                def notadvlist = itemsForPayment.findAll{ it.fromyear <= parsedate.year }
+                if( notadvlist ) {
+                    throw new Exception('TD No. ' + notadvlist[0].tdno + ' is not an advance payment.')
+                }
+            }
+            
+            
             if( itemsForPayment.size() == 0 ) {
                 throw new Exception('At least one ledger for payment is required.')
             }
@@ -256,6 +267,11 @@
                     // if( item.toqtr < 0 || item.toqtr > 4 ) throw new Exception('To Qtr must be between 1 and 4.')
                     
                     int maxtoyear = parsedate.year + 3
+                    def collect_advance_as_trust = ( var.rpt_advance_payment_collected_as_trust ? var.rpt_advance_payment_collected_as_trust : '0')
+                    if( collect_advance_as_trust.trim() == '1' && item.toyear > parsedate.year && item.fromyear <= parsedate.year ) {
+                        showError('Advance Payment should be collected separately for this version.')
+                        item.toyear = parsedate.year 
+                    }
                     if( item.toyear  > maxtoyear ) {
                         showError('To Year must not exceed ' + maxtoyear + '.' ) 
                         item.toyear =parsedate.year 
