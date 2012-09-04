@@ -48,10 +48,10 @@ WHERE b.taxpayerid = $P{taxpayerid}
   AND bl.barangayid LIKE $P{barangayid}   
 ORDER BY b.tradename, b.taxpayername 
 
-[getChildAppByAppId]
-SELECT objid FROM bpapplication 
+[getAppByAppId]
+SELECT objid FROM bpapplicationlisting 
 WHERE objid = $P{applicationid} 
- AND parentid IS NULL 
+ AND fullypaid = 1  
 
 [getBusinessByTaxpayerIdTrade]
 SELECT b.*  
