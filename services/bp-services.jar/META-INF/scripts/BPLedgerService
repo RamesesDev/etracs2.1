@@ -224,14 +224,14 @@ class BPLedgerService {
 				if( !bplisting.docstate.equals('ACTIVE') )
 					bplisting.docstate = 'PERMIT_PENDING'
 			
-				def getUnpaidReceivables = application.receivables.findAll{ it.amount > it.amtpaid }
-				if( !getUnpaidReceivables ) bplisting.fullypaid = 1
 			}
 		}else{
 			application.docstate = 'APPROVED';
 			bplisting.docstate = 'APPROVED';
 		}
 		
+		def getUnpaidReceivables = application.receivables.findAll{ it.amount > it.amtpaid }
+		if( !getUnpaidReceivables ) bplisting.fullypaid = 1 
 		em.update( 'business:business', business );
 		em.update( 'bpapplication:bpapplication', application );
 		em.update( 'bplisting:bpapplicationlisting',  bplisting );
