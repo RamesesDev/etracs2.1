@@ -151,7 +151,7 @@ class DepositController
             def reportName = "depositslip/cash"
              
             def fundsummary = entity.fundsummaries.find{ it.bankacctid == bankacctid }
-            if( fundsummary && fundsummary?.bankaccount?.checkreport ) {
+            if( fundsummary && fundsummary?.bankaccount?.cashreport ) {
                 reportName = 'depositslip/' + fundsummary.bankaccount.cashreport
             }
         
@@ -175,7 +175,7 @@ class DepositController
             def reportName = "depositslip/cashbreakdown"
             
             def fundsummary = entity.fundsummaries.find{ it.bankacctid == bankacctid }
-            if( fundsummary && fundsummary?.bankaccount?.checkreport ) {
+            if( fundsummary && fundsummary?.bankaccount?.cashbreakdownreport) {
                 reportName = 'depositslip/' + fundsummary.bankaccount.cashbreakdownreport
             }
             
