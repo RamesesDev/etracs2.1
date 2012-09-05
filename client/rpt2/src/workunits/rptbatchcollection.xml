@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="menu/rpt/txn" action="init" caption="Batch Collection"  permission="rptreceipt.batch" />
+        <invoker folderid="/menu/tc/coll" action="init" caption="Realty Tax Batch Collection"  permission="rptreceipt.batch" index="100"/>
         
         <invoker type="initActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/cancel.png" />
-        <invoker type="initActions" action="next" caption="Next" mnemonic="n" />
+        <invoker type="initActions" action="next" caption="Next" mnemonic="n" icon="images/next.png" />
         
-        <invoker type="listActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/cancel.png" />
-        <invoker type="listActions" action="validate" caption="Next" mnemonic="n" />
+       <invoker type="listActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/cancel.png" />
+        <invoker type="listActions" action="validate" caption="Next" mnemonic="n"  icon="images/next.png"/>
+
+        <invoker type="processActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" icon="images/cancel.png" />
+        <invoker type="processActions" action="backToList" caption="Back" mnemonic="b" immediate="true" icon="images/back.png"/>
+                
+        <invoker type="summaryActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/cancel.png" />
+        <invoker type="summaryActions" action="init" caption="New" mnemonic="n"  icon="images/doc-new.png" />
+        
     </invokers>
     
     <code lang="groovy">
@@ -64,6 +71,37 @@ public class RPTBatchCollectionController {
     
     def init() {
         parsedate = dateSvc.parseCurrentDate()
+        entity = null 
+        payor = null 
+        paidby = null
+        paidbyaddress  = null
+        amtdue = null
+        items = []
+        amtreceived = 0.0
+        change = 0.0
+        paytype = PAY_TYPE_CASH
+        bank = null 
+        checkno = null 
+        checkdate = null 
+        receiptlist = [] 
+
+        runningamount = 0.0
+        itemsprocessed = 0
+
+        processing = false
+        enableActivateButton = false
+
+        msg = null 
+        collector  = null 
+        afcontrol  = null
+        af = null
+        txnmode = 'ONLINE'
+        collectiontype = null
+
+        opener = null 
+        entity = null 
+        propertyforpaymentlist = null
+
         return 'init' 
     }
     
@@ -316,6 +354,9 @@ public class RPTBatchCollectionController {
     def propertyforpaymentlist
     
     def processPayment() {
+        if( ! MsgBox.confirm('Process payment now?') ) {
+            return 
+        }
         activateNewAFControl()
         if( !afcontrol ) throw new Exception('AF Control is required.\nActivate a control and process the payment again.')
         
@@ -417,7 +458,7 @@ public class RPTBatchCollectionController {
     def receiptListHandler = [
         getRows     : { return 100 },
         getColumns  : { return [
-            new Column(name:'serialno', caption:'Serial No.' ),
+            new Column(name:'serialno', caption:'Receipt No.' ),
             new Column(name:'amount', caption:'Amount', type:'decimal', format:'#,##0.00' ),
         ]},
         fetchList   : { return receiptlist },
@@ -596,6 +637,15 @@ public class RPTBatchCollectionController {
     
     List getQuarterList(){
         return [1,2,3,4]
+    }
+    
+    def backToList() {
+        return 'list'
+    }
+    
+    void showError( msg) {
+        this.msg = msg
+        binding?.refresh( 'msg' )
     }
 }
 

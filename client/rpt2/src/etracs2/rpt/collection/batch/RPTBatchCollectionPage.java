@@ -28,8 +28,13 @@ public class RPTBatchCollectionPage extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        xButton2 = new com.rameses.rcp.control.XButton();
+        xActionBar2 = new com.rameses.rcp.control.XActionBar();
         jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        formPanel1 = new com.rameses.rcp.util.FormPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
+        xLabel4 = new com.rameses.rcp.control.XLabel();
         formPanel2 = new com.rameses.rcp.util.FormPanel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
@@ -39,24 +44,53 @@ public class RPTBatchCollectionPage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xTextField3 = new com.rameses.rcp.control.XTextField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
-        formPanel1 = new com.rameses.rcp.util.FormPanel();
-        xLabel1 = new com.rameses.rcp.control.XLabel();
-        xLabel3 = new com.rameses.rcp.control.XLabel();
-        xLabel4 = new com.rameses.rcp.control.XLabel();
         xButton1 = new com.rameses.rcp.control.XButton();
-
-        xButton2.setMnemonic('p');
-        xButton2.setText("Activate AF Control");
-        xButton2.setFont(new java.awt.Font("Tahoma", 1, 14));
-        xButton2.setName("activateNewAFControl");
 
         setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setLayout(null);
+        xActionBar2.setBorder(new com.rameses.rcp.control.border.XUnderlineBorder());
+        xActionBar2.setName("processActions");
+        add(xActionBar2, java.awt.BorderLayout.NORTH);
+
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        jPanel2.setLayout(null);
+
+        formPanel1.setLayout(null);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Payment Detail");
-        formPanel2.setBorder(xTitledBorder1);
+        xTitledBorder1.setTitle("Payee Information");
+        formPanel1.setBorder(xTitledBorder1);
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel1.setCaption("Taxpayer");
+        xLabel1.setFont(new java.awt.Font("Arial", 1, 12));
+        xLabel1.setName("payor.payorname");
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel1.add(xLabel1);
+        xLabel1.setBounds(80, 0, 484, 19);
+
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel3.setCaption("Paid By");
+        xLabel3.setFont(new java.awt.Font("Arial", 1, 12));
+        xLabel3.setName("paidby");
+        xLabel3.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel1.add(xLabel3);
+        xLabel3.setBounds(80, 0, 484, 19);
+
+        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel4.setCaption("Address");
+        xLabel4.setFont(new java.awt.Font("Arial", 1, 12));
+        xLabel4.setName("paidbyaddress");
+        xLabel4.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel1.add(xLabel4);
+        xLabel4.setBounds(80, 0, 484, 19);
+
+        jPanel2.add(formPanel1);
+        formPanel1.setBounds(10, 8, 428, 95);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setTitle("Payment Detail");
+        formPanel2.setBorder(xTitledBorder2);
         formPanel2.setCaptionFont(new java.awt.Font("Arial", 1, 14));
         formPanel2.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
         formPanel2.setPadding(new java.awt.Insets(2, 5, 5, 5));
@@ -136,47 +170,17 @@ public class RPTBatchCollectionPage extends javax.swing.JPanel {
         xDateField1.setPreferredSize(new java.awt.Dimension(0, 22));
         formPanel2.add(xDateField1);
 
-        jPanel1.add(formPanel2);
-        formPanel2.setBounds(8, 108, 428, 290);
-
-        formPanel1.setLayout(null);
-
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder2.setTitle("Payee Information");
-        formPanel1.setBorder(xTitledBorder2);
-        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel1.setCaption("Taxpayer");
-        xLabel1.setFont(new java.awt.Font("Arial", 1, 12));
-        xLabel1.setName("payor.payorname");
-        xLabel1.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel1.add(xLabel1);
-        xLabel1.setBounds(80, 0, 484, 19);
-
-        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel3.setCaption("Paid By");
-        xLabel3.setFont(new java.awt.Font("Arial", 1, 12));
-        xLabel3.setName("paidby");
-        xLabel3.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel1.add(xLabel3);
-        xLabel3.setBounds(80, 0, 484, 19);
-
-        xLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel4.setCaption("Address");
-        xLabel4.setFont(new java.awt.Font("Arial", 1, 12));
-        xLabel4.setName("paidbyaddress");
-        xLabel4.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel1.add(xLabel4);
-        xLabel4.setBounds(80, 0, 484, 19);
-
-        jPanel1.add(formPanel1);
-        formPanel1.setBounds(8, 8, 428, 95);
+        jPanel2.add(formPanel2);
+        formPanel2.setBounds(10, 108, 428, 290);
 
         xButton1.setMnemonic('p');
         xButton1.setText("Process Payment");
         xButton1.setFont(new java.awt.Font("Tahoma", 1, 14));
         xButton1.setName("processPayment");
-        jPanel1.add(xButton1);
-        xButton1.setBounds(8, 402, 151, 28);
+        jPanel2.add(xButton1);
+        xButton1.setBounds(10, 402, 151, 28);
+
+        jPanel1.add(jPanel2, java.awt.BorderLayout.CENTER);
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -187,8 +191,9 @@ public class RPTBatchCollectionPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.util.FormPanel formPanel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private com.rameses.rcp.control.XActionBar xActionBar2;
     private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XLabel xLabel1;
