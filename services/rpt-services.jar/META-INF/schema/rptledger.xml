@@ -37,6 +37,7 @@
         <field name="partialsef" required="true" type="decimal" />
 		<field name="partialsefint" required="true" type="decimal" />
         <field name="firstqtrpaidontime" required="true"  type="boolean" />
+        <field name="undercompromised" type="boolean" />
     </element>
     
     <element name="rptledgeritem" tablename="rptledgeritem">
