@@ -80,7 +80,7 @@ public class RPTManualCollectionDetailPage {
     def ok() {
         validateInfo()
         
-        def collect_advance_as_trust = ( var.rpt_advance_payment_collected_as_trust ? var.rpt_advance_payment_collected_as_trust : 0)
+        def collect_advance_as_trust = ( var.rpt_advance_payment_collected_as_trust ? var.rpt_advance_payment_collected_as_trust : '0')
         if( collect_advance_as_trust.trim() == '1' && item.toyear > parsedate.year && item.fromyear <= parsedate.year ) {
             throw new Exception('Advance Payment should be added as a separately entry for this version.')
         }
