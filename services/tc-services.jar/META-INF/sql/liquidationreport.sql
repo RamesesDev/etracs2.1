@@ -36,7 +36,7 @@ SELECT
 	CASE WHEN rf.beginqty >= 0 THEN rf.beginqty * af.denomination ELSE 0.0 END AS beginamt, 
 	CASE WHEN rf.issuedqty >= 0 THEN rf.issuedqty * af.denomination ELSE 0.0 END AS issuedamt, 
 	CASE WHEN rf.endingqty >= 0 THEN rf.endingqty * af.denomination ELSE 0.0 END AS endingamt, 
-	rf.afid, rf.beginqty, rf.receivedqty, rf.issuedqty, rf.endingqty 
+	rf.afid, rf.beginqty, rf.receivedqty, rf.issuedqty, rf.endingqty, rf.stubno 
 FROM liquidationlist lq 
 	INNER JOIN remittancelist rem ON lq.objid = rem.liquidationid 
 	INNER JOIN remittedform rf ON rem.objid = rf.remittanceid 
