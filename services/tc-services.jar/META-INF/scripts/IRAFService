@@ -472,7 +472,7 @@ class IRAFService
 					endseries: afinventorycredit.endseries,
 					prefix: afinventory.prefix,
 					suffix: afinventorycredit.suffix,
-					stubno: afinventorycredit.stubno,
+					stubno: afinventorycredit.stubno+"",
 					qtyreceived: 1,				
 				];
 

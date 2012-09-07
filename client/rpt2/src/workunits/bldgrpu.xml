@@ -311,6 +311,11 @@ public class BldgRPUController
                 li.item.materialid = li.item.material?.materialid
                 li.item.materialcode = li.item.material?.materialcode
                 li.item.materialname = li.item.material?.materialname
+                
+                rpu.bldgstructures.each{
+                if( !it.material && it.structureid == li.item.structureid )
+                    it.material = li.item.material
+                }
 
                 if( li.item.material.materialcode == '-' ) {
                     li.item.material = null

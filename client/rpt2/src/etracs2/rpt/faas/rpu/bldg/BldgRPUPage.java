@@ -129,7 +129,7 @@ public class BldgRPUPage extends javax.swing.JPanel {
 
         xComboBox2.setCaption("Exempt Reason");
         xComboBox2.setCaptionWidth(90);
-        xComboBox2.setDepends(new String[] {"rpu.info.taxable"});
+        xComboBox2.setDepends(new String[] {"rpu.taxable"});
         xComboBox2.setExpression("#{exemptcode}");
         xComboBox2.setItems("exemptionList");
         xComboBox2.setName("exemption");

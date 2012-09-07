@@ -36,7 +36,7 @@ public class BPBillingService
 	public def getBilling( billing ) {
 		billing.info.billdate = dtService.serverDate
 		validateAdvBill( billing )
-		validateChildApp( billing )
+		validateAppFullyPaid( billing )
 		def businesslist = getBusinessByTaxpayer( billing )
 		if( !businesslist ) throw new Exception("There are no businesses registered for this taxpayer.");
 		billing.items = [];
@@ -164,8 +164,8 @@ public class BPBillingService
 		return (Integer)(month / 3);
 	}
 	
-	private def validateChildApp( billing ){
-		def childapp = em.sqlContext.createNamedQuery( 'business:getChildAppByAppId' ).setParameter( 'applicationid', billing.info.applicationid ).singleResult
+	private def validateAppFullyPaid( billing ){ 
+		def childapp = em.sqlContext.createNamedQuery( 'business:getAppByAppId' ).setParameter( 'applicationid', billing.info.applicationid ).singleResult
 		if( childapp ) throw new Exception( "Appication No. $billing.info.appno is fully paid." )
 	}
 	
@@ -225,7 +225,7 @@ public class BPBillingService
 		bill.taxfees.each {
 			it.discount  = 	numSvc.round(new BigDecimal(it.discount  ? it.discount.toString()  : '0.0'))
 			it.surcharge =  numSvc.round(new BigDecimal(it.surcharge ? it.surcharge.toString() : '0.0'))
-			it.interest  =  numSvc.round(new BigDecimal(it.surcharge ? it.surcharge.toString() : '0.0'))
+			it.interest  =  numSvc.round(new BigDecimal(it.interest  ? it.interest.toString() : '0.0'))
 			it.amount 	 = 	numSvc.round(new BigDecimal(it.amount 	 ? it.amount.toString()    : '0.0'))
 		}
 		return bill
