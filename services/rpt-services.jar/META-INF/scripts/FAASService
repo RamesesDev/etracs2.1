@@ -392,7 +392,7 @@ class FAASService
         if( faasinfo.docstate == CURRENT_STATE) throw new Exception('FAAS is already current.')
         if( faasinfo.docstate == CANCELLED_STATE) throw new Exception('FAAS has already been cancelled.')
         def faas = open( faasinfo.objid )
-        updateFaasState( faas, FORAPPROVAL_STATE )
+        updateFaasState( faas, INTERIM_STATE )
         moveOutboxMessageToProcessed( faasid )
         return faas 
     }
