@@ -389,7 +389,6 @@ class FAASService
     public Map disapproveByProvince( faasid ) {
         def faasinfo = getFaasInfo( faasid )
         if( faasinfo.docstate == INTERIM_STATE) throw new Exception('FAAS is still interim.')
-        if( faasinfo.docstate == FORAPPROVAL_STATE) throw new Exception('FAAS has already been submitted for approval.')
         if( faasinfo.docstate == CURRENT_STATE) throw new Exception('FAAS is already current.')
         if( faasinfo.docstate == CANCELLED_STATE) throw new Exception('FAAS has already been cancelled.')
         def faas = open( faasinfo.objid )
