@@ -309,11 +309,15 @@ class FAASHtmlService
 						$faas.info.dtappraised
 					</td>
 					<td valign="top">
+			""" +
+			( faas.lgutype != 'city' && faas.lgutype != 'CITY' ? """
 						Recommended By:<br>
 						<br>
 						<b>$faas.info.recommendedby</b><br>
 						$faas.info.recommendedbytitle<br>
 						$faas.info.dtrecommended
+			   """ : "" ) +
+			"""
 					</td>
 					<td valign="top">
 						Approved By:<br>

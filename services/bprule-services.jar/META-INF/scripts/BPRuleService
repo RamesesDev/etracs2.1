@@ -147,6 +147,10 @@ public class BPRuleService
 			fact.varname = it.varname 
 			fact.vartype = it.vartype 
 			fact.value   = it.value 
+			
+			if( it.value instanceof BigDecimal )
+				fact.value = it.value as Double
+			
 			facts += fact 
 		}
 		

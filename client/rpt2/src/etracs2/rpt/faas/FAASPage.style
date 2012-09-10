@@ -37,3 +37,13 @@
 "faas.*|appraiser|recommender|approver|taxpayer|administrator" [allowEdit == false] {
     enabled:false;
 }
+
+"recommender|faas.info.dtrecommended" [faas.lgutype == 'city' || faas.lgutype == 'CITY'] { 
+    enabled: false; 
+}
+
+"recommender|faas.info.dtrecommended" [faas.lgutype != 'city' && faas.lgutype != 'CITY'] { 
+    enabled: true; 
+}
+
+

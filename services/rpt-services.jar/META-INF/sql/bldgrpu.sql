@@ -29,7 +29,7 @@ SELECT
 FROM bldgrysetting s, bldgtype bt, rysetting_lgu rl 
 WHERE s.objid = bt.bldgrysettingid  
   AND s.objid = rl.objid 
-  AND rl.lguid = $P{lguid} 
+  AND rl.lguid LIKE $P{lguid} 
   AND s.ry = $P{ry} AND bt.code LIKE $P{code}   
  
  
@@ -63,7 +63,7 @@ SELECT
 FROM bldgrysetting s, bldgadditionalitem bi, rysetting_lgu rl
 WHERE s.objid = bi.bldgrysettingid  
   AND s.objid = rl.objid 
-  AND rl.lguid = $P{lguid} 
+  AND rl.lguid LIKE $P{lguid} 
   AND s.ry = $P{ry} AND bi.code LIKE $P{code} 
 
 

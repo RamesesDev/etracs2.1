@@ -56,8 +56,14 @@ class RemittanceService {
 	}
 	
 	private def isCollector( userid ) {
-		def o = userSvc.getCollector( userid );
-		return (o != null)
+		try {
+			def o = userSvc.getCollector( userid );
+			return (o != null)
+		}
+		catch(e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	private def getListAll( searchText, params ) {

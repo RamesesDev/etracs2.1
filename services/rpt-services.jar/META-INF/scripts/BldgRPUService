@@ -439,6 +439,7 @@ class BldgRPUService
     ----------------------------------------------------------------------------------*/
     @ProxyMethod
     public List lookupBldgType( lguid, ry, searchText, params) {
+		lguid = (lguid ? lguid : '%')
         def searchValue = (searchText ? searchText+'%' : '%')
         def criteria = [lguid:lguid, ry:ry, code:searchValue]
         def list = getListByName('bldgrpu:lookupBldgTypeByCode', criteria, params, 'bt.objid')
@@ -453,6 +454,7 @@ class BldgRPUService
     
     @ProxyMethod
     public List lookupBldgKind( lguid, bldgtypeid , searchText, params) {
+		lguid = (lguid ? lguid : '%')
         def searchValue = (searchText ? searchText+'%' : '%')
         def criteria = [lguid:lguid, bldgtypeid:bldgtypeid, code:searchValue]
         return getListByName('bldgrpu:lookupBldgKindByCode', criteria, params, 'bk.objid')
@@ -473,6 +475,7 @@ class BldgRPUService
     
     @ProxyMethod
     public List lookupAdditionalItems(lguid, ry, searchText, params) {
+		lguid = (lguid ? lguid : '%')
         def searchValue = (searchText ? searchText+'%' : '%')
         def criteria = [lguid:lguid, ry:ry, code:searchValue]
         return getListByName('bldgrpu:lookupAdditionalItem', criteria, params, 'bi.objid')
