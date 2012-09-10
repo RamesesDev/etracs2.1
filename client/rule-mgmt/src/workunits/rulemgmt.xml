@@ -118,11 +118,15 @@
                 }
                 
                 public void deploy() {
-                    svc.deploy( selectedItem.objid );
+                    def result = svc.deploy( selectedItem.objid );
+                    if( result ) selectedItem.putAll( result );
+                    updateHandler();
                 }
 
                 public void undeploy() {
-                    svc.undeploy( selectedItem.objid );
+                    def result = svc.undeploy( selectedItem.objid );
+                    if( result ) selectedItem.putAll( result );
+                    updateHandler();
                 }
 
             }
