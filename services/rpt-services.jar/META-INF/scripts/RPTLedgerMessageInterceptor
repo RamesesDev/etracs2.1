@@ -46,9 +46,9 @@ class RPTLedgerMessageInterceptor
 	
 	void createApprovedProvinceLedger( ledger ){
 		ledger.undercompromised = false  
-		em.create( ledger.schemaname, ledger )
+		em.save( ledger.schemaname, ledger )
 		ledger.ledgerItems.each{
-			em.create(it.schemaname, it )
+			em.save(it.schemaname, it )
 		}
 	}
 	

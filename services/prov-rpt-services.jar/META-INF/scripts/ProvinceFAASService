@@ -425,7 +425,8 @@ class ProvinceFAASService
 		if( seq && seq.currentSeries > newSeries) throw new Exception("New Series $newSeries must be greater than or equal to $seq.currentSeries")
 	}
     
-    boolean faasExists( faasid) {
+	@ProxyMethod
+    public boolean faasExists( faasid) {
 		def data = em.sqlContext.createNamedQuery("faas:getState").setParameter("objid", faasid).singleResult
 		if( data ) 
 			return true

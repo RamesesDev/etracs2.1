@@ -52,6 +52,9 @@ class FAASService
 	
 	@Service('ForTransmittalService')
 	def forTransmittalSvc
+	
+	@Service('EntityService')
+	def entitySvc 
 
     def INTERIM_STATE = 'INTERIM'
     def FORAPPROVAL_STATE = 'FORAPPROVAL'
@@ -1627,7 +1630,11 @@ class FAASService
 		if( ! remote_connection_debug ) remote_connection_debug = 0
 		
 		if( (faas.info.datacapture == false || TO_BOOLEAN(remote_connection_debug) == true ) && TO_BOOLEAN(remote_connection_active) == true) {
-			def attachment = [ faas:faas, attachments:getAttachments( faas.objid) ]
+			def attachment = [ 
+				faas		: faas, 
+				attachments	: getAttachments( faas.objid),
+				entity		: entitySvc.open( faas.info.taxpayerid, null  ),
+			]
 			def msg = msgSvc.createMessage( 'faas.receive', attachment )
 			msg.refid = faas.objid 
 			msgSvc.send( msg ) 

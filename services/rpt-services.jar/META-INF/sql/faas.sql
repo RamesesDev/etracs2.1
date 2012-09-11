@@ -17,16 +17,16 @@ SELECT objid, schemaname, taxpayerid FROM faaslist WHERE fullpin = $P{pin} AND d
 SELECT * FROM txnreference WHERE objid = $P{objid}
 
 [getState]
-SELECT state FROM faas WHERE objid = $P{objid}
+SELECT docstate FROM faas WHERE objid = $P{objid}
 
 [getByTdNo]
-SELECT state FROM faas WHERE tdNo = $P{tdNo}
+SELECT docstate FROM faas WHERE tdNo = $P{tdNo}
 
 [getPinCount]
 SELECT COUNT(*) AS pinCount FROM faaslist WHERE pin = $P{pin}
 
 [getExchangePinList]
-SELECT objid, pin FROM faaslist WHERE objid <> $P{objid}  AND state = 'FORAPPROVAL' ORDER BY pin 
+SELECT objid, pin FROM faaslist WHERE objid <> $P{objid}  AND docstate = 'FORAPPROVAL' ORDER BY pin 
 
 [getLookupList]
 SELECT * FROM faaslist
@@ -250,7 +250,7 @@ SELECT
 	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
 	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha, munidistrict, annotated 
 FROM faaslist 
-WHERE docstate LIKE $P{docstate} 
+# WHERE docstate LIKE $P{docstate} 
 
 [findByTdNo]
 SELECT 

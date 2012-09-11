@@ -73,7 +73,7 @@ class InboxTask
     }
     		
 	void moveMessageToProcessedInbox( msg ) {
-		em.create(PROCESSEDINBOX_SCHEMA, msg )
+		em.save(PROCESSEDINBOX_SCHEMA, msg )
 		em.delete(INBOX_SCHEMA, msg )
 	}
 }

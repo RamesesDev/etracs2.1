@@ -145,7 +145,7 @@ class RPTReceiptService
 		msg.attachment.paymentlist.each { rptpayment ->
 			rptpayment.mode = 'REMOTE' 
 			em.validate(rptpayment.schemaname, rptpayment )
-			em.create(rptpayment.schemaname, rptpayment )
+			em.save(rptpayment.schemaname, rptpayment )
 			if( rptpayment.partialbasic == 0 )
 				updateLedgerLastYearQtrPaid([ objid:rptpayment.rptledgerid, lastyearpaid:rptpayment.toyear, lastqtrpaid:rptpayment.toqtr, partialbasic:0.0, partialbasicint:0.0, partialsef:0.0, partialsefint:0.0 ] )
 			else 
@@ -153,7 +153,7 @@ class RPTReceiptService
         }
 		msg.attachment.paymentdetaillist.each{ pmtdetail ->
 			em.validate( pmtdetail.schemaname, pmtdetail )
-			em.create( pmtdetail.schemaname, pmtdetail )
+			em.save( pmtdetail.schemaname, pmtdetail )
 		}
 	}
 		
