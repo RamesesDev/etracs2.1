@@ -1026,7 +1026,18 @@ class FAASService
     
     public void initOpenRpuInfo( rpu ) {
         if( rpu.rputype == LAND_TYPE ) {
-            rpu.info.landdetails.each{ it.taxable = TO_BOOLEAN( it.taxable )}
+            rpu.info.landdetails.each{ 
+				it.taxable = TO_BOOLEAN( it.taxable )
+				
+				//load assesslevelparentid if not set
+				if( !it.assesslevelparentid && it.assesslevelid ) {
+					def al = em.read('landrysetting:assesslevel', [objid: it.assesslevelid]);
+					if( al ) {
+						it.assesslevelparentid   = al.parentid;
+						it.assesslevelparentcode = al.parentcode;
+					}
+				}
+			}
 			rpu.info.planttrees.each {
 				it.bearing = it.bearing * 1.0 
 				it.nonbearing = it.nonbearing * 1.0 
