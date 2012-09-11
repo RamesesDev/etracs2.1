@@ -283,7 +283,7 @@ insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('TAX','TA
 
 /*Data for the table "sys_ds" */
 
-insert  into "sys_ds"("name","host","dbname","user","pwd","scheme") values ('etracsv1','${dbhost}','etracs_bayombong','${dbuser}','${dbpwd}','mssql');
+insert  into "sys_ds"("name","host","dbname","user","pwd","scheme") values ('etracsv1','${dbhost}','','${dbuser}','${dbpwd}','mssql');
 
 
 /*Data for the table "sys_module" */
@@ -345,52 +345,281 @@ insert into "sys_roleclass_module" ("roleclass", "module") values('TREASURY','tc
 
 /*Data for the table "sys_var" */
 
-insert  into "sys_var"("name","value","description","datatype","category") values ('assessor_name','AIDA R. ALFORTE',NULL,NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('assessor_officename','CITY ASSESSOR',NULL,NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('assessor_title','CITY ASSESSOR',NULL,NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('barcode_url','http://localhost:8080/barcode?data=$P{data}&width=1','barcode servlet path',NULL,'SYSTEM');
-insert  into "sys_var"("name","value","description","datatype","category") values ('collecting_agency','PROVINCE OF BOHOL',NULL,NULL,'TREASURY');
-insert  into "sys_var"("name","value","description","datatype","category") values ('deposit_print_date','0',NULL,NULL,'TREASURY');
-insert  into "sys_var"("name","value","description","datatype","category") values ('faas_attachment_path','D:/temp/faasattachments',NULL,NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('invalid_login_access_date_interval','1m','number of hours/days access date is moved when failed_login_max_retries is reached( d=days, h=hours)',NULL,NULL);
-insert  into "sys_var"("name","value","description","datatype","category") values ('invalid_login_action','1','0 - suspend 1-move access to a later date',NULL,NULL);
-insert  into "sys_var"("name","value","description","datatype","category") values ('invalid_login_max_retries','5','No. of times a user can retry login before disabling account',NULL,NULL);
-insert  into "sys_var"("name","value","description","datatype","category") values ('lgu_address','SAN CARLOS CITY',NULL,NULL,'LGU');
-insert  into "sys_var"("name","value","description","datatype","category") values ('lgu_formal_name','CITY OF SAN CARLOS',NULL,NULL,'LGU');
-insert  into "sys_var"("name","value","description","datatype","category") values ('lgu_index','100',NULL,NULL,'LGU');
-insert  into "sys_var"("name","value","description","datatype","category") values ('lgu_name','TAGBILARAN','lgu name',NULL,'LGU');
-insert  into "sys_var"("name","value","description","datatype","category") values ('lgu_type','CITY','Type of LGU. Valid values are city, municipality and province',NULL,'SYSTEM');
-insert  into "sys_var"("name","value","description","datatype","category") values ('mayor_name','JESSIE ZAMORA',NULL,NULL,'LGU');
-insert  into "sys_var"("name","value","description","datatype","category") values ('mayor_office_name','OFFICE OF THE CITY MAYOR',NULL,NULL,'LGU');
-insert  into "sys_var"("name","value","description","datatype","category") values ('mayor_title','CITY MAYOR',NULL,NULL,'LGU');
-insert  into "sys_var"("name","value","description","datatype","category") values ('parent_lgu_formal_name','PROVINCE OF BOHOL',NULL,NULL,'LGU');
-insert  into "sys_var"("name","value","description","datatype","category") values ('parent_lgu_name','BOHOL','Parent LGU Name',NULL,'LGU');
-insert  into "sys_var"("name","value","description","datatype","category") values ('pin_autonumber','0',NULL,NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('pin_parcel_length','2','The number of digits in pin parcel.',NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('pin_section_length','2','The number of digits in pin section.',NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('pin_type','new','PIN Formatting Type valid values: old or new',NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('provincial_treasurer_name',NULL,NULL,NULL,'TREASURY');
-insert  into "sys_var"("name","value","description","datatype","category") values ('provincial_treasurer_title',NULL,NULL,NULL,'TREASURY');
-insert  into "sys_var"("name","value","description","datatype","category") values ('pwd_change_cycle','3','No. of times the user cannot use a repeating password',NULL,NULL);
-insert  into "sys_var"("name","value","description","datatype","category") values ('pwd_change_date_interval','1M','No. of days/months before a user is required to change their password (d=days, M=months)',NULL,NULL);
-insert  into "sys_var"("name","value","description","datatype","category") values ('pwd_change_login_count','0','No. of times a user has successfully logged in before changing their password. (0=no limit) ',NULL,NULL);
-insert  into "sys_var"("name","value","description","datatype","category") values ('receipt_item_printout_count','10',NULL,NULL,'SYSTEM');
-insert  into "sys_var"("name","value","description","datatype","category") values ('remote_context','guimaras','Application context of the remote server',NULL,'SYSTEM');
-insert  into "sys_var"("name","value","description","datatype","category") values ('remote_host','localhost:8080','IP Address of the remote server ',NULL,'SYSTEM');
-insert  into "sys_var"("name","value","description","datatype","category") values ('remote_lgu_index','075',NULL,NULL,'SYSTEM');
-insert  into "sys_var"("name","value","description","datatype","category") values ('remote_lgu_name','GUIMARAS',NULL,NULL,'SYSTEM');
-insert  into "sys_var"("name","value","description","datatype","category") values ('rptbilling_previousledger_quarterly',NULL,NULL,NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('sangguinan_name',NULL,'sangguinian name',NULL,'LGU');
-insert  into "sys_var"("name","value","description","datatype","category") values ('server_address','localhost',NULL,NULL,'SYSTEM');
-insert  into "sys_var"("name","value","description","datatype","category") values ('server_timezone','Asia/Shanghai','this must be matched with default timezone of server',NULL,'SYSTEM');
-insert  into "sys_var"("name","value","description","datatype","category") values ('session_timeout_interval','1d ','expiry dates of inactive session (d=days, h=hours)',NULL,NULL);
-insert  into "sys_var"("name","value","description","datatype","category") values ('system_pwd','!12345','system password',NULL,NULL);
-insert  into "sys_var"("name","value","description","datatype","category") values ('td_autonumber','0',NULL,NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('td_format','Y-M-B','Tax Declaration No. format. Options: Y- revision year, M-municipality index, C - city index, D-district index, B=-barangay index',NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('td_report_display_appraisedby','1',NULL,NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('td_report_item_format','BLGF',NULL,NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('td_show_landinfo_on_improvements','1','Show the land information such as boundary etc in the improvement tax declaration. Options: 1 - show; 0 - hide',NULL,'RPT');
-insert  into "sys_var"("name","value","description","datatype","category") values ('treasurer_name','ATTY. AMY GRACE O. BOLIVAR',NULL,NULL,'TREASURY');
-insert  into "sys_var"("name","value","description","datatype","category") values ('treasurer_title','CITY TREASURER',NULL,NULL,'TREASURY');
-insert  into "sys_var"("name","value","description","datatype","category") values ('treasury_officename','City Treasurer''s Office',NULL,NULL,'TREASURY');
-insert  into "sys_var"("name","value","description","datatype","category") values ('url_logo_lgu','http://localhost:8080/downloads/images/logo.png','logo path','image','LGU');
+INSERT sys_var VALUES ('assessor_name', '', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('assessor_officename', '', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('assessor_title', '', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('barcode_url', 'http://localhost:8080/barcode?data=$P{data}&width=1', 'barcode servlet path', NULL, 'SYSTEM');
+INSERT sys_var VALUES ('collecting_agency', '', NULL, NULL, 'TREASURY');
+INSERT sys_var VALUES ('deposit_print_date', '0', NULL, NULL, 'TREASURY');
+INSERT sys_var VALUES ('faas_attachment_path', 'D:/temp/faasattachments', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('invalid_login_access_date_interval', '1m', 'number of hours/days access date is moved when failed_login_max_retries is reached( d=days, h=hours)', NULL, NULL);
+INSERT sys_var VALUES ('invalid_login_action', '1', '0 - suspend 1-move access to a later date', NULL, NULL);
+INSERT sys_var VALUES ('invalid_login_max_retries', '5', 'No. of times a user can retry login before disabling account', NULL, NULL);
+INSERT sys_var VALUES ('lgu_address', '', NULL, NULL, 'LGU');
+INSERT sys_var VALUES ('lgu_formal_name', '', NULL, NULL, 'LGU');
+INSERT sys_var VALUES ('lgu_index', '', NULL, NULL, 'LGU');
+INSERT sys_var VALUES ('lgu_name', '', 'lgu name', NULL, 'LGU');
+INSERT sys_var VALUES ('lgu_type', '', 'Type of LGU. Valid values are city, municipality and province', NULL, 'SYSTEM');
+INSERT sys_var VALUES ('mayor_name', '', NULL, NULL, 'LGU');
+INSERT sys_var VALUES ('mayor_office_name', '', NULL, NULL, 'LGU');
+INSERT sys_var VALUES ('mayor_title', '', NULL, NULL, 'LGU');
+INSERT sys_var VALUES ('parent_lgu_formal_name', '', NULL, NULL, 'LGU');
+INSERT sys_var VALUES ('parent_lgu_name', '', 'Parent LGU Name', NULL, 'LGU');
+INSERT sys_var VALUES ('pin_autonumber', '0', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('pin_parcel_length', '', 'The number of digits in pin parcel.', NULL, 'RPT');
+INSERT sys_var VALUES ('pin_section_length', '', 'The number of digits in pin section.', NULL, 'RPT');
+INSERT sys_var VALUES ('pin_type', '', 'PIN Formatting Type valid values: old or new', NULL, 'RPT');
+INSERT sys_var VALUES ('provincial_treasurer_name', NULL, NULL, NULL, 'TREASURY');
+INSERT sys_var VALUES ('provincial_treasurer_title', NULL, NULL, NULL, 'TREASURY');
+INSERT sys_var VALUES ('pwd_change_cycle', '3', 'No. of times the user cannot use a repeating password', NULL, NULL);
+INSERT sys_var VALUES ('pwd_change_date_interval', '1M', 'No. of days/months before a user is required to change their password (d=days, M=months)', NULL, NULL);
+INSERT sys_var VALUES ('pwd_change_login_count', '0', 'No. of times a user has successfully logged in before changing their password. (0=no limit) ', NULL, NULL);
+INSERT sys_var VALUES ('receipt_item_printout_count', '10', NULL, NULL, 'SYSTEM');
+INSERT sys_var VALUES ('remote_context', '', 'Application context of the remote server', NULL, 'SYSTEM');
+INSERT sys_var VALUES ('remote_host', 'localhost:8080', 'IP Address of the remote server ', NULL, 'SYSTEM');
+INSERT sys_var VALUES ('remote_lgu_index', '', NULL, NULL, 'SYSTEM');
+INSERT sys_var VALUES ('remote_lgu_name', '', NULL, NULL, 'SYSTEM');
+INSERT sys_var VALUES ('rptbilling_previousledger_quarterly', NULL, NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('rptc_barangay_basic_rate', '', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('rptc_barangay_sef_rate', '', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('rptc_city_basic_rate', '', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('rptc_city_sef_rate', '', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('rptc_municipality_basic_rate', '', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('rptc_municipality_sef_rate', '', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('rptc_province_basic_rate', '', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('rptc_province_sef_rate', '', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('sangguinan_name', '', 'sangguinian name', NULL, 'LGU');
+INSERT sys_var VALUES ('server_address', '', NULL, NULL, 'SYSTEM');
+INSERT sys_var VALUES ('server_timezone', 'Asia/Shanghai', 'this must be matched with default timezone of server', NULL, 'SYSTEM');
+INSERT sys_var VALUES ('session_timeout_interval', '1d ', 'expiry dates of inactive session (d=days, h=hours)', NULL, NULL);
+INSERT sys_var VALUES ('system_pwd', '!12345', 'system password', NULL, NULL);
+INSERT sys_var VALUES ('td_autonumber', '0', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('td_format', 'Y-M-B', 'Tax Declaration No. format. Options: Y- revision year, M-municipality index, C - city index, D-district index, B=-barangay index', NULL, 'RPT');
+INSERT sys_var VALUES ('td_report_display_appraisedby', '1', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('td_report_item_format', 'BLGF', NULL, NULL, 'RPT');
+INSERT sys_var VALUES ('td_show_landinfo_on_improvements', '1', 'Show the land information such as boundary etc in the improvement tax declaration. Options: 1 - show; 0 - hide', NULL, 'RPT');
+INSERT sys_var VALUES ('treasurer_name', '', NULL, NULL, 'TREASURY');
+INSERT sys_var VALUES ('treasurer_title', '', NULL, NULL, 'TREASURY');
+INSERT sys_var VALUES ('treasury_officename', '', NULL, NULL, 'TREASURY');
+INSERT sys_var VALUES ('url_logo_lgu', '', 'logo path', 'image', 'LGU');
+
+
+
+
+/*-- migrate rule facts ------- */
+
+insert  into "rule_package"("ruleset","rulegroup","packagename","orderindex","type","content","lastmodified") 
+values ('bpassessment','','bp.assessment.facts',NULL,'facts',
+'	package bp.assessment.facts' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare ApplicationFact' + CHAR(13) + CHAR(10) +
+'		appid             : String ' + CHAR(13) + CHAR(10) +
+'		applicationtype   : String    ' + CHAR(13) + CHAR(10) +
+'		organization      : String    ' + CHAR(13) + CHAR(10) +
+'		officetype        : String    ' + CHAR(13) + CHAR(10) +
+'		barangayid        : String' + CHAR(13) + CHAR(10) +
+'	end ' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare LOBFact' + CHAR(13) + CHAR(10) +
+'		appid            : String	' + CHAR(13) + CHAR(10) +
+'		lobid            : String  	' + CHAR(13) + CHAR(10) +
+'		name             : String ' + CHAR(13) + CHAR(10) +
+'		assessmenttype   : String  ' + CHAR(13) + CHAR(10) +
+'		classificationid : String ' + CHAR(13) + CHAR(10) +
+'		attributes       : java.util.List ' + CHAR(13) + CHAR(10) +
+'	end' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare InputVariableFact ' + CHAR(13) + CHAR(10) +
+'		appid   : String ' + CHAR(13) + CHAR(10) +
+'		lobid   : String ' + CHAR(13) + CHAR(10) +
+'		varid   : String' + CHAR(13) + CHAR(10) +
+'		varname : String ' + CHAR(13) + CHAR(10) +
+'		vartype : String ' + CHAR(13) + CHAR(10) +
+'		value   : Object' + CHAR(13) + CHAR(10) +
+'		systype : String' + CHAR(13) + CHAR(10) +
+'	end ' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare TaxFeeFact' + CHAR(13) + CHAR(10) +
+'		appid : String ' + CHAR(13) + CHAR(10) +
+'		lobid : String ' + CHAR(13) + CHAR(10) +
+'		acctid  : String ' + CHAR(13) + CHAR(10) +
+'		assessedvalue : Double' + CHAR(13) + CHAR(10) +
+'		amountdue     : Double ' + CHAR(13) + CHAR(10) +
+'	end ' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare TaxFeeSummaryFact' + CHAR(13) + CHAR(10) +
+'		appid   : String' + CHAR(13) + CHAR(10) +
+'		name    : String' + CHAR(13) + CHAR(10) +
+'		acctid  : String' + CHAR(13) + CHAR(10) +
+'		value   : Double' + CHAR(13) + CHAR(10) +
+'	end ' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare HighestComputed' + CHAR(13) + CHAR(10) +
+'		appid : String ' + CHAR(13) + CHAR(10) +
+'		acctid : String' + CHAR(13) + CHAR(10) +
+'	end ' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare NotHighestComputed' + CHAR(13) + CHAR(10) +
+'		appid : String ' + CHAR(13) + CHAR(10) +
+'		acctid : String' + CHAR(13) + CHAR(10) +
+'	end ' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare LowestComputed' + CHAR(13) + CHAR(10) +
+'		appid : String ' + CHAR(13) + CHAR(10) +
+'		acctid : String' + CHAR(13) + CHAR(10) +
+'	end ' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare NotLowestComputed' + CHAR(13) + CHAR(10) +
+'		appid : String ' + CHAR(13) + CHAR(10) +
+'		acctid : String' + CHAR(13) + CHAR(10) +
+'	end ' + CHAR(13) + CHAR(10)
+,NULL);
+
+insert  into "rule_package"("ruleset","rulegroup","packagename","orderindex","type","content","lastmodified") 
+values ('bpbilling','','bp.billing.facts',0,'facts',
+'	package bp.billing.facts' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare CurrentYearFact' + CHAR(13) + CHAR(10) +
+'		year  : Integer' + CHAR(13) + CHAR(10) +
+'		qtr   : Integer' + CHAR(13) + CHAR(10) +
+'		month : Integer' + CHAR(13) + CHAR(10) +
+'		day   : Integer' + CHAR(13) + CHAR(10) +
+'	end' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare BPLedgerFact' + CHAR(13) + CHAR(10) +
+'		ledgerid      : String' + CHAR(13) + CHAR(10) +
+'		yearstarted   : Integer' + CHAR(13) + CHAR(10) +
+'		lastyearpaid  : Integer' + CHAR(13) + CHAR(10) +
+'		lastqtrpaid   : Integer' + CHAR(13) + CHAR(10) +
+'	end' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare TaxFeeFact' + CHAR(13) + CHAR(10) +
+'		ledgerid  : String' + CHAR(13) + CHAR(10) +
+'		appid     : String ' + CHAR(13) + CHAR(10) +
+'		taxfeeid  : String ' + CHAR(13) + CHAR(10) +
+'		lobid     : String' + CHAR(13) + CHAR(10) +
+'		lobname   : String' + CHAR(13) + CHAR(10) +
+'		rulename  : String' + CHAR(13) + CHAR(10) +
+'		year      : Integer' + CHAR(13) + CHAR(10) +
+'		qtr       : Integer' + CHAR(13) + CHAR(10) +
+'		monthsfromjan : Integer' + CHAR(13) + CHAR(10) +
+'		monthsfromqtr : Integer' + CHAR(13) + CHAR(10) +
+'		daysfromjan : Integer' + CHAR(13) + CHAR(10) +
+'		daysfromqtr : Integer' + CHAR(13) + CHAR(10) +
+'		acctid    : String' + CHAR(13) + CHAR(10) +
+'		accttitle : String' + CHAR(13) + CHAR(10) +
+'		amount    : Double' + CHAR(13) + CHAR(10) +
+'		surchargeacctid : String ' + CHAR(13) + CHAR(10) +
+'		surchargeaccttitle : String ' + CHAR(13) + CHAR(10) +
+'		surcharge   : Double ' + CHAR(13) + CHAR(10) +
+'		interestacctid : String	' + CHAR(13) + CHAR(10) +
+'		interestaccttitle : String ' + CHAR(13) + CHAR(10) +
+'		interest  : Double' + CHAR(13) + CHAR(10) +
+'		discount  : Double' + CHAR(13) + CHAR(10) +
+'		expr      : String ' + CHAR(13) + CHAR(10) +
+'		varlist   : java.util.Map' + CHAR(13) + CHAR(10) +
+'		applysurcharge	: Boolean' + CHAR(13) + CHAR(10) +
+'		applydiscount	: Boolean' + CHAR(13) + CHAR(10) +
+'	end' + CHAR(13) + CHAR(10)
+,NULL);
+
+insert  into "rule_package"("ruleset","rulegroup","packagename","orderindex","type","content","lastmodified") 
+values ('ctcassessment','','ctc.assessment.facts',0,'facts',
+'	package ctc.assessment.facts' + CHAR(13) + CHAR(10) +
+'	declare IndividualFact' + CHAR(13) + CHAR(10) +
+'		profession:		String' + CHAR(13) + CHAR(10) +
+'		citizenship:	String' + CHAR(13) + CHAR(10) +
+'		gender:			String' + CHAR(13) + CHAR(10) +
+'		civilstatus:	String' + CHAR(13) + CHAR(10) +
+'		seniorcitizen:  Boolean' + CHAR(13) + CHAR(10) +
+'		newbusiness:	Boolean' + CHAR(13) + CHAR(10) +
+'		annualsalary:	Double' + CHAR(13) + CHAR(10) +
+'		businessgross:	Double' + CHAR(13) + CHAR(10) +
+'		propertyincome: Double' + CHAR(13) + CHAR(10) +
+'	end' + CHAR(13) + CHAR(10) +
+'	declare CorporateFact' + CHAR(13) + CHAR(10) +
+'		orgtype:	String' + CHAR(13) + CHAR(10) +
+'		realpropertyav:	Double' + CHAR(13) + CHAR(10) +
+'		businessgross:	Double' + CHAR(13) + CHAR(10) +
+'	end' + CHAR(13) + CHAR(10) +
+'	declare CTCFact' + CHAR(13) + CHAR(10) +
+'		barangayid:	String' + CHAR(13) + CHAR(10) +
+'		year:       Integer' + CHAR(13) + CHAR(10) +
+'		qtr:        Integer' + CHAR(13) + CHAR(10) +
+'		month:      Integer' + CHAR(13) + CHAR(10) +
+'		day:        Integer' + CHAR(13) + CHAR(10) +
+'		additional: Boolean' + CHAR(13) + CHAR(10) +
+'		basictax:   Double' + CHAR(13) + CHAR(10) +
+'		salarytax:  Double' + CHAR(13) + CHAR(10) +
+'		businessgrosstax:  Double' + CHAR(13) + CHAR(10) +
+'		propertyincometax: Double' + CHAR(13) + CHAR(10) +
+'		additionaltax:     Double' + CHAR(13) + CHAR(10) +
+'		interest:	Double' + CHAR(13) + CHAR(10) +
+'		amtdue:		Double' + CHAR(13) + CHAR(10) +
+'	end' + CHAR(13) + CHAR(10)
+,NULL);
+
+insert  into "rule_package"("ruleset","rulegroup","packagename","orderindex","type","content","lastmodified") 
+values ('rptbilling','','etracs2.rpt.billing.facts',NULL,'facts',
+'	package etracs2.rpt.billing.facts;' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare AssessedValueFact' + CHAR(13) + CHAR(10) +
+'	rptledgerid		: String' + CHAR(13) + CHAR(10) +
+'		year			: Integer' + CHAR(13) + CHAR(10) +
+'		assessedvalue	: Double' + CHAR(13) + CHAR(10) +
+'	end' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare CurrentYearFact' + CHAR(13) + CHAR(10) +
+'		factname  	: String' + CHAR(13) + CHAR(10) +
+'		year  		: Integer' + CHAR(13) + CHAR(10) +
+'		qtr   		: Integer' + CHAR(13) + CHAR(10) +
+'		month 		: Integer' + CHAR(13) + CHAR(10) +
+'		day   		: Integer' + CHAR(13) + CHAR(10) +
+'	end' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'	declare RPTLedgerFact' + CHAR(13) + CHAR(10) +
+'		rptledgerid             : String' + CHAR(13) + CHAR(10) +
+'		factname                : String' + CHAR(13) + CHAR(10) +
+'		firstitem               : Boolean' + CHAR(13) + CHAR(10) +
+'		ledgerid                : String' + CHAR(13) + CHAR(10) +
+'		rulename                : String' + CHAR(13) + CHAR(10) +
+'		tdno                    : String ' + CHAR(13) + CHAR(10) +
+'		year                    : Integer' + CHAR(13) + CHAR(10) +
+'		qtr                     : Integer ' + CHAR(13) + CHAR(10) +
+'		assessedvalue           : Double' + CHAR(13) + CHAR(10) +
+'		txntype                 : String ' + CHAR(13) + CHAR(10) +
+'		rputype                 : String ' + CHAR(13) + CHAR(10) +
+'		classid                 : String' + CHAR(13) + CHAR(10) +
+'		actualuseid             : String' + CHAR(13) + CHAR(10) +
+'		numberofmonthsfromqtr   : Integer' + CHAR(13) + CHAR(10) +
+'		numberofmonthsfromjan   : Integer' + CHAR(13) + CHAR(10) +
+'		firstqtrpaidontime      : Boolean' + CHAR(13) + CHAR(10) +
+'		qtrlypaymentavailed     : Boolean' + CHAR(13) + CHAR(10) +
+'		backtax                 : Boolean ' + CHAR(13) + CHAR(10) +
+'		fullpayment             : Boolean ' + CHAR(13) + CHAR(10) +
+'		advancepayment          : Boolean ' + CHAR(13) + CHAR(10) +
+'		lastyearpaid            : Integer' + CHAR(13) + CHAR(10) +
+'		lastqtrpaid             : Integer ' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'		revtype                 : String' + CHAR(13) + CHAR(10) +
+'		basic                   : Double' + CHAR(13) + CHAR(10) +
+'		basicint 	            : Double' + CHAR(13) + CHAR(10) +
+'		basicdisc   	    : Double' + CHAR(13) + CHAR(10) +
+'		sef                     : Double' + CHAR(13) + CHAR(10) +
+'		sefint                  : Double' + CHAR(13) + CHAR(10) +
+'		sefdisc                 : Double' + CHAR(13) + CHAR(10) +
+'	    ' + CHAR(13) + CHAR(10) +
+'		basicacctid             : String ' + CHAR(13) + CHAR(10) +
+'		basicintacctid          : String ' + CHAR(13) + CHAR(10) +
+'		sefacctid               : String ' + CHAR(13) + CHAR(10) +
+'		sefintacctid            : String ' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'		partialbasic            : Double' + CHAR(13) + CHAR(10) +
+'		partialsef              : Double	' + CHAR(13) + CHAR(10) +
+'' + CHAR(13) + CHAR(10) +
+'		varlist                 : java.util.Map' + CHAR(13) + CHAR(10) +
+'		expr                    : String ' + CHAR(13) + CHAR(10) +
+'	end' + CHAR(13) + CHAR(10)
+,NULL);
+
+

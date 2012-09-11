@@ -35,9 +35,10 @@
         <module file="bp-rule-mgmt.jar"/>
         <module file="rpt2.jar"/>
         <module file="rpt-rule-mgmt.jar"/>
+		<!--
         <module file="ctc2.jar"/>
         <module file="ctc-rule-mgmt.jar"/>
-
+		-->
     </modules>
 </app>
 

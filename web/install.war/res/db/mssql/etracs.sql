@@ -1907,6 +1907,8 @@ CREATE TABLE "noticeofassessment" (
   "receivedby" varchar(50) default NULL,
   "remarks" varchar(200) default NULL,
   "items" text,
+  "ry" int not null,
+  "extended" text,
   PRIMARY KEY  ("objid")
 );
 
@@ -1916,6 +1918,7 @@ CREATE TABLE "noticeofassessment" (
 
 CREATE TABLE "orgtype" (
   "name" varchar(50) NOT NULL,
+  "system" int default 0,
   PRIMARY KEY  ("name")
 );
 
@@ -3167,6 +3170,41 @@ CREATE TABLE "collectiongroup_incomeaccount" (
 );
 
 
+create table realproperty (
+	objid varchar(50) not null,
+	landfaasid varchar(50) not null,	
+	provcity varchar(50) not null,
+	munidistrict varchar(50) not null,
+	barangay varchar(50) not null,
+	barangayid varchar(50) not null,	
+	lgutype varchar(50),
+	pintype varchar(5),
+	pin varchar(30) not null,
+	provcityindex varchar(5) not null,
+	munidistrictindex varchar(5) not null,
+	barangayindex varchar(5) not null,
+	section varchar(3) not null,
+	parcel varchar(3) not null,
+	arpno varchar(30),
+	cadastrallotno varchar(255) not null,
+	blockno varchar(255),
+	surveyno varchar(30),
+	houseno varchar(25),
+	street varchar(100),
+	purok varchar(25),
+	attributes text,		
+	north varchar(255) not null,
+	south varchar(255) not null,
+	east varchar(255) not null,
+	west varchar(255) not null,
+	primary key (objid)
+);
+
+create unique index ix_realproperty_landfaasid on realproperty (landfaasid);
+create index ix_realproperty_pin on realproperty (pin);
+
+
+
 CREATE TABLE "realpropertyupdate" (
   "objid" varchar(50) NOT NULL,
   "state" varchar(20) default NULL,
@@ -3225,11 +3263,212 @@ create index "ix_faasid" on faastitleupdate ("faasid");
 
 
 
+	
+CREATE TABLE "rptcompromise" (                                                                       
+ "objid" varchar(50) NOT NULL,                                                                      
+ "docstate" varchar(25) NOT NULL,                                                                   
+ "txnno" varchar(10) default NULL,                                                                  
+ "txndate" date default NULL,                                                                       
+ "faasid" varchar(50) NOT NULL,                                                                     
+ "ledgerid" varchar(50) NOT NULL,                                                                   
+ "info" text NOT NULL,                                                                              
+ "signatories" text NOT NULL,                                                                       
+ "extended" text,                                                                                   
+ PRIMARY KEY  ("objid"),
+ CONSTRAINT "FK_rptcompromise_faas" FOREIGN KEY ("faasid") REFERENCES "faas" ("objid"),
+ CONSTRAINT "FK_rptcompromise_rptledger" FOREIGN KEY ("ledgerid") REFERENCES "rptledger" ("objid")
+);
+
+create index "ix_rptcompromise_rptledger" on "rptcompromise" ("ledgerid");
+create index "ix_rptcompromise_faas" on "rptcompromise" ("faasid");
+
+
+CREATE TABLE "rptcompromise_list" (                                                                       
+  "objid" varchar(50) NOT NULL,                                                                           
+  "docstate" varchar(25) NOT NULL,                                                                        
+  "txnno" varchar(25) default NULL,                                                                       
+  "txndate" date default NULL,                                                                            
+  "faasid" varchar(50) NOT NULL,                                                                          
+  "ledgerid" varchar(50) NOT NULL,                                                                        
+  "enddate" date NOT NULL,                                                                                
+  "term" int NOT NULL,                                                                                
+  "numofinstallment" decimal(18,2) NOT NULL,                                                              
+  "amount" decimal(18,2) NOT NULL,                                                                        
+  "amtpaid" decimal(18,2) NOT NULL,                                                                       
+  "downpaymentrate" decimal(10,4) NOT NULL,                                                               
+  "downpayment" decimal(18,2) NOT NULL,                                                                   
+  "amtforinstallment" decimal(18,2) NOT NULL,                                                             
+  "firstpartyname" varchar(150) NOT NULL,                                                                 
+  "firstpartytitle" varchar(50) NOT NULL,                                                                 
+  "secondpartyrepresentative" varchar(150) NOT NULL,                                                      
+  "secondpartyname" varchar(1000) NOT NULL,                                                               
+  "secondpartyaddress" varchar(150) NOT NULL,                                                             
+  "downpaymentrequired" int NOT NULL,                                                                 
+  "cypaymentrequired" int NOT NULL,                                                                   
+  "startyear" int NOT NULL,                                                                           
+  "startqtr" int NOT NULL,                                                                            
+  "endyear" int NOT NULL,                                                                             
+  "endqtr" int NOT NULL,                                                                              
+  PRIMARY KEY  ("objid"),                                                                                 
+  CONSTRAINT "FK_rptcompromise_list" FOREIGN KEY ("objid") REFERENCES "rptcompromise" ("objid"),          
+  CONSTRAINT "FK_rptcompromise_list_faas" FOREIGN KEY ("faasid") REFERENCES "faas" ("objid"),             
+  CONSTRAINT "FK_rptcompromise_list_rptledger" FOREIGN KEY ("ledgerid") REFERENCES "rptledger" ("objid")  
+);
+
+create INDEX "ix_rptcompromise_list_faas" on "rptcompromise_list" ("faasid");
+create INDEX "FK_rptcompromise_list_rptledger" on "rptcompromise_list" ("ledgerid");
+
+
+
+CREATE TABLE "rptcompromise_installment" (                                                                                       
+ "objid" varchar(50) NOT NULL,                                                                                                  
+ "rptcompromiseid" varchar(50) NOT NULL,                                                                                        
+ "ledgerid" varchar(50) NOT NULL,                                                                                               
+ "installmentno" int NOT NULL,                                                                                              
+ "duedate" date NOT NULL,                                                                                                       
+ "amount" decimal(18,2) NOT NULL,                                                                                               
+ "amtpaid" decimal(18,2) NOT NULL,                                                                                              
+ "fullypaid" int NOT NULL,                                                                                                  
+ PRIMARY KEY  ("objid"),                                                                                                                                                                             
+ CONSTRAINT "FK_rptcompromise_installment_rptcompromise" FOREIGN KEY ("rptcompromiseid") REFERENCES "rptcompromise" ("objid"),  
+ CONSTRAINT "FK_rptcompromise_installment_rptledger" FOREIGN KEY ("ledgerid") REFERENCES "rptledger" ("objid")                  
+);
+
+CREATE INDEX "ix_rptcompromise_installment_rptcompromise" on "rptcompromise_installment" ("rptcompromiseid");
+CREATE INDEX "ix_rptcompromise_installment_rptledger" on "rptcompromise_installment" ("ledgerid");
+
+
+CREATE TABLE "rptcompromise_item" (                                                                                       
+  "objid" varchar(50) NOT NULL,                                                                                           
+  "rptcompromiseid" varchar(50) NOT NULL,                                                                                 
+  "iyear" int NOT NULL,                                                                                               
+  "iqtr" int NOT NULL,                                                                                                
+  "ledgerid" varchar(50) NOT NULL,                                                                                        
+  "faasid" varchar(50) NOT NULL,                                                                                          
+  "assessedvalue" decimal(18,2) NOT NULL,                                                                                 
+  "tdno" varchar(30) NOT NULL,                                                                                            
+  "classcode" varchar(10) NOT NULL,                                                                                       
+  "actualusecode" varchar(10) NOT NULL,                                                                                   
+  "basic" decimal(18,2) NOT NULL,                                                                                         
+  "basicpaid" decimal(18,2) NOT NULL,                                                                                     
+  "basicint" decimal(18,2) NOT NULL,                                                                                      
+  "basicintpaid" decimal(18,2) NOT NULL,                                                                                  
+  "sef" decimal(18,2) NOT NULL,                                                                                           
+  "sefpaid" decimal(18,2) NOT NULL,                                                                                       
+  "sefint" decimal(18,2) NOT NULL,                                                                                        
+  "sefintpaid" decimal(18,2) NOT NULL,                                                                                    
+  "total" decimal(18,2) default NULL,                                                                                     
+  "fullypaid" int NOT NULL,                                                                                           
+  PRIMARY KEY  ("objid"),                                                                                                 
+  CONSTRAINT "FK_rptcompromise_item_faas" FOREIGN KEY ("faasid") REFERENCES "faas" ("objid"),                             
+  CONSTRAINT "FK_rptcompromise_item_rptcompromise" FOREIGN KEY ("rptcompromiseid") REFERENCES "rptcompromise" ("objid"),  
+  CONSTRAINT "FK_rptcompromise_item_rptledger" FOREIGN KEY ("ledgerid") REFERENCES "rptledger" ("objid")                  
+);
+
+CREATE INDEX "FK_rptcompromise_item_faas" ON "rptcompromise_item" ("faasid");
+CREATE INDEX "FK_rptcompromise_item_rptledger" ON "rptcompromise_item" ("ledgerid");
+CREATE INDEX "FK_rptcompromise_item_rptcompromise" ON "rptcompromise_item" ("rptcompromiseid");
+
+
+
+CREATE TABLE "rptcompromise_credit" (                                                                                               
+	"objid" varchar(50) NOT NULL,                                                                                                     
+	"receiptid" varchar(50) NOT NULL,                                                                                                 
+	"ledgerid" varchar(50) NOT NULL,                                                                                                  
+	"rptcompromiseid" varchar(50) NOT NULL,                                                                                           
+	"installmentid" varchar(50) default NULL,                                                                                         
+	"itemid" varchar(50) default NULL,                                                                                                
+	"collectorname" varchar(100) NOT NULL,                                                                                            
+	"collectortitle" varchar(50) NOT NULL,                                                                                            
+	"orno" varchar(15) NOT NULL,                                                                                                      
+	"ordate" date NOT NULL,                                                                                                           
+	"amount" decimal(18,2) NOT NULL,                                                                                                  
+	"voided" int NOT NULL,                                                                                                        
+	PRIMARY KEY  ("objid"),                                                                                                                                                                                              
+	CONSTRAINT "FK_rptcompromise_credit" FOREIGN KEY ("receiptid") REFERENCES "receipt" ("objid"),                                    
+	CONSTRAINT "FK_rptcompromise_credit_installment" FOREIGN KEY ("installmentid") REFERENCES "rptcompromise_installment" ("objid"),  
+	CONSTRAINT "FK_rptcompromise_credit_rptcompromise" FOREIGN KEY ("rptcompromiseid") REFERENCES "rptcompromise" ("objid"),          
+	CONSTRAINT "FK_rptcompromise_credit_rptledger" FOREIGN KEY ("ledgerid") REFERENCES "rptledger" ("objid")                          
+);
+
+CREATE INDEX "FK_rptcompromise_credit_rptledger" ON "rptcompromise_credit" ("ledgerid");
+CREATE INDEX "FK_rptcompromise_credit_rptcompromise" ON "rptcompromise_credit" ("rptcompromiseid");
+CREATE INDEX "FK_rptcompromise_credit_installment" ON "rptcompromise_credit" ("installmentid");
+CREATE INDEX "FK_rptcompromise_credit" ON "rptcompromise_credit" ("receiptid");
+
+
+
+ALTER TABLE rptledger ADD undercompromised int not null DEFAULT 0;
+UPDATE rptledger SET undercompromised = 0 WHERE undercompromised IS NULL; 
+
+alter table faaslist add prevowner varchar(800);
+alter table faaslist add prevpin varchar(30);
+alter table faaslist add prevmv decimal(12,2);
+alter table faaslist add prevav decimal(12,2);
+alter table faaslist add lguid varchar(50);
+alter table faaslist add lguname varchar(50);
+
+CREATE TABLE "landrpuitem" (
+  "objid" varchar(50) NOT NULL,
+  "faasid" varchar(50) NOT NULL,
+  "lcuvid" varchar(50) NOT NULL,
+  "lcuvcode" varchar(10) NOT NULL,
+  "lcuvname" varchar(50) NOT NULL,
+  "specificclassid" varchar(50) NOT NULL,
+  "specificclasscode" varchar(25) NOT NULL,
+  "specificclassname" varchar(100) NOT NULL,
+  "subclassid" varchar(50) NOT NULL,
+  "subclasscode" varchar(25) NOT NULL,
+  "subclassname" varchar(100) NOT NULL,
+  "assesslevelid" varchar(50) NOT NULL,
+  "assesslevelcode" varchar(25) NOT NULL,
+  "assesslevelname" varchar(100) NOT NULL,
+  "assesslevel" decimal(10,2) NOT NULL,
+  "strippingid" varchar(50) default NULL,
+  "striplevel" varchar(50) default NULL,
+  "striprate" decimal(10,2) default NULL,
+  "area" decimal(18,6) NOT NULL,
+  "areaha" decimal(18,6) NOT NULL,
+  "areasqm" decimal(18,6) NOT NULL,
+  "areatype" varchar(5) NOT NULL,
+  "basevalue" decimal(18,2) NOT NULL,
+  "unitvalue" decimal(18,2) NOT NULL,
+  "adjustment" decimal(18,2) NOT NULL,
+  "landvalueadjustment" decimal(18,2) NOT NULL,
+  "basemarketvalue" decimal(18,2) NOT NULL,
+  "marketvalue" decimal(18,2) NOT NULL,
+  "assessedvalue" decimal(18,2) NOT NULL,
+  PRIMARY KEY  ("objid")
+);
+
+create index "ix_landrpuitem_faasid" on landrpuitem ("faasid");
+
+
+
+CREATE TABLE "rysetting_lgu" (
+  "objid" varchar(50) NOT NULL,
+  "lguid" varchar(50) NOT NULL,
+  "lguname" varchar(100) NOT NULL,
+  "settingtype" varchar(15) NOT NULL,
+  PRIMARY KEY  ("objid","lguid")
+);
+
+
+alter table landrysetting add appliedto text;
+alter table bldgrysetting add appliedto text;
+alter table machrysetting add appliedto text;
+alter table miscrysetting add appliedto text;
+alter table planttreerysetting add appliedto text;
+
+
+
+
+
 /*=== insert admin data =====*/
 
 /*Data for the table "orgtype" */
 
-insert  into "orgtype"("name") values ('ADMIN_UNIT'),('BARANGAY');
+insert  into "orgtype"("name","system") values ('ADMIN_UNIT', 0),('BARANGAY', 1);
 
 /*Data for the table "orgunit" */
 

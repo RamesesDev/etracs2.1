@@ -293,9 +293,12 @@ class FAASService
             em.update( faas.schemaname, faas )
         }
         else {
+			em.update( faas.schemaname, faas );
+			/*
             em.update( faas.schemaname, faas, { diff ->
                 logSvc.logB('UPDATE', 'FAAS', faas.objid, '', diff )
             } as UpdateChangeHandler )
+			*/
         }
         em.update( LISTSCHEMA_NAME, faas )
         return faas 
@@ -315,6 +318,14 @@ class FAASService
 		if( faas.info.txntype == 'MC' && (!faas.info.claimno || faas.info.claimno.trim() == '-') ) {
 			def result = em.sqlContext.createQuery('select claimno from faaslist where objid=?').setParameter(1, faas.objid).singleResult
 			faas.info.claimno = result.claimno
+		}
+		
+		//some migrated data's effectivityqtr is string
+		if( faas.info.effectivityqtr instanceof String ) {
+			try {
+				faas.info.effectivityqtr = new Integer(faas.info.effectivityqtr);
+			}
+			catch(e) {}
 		}
 		
 		return faas 

@@ -2,7 +2,7 @@
 	
 	<context-param>
 		<param-name>anubis.default</param-name>
-        <param-value>${jboss.server.home.url}/etracs_lgu</param-value>
+        <param-value>${jboss.server.home.url}/etracs_admin</param-value>
     </context-param>
 	
 	<servlet>

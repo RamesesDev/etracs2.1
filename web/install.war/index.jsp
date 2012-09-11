@@ -36,7 +36,7 @@
 					this.db = {}					
 					this.drivers = [
 						{caption: "MySQL", id:"mysql"},
-						{caption: "SQL Server",  id:"mssql"},
+						{caption: "SQL Server",  id:"mssql"}
 					];
 					
 					this.onload = function() {						
@@ -122,7 +122,7 @@
 						}
 						
 						//wait for the ear to be deployed
-						$invoke( "/" + self.info.appname, null, oncomplete, "get" );
+						$invoke( "/", null, oncomplete, "get" );
 					}
 					
 					this.verifyAdminInfo = function() {

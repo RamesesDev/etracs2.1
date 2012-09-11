@@ -26,6 +26,7 @@
 		<replace file="${appname}.ear/downloads.war/modules/updates.xml" token="@lguname" value="${lguname}"/>	
 		
 		<replace file="${appname}.ear/META-INF/app.conf" token="@appname" value="${appname}"/>
+		<replace file="${appname}.ear/META-INF/app.conf" token="@apphost" value="${server_address}"/>
 		<replace file="${appname}.ear/META-INF/app.conf" token="@main_dbname" value="${main_dbname}"/>
 		<replace file="${appname}.ear/META-INF/app.conf" token="@system_dbname" value="${system_dbname}"/>
 		<replace file="${appname}.ear/META-INF/app.conf" token="@dbhost" value="${db_host}"/>
@@ -33,18 +34,21 @@
 		<replace file="${appname}.ear/META-INF/app.conf" token="@dbpwd" value="${db_pwd}"/>
 		<replace file="${appname}.ear/META-INF/app.conf" token="@dbdialect" value="${db_dialect}"/>
 		
+		<!-- copy the database specific datasource -->
+		<copy file="ds/${db_scheme}-ds.xml" tofile="${appname}.ear/META-INF/app-ds.xml"/>
+		
 		
 		<!-- install the ear -->
 		<move file="${appname}.ear" todir="${rootpath}/" />
 		
 		
 		<!-- install the anubis project -->
-		<copy todir="${rootpath}/../etracs_lgu">
+		<copy todir="${rootpath}/../etracs_admin">
 			<fileset dir="etracs_lgu"/>
 		</copy>
-		<replace file="${rootpath}/../etracs_lgu/services/user-service" token="@appname" value="${appname}"/>
-		<replace file="${rootpath}/../etracs_lgu/modules/admin/services/admin" token="@appname" value="${appname}"/>
-		<replace file="${rootpath}/../etracs_lgu/modules/tools/services/tools" token="@appname" value="${appname}"/>
+		<replace file="${rootpath}/../etracs_admin/services/user-service" token="@appname" value="${appname}"/>
+		<replace file="${rootpath}/../etracs_admin/modules/admin/services/admin" token="@appname" value="${appname}"/>
+		<replace file="${rootpath}/../etracs_admin/modules/tools/services/tools" token="@appname" value="${appname}"/>
 		
 		
 		<!-- install anubis war -->
