@@ -1140,7 +1140,7 @@ class FAASService
     }
     
     void checkIfLandExist( faas ){
-    	def faasland = em.sqlContext.createNamedQuery( 'faas:getInfoByPin' ).setParameter( 'pin', faas.rp.pin ).singleResult;
+    	def faasland = em.sqlContext.createNamedQuery( 'faas:getLandReferenceByPin' ).setParameter( 'pin', faas.rp.pin ).singleResult;
     	if( !faasland ) throw new Exception( 'Land reference is required.' );
     }
     
