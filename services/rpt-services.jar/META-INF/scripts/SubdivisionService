@@ -674,9 +674,10 @@ class SubdivisionService
 			//bypass checking for transactions done in the province if ledger does not exists 
 			throw new Exception('Mother ledger does not exists or has already been deleted.')
 		}
-		
-		faas.info.effectivityyear = (motherledger.lastqtrpaid == 4 ? motherledger.lastyearpaid + 1 : motherledger.lastyearpaid )
-		faas.info.effectivityqtr = (motherledger.lastqtrpaid == 4 ? 1 : motherledger.lastqtrpaid + 1 )
+		if( motherledger ) {		
+			faas.info.effectivityyear = (motherledger.lastqtrpaid == 4 ? motherledger.lastyearpaid + 1 : motherledger.lastyearpaid )
+			faas.info.effectivityqtr = (motherledger.lastqtrpaid == 4 ? 1 : motherledger.lastqtrpaid + 1 )
+		}
 	}
     
     
