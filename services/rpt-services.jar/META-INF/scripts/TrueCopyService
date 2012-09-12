@@ -13,6 +13,9 @@ class TrueCopyService{
 	@Service('LogService')
 	def logService
 	
+	@Service('SequenceService')
+	def seqSvc 
+	
 	def schemaname = 'truecopy:truecopy';
 	def schemaversion = '1.0';
 	
@@ -48,6 +51,7 @@ class TrueCopyService{
 		truecopy.objid = "TC" + new UID();
 		truecopy.schemaname = schemaname;
 		truecopy.schemaversion = schemaversion;
+		truecopy.txnno = seqSvc.getNextFormattedSeries('TD_TRUE_COPY')
 		
 		validate( truecopy );
 		em.create( truecopy.schemaname, truecopy );
