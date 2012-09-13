@@ -22,9 +22,13 @@ public class ModifyPINUtilityController {
     @Service('LguService')
     def lguSvc
     
+    @Service('Var')
+    def sysVar
+    
     def faas
     def pintype
-    def municipality
+    def municity
+    def district
     def barangay
     def section  = 0
     def parcel = 0
@@ -34,7 +38,10 @@ public class ModifyPINUtilityController {
     def newpin
     def useoldpin = false
     
+    def lgutype
+    
     void init(){
+        lgutype = sysVar.lgu_type
     }
     
     void updatePin() {
@@ -46,7 +53,9 @@ public class ModifyPINUtilityController {
                 oldpin      : faas.fullpin,
                 tdno        : faas.tdno, 
                 pintype     : pintype,
-                municipality : municipality,
+                lgutype     : lgutype,
+                municity    : municity,
+                district    : district,
                 barangay    : barangay,
                 section     : section,
                 parcel      : parcel,
@@ -61,17 +70,17 @@ public class ModifyPINUtilityController {
     }
     
     void clearInfo() {
-        faas         = null
-        pintype      = 'new' 
-        municipality = null
-        barangay     = null    
-        section      = 0
-        parcel       = 0
-        suffix       = 0
-        ssection     = null 
-        sparcel      = null 
-        newpin       = null 
-        useoldpin    = false
+        faas        = null
+        pintype     = 'new' 
+        municity    = null
+        barangay    = null    
+        section     = 0
+        parcel      = 0
+        suffix      = 0
+        ssection    = null 
+        sparcel     = null 
+        newpin      = null 
+        useoldpin   = false
     }
     
     void setPintype( pintype ) {
@@ -79,8 +88,13 @@ public class ModifyPINUtilityController {
         updateNewPin()
     }
     
-    void setMunicipality( municipality ) {
-        this.municipality = municipality
+    void setMunicity( municity ) {
+        this.municity = municity
+        updateNewPin()
+    }
+    
+    void setDistrict( district ) {
+        this.district = district
         updateNewPin()
     }
     
@@ -110,12 +124,30 @@ public class ModifyPINUtilityController {
     }
     
     void updateNewPin() {
-        newpin = ''
-        if( municipality ) {
-            newpin = municipality.pin + '-'
+        newpin = new StringBuilder()
+        
+        if( lgutype == 'city' || lgutype == 'CITY' ) {
+            if( municity ) {
+                newpin = municity.indexno + '-'
+            }
+            else {
+                newpin = '000-'
+            }
+            
+            if( district ) {
+                newpin += district.indexno + '-'
+            }
+            else {
+                newpin += '00-'
+            }
         }
         else {
-            newpin = '000-00-'
+            if( municity ) {
+                newpin = municity.pin + '-'
+            }
+            else {
+                newpin = '000-00-'
+            }
         }
         
         if( barangay && barangay.oldindexno == null) {
@@ -124,15 +156,12 @@ public class ModifyPINUtilityController {
         
         if( barangay && useoldpin ) {
             newpin += barangay?.oldindexno + '-'
-            println 3
         }
         else if( barangay) {
             newpin += barangay?.indexno + '-'
-            println 4
         }
         else {
             newpin += '0000-'
-            println 5
         }        
         
         
@@ -164,11 +193,6 @@ public class ModifyPINUtilityController {
     }
     
     
-    
- 
-    
-    
-    
     def onselectFaas = { f ->
         suffix = 0
         if( f.rputype != 'land' ) {
@@ -192,12 +216,24 @@ public class ModifyPINUtilityController {
         return ['new', 'old']
     }
     
-    List getMunicipalityList() {
+    List getMunicityList() {
+        if( !faas ) return []
+        
+        if( lgutype == 'city' || lgutype == 'CITY' )
+            return lguSvc.getLgusByType('CITY')
+            
         return lguSvc.getLgusByType('MUNICIPALITY')
     }
     
+    List getDistrictList() {
+        return lguSvc.getLgusByParent( municity?.objid )
+    }
+    
     List getBarangayList() {
-        return lguSvc.getLgusByParent( municipality?.objid )
+        if( lgutype == 'city' || lgutype == 'CITY' )
+            return lguSvc.getLgusByParent( district?.objid )
+        
+        return lguSvc.getLgusByParent( municity?.objid )
     }
     
 }
