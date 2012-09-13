@@ -90,8 +90,6 @@ class LobService
 		searchText = ( searchText ? searchText+'%' : '%' )
 		return em.sqlContext.createNamedQuery('lob:getAttributes')
 					.setParameter('name', searchText)
-					.setFirstResult( params._start )
-					.setMaxResults( params._limit )
 					.resultList
 	}
 	
