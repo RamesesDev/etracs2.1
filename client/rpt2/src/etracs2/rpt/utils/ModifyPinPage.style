@@ -1,0 +1,7 @@
+"district" [lgutype == 'city' || lgutype == 'CITY'] {
+    visible: true;
+}
+
+"district" [lgutype != 'city' && lgutype != 'CITY'] {
+    visible: false;
+}

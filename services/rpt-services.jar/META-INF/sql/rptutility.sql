@@ -3,9 +3,7 @@ SELECT * FROM pin WHERE pin = $P{pin}
 
 [updateLedgerPin]
 UPDATE rptledger SET 
-	fullpin = $P{newpin},
-	municityid = $P{municityid},
-	municityname = $P{municityname}
+	fullpin = $P{newpin}
 WHERE faasid = $P{faasid} 
 
 [updateRealProperty]
@@ -21,8 +19,10 @@ UPDATE realproperty SET
 	parcel = $P{parcel}
 WHERE landfaasid = $P{faasid}
 
+
+
 [insertPin]
-REPLACE INTO pin (pin, claimno, docstate) 
+INSERT INTO pin (pin, claimno, docstate) 
 VALUES($P{pin}, '-', $P{docstate}) 
 
 [deletePin]
