@@ -20,8 +20,24 @@
         {
             long _maxSeconds;
             
+            @Service('Var')
+            def sysVar;
+            
             public def init() {
                 _maxSeconds = 180;
+                if( sysVar.session_suspend_timeout ) {
+                    try {
+                        _maxSeconds = Integer.parseInt(sysVar.session_suspend_timeout);
+                    }
+                    catch(e){
+                        println "error parsing: " + e.message
+                    }
+                }
+                
+                println "*********************************************"
+                println "suspend timeout: ${_maxSeconds}s";
+                println "*********************************************"
+                
                 OsirisContext.clientContext.taskManager.addTask( this );
                 Toolkit.defaultToolkit.addAWTEventListener( this, AWTEvent.KEY_EVENT_MASK | AWTEvent.MOUSE_EVENT_MASK );
                 return "_close";
