@@ -1,4 +1,4 @@
-[getClassificationList]  
+[getClassificationList] 
 SELECT objid AS classid, propertydesc AS classname, special   
 FROM propertyclassification  ORDER BY orderno  
 

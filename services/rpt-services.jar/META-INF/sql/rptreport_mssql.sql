@@ -1,4 +1,4 @@
-[getRPTSetting]   
+[getRPTSetting]  
 SELECT * FROM rptsetting 
 
 [getBarangayList]

@@ -1,4 +1,4 @@
-[getList] 
+[getList]
 SELECT * FROM remittancelist 
 ORDER BY txndate DESC, txnno DESC
 

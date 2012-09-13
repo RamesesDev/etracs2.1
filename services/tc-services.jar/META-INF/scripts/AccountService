@@ -67,13 +67,13 @@ class AccountService
 	@ProxyMethod
 	public def getAccountList(searchText, charttype, params) {
 		if( !searchText ) {
-			return  getListByQuery('account:getAccountList', [charttype:charttype], params);
+			return  getListByQuery('account:getAccountList', [charttype:charttype], params, 'a.objid');
 		}
 		def result = [];
-		if((result = getListByQuery('account:getAccountListByCode', [charttype:charttype, acctcode:searchText], params))) {
+		if((result = getListByQuery('account:getAccountListByCode', [charttype:charttype, acctcode:searchText], params, 'a.objid'))) {
 			return result;
 		}
-		if((result = getListByQuery('account:getAccountListByTitle', [charttype:charttype, accttitle:searchText+'%'], params))) {
+		if((result = getListByQuery('account:getAccountListByTitle', [charttype:charttype, accttitle:searchText+'%'], params, 'a.objid'))) {
 			return result;
 		}
 		return result;
@@ -227,10 +227,13 @@ class AccountService
 		return ' '.multiply(8 * account.acctlevel) + ( account.accttype == 'GLACCOUNT' ? '* ' : '') + account.acctcode + ' - ' + account.accttitle
 	}
 	
-	private def getListByQuery(namedQuery, values, params ) {
-		return em.sqlContext.createNamedQuery( namedQuery ).setParameters(values)
+	private def getListByQuery(namedQuery, values, params, pagingkeys = null ) {
+		def qry = em.sqlContext.createNamedQuery( namedQuery ).setParameters(values)
 					.setFirstResult( params._start )
 					.setMaxResults( params._limit )
-					.resultList
+		
+		if( pagingkeys != null ) qry.setPagingKeys( pagingkeys )
+		
+		return qry.resultList
 	}
 }

@@ -192,6 +192,7 @@ WHERE l.objid = ll.objid
   AND l.objid = lr.liquidationid 
   AND lr.depositid = $P{depositid} 
 
+  
 [getBankAccountList]
 SELECT * FROM bankaccount WHERE fundid = $P{fundid} ORDER BY fund, acctno 
 

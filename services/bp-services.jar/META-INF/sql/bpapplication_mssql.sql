@@ -1,4 +1,4 @@
-[getList]  
+[getList] 
 SELECT o.objid, o.txnno, o.tradename, o.businessaddress, o.docstate 
 FROM bpapplication o 
 WHERE o.docstate IN ('DRAFT','FOR_REVIEW','FOR_ASSESSMENT','FOR_APPROVAL') 

@@ -1,4 +1,4 @@
-[postRemittance]  
+[postRemittance] 
 INSERT INTO revenue 
 ( 
 	objid, 

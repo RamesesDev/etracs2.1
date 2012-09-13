@@ -1,4 +1,4 @@
-[getOtherPaymentsByLiquidation]  
+[getOtherPaymentsByLiquidation] 
 SELECT pm.amount as amount, pm.paytype as paytype, pm.particulars as particulars  FROM paymentitem pm 
 INNER JOIN receiptlist rl on rl.objid = pm.receiptid 
 INNER JOIN remittancelist rml on rml.objid = rl.remittanceid 

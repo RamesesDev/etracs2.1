@@ -1,4 +1,4 @@
-[getFundList] 
+[getFundList]
 SELECT objid AS fundid, fundname  FROM fund ORDER BY fundname 
 
 [getChart]

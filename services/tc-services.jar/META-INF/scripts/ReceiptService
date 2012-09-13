@@ -136,7 +136,11 @@ class ReceiptService
 		def result = []
 		if((result = getListByQuery('receipt:getListBySerialNo', searchParam, params))) return result 
 		if((result = getListByQuery('receipt:getListByStubNo', searchParam, params))) return result 
-		if((result = getListByQuery('receipt:getListByTxnDate', searchParam, params))) return result 
+		
+		if( searchParam.txndate.matches(/\d{4}-\d{2}-\d{2}/)) {
+			if((result = getListByQuery('receipt:getListByTxnDate', searchParam, params))) 
+				return result 
+		}
 		if((result = getListByQuery('receipt:getListByPayor', searchParam, params))) return result 
 		if((result = getListByQuery('receipt:getListByPaidBy', searchParam, params))) return result 
 		return result 

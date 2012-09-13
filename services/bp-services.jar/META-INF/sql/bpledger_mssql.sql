@@ -1,4 +1,4 @@
-[getBusinessLedgers] 
+[getBusinessLedgers]
 SELECT 
 	iyear AS appyear, 
 	applicationid AS applicationid, 

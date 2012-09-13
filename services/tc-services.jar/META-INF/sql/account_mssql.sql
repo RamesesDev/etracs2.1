@@ -1,4 +1,4 @@
-[getChartList] 
+[getChartList]
 SELECT a.*, '' AS parentcode, '' AS parenttitle 
 FROM account a 
 WHERE parentid IS NULL 

@@ -1,4 +1,4 @@
-[getList] 
+[getList]
 SELECT * FROM liquidationlist 
 ORDER BY txndate DESC, txnno DESC
 

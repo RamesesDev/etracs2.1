@@ -1,4 +1,4 @@
-[getList] 
+[getList]
 SELECT objid, docstate, txnno, txndate, depositedbyname, depositedbytitle, cash, noncash, amount 
 FROM deposit 
 ORDER BY txnno  

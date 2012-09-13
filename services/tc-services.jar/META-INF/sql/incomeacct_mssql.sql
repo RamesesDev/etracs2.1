@@ -1,4 +1,4 @@
-[getById]  
+[getById] 
 SELECT * FROM incomeaccount WHERE objid = $P{objid}
 
 [getList]

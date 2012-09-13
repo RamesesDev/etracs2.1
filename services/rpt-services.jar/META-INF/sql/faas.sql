@@ -32,7 +32,8 @@ SELECT objid, pin FROM faaslist WHERE objid <> $P{objid}  AND docstate = 'FORAPP
 SELECT * FROM faaslist
 
 [getLookupByTdNo]
-SELECT * FROM faaslist WHERE tdno = $P{tdno}
+SELECT * FROM faaslist 
+${whereClause}
 
 [getFaasHistory]
 SELECT h.objid, h.faasid, h.pin, h.tdno, lh.municipality 
@@ -250,7 +251,7 @@ SELECT
 	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
 	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha, munidistrict, annotated 
 FROM faaslist 
-# WHERE docstate LIKE $P{docstate} 
+WHERE docstate LIKE $P{docstate} 
 
 [findByTdNo]
 SELECT 

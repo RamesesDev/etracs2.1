@@ -1,4 +1,4 @@
-[getBarangayList] 
+[getBarangayList]
 SELECT objid AS barangayid, lguname AS barangayname FROM lgu WHERE lgutype = 'BARANGAY'  ORDER BY lguname  
 
 [getClassificationList]
