@@ -30,7 +30,7 @@ ORDER BY taxpayername, tdno
 SELECT 
 	objid, tdno, fullpin, barangay, classcode, 
 	totalareasqm, totalareaha, totalmv, totalav, 
-	cadastrallotno, txntype, rputype 
+	cadastrallotno, txntype, rputype, effectivityyear
 FROM faaslist 
 WHERE taxpayerid = $P{taxpayerid}
   AND docstate = 'CURRENT' 
@@ -40,7 +40,7 @@ ORDER BY fullpin
 SELECT 
 	objid, tdno, fullpin, barangay, classcode, 
 	totalareasqm, totalareaha, totalmv, totalav, 
-	cadastrallotno, txntype, rputype 
+	cadastrallotno, txntype, rputype, effectivityyear  
 FROM faaslist 
 WHERE objid = $P{objid} 
   AND docstate = 'CURRENT'  
@@ -146,8 +146,9 @@ ${orderby}
 [getReportOnRPATaxable]
 SELECT 
 	pc.objid AS classid,
+	pc.orderno, 
 	pc.propertydesc AS classname, 
-	COUNT( 1 ) AS rpucount,
+	CONVERT(int, COUNT( 1) ) AS rpucount, 
 	SUM( fl.totalareasqm ) AS areasqm, 
 	SUM( fl.totalareaha) AS areaha,
 
@@ -175,14 +176,15 @@ FROM faaslist fl
 WHERE fl.txntimestamp <= $P{txntimestamp} 
   AND fl.docstate = 'CURRENT' 
   AND fl.taxable = 1 
-GROUP BY pc.objid, pc.propertydesc  
+GROUP BY pc.objid, pc.orderno, pc.propertydesc  
 ORDER BY pc.orderno  
 
 [getReportOnRPAExempt]
 SELECT 
 	et.objid AS classid,
+	et.orderno, 
 	et.exemptdesc AS classname, 
-	COUNT( 1 ) AS rpucount,
+	CONVERT(int, COUNT( 1 )) AS rpucount,
 	SUM( fl.totalareasqm ) AS areasqm, 
 	SUM( fl.totalareaha) AS areaha,
 
@@ -210,7 +212,7 @@ FROM faaslist fl
 WHERE fl.txntimestamp <= $P{txntimestamp} 
   AND fl.docstate = 'CURRENT' 
   AND fl.taxable = 0 
-GROUP BY et.objid, et.exemptdesc  
+GROUP BY et.objid, et.orderno,  et.exemptdesc  
 ORDER BY et.orderno  
 
 
@@ -668,3 +670,26 @@ WHERE f.txntimestamp < $P{endingtimestamp}
   AND f.taxable = 0   
 GROUP BY e.objid, e.exemptdesc 
 ORDER BY MIN(e.orderno)  
+
+[getMasterList]
+SELECT t.* FROM (  
+	SELECT 
+		docstate, ownername, fullpin, tdno, titleno, cadastrallotno,  
+		rputype, classcode, totalareaha, totalareasqm, totalmv, totalav, effectivityyear, 
+		prevtdno, prevowner, prevmv, prevav, 
+		null as cancelledbytdnos, null as cancelreason, canceldate 
+	FROM faaslist 
+	WHERE docstate = 'CURRENT'  
+
+	UNION 
+
+	SELECT 
+		docstate, ownername, fullpin, tdno, titleno, cadastrallotno,   
+		rputype, classcode, totalareaha, totalareasqm, totalmv, totalav, effectivityyear,  
+		prevtdno, prevowner, prevmv, prevav, 
+		cancelledbytdnos, cancelreason, canceldate 
+	FROM faaslist  
+	WHERE docstate = 'CANCELLED'   
+	  AND YEAR(canceldate) = $P{currentyear}  
+) t 
+${orderby} 

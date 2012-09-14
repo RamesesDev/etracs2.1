@@ -42,14 +42,18 @@ SELECT
 	CASE 
 	WHEN af.objid = '51' AND min(af.aftype) = 'serial' AND min(ia.groupid) IS NULL THEN ( 'AF#' + af.objid + ': ' + min(ri.fundname) ) 
 	WHEN af.objid = '51' AND min(af.aftype) = 'serial' AND min(ia.groupid) IS NOT NULL THEN ( 'AF#' + af.objid + ': ' + min(ia.groupid) ) 
+	
+	WHEN af.objid = '56' AND min(af.aftype) = 'serial' AND min(ia.groupid) IS NULL THEN ( 'AF#' + af.objid + ': ' + min(ri.fundname) ) 
+	WHEN af.objid = '56' AND min(af.aftype) = 'serial' AND min(ia.groupid) IS NOT NULL THEN ( 'AF#' + af.objid + ': ' + min(ri.fundname) + ' - ' + min(ia.groupid) ) 
+	
 	WHEN min(af.aftype) = 'nonserial' AND min(ia.groupid) IS NOT NULL THEN ( af.objid + ': ' + min(ia.groupid) ) 
 	ELSE ( 'AF#' + af.objid + ': ' + min(af.description) + ' - ' + min(ri.fundname) ) 
 	END AS particulars, 
 	SUM( ri.amount ) AS  amount   
 FROM receiptitem ri   
 INNER JOIN incomeaccount ia ON ri.acctid = ia.objid  
-INNER JOIN receiptlist rl on rl.objid = ri.receiptid    
-INNER JOIN remittancelist rml on rml.objid = rl.remittanceid     
+INNER JOIN receiptlist rl ON rl.objid = ri.receiptid    
+INNER JOIN remittancelist rml ON rml.objid = rl.remittanceid     
 INNER JOIN af af ON rl.afid = af.objid 
 WHERE rml.objid = $P{remittanceid} 
   AND rl.voided = 0   

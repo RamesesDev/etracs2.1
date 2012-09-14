@@ -81,7 +81,6 @@
             }
             
             void setAgricultural( agri ) {
-                MsgBox.alert( agri )
                 this.agricultural = agri
                 entity.agriculturalid = agri?.classid
                 entity.agriculturaltitle = agri?.classname

@@ -67,13 +67,17 @@ ORDER BY rf.afid
 
 [getCollectionSummaryByAF]
 SELECT 
-CASE 
-	WHEN MIN(af.objid) = '51' AND MIN(af.aftype) = 'serial' AND MIN(ia.groupid) IS NULL THEN ( 'AF#' + MIN(rl.afid) + ': ' + MIN(ri.fundname) ) 
-	WHEN MIN(af.objid) = '51' AND MIN(af.aftype) = 'serial' AND MIN(ia.groupid) IS NOT NULL THEN ( 'AF#' + MIN(rl.afid) + ': ' + MIN(ia.groupid) ) 
-	WHEN MIN(af.aftype) = 'nonserial' AND MIN(ia.groupid) IS NOT NULL THEN ( MIN(rl.afid) + ': ' + MIN(ia.groupid) ) 
-	ELSE ( 'AF#' + MIN(rl.afid) + ': ' + MIN(af.description) + ' - ' + MIN(ri.fundname) ) 
+	CASE 
+	WHEN af.objid = '51' AND min(af.aftype) = 'serial' AND min(ia.groupid) IS NULL THEN ( 'AF#' + af.objid + ': ' + min(ri.fundname) ) 
+	WHEN af.objid = '51' AND min(af.aftype) = 'serial' AND min(ia.groupid) IS NOT NULL THEN ( 'AF#' + af.objid + ': ' + min(ia.groupid) ) 
+	
+	WHEN af.objid = '56' AND min(af.aftype) = 'serial' AND min(ia.groupid) IS NULL THEN ( 'AF#' + af.objid + ': ' + min(ri.fundname) ) 
+	WHEN af.objid = '56' AND min(af.aftype) = 'serial' AND min(ia.groupid) IS NOT NULL THEN ( 'AF#' + af.objid + ': ' + min(ri.fundname) + ' - ' + min(ia.groupid) ) 
+	
+	WHEN min(af.aftype) = 'nonserial' AND min(ia.groupid) IS NOT NULL THEN ( af.objid + ': ' + min(ia.groupid) ) 
+	ELSE ( 'AF#' + af.objid + ': ' + min(af.description) + ' - ' + min(ri.fundname) ) 
 	END AS particulars, 
-	SUM( ri.amount ) AS  amount   
+	SUM( ri.amount ) AS  amount 
 FROM receiptitem ri   
 INNER JOIN incomeaccount ia ON ri.acctid = ia.objid  
 INNER JOIN receiptlist rl on rl.objid = ri.receiptid    
@@ -82,8 +86,8 @@ INNER JOIN liquidationlist ll on ll.objid = rml.liquidationid
 INNER JOIN af af ON rl.afid = af.objid 
 WHERE ll.objid = $P{liquidationid} 
   AND rl.voided = 0   
-GROUP BY rl.afid, CASE WHEN af.aftype = 'nonserial' THEN ri.fundname ELSE CASE WHEN ia.groupid IS NULL THEN ri.fundname ELSE ia.groupid END  END  
-ORDER BY rl.afid, MIN(ri.fundname), MIN(ia.groupid) 
+GROUP BY af.objid, CASE WHEN af.aftype = 'nonserial' THEN ri.fundname ELSE CASE WHEN ia.groupid IS NULL THEN ri.fundname ELSE ia.groupid END  END  
+ORDER BY af.objid, MIN(ri.fundname), MIN(ia.groupid) 
 
 
 
