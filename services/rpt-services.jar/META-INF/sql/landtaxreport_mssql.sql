@@ -13,7 +13,14 @@ SELECT objid AS barangayid, lguname AS barangay FROM lgu WHERE lgutype = 'BARANG
 SELECT COUNT(*) AS brgycount FROM lgu WHERE lgutype = 'BARANGAY' 
 
 [getCollectorList]
-SELECT objid AS collectorid, name AS collectorname, jobtitle AS collectortitle  from etracsuser WHERE iscollector = 1 ORDER BY name 
+SELECT  
+	jt.tagid, j.title as collectortitle, 
+	p.lastname + ', ' + p.firstname + ' ' + ISNULL(p.middlename,'') as collectorname, 
+	p.objid as collectorid
+FROM jobposition_tag jt
+INNER JOIN jobposition j on j.objid=jt.jobid
+INNER JOIN personnel p on p.objid=j.assigneeid
+WHERE jt.tagid='COLLECTOR'
 
 
 [getRPTClearancePaymentInfo]
