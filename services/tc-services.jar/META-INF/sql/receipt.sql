@@ -80,9 +80,8 @@ DELETE FROM paymentitem WHERE receiptid = $P{receiptid}
 
 [getIssuedTotal]
 SELECT SUM(amount) as amount FROM receiptlist 
-WHERE collectorid LIKE $P{collectorid} 
-   AND docstate LIKE $P{docstate} 
+WHERE collectorid = $P{collectorid} 
+   AND docstate = $P{docstate} 
    AND voided = 0 
-ORDER BY afid, serialno  
 
 

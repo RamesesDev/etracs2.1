@@ -5,15 +5,14 @@
   p.lastname + ', ' + p.firstname + ' ' + isnull(p.middlename,'') as name,
   (
     p.firstname + ' ' +
-	(case isnull(p.middlename,'') when '' then '' else p.middlename + ' ') end) + 
+	(case isnull(p.middlename,'') when '' then '' else p.middlename + ' ' end) + 
 	p.lastname
   ) as formalname
  FROM personnel p
  INNER JOIN jobposition j ON j.assigneeid = p.objid
  INNER JOIN useraccount u ON u.objid = p.objid
- ORDER BY lastname,firstname,middlename
-
-
+ ORDER BY p.lastname,p.firstname,p.middlename
+ 
 
 [findByUid]
  SELECT 
@@ -29,7 +28,7 @@
  INNER JOIN jobposition j ON j.assigneeid = p.objid
  INNER JOIN useraccount u ON u.objid = p.objid
  WHERE u.uid LIKE $P{uid}
- ORDER BY lastname,firstname,middlename
+ ORDER BY p.lastname,p.firstname,p.middlename
 
 
 
@@ -47,7 +46,7 @@
  INNER JOIN jobposition j ON j.assigneeid = p.objid
  INNER JOIN useraccount u ON u.objid = p.objid
  WHERE p.lastname LIKE $P{lastname} 
- ORDER BY lastname,firstname,middlename
+ ORDER BY p.lastname,p.firstname,p.middlename
 
 
 [findById]
@@ -64,7 +63,7 @@
  INNER JOIN jobposition j ON j.assigneeid = p.objid
  INNER JOIN useraccount u ON u.objid = p.objid
  WHERE p.objid = $P{objid} 
- ORDER BY lastname,firstname,middlename
+ ORDER BY p.lastname,p.firstname,p.middlename
 
 
 
@@ -84,7 +83,7 @@
    AND j.objid IN (
     SELECT jobid FROM jobposition_tag WHERE tagid = $P{tagid}
    )
- ORDER BY lastname,firstname,middlename
+ ORDER BY p.lastname,p.firstname,p.middlename
  
 
 
@@ -103,7 +102,7 @@
  WHERE j.objid IN (
           SELECT jobid FROM jobposition_tag WHERE tagid = $P{tagid}
        )
- ORDER BY lastname,firstname,middlename
+ ORDER BY p.lastname,p.firstname,p.middlename
 
 
 
