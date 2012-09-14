@@ -59,7 +59,3 @@
 	@form( context: context, fields: fields )
 </div>
 
-<div style="text-align: right">
-	<button r:context="${context}" r:name="save" r:visibleWhen="#{mode == 'create'}">Save</button>
-	<button r:context="${context}" r:name="update" r:visibleWhen="#{mode != 'create'}">Save</button>
-</div>

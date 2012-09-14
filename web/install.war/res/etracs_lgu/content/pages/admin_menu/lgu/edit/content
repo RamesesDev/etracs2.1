@@ -58,9 +58,6 @@
 		<a r:context="${context}" r:name="unregisterOrgunit" r:visibleWhen="#{entity.orgunit}">Unregister Orgunit</a>
 	<% } %>
 </ui:context>
-		
-<div style="text-align: right">
-	<button r:context="${context}" r:name="save">Save</button>
-	<button r:context="${context}" r:name="_close" immediate="true">Close</button>
-</div>
+
+
 

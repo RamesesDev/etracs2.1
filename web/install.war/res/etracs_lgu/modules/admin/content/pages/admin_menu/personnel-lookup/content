@@ -7,6 +7,9 @@
 			this.myname;
 	
 			this.select = function() {
+				if( !this.selectedItem )
+					throw Error('No personnel information selected.');
+				
 				this.selectHandler( this.selectedItem );
 				return "_close";
 			}
@@ -27,6 +30,3 @@ def fld = [
 %>
 @form( context: "personnellookup", fields: [fld] )
 
-<div style="text-align:right">
-	<button r:context="personnellookup" r:name="select">Select</button>
-</div>

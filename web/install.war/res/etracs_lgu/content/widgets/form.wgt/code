@@ -136,6 +136,18 @@ def handlers = [
 		
 		println "<span r:type='datetime' ${attrs}></span>";
 	},
+	
+	"checkbox" : { field ->	
+		def attrs = new StringBuilder();
+		
+		def f = new LinkedHashMap(field);
+		buildCommonAttrs( f, attrs );
+		if( f.checkValue )		attrs << " r:checkValue='${f.remove('checkValue')}'";
+		if( f.uncheckValue )	attrs << " r:uncheckValue='${f.remove('uncheckValue')}'";
+		buildExtAttrs( f, attrs );
+		
+		println "<input type='checkbox' ${attrs}/>";
+	},
 ];
 
 %>

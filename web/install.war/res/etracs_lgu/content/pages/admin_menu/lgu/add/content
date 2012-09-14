@@ -19,6 +19,7 @@
 	);
 </script>
 
+
 <div r:type="label" r:context="${context}">
 	<h3>Add #{lgutype}</h3>
 </div>
@@ -29,7 +30,3 @@
 ])
 
 
-<div style="text-align: right">
-	<button r:context="${context}" r:name="save">+Add</button>
-	<button r:context="${context}" r:name="_close" r:immediate="true">Close</button>
-</div>

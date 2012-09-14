@@ -68,6 +68,4 @@ def fields = [
 %>
 @form( context: 'jobposition_create', fields: fields )
 
-<div style="text-align: right">
-	<button r:context="jobposition_create" r:name="save">Save</button>
-</div>
+

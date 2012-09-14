@@ -225,6 +225,3 @@
 	</table>
 </table>	
 
-<div style="text-align: right">
-	<button r:context="permission" r:name="save">Save</button>
-</div>
