@@ -27,4 +27,4 @@ VALUES($P{pin}, '-', $P{docstate})
 
 [deletePin]
 DELETE FROM pin 
-WHERE pin = $P{pin} AND claimno = '-'
+WHERE pin = $P{pin} AND (claimno = '-' or claimno = '0')
