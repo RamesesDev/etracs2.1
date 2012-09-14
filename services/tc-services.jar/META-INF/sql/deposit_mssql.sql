@@ -109,20 +109,21 @@ WHERE l.objid = rem.liquidationid
 ORDER BY paytype, particulars  
 
 [getOpenNonCashPaymentsCashier]
-SELECT 
-	p.objid AS paymentitemid, 
+SELECT 	DISTINCT p.objid AS paymentitemid, 
 	p.paytype, 
-	p.particulars, 
+	convert(varchar(500), p.particulars) as particulars, 
 	p.amount, 
-	'SYSTEM' AS source, 
-	p.extended 
-FROM liquidationrcd lr 
-	INNER JOIN liquidationlist l ON lr.liquidationid = l.objid 
-	INNER JOIN paymentitem p ON lr.objid = p.liquidationrcdid 
-	INNER JOIN receiptlist rl ON p.receiptid = rl.objid 
-WHERE lr.docstate = 'OPEN'  
+	'SYSTEM' AS source,  
+	convert( varchar(400),p.extended ) as extended 
+FROM liquidationlist l 
+	INNER JOIN liquidationrcd lr ON l.objid = lr.liquidationid 
+	INNER JOIN remittancelist rem ON rem.liquidationid = l.objid 
+	INNER JOIN receiptlist rl ON rem.objid = rl.remittanceid 
+	INNER JOIN paymentitem p ON rl.objid = p.receiptid 
+WHERE l.docstate = 'OPEN'  
   AND lr.cashierid = $P{cashierid} 
   AND rl.voided = 0 
+  AND p.paytype <> 'CASH' 
 
 
 [getOpenNonCashPaymentsCashierMulti]
