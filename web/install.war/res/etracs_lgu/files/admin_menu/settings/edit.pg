@@ -1,4 +1,5 @@
 {
 	title: 		'Edit',
 	fragment: 	true,
+	layout:		'popup-layout',
 }

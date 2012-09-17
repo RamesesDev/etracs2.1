@@ -1,0 +1,31 @@
+import java.io.*
+
+try {
+	def appname = PROJECT.'app.context'
+	def jbossdir = System.getProperty('jboss.server.home.dir')
+	def uploaddir = "${jbossdir}/apps/${appname}.ear/downloads.war/images/"
+
+	def req = SESSION.request
+	def resp = SESSION.response
+
+	//write the uploaded file
+	File dest = new File(uploaddir);
+	if( !dest.exists() ) dest.mkdirs();
+
+	def fileid = request.getParameter('file_id')
+	def fileitem = request.getFileParameter(fileid)
+	fileitem.write( new File(dest, fileitem.getName()) )
+
+
+	//update sys_var data
+	def sysVar = SERVICE.lookup('user-service/Var')
+	def url = "http://" + sysVar.get('server_address') + "/downloads/images/" + fileitem.name
+	def sys_var_key = request.getParameter('name');
+	sysVar.set( sys_var_key, url )
+
+	response.writer.write("{name: '${sys_var_key}', value: '${url}'}");
+}
+catch(e) {
+	e.printStackTrace()
+	throw e
+}

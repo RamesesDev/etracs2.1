@@ -3,6 +3,11 @@
 	div.grid-title h3 { margin-right: 10px; }
 	.sublgu .grid tr.selected { background: #ddd; }
 	.sublgu .grid td { cursor: default; }
+
+	tr.selected {
+		background-color: lightgrey;
+		color:gray;
+	}
 </style>
 
 

@@ -21,7 +21,7 @@ def context="sysvar_list";
 </style>
 
 <script>
-	\$register({id: 'sysvar:edit', context:'sysvar_edit', page: '${PAGE.path}/edit', title: 'Edit', options: {width: 500, height: 200}});
+	\$register({id: 'sysvar:edit', context:'sysvar_edit', page: '${PAGE.path}/edit', title: 'Edit', options: {width: 500, height: 300}});
 	
 	\$put( 
 		"${context}", 
@@ -37,7 +37,7 @@ def context="sysvar_list";
 			this.onload = function() {
 				this.categoryList = svc.getCategories();
 				if(this.categoryList.length>0 ) this.category = this.categoryList[0];
-			}
+				}
 
 			this.listModel = {
 				rows: 15,

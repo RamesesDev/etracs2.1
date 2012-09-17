@@ -2,7 +2,7 @@
 	appid:		'settings',
 	title: 		'Settings',
 	fragment: 	true,
-	sortorder:	0,
+	sortorder:	1,
 	master:		'fragment_document',
 	options: {
 		toolbar: []

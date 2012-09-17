@@ -46,9 +46,8 @@
 		<copy todir="${rootpath}/../etracs_admin">
 			<fileset dir="etracs_lgu"/>
 		</copy>
-		<replace file="${rootpath}/../etracs_admin/services/user-service" token="@appname" value="${appname}"/>
-		<replace file="${rootpath}/../etracs_admin/modules/admin/services/admin" token="@appname" value="${appname}"/>
-		<replace file="${rootpath}/../etracs_admin/modules/tools/services/tools" token="@appname" value="${appname}"/>
+		<replace file="${rootpath}/../etracs_admin/project.conf" token="@apphost" value="${server_address}"/>
+		<replace file="${rootpath}/../etracs_admin/project.conf" token="@appname" value="${appname}"/>
 		
 		
 		<!-- install anubis war -->
