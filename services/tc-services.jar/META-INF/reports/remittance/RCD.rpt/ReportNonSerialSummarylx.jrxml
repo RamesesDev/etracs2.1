@@ -24,17 +24,17 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 
-	<field name="beginqty" class="java.math.BigDecimal"/>
+	<field name="beginqty" class="java.lang.Integer"/>
 	<field name="beginfrom" class="java.lang.String"/>
 	<field name="afid" class="java.lang.String"/>
 	<field name="beginto" class="java.lang.String"/>
-	<field name="receivedqty" class="java.math.BigDecimal"/>
+	<field name="receivedqty" class="java.lang.Integer"/>
 	<field name="receivedfrom" class="java.lang.String"/>
 	<field name="receivedto" class="java.lang.String"/>
-	<field name="issuedqty" class="java.math.BigDecimal"/>
+	<field name="issuedqty" class="java.lang.Integer"/>
 	<field name="issuedfrom" class="java.lang.String"/>
 	<field name="issuedto" class="java.lang.String"/>
-	<field name="endingqty" class="java.math.BigDecimal"/>
+	<field name="endingqty" class="java.lang.Integer"/>
 	<field name="endingfrom" class="java.lang.String"/>
 	<field name="endingto" class="java.lang.String"/>
 	<field name="receivedamt" class="java.math.BigDecimal"/>
@@ -120,7 +120,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($F{beginqty}.doubleValue() > 0)? $F{beginqty} : null]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[($F{beginqty}.intValue() > 0)? $F{beginqty} : null]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -141,7 +141,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($F{receivedqty}.doubleValue() > 0)? $F{receivedqty} : null]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[($F{receivedqty}.intValue() > 0)? $F{receivedqty} : null]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -162,7 +162,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($F{issuedqty}.doubleValue() > 0)? $F{issuedqty} : null]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[($F{issuedqty}.intValue() > 0)? $F{issuedqty} : null]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -183,7 +183,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($F{endingqty}.doubleValue() > 0)? $F{endingqty} : null]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[($F{endingqty}.intValue() > 0)? $F{endingqty} : null]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -204,7 +204,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($F{beginqty}.doubleValue() > 0)? $F{beginamt} : null]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($F{beginqty}.intValue() > 0)? $F{beginamt} : null]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -225,7 +225,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($F{receivedqty}.doubleValue() > 0)? $F{receivedamt} : null]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($F{receivedqty}.intValue() > 0)? $F{receivedamt} : null]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -246,7 +246,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($F{issuedqty}.doubleValue() > 0)? $F{issuedamt} : null]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($F{issuedqty}.intValue() > 0)? $F{issuedamt} : null]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -267,7 +267,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($F{endingqty}.doubleValue() > 0)? $F{endingamt} : null]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[($F{endingqty}.intValue() > 0)? $F{endingamt} : null]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
