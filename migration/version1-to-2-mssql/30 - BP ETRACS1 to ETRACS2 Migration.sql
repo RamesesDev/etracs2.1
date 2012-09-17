@@ -498,7 +498,7 @@ update bayombong_etracs..bpapplication set credits = '[]' where credits is null;
 update xba set
 	xba.extended = (
 		select isnull(
-				'[' + stuff( (  
+				'[payments:' + stuff( (  
 						select N','+
 							'[ refno:"' + xcr.refno + '",' +
 							'refid:' + case when xcr.refid is null then 'null' else ('"' + xcr.refid + '"') end + ',' + 
@@ -531,7 +531,7 @@ update xba set
 						) xcr
 						where xcr.objid = b.objid collate SQL_Latin1_General_CP1_CI_AS
 						FOR XML PATH(''), TYPE).value('text()[1]', 'nvarchar(max)'),1,1,N'') 
-				 + ']', '[]') as extended  
+				 + ']', '[:]') as extended  
 			from bayombong_etracs..bpapplication b 
 			where xba.objid=b.objid 
 	)
