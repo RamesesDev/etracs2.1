@@ -18,7 +18,7 @@ class JobPermissionService {
 		//check first if the job positions are cached. If not then cache it.
 		def poskey = "" + (env.sessionid + env.userid + "_job_positions").hashCode();
 		def positions = cacheService.get( poskey );
-		if( !positions ) {
+		if( positions == null ) {
 			positions = [];
 			def joblist = em.sqlContext.createNamedQuery("jobposition:user-job-position-list").setParameters(env).resultList;
 			joblist.each { 
@@ -48,7 +48,7 @@ class JobPermissionService {
 		
 		def key = "" + (env.sessionid + env.userid + jobid + "_permissions" ).hashCode();
 		def perms = cacheService.get( key ); 
-		if( !perms ) {
+		if( perms == null ) {
 			perms = [];
 			permSvc.fetchPermissions( job.roleclass, job.included, job.excluded, {x->perms.add(x.id)} );
 			cacheService.put( key, perms );
