@@ -179,11 +179,12 @@ class DepositController
                 reportName = 'depositslip/' + fundsummary.bankaccount.cashbreakdownreport
             }
             
-            println 'reportName -> ' + reportName 
+            println 'reportName -> ' + reportName
             
             def cashReport = [
                 getReportName : { return reportName },
                 getReportData : { return buildCashBreakdownReportData( bankacctid ) },
+            
             ] as ServerReportModel
             cashReport.viewReport()
             ReportUtil.print( cashReport.report, true )
