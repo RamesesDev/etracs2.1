@@ -216,4 +216,11 @@ class LguService
 	public def getBarangays() {
         return em.sqlContext.createNamedQuery('lgu:getBarangays').resultList 
 	}
+	
+	@ProxyMethod
+	public def getBarangayListByName( name )  {
+		if( ! name ) name = ''
+		name = name + '%'
+        return em.sqlContext.createNamedQuery('lgu:getBarangayListByName').setParameter('name', name ).resultList 
+	}
 }
