@@ -348,25 +348,27 @@ public class SubdivisionController
     *
     ----------------------------------------------------------*/
     boolean getShowApproveAction() {
-        if( subdivision.lgutype?.toLowerCase() != 'city'  ) return false
         if( subdivision.docstate != 'FORAPPROVAL' ) return false
+        if( subdivision.lgutype?.toLowerCase().trim() == 'municipality'  ) return false
         return true
     }
     
     boolean getShowDisapproveAction() {
-        if( subdivision.lgutype?.toLowerCase() != 'city'  ) return false
         if( subdivision.docstate != 'FORAPPROVAL' ) return false
+        if( subdivision.lgutype?.toLowerCase() == 'municipality'  ) return false
         return true
     }
     
     boolean getShowSubmitToProvinceAction() {
-        if( subdivision.lgutype?.toLowerCase() != 'municipality'  ) return false
+        if( subdivision.lgutype?.toLowerCase() == 'city'  ) return false
+        if( subdivision.lgutype?.toLowerCase() == 'province'  ) return false
         if( subdivision.docstate != 'FORAPPROVAL' ) return false
         return true 
     }
     
     boolean getShowApprovedByProvinceAction() {
-        def lgutype = subdivision.lgutype?.toLowerCase()
+        def lgutype = subdivision.lgutype?.toLowerCase().trim()
+        if( lgutype == 'city' ) return false
         if( lgutype == 'municipality' && subdivision.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && subdivision.docstate != 'FORAPPROVAL' ) return false
         return true
@@ -374,6 +376,7 @@ public class SubdivisionController
     
     boolean getShowDisapproveByProvinceAction() {
         def lgutype = subdivision.lgutype?.toLowerCase()
+        if( lgutype == 'city' ) return false
         if( lgutype == 'municipality' && subdivision.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && subdivision.docstate != 'FORAPPROVAL' ) return false
         return true
