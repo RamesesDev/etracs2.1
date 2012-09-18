@@ -13,6 +13,9 @@ public class CTCService
 	@Service('DateService')
 	def dateSvc
 	
+	@Service('RuleService')
+	def rulemgmt;
+	
 	@PersistenceContext("main")
 	def em
 	
@@ -22,10 +25,12 @@ public class CTCService
 		def result = executeRule( entity )
 		def assessment = [:]
 		assessment.tax = createTaxItems( result )
+		adjustTaxItems( result )
 		assessment.items = result.values() as List
 		assessment.total = assessment.items*.amount.sum()
 		if( assessment.total==null ) assessment.total = 0.00
 		initItems( assessment )
+
 		return assessment
 	}
 	
@@ -81,9 +86,36 @@ public class CTCService
 			property: 0.00,
 			interest: 0.00,
 		]
-		result.each{k,v-> values[k] = v.amount }
-		
+		result.each{k,v-> 
+			if( values[k] != null ) values[k] = v.amount 
+		}
+
 		return values
+	}
+	
+	void adjustTaxItems( result ) {
+		def tax;
+
+		result.each{ k,v ->
+			try {
+				if( k == 'brgy_share_basic_tax' && result['basic'])
+					tax = result['basic']
+				else if( k == 'brgy_share_gross_tax' && result['business'] )
+					tax = result['business']
+				else if( k == 'brgy_share_interest' && result['interest'])
+					tax = result['interest']
+				else if( k == 'brgy_share_propertyincome_tax' && result['property'] )
+					tax = result['property']
+				else if( k == 'brgy_share_salary_tax' && result['salary'])
+					tax = result['salary']
+				
+				if( tax ) tax.amount = tax.amount - v.amount
+			}
+			catch(e) {
+				println "$k = $v"
+				throw e
+			}
+		}
 	}
 	
 	void initItems( assessment ) {
@@ -110,6 +142,7 @@ public class CTCService
 		fact.businessgrosstax = taxes.business
 		fact.propertyincometax  = taxes.property
 		fact.additionaltax      = taxes.additionaltax
+		fact.interest = taxes.interest
 		fact.amtdue		= taxes.business + taxes.basic + taxes.salary + taxes.property
 	}
 	
@@ -156,6 +189,7 @@ public class CTCService
 		fact.businessgrosstax   = 0.00
 		fact.propertyincometax  = 0.00
 		fact.additionaltax      = 0.00
+		fact.interest = 0.00
 		fact.amtdue		= 0.00
 		
 		return fact
@@ -182,6 +216,7 @@ class ComputationHandler implements RuleActionHandler
 			acctno:    data.acctno,
 			accttitle: data.accttitle,
 			amount:    amount,
+			type:      data.type,
 		];
 	}
 	
