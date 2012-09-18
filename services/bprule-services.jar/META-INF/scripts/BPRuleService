@@ -310,7 +310,12 @@ class AddTaxFeeHandler implements RuleActionHandler
 	def calculateAssessedValue( tfvalue ) {
 		def params = [:]
 		tfvalue.inputvars.each { inputvar -> 
-			params[inputvar.varname] =  inputvar.value 
+			try {
+				params[inputvar.varname] =  inputvar.value 
+			}
+			catch( e ) {
+				params[tfvalue.varvalue] = inputvar 
+			}
 		}
 		
 		params.AMOUNTDUE = tfvalue.varvalue 
@@ -338,11 +343,19 @@ class UpdateAnyTaxFeeHandler implements RuleActionHandler
 		def params = [:]
 		params[tfvalue.varname] = tfvalue.varvalue 
 		tfvalue.inputvars?.each { inputvar -> 
-			params[inputvar.varname] =  inputvar.value 
+			try {
+				params[inputvar.varname] =  inputvar.value
+			}
+			catch( e) {}
 		}
 
 		taxfee.amountdue = (new Util(ruleService:ruleService)).evaluate( tfvalue.expr, params )
 		(new Util(ruleService:ruleService)).insertTaxFeeSummaryFact(drools, app)
+		
+		def fact = tfvalue.taxfeefact 
+		fact.assessedvalue = taxfee.amountdue
+		fact.amountdue = taxfee.amountdue
+		drools.update( fact )
 	}
 }
 	
