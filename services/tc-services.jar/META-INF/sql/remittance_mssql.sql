@@ -372,7 +372,8 @@ SELECT
 	SUM(CASE WHEN voided =0 THEN amount ELSE 0 END ) AS amount 
 FROM receiptlist 
 WHERE remittanceid = $P{remittanceid} 
-GROUP BY afid, stubno 
+GROUP BY afid, afcontrolid, stubno  
+ORDER BY afid, fromserialno, stubno  
 
 [fetchOtherPayments]
 SELECT  
