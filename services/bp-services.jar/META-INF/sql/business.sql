@@ -79,7 +79,7 @@ ORDER BY txnno
 SELECT b.* FROM bpapplication b 
 INNER JOIN bpapplicationlisting l ON l.objid = b.objid 
 WHERE b.businessid = $P{businessid} 
-ORDER BY b.txnno DESC 
+ORDER BY b.iyear DESC 
 
 [updateAppFullypaid]  
 UPDATE bpapplicationlisting   
