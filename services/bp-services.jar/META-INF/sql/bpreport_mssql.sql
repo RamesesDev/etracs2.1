@@ -38,10 +38,10 @@ ORDER BY a.txnno
 SELECT  
 	a.iyear, 
 	l.name AS lobname, 
-	SUM(CASE WHEN a.txntype = 'NEW' THEN 1 ELSE 0 END)  AS newcount, 
-	SUM(CASE WHEN a.txntype = 'RENEW' THEN 1 ELSE 0 END)  AS renewcount, 
-	SUM(CASE WHEN a.txntype = 'ADDLOB' THEN 1 ELSE 0 END)  AS addlobcount, 
-	SUM(CASE WHEN a.txntype = 'RETIRE' THEN 1 ELSE 0 END)  AS retirecount 
+	CONVERT(decimal(14,2), SUM(CASE WHEN a.txntype = 'NEW' THEN 1 ELSE 0 END))  AS newcount, 
+	CONVERT(decimal(14,2), SUM(CASE WHEN a.txntype = 'RENEW' THEN 1 ELSE 0 END))  AS renewcount, 
+	CONVERT(decimal(14,2), SUM(CASE WHEN a.txntype = 'ADDLOB' THEN 1 ELSE 0 END))  AS addlobcount, 
+	CONVERT(decimal(14,2), SUM(CASE WHEN a.txntype = 'RETIRE' THEN 1 ELSE 0 END))  AS retirecount 
 FROM bpapplicationlisting a 
 	INNER JOIN bploblisting bl ON bl.applicationid = a.objid  
 	INNER JOIN lob l ON l.objid = bl.lobid  
@@ -61,9 +61,10 @@ WHERE docstate IN ('APPROVED','PERMIT_PENDING', 'ACTIVE')
 SELECT info FROM bppermit WHERE applicationid = $P{applicationid} 
 
 [getBusinessTopList]
-SELECT DISTINCT amount 
+SELECT DISTINCT ${topsize}
+	bb.amount 
 FROM ( 
-	SELECT bl.objid,SUM(bi.VALUE) AS amount  
+	SELECT bl.objid, SUM(CONVERT(FLOAT,bi.VALUE)) AS amount  
 	FROM bpappinfolisting bi  
 		INNER JOIN bpapplicationlisting bl ON bi.applicationid = bl.objid  
 		INNER JOIN lob l ON l.objid = bi.lobid 
@@ -76,19 +77,19 @@ FROM (
 	GROUP BY bl.objid   
 ) bb  
 ORDER BY bb.amount DESC   
-LIMIT $P{topsize}  
+
 
 [getBusinessTopListGroupByAmount]
 SELECT 
  pa.permitno, ba.tradename, ba.businessaddress,
- ba.taxpayername, ba.taxpayeraddress, pa.amount 
+ ba.taxpayername, ba.taxpayeraddress, CONVERT(FLOAT,pa.amount ) AS amount 
 FROM bpapplicationlisting ba, 
 	( 
 		SELECT t.* 
 		FROM (	 
 			SELECT  
 			 a.objid, p.txnno as permitno,  
-			 SUM(i.VALUE) AS amount 
+			 SUM(CONVERT( FLOAT,i.VALUE)) AS amount 
 			FROM bpappinfolisting i  
 				INNER JOIN bpapplicationlisting a ON i.applicationid = a.objid  
 				INNER JOIN lob l ON l.objid = i.lobid 
@@ -96,7 +97,7 @@ FROM bpapplicationlisting ba,
 				LEFT JOIN bppermit p on p.applicationid = a.objid 
 			WHERE i.varname = $P{varname}  
 			AND lc.name LIKE $P{classification} 
-			GROUP BY a.objid 
+			GROUP BY a.objid, p.txnno  
 		) t 
 		WHERE t.amount = $P{amount}	
 	) pa 
@@ -107,7 +108,13 @@ WHERE ba.txntype = $P{txntype}
 ORDER BY pa.amount DESC  
 
 
-
+[generateLobListing]
+SELECT 
+	lc.name as classification,
+	l.name as lobname 
+FROM lob l
+INNER JOIN lobclassification lc ON l.classificationid = lc.objid 
+ORDER BY lc.name, l.name 
 
 
 
