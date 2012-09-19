@@ -672,7 +672,7 @@ GROUP BY e.objid, e.exemptdesc
 ORDER BY MIN(e.orderno)  
 
 [getMasterList]
-SELECT t.* FROM (  
+SELECT t.* FROM (   
 	SELECT 
 		docstate, ownername, fullpin, tdno, titleno, cadastrallotno,  
 		rputype, classcode, totalareaha, totalareasqm, totalmv, totalav, effectivityyear, 
@@ -680,6 +680,8 @@ SELECT t.* FROM (
 		null as cancelledbytdnos, null as cancelreason, canceldate 
 	FROM faaslist 
 	WHERE docstate = 'CURRENT'  
+		${classidfilter}
+	  
 
 	UNION 
 
@@ -691,5 +693,6 @@ SELECT t.* FROM (
 	FROM faaslist  
 	WHERE docstate = 'CANCELLED'   
 	  AND YEAR(canceldate) = $P{currentyear}  
+	  ${classidfilter}
 ) t 
 ${orderby} 

@@ -20,8 +20,8 @@
           <Component id="xActionBar1" alignment="1" pref="603" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-              <Component id="formPanel1" min="-2" pref="304" max="-2" attributes="0"/>
-              <EmptySpace min="289" pref="289" max="289" attributes="0"/>
+              <Component id="formPanel1" min="-2" pref="376" max="-2" attributes="0"/>
+              <EmptySpace min="217" pref="217" max="217" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -30,8 +30,8 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="xActionBar1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="formPanel1" min="-2" pref="180" max="-2" attributes="0"/>
-              <EmptySpace pref="83" max="32767" attributes="0"/>
+              <Component id="formPanel1" min="-2" pref="199" max="-2" attributes="0"/>
+              <EmptySpace pref="64" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -72,6 +72,18 @@
           </Properties>
         </Component>
         <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox1">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Classification"/>
+            <Property name="emptyText" type="java.lang.String" value="ALL CLASSIFICATION"/>
+            <Property name="expression" type="java.lang.String" value="#{classname}"/>
+            <Property name="items" type="java.lang.String" value="classificationList"/>
+            <Property name="name" type="java.lang.String" value="classification"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 22]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox2">
           <Properties>
             <Property name="caption" type="java.lang.String" value="Order By"/>
             <Property name="expression" type="java.lang.String" value="#{caption}"/>

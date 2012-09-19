@@ -680,6 +680,7 @@ SELECT t.* FROM (
 		null as cancelledbytdnos, null as cancelreason, canceldate 
 	FROM faaslist 
 	WHERE docstate = 'CURRENT'  
+	  ${classidfilter}
 
 	UNION 
 
@@ -691,6 +692,7 @@ SELECT t.* FROM (
 	FROM faaslist  
 	WHERE docstate = 'CANCELLED'   
 	  AND YEAR(canceldate) = $P{currentyear}  
+	  ${classidfilter}
 ) t 
 ${orderby} 
 

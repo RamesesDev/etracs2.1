@@ -35,6 +35,7 @@ class MasterListReportController
     def readonly = true 
     
     def orderby 
+    def classification
     
     def orderbyColumns = [
         [fieldname:'t.ownername', caption:'Owner Name'],
@@ -53,7 +54,7 @@ class MasterListReportController
     }
     
     void generateReport() {
-        reportdata = svc.generateMasterList( year, orderby )
+        reportdata = svc.generateMasterList( year, classification?.classid, orderby )
         report.viewReport()
     }
     
@@ -66,12 +67,19 @@ class MasterListReportController
         getReportName : { return 'masterlist' },
         getReportData : { return reportdata },
         getParameters : { 
-            return svcParams.getStandardParameter( OsirisContext.env.USERNAME )
+            def param = [:]
+            param.CLASSIFICATION = classification?.classname
+            param.putAll( svcParams.getStandardParameter( OsirisContext.env.USERNAME ) )
+            return param 
         }
     ] as ServerReportModel;
         
     def back() {
         return 'default' 
+    }
+    
+    def getClassificationList(){
+        return svc.getClassificationList()
     }
 }
 ]]>        
