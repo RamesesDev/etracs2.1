@@ -136,6 +136,7 @@ class FAASService
 		if( ! search ) return getListByQuery('faas:findByState', criteria, params)
 		if( (result = getListByQuery('faas:findByTdNo', criteria, params)) ) return result
 		if( (result = getListByQuery('faas:findByTaxpayerName', criteria, params)) ) return result
+		if( (result = getListByQuery('faas:findByTaxpayerId', criteria, params)) ) return result
 		if( (result = getListByQuery('faas:findByPin', criteria, params)) ) return result
 		if( (result = getListByQuery('faas:findByBarangay', criteria, params)) ) return result
 		if( (result = getListByQuery('faas:findByCadastralLotNo', criteria, params)) ) return result
@@ -200,6 +201,7 @@ class FAASService
             surveyno : search,
             blockno  : search,
 			docstate : ( docstate ? docstate : '%' ),
+			taxpayerid : search, 
         ]
 	}
     

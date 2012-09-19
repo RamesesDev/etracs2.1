@@ -42,10 +42,12 @@ public class NoticeReportPage extends javax.swing.JPanel {
         formPanel1.add(xLookupField1);
 
         xLookupField2.setCaption("TD No.");
+        xLookupField2.setDynamic(true);
         xLookupField2.setExpression("#{tdno}");
         xLookupField2.setHandler("lookupFAAS");
         xLookupField2.setName("faas");
         xLookupField2.setPreferredSize(new java.awt.Dimension(200, 19));
+        xLookupField2.setRequired(true);
         formPanel1.add(xLookupField2);
 
         xButton1.setMnemonic('v');

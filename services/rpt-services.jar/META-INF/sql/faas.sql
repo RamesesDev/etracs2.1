@@ -323,6 +323,16 @@ SELECT
 FROM  faaslist 
 WHERE blockno LIKE $P{blockno} 
   AND docstate LIKE $P{docstate} 
+  
+[findByTaxpayerId]
+SELECT 
+	objid, docstate, ry, tdno, fullpin, rputype, txntype, 
+	taxpayerid, taxpayername, taxpayeraddress, ownername, owneraddress, 
+	cadastrallotno, surveyno, effectivityyear, effectivityqtr, classcode, taxable, 
+	totalareasqm, totalmv, totalav, barangay, totalareasqm, totalareaha , munidistrict , annotated 
+FROM  faaslist 
+WHERE taxpayerid = $P{taxpayerid} 
+  AND docstate LIKE $P{docstate}  
 
 [findByFilter]
 SELECT 

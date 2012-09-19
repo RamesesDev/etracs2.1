@@ -106,12 +106,20 @@ class RPTReportService
 		
 		em.validate( 'rptreport:noticeofassessment', notice )
 		em.create( 'rptreport:noticeofassessment', notice )
+		
+		if( notice.items.size() == 1 ) {
+			notice.putAll( notice.items[0] )
+		}
 		return notice 
 	}
 	
 	@ProxyMethod 
 	public def openNotice( noticeid ) {
-		return em.read('rptreport:noticeofassessment', [objid:noticeid] )
+		def notice = em.read('rptreport:noticeofassessment', [objid:noticeid] )
+		if( notice.items.size() == 1 ) {
+			notice.putAll( notice.items[0] )
+		}
+		return notice 
 	}
 	
 	@ProxyMethod
