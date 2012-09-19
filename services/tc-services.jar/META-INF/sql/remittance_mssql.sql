@@ -86,7 +86,7 @@ ORDER BY afid, stubno
 SELECT * FROM remittedform 
 WHERE remittanceid = $P{remittanceid} 
 	AND aftype = 'serial' 
-ORDER BY afid, stubno
+ORDER BY afid, stubno, beginfrom
 
 [getNonSerialRemittedFormsByRemittance]
 SELECT 
@@ -374,6 +374,7 @@ FROM receiptlist
 WHERE remittanceid = $P{remittanceid} 
 GROUP BY afid, afcontrolid, stubno  
 ORDER BY afid, fromserialno, stubno  
+
 
 [fetchOtherPayments]
 SELECT  
