@@ -99,7 +99,7 @@ SELECT
 	tdno, titleno, totalareasqm, totalareasqm, totalav, totalmv 
 FROM faaslist   
 WHERE barangayid = $P{barangayid} 
-  AND docstate = 'CURRENT'  
+  AND docstate IN ('CURRENT', 'CANCELLED')
   AND section LIKE $P{section} 
 ORDER BY fullpin   
 
