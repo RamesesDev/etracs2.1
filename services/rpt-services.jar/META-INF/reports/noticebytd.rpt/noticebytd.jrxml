@@ -59,7 +59,7 @@
 			</band>
 		</background>
 		<title>
-			<band height="362"  isSplitAllowed="true" >
+			<band height="354"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"
@@ -244,7 +244,7 @@
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="131"
+						y="127"
 						width="540"
 						height="27"
 						forecolor="#000000"
@@ -347,7 +347,7 @@
 					<reportElement
 						mode="Transparent"
 						x="331"
-						y="160"
+						y="154"
 						width="54"
 						height="18"
 						forecolor="#000000"
@@ -367,7 +367,7 @@
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="160"
+						y="154"
 						width="93"
 						height="18"
 						forecolor="#000000"
@@ -387,7 +387,7 @@
 					<reportElement
 						mode="Transparent"
 						x="200"
-						y="160"
+						y="154"
 						width="131"
 						height="18"
 						forecolor="#000000"
@@ -407,7 +407,7 @@
 					<reportElement
 						mode="Transparent"
 						x="385"
-						y="160"
+						y="154"
 						width="85"
 						height="18"
 						forecolor="#000000"
@@ -428,7 +428,7 @@
 					<reportElement
 						mode="Transparent"
 						x="470"
-						y="160"
+						y="154"
 						width="70"
 						height="18"
 						forecolor="#000000"
@@ -449,7 +449,7 @@
 					<reportElement
 						mode="Transparent"
 						x="93"
-						y="160"
+						y="154"
 						width="107"
 						height="18"
 						forecolor="#000000"
@@ -469,7 +469,7 @@
 					<reportElement
 						mode="Transparent"
 						x="385"
-						y="178"
+						y="172"
 						width="85"
 						height="14"
 						forecolor="#000000"
@@ -490,7 +490,7 @@
 					<reportElement
 						mode="Transparent"
 						x="331"
-						y="178"
+						y="172"
 						width="54"
 						height="14"
 						forecolor="#000000"
@@ -511,7 +511,7 @@
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="178"
+						y="172"
 						width="93"
 						height="14"
 						forecolor="#000000"
@@ -532,7 +532,7 @@
 					<reportElement
 						mode="Transparent"
 						x="200"
-						y="178"
+						y="172"
 						width="131"
 						height="14"
 						forecolor="#000000"
@@ -553,7 +553,7 @@
 					<reportElement
 						mode="Transparent"
 						x="470"
-						y="178"
+						y="172"
 						width="70"
 						height="14"
 						forecolor="#000000"
@@ -574,7 +574,7 @@
 					<reportElement
 						mode="Transparent"
 						x="93"
-						y="178"
+						y="172"
 						width="107"
 						height="14"
 						forecolor="#000000"
@@ -594,7 +594,7 @@
 					<reportElement
 						mode="Transparent"
 						x="331"
-						y="193"
+						y="187"
 						width="54"
 						height="14"
 						forecolor="#000000"
@@ -614,7 +614,7 @@
 					<reportElement
 						mode="Transparent"
 						x="385"
-						y="193"
+						y="187"
 						width="85"
 						height="14"
 						forecolor="#000000"
@@ -634,7 +634,7 @@
 					<reportElement
 						mode="Transparent"
 						x="470"
-						y="193"
+						y="187"
 						width="70"
 						height="14"
 						forecolor="#000000"
@@ -654,7 +654,7 @@
 					<reportElement
 						mode="Transparent"
 						x="377"
-						y="252"
+						y="240"
 						width="163"
 						height="12"
 						forecolor="#000000"
@@ -674,7 +674,7 @@
 					<reportElement
 						mode="Transparent"
 						x="377"
-						y="265"
+						y="253"
 						width="163"
 						height="12"
 						forecolor="#000000"
@@ -694,7 +694,7 @@
 					<reportElement
 						mode="Opaque"
 						x="0"
-						y="282"
+						y="272"
 						width="540"
 						height="0"
 						forecolor="#000000"
@@ -706,7 +706,7 @@
 					<reportElement
 						mode="Transparent"
 						x="1"
-						y="285"
+						y="275"
 						width="30"
 						height="11"
 						forecolor="#000000"
@@ -725,10 +725,10 @@
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="31"
-						y="285"
-						width="509"
-						height="11"
+						x="0"
+						y="287"
+						width="540"
+						height="59"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="staticText-63"/>
@@ -737,116 +737,18 @@
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[1. This serves as the Notice of the declarant in pursuance of Section 223 of RA 7160, otherwise known as the Local]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="31"
-						y="320"
-						width="509"
-						height="10"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-64"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+					<textElement textAlignment="Justified" verticalAlignment="Top" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<text><![CDATA[2. Kindly inform the Assessor's Office of any inconsistency as to the actual ARP No., TDN, PIN, location and classification of the above properties you may have]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="31"
-						y="296"
-						width="509"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-65"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[    Government Code of 1991, for which the due process of provision on real property tax assessment under Section 226]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="31"
-						y="307"
-						width="509"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-66"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[    of the said Code may be availed of.]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="31"
-						y="330"
-						width="509"
-						height="10"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-67"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[    discovered in this notice.]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="31"
-						y="340"
-						width="509"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-68"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[3. Please present this Notice to the Office of the Treasurer when payment is made.]]></text>
+				<text><![CDATA[1. This serves as the Notice of the declarant in pursuance of Section 223 of RA 7160, otherwise known as the Local Government Code of 1991, for which the due process of provision on real property tax assessment under Section 226 of the said Code may be availed of.
+2. Kindly inform the Assessor's Office of any inconsistency as to the actual ARP No., TDN, PIN, location and classification of the above properties you may have discovered in this notice, within 60 days upon receipt for appeal to the LOCAL BOARD OF ASSESSMENT APPEAL (LBAA).
+3. Please present this Notice to the Office of the Treasurer when payment is made.]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="1"
-						y="265"
+						y="253"
 						width="81"
 						height="12"
 						forecolor="#000000"
@@ -866,7 +768,7 @@
 					<reportElement
 						mode="Transparent"
 						x="91"
-						y="265"
+						y="253"
 						width="109"
 						height="12"
 						forecolor="#000000"
@@ -886,7 +788,7 @@
 					<reportElement
 						mode="Transparent"
 						x="377"
-						y="222"
+						y="210"
 						width="163"
 						height="13"
 						forecolor="#000000"
@@ -906,7 +808,7 @@
 					<reportElement
 						mode="Transparent"
 						x="91"
-						y="222"
+						y="210"
 						width="108"
 						height="13"
 						forecolor="#000000"
@@ -926,7 +828,7 @@
 					<reportElement
 						mode="Transparent"
 						x="212"
-						y="252"
+						y="240"
 						width="152"
 						height="12"
 						forecolor="#000000"
@@ -946,7 +848,7 @@
 					<reportElement
 						mode="Transparent"
 						x="212"
-						y="265"
+						y="253"
 						width="152"
 						height="12"
 						forecolor="#000000"
@@ -966,7 +868,7 @@
 					<reportElement
 						mode="Transparent"
 						x="211"
-						y="222"
+						y="210"
 						width="152"
 						height="13"
 						forecolor="#000000"
@@ -985,7 +887,7 @@
 				<line direction="TopDown">
 					<reportElement
 						x="0"
-						y="361"
+						y="353"
 						width="540"
 						height="0"
 						key="line-6"/>
@@ -1016,12 +918,12 @@
 			</band>
 		</pageFooter>
 		<summary>
-			<band height="354"  isSplitAllowed="true" >
+			<band height="359"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="-1"
-						y="136"
+						y="141"
 						width="540"
 						height="27"
 						forecolor="#000000"
@@ -1042,7 +944,7 @@
 					<reportElement
 						mode="Transparent"
 						x="330"
-						y="165"
+						y="167"
 						width="54"
 						height="18"
 						forecolor="#000000"
@@ -1062,7 +964,7 @@
 					<reportElement
 						mode="Transparent"
 						x="-1"
-						y="165"
+						y="167"
 						width="93"
 						height="18"
 						forecolor="#000000"
@@ -1082,7 +984,7 @@
 					<reportElement
 						mode="Transparent"
 						x="199"
-						y="165"
+						y="167"
 						width="131"
 						height="18"
 						forecolor="#000000"
@@ -1102,7 +1004,7 @@
 					<reportElement
 						mode="Transparent"
 						x="384"
-						y="165"
+						y="167"
 						width="85"
 						height="18"
 						forecolor="#000000"
@@ -1123,7 +1025,7 @@
 					<reportElement
 						mode="Transparent"
 						x="469"
-						y="165"
+						y="167"
 						width="70"
 						height="18"
 						forecolor="#000000"
@@ -1144,7 +1046,7 @@
 					<reportElement
 						mode="Transparent"
 						x="92"
-						y="165"
+						y="167"
 						width="107"
 						height="18"
 						forecolor="#000000"
@@ -1164,7 +1066,7 @@
 					<reportElement
 						mode="Transparent"
 						x="384"
-						y="183"
+						y="185"
 						width="85"
 						height="14"
 						forecolor="#000000"
@@ -1185,7 +1087,7 @@
 					<reportElement
 						mode="Transparent"
 						x="330"
-						y="183"
+						y="185"
 						width="54"
 						height="14"
 						forecolor="#000000"
@@ -1206,7 +1108,7 @@
 					<reportElement
 						mode="Transparent"
 						x="-1"
-						y="183"
+						y="185"
 						width="93"
 						height="14"
 						forecolor="#000000"
@@ -1227,7 +1129,7 @@
 					<reportElement
 						mode="Transparent"
 						x="199"
-						y="183"
+						y="185"
 						width="131"
 						height="14"
 						forecolor="#000000"
@@ -1248,7 +1150,7 @@
 					<reportElement
 						mode="Transparent"
 						x="469"
-						y="183"
+						y="185"
 						width="70"
 						height="14"
 						forecolor="#000000"
@@ -1269,7 +1171,7 @@
 					<reportElement
 						mode="Transparent"
 						x="92"
-						y="183"
+						y="185"
 						width="107"
 						height="14"
 						forecolor="#000000"
@@ -1289,7 +1191,7 @@
 					<reportElement
 						mode="Transparent"
 						x="330"
-						y="197"
+						y="199"
 						width="54"
 						height="14"
 						forecolor="#000000"
@@ -1309,7 +1211,7 @@
 					<reportElement
 						mode="Transparent"
 						x="384"
-						y="197"
+						y="199"
 						width="85"
 						height="14"
 						forecolor="#000000"
@@ -1329,7 +1231,7 @@
 					<reportElement
 						mode="Transparent"
 						x="469"
-						y="197"
+						y="199"
 						width="70"
 						height="14"
 						forecolor="#000000"
@@ -1349,7 +1251,7 @@
 					<reportElement
 						mode="Transparent"
 						x="376"
-						y="255"
+						y="252"
 						width="163"
 						height="12"
 						forecolor="#000000"
@@ -1369,7 +1271,7 @@
 					<reportElement
 						mode="Transparent"
 						x="376"
-						y="268"
+						y="265"
 						width="163"
 						height="12"
 						forecolor="#000000"
@@ -1388,8 +1290,8 @@
 				<line direction="TopDown">
 					<reportElement
 						mode="Opaque"
-						x="-1"
-						y="285"
+						x="0"
+						y="282"
 						width="540"
 						height="0"
 						forecolor="#000000"
@@ -1401,147 +1303,7 @@
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="288"
-						width="30"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-81"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[NOTE: ]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="30"
-						y="288"
-						width="509"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-82"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[1. This serves as the Notice of the declarant in pursuance of Section 223 of RA 7160, otherwise known as the Local]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="30"
-						y="323"
-						width="509"
-						height="10"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-83"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[2. Kindly inform the Assessor's Office of any inconsistency as to the actual ARP No., TDN, PIN, location and classification of the above properties you may have]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="30"
-						y="299"
-						width="509"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-84"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[    Government Code of 1991, for which the due process of provision on real property tax assessment under Section 226]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="30"
-						y="310"
-						width="509"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-85"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[    of the said Code may be availed of.]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="30"
-						y="333"
-						width="509"
-						height="10"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-86"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[    discovered in this notice.]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="30"
-						y="343"
-						width="509"
-						height="11"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="staticText-87"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
-					</textElement>
-				<text><![CDATA[3. Please present this Notice to the Office of the Treasurer when payment is made.]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						mode="Transparent"
-						x="0"
-						y="268"
+						y="265"
 						width="81"
 						height="12"
 						forecolor="#000000"
@@ -1561,7 +1323,7 @@
 					<reportElement
 						mode="Transparent"
 						x="90"
-						y="268"
+						y="265"
 						width="109"
 						height="12"
 						forecolor="#000000"
@@ -1581,7 +1343,7 @@
 					<reportElement
 						mode="Transparent"
 						x="376"
-						y="227"
+						y="224"
 						width="163"
 						height="13"
 						forecolor="#000000"
@@ -1601,7 +1363,7 @@
 					<reportElement
 						mode="Transparent"
 						x="90"
-						y="227"
+						y="224"
 						width="108"
 						height="13"
 						forecolor="#000000"
@@ -1621,7 +1383,7 @@
 					<reportElement
 						mode="Transparent"
 						x="211"
-						y="255"
+						y="252"
 						width="152"
 						height="12"
 						forecolor="#000000"
@@ -1641,7 +1403,7 @@
 					<reportElement
 						mode="Transparent"
 						x="211"
-						y="268"
+						y="265"
 						width="152"
 						height="12"
 						forecolor="#000000"
@@ -1661,7 +1423,7 @@
 					<reportElement
 						mode="Transparent"
 						x="210"
-						y="227"
+						y="224"
 						width="152"
 						height="13"
 						forecolor="#000000"
@@ -1681,7 +1443,7 @@
 					<reportElement
 						mode="Transparent"
 						x="-1"
-						y="12"
+						y="17"
 						width="540"
 						height="12"
 						forecolor="#000000"
@@ -1701,7 +1463,7 @@
 					<reportElement
 						mode="Transparent"
 						x="-1"
-						y="24"
+						y="29"
 						width="540"
 						height="12"
 						forecolor="#000000"
@@ -1721,7 +1483,7 @@
 					<reportElement
 						mode="Opaque"
 						x="97"
-						y="12"
+						y="17"
 						width="50"
 						height="50"
 						forecolor="#000000"
@@ -1735,7 +1497,7 @@
 					<reportElement
 						mode="Transparent"
 						x="-1"
-						y="42"
+						y="47"
 						width="540"
 						height="15"
 						forecolor="#000000"
@@ -1755,7 +1517,7 @@
 					<reportElement
 						mode="Transparent"
 						x="-1"
-						y="78"
+						y="83"
 						width="432"
 						height="13"
 						forecolor="#000000"
@@ -1774,7 +1536,7 @@
 					<reportElement
 						mode="Transparent"
 						x="-1"
-						y="90"
+						y="95"
 						width="432"
 						height="13"
 						forecolor="#000000"
@@ -1794,7 +1556,7 @@
 					<reportElement
 						mode="Transparent"
 						x="464"
-						y="78"
+						y="83"
 						width="75"
 						height="13"
 						forecolor="#000000"
@@ -1814,7 +1576,7 @@
 					<reportElement
 						mode="Transparent"
 						x="-1"
-						y="110"
+						y="115"
 						width="114"
 						height="14"
 						forecolor="#000000"
@@ -1835,7 +1597,7 @@
 					<reportElement
 						mode="Transparent"
 						x="-1"
-						y="58"
+						y="63"
 						width="540"
 						height="13"
 						forecolor="#000000"
@@ -1855,7 +1617,7 @@
 					<reportElement
 						mode="Transparent"
 						x="464"
-						y="90"
+						y="95"
 						width="75"
 						height="13"
 						forecolor="#000000"
@@ -1875,7 +1637,7 @@
 					<reportElement
 						mode="Transparent"
 						x="436"
-						y="78"
+						y="83"
 						width="28"
 						height="13"
 						forecolor="#000000"
@@ -1896,7 +1658,7 @@
 					<reportElement
 						mode="Transparent"
 						x="436"
-						y="90"
+						y="95"
 						width="28"
 						height="13"
 						forecolor="#000000"
@@ -1912,6 +1674,48 @@
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<text><![CDATA[Date :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="288"
+						width="30"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-98"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[NOTE: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="300"
+						width="540"
+						height="59"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-99"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Justified" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[1. This serves as the Notice of the declarant in pursuance of Section 223 of RA 7160, otherwise known as the Local Government Code of 1991, for which the due process of provision on real property tax assessment under Section 226 of the said Code may be availed of.
+2. Kindly inform the Assessor's Office of any inconsistency as to the actual ARP No., TDN, PIN, location and classification of the above properties you may have discovered in this notice, within 60 days upon receipt for appeal to the LOCAL BOARD OF ASSESSMENT APPEAL (LBAA).
+3. Please present this Notice to the Office of the Treasurer when payment is made.]]></text>
 				</staticText>
 			</band>
 		</summary>
