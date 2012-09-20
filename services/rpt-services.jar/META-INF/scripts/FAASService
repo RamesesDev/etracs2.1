@@ -317,6 +317,15 @@ class FAASService
 		faas.info.annotated 	= ( faas.info.annotated ? TO_BOOLEAN( faas.info.annotated ) : false )
         faas.info.autonumber 	= TO_BOOLEAN( faas.info.autonumber )
         faas.rpu.taxable 		= TO_BOOLEAN( faas.rpu.taxable )
+		
+		//populate landfaasid : fix for migrated data 
+		if( faas.rpu.rputype != 'land' ) {
+			if( ! faas.info.landfaasid ) 
+				faas.info.landfaasid = faas.rpu.info.landfaasid 
+			if( ! faas.info.landfaastaxpayerid ) 
+				faas.info.landfaastaxpayerid = faas.rpu.info.landfaastaxpayerid
+		}
+		
         initOpenRpuInfo( faas.rpu )
 		
 		//the statements below are for those migrated data with null initialization values
