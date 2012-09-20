@@ -1,0 +1,7 @@
+"entity.info.downpayment.*" [true == true] {
+    enabled:true;
+}
+
+"entity.info.downpayment.*" [downpaymentRequired == false] {
+    enabled:false;
+}

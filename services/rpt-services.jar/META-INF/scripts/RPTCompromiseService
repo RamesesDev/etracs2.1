@@ -56,37 +56,37 @@ class RPTCompromiseService {
 	@ProxyMethod
 	public def getList( searchtext, params ){
 		def namedsql = 'rptcompromise:getList'
-		def criteria = [where:'']
+		def criteria = [whereclause:'1=1']
 		
-		if( ! searchtext ) return utilSvc.getListByVar( namedsql, criteria, params );
+		if( ! searchtext ) return getListByQuery( namedsql, criteria, params, null );
 		
 		def result = [];
-		criteria = [where:' WHERE txnno LIKE $P{searchtext} ', searchtext:searchtext]
-		if((result = utilSvc.getListByVar( namedsql, criteria, params ))) return result;
-		criteria = [where:' WHERE secondpartyrepresentative LIKE $P{searchtext} ', searchtext:searchtext+'%']
-		if((result = utilSvc.getListByVar( namedsql, criteria, params ))) return result;
-		criteria = [where:' WHERE secondpartyname LIKE $P{searchtext} ', searchtext:searchtext+'%']
-		if((result = utilSvc.getListByVar( namedsql, criteria, params ))) return result;
+		criteria = [whereclause:' WHERE txnno LIKE $P{searchtext} ', searchtext:searchtext]
+		if((result = getListByQuery( namedsql, criteria, params, null ))) return result;
+		criteria = [whereclause:' WHERE secondpartyrepresentative LIKE $P{searchtext} ', searchtext:searchtext+'%']
+		if((result = getListByQuery( namedsql, criteria, params, null ))) return result;
+		criteria = [whereclause:' WHERE secondpartyname LIKE $P{searchtext} ', searchtext:searchtext+'%']
+		if((result = getListByQuery( namedsql, criteria, params, null ))) return result;
 		return result;
 	}
 	
 	@ProxyMethod
 	public List lookupCompromise(searchtext, params ) {
 		def namedsql = 'rptcompromise:getLookupList'
-		def where = " WHERE c.docstate IN ('FORPAYMENT', 'APPROVED', 'DEFAULTED') "
-		def criteria = [where:where]
+		def where = " c.docstate IN ('FORPAYMENT', 'APPROVED', 'DEFAULTED') "
+		def criteria = [whereclause:where]
 		
-		if( ! searchtext ) return utilSvc.getListByVar( namedsql, criteria, params );
+		if( ! searchtext ) return getListByQuery( namedsql, criteria, params, 'c.objid' );
 		
-		def result = [];
-		criteria = [where:where + 'AND c.txnno LIKE $P{searchtext} ', searchtext:searchtext]
-		if((result = utilSvc.getListByVar( namedsql, criteria, params ))) return result;
-		criteria = [where:where + 'AND c.secondpartyrepresentative LIKE $P{searchtext} ', searchtext:searchtext+'%']
-		if((result = utilSvc.getListByVar( namedsql, criteria, params ))) return result;
-		criteria = [where:where + 'AND rl.tdno LIKE $P{searchtext} ', searchtext:searchtext]
-		if((result = utilSvc.getListByVar( namedsql, criteria, params ))) return result;
-		criteria = [where:where + 'AND rl.cadastrallotno LIKE $P{searchtext} ', searchtext:searchtext]
-		if((result = utilSvc.getListByVar( namedsql, criteria, params ))) return result;
+		def result = []; 
+		criteria = [whereclause:where + 'AND c.txnno LIKE $P{searchtext} ', searchtext:searchtext]
+		if((result = getListByQuery( namedsql, criteria, params, 'c.objid' ))) return result;
+		criteria = [whereclause:where + 'AND c.secondpartyrepresentative LIKE $P{searchtext} ', searchtext:searchtext+'%']
+		if((result = getListByQuery( namedsql, criteria, params, 'c.objid' ))) return result;
+		criteria = [whereclause:where + 'AND rl.tdno LIKE $P{searchtext} ', searchtext:searchtext]
+		if((result = getListByQuery( namedsql, criteria, params, 'c.objid' ))) return result;
+		criteria = [whereclause:where + 'AND rl.cadastrallotno LIKE $P{searchtext} ', searchtext:searchtext]
+		if((result = getListByQuery( namedsql, criteria, params, 'c.objid' ))) return result;
 		return result;
 	}
 	
@@ -352,6 +352,20 @@ class RPTCompromiseService {
 
 	@ProxyMethod
 	public def initCompromise( compromise ) {
+		println '='*50
+		println compromise 
+		def cypaymentrequired = utilSvc.toBoolean( var.rpt_compromise_cy_payment_required, false)
+		def downpaymentrequired = utilSvc.toBoolean( var.rpt_compromise_downpayment_required, false)
+		
+		if( downpaymentrequired &&  compromise.info.downpayment == 0 ) {
+			if( compromise.info.downpaymentrate <= 0 ) {
+				throw new Exception('Downpayment must be greater than zero.')
+			}
+			if( compromise.info.downpaymentrate > 100  ) {
+				throw new Exception('Downpayment Rate must be less than or equal to 100 percent.')
+			}
+		}
+		
 		validateTermAndNumOfInstallment( compromise.info.term, compromise.info.numofinstallment)
 		
 		def parsedate = dateSvc.parseCurrentDate()
@@ -376,12 +390,8 @@ class RPTCompromiseService {
 			compromise.info.numofinstallment = 4;		//default quarterly payment
 		}
 		
-		def cypaymentrequired = utilSvc.toBoolean( var.rpt_compromise_cy_payment_required, false)
-		def downpaymentrequired = utilSvc.toBoolean( var.rpt_compromise_downpayment_required, false)
-		def downpaymentrate = 0.0 
-		if ( downpaymentrequired ) {
-			downpaymentrate = getDownpaymentRate()
-		}
+		def downpayment = compromise.info.downpayment 
+		def downpaymentrate = compromise.info.downpaymentrate
 		
 		compromise.objid 		= 'RC' + new UID()
 		compromise.txndate		= parsedate.date 
@@ -411,7 +421,7 @@ class RPTCompromiseService {
 			cypaymentrequired	: cypaymentrequired,
 			downpaymentrequired	: downpaymentrequired,
 			downpaymentrate		: downpaymentrate,
-			downpayment			: 0.0, 
+			downpayment			: downpayment, 
 			term				: compromise.info.term,
 			numofinstallment	: compromise.info.numofinstallment,
 			amount				: 0.0,
@@ -421,9 +431,21 @@ class RPTCompromiseService {
 		def bill 		 	= billingSvc.generateBill( createBill( ledger, parsedate ) )
 		compromise._items 	= buildItems( compromise, bill )
 				
+		
 		//calculate compromise amount based on compromise._items 
 		compromise.info.amount = compromise._items.total.sum()
-		compromise.info.downpayment = numSvc.round( compromise.info.amount * downpaymentrate / 100.00 )
+		if( compromise.info.downpayment >= compromise.info.amount ) {
+			throw new Exception('Downpayment must be less than the delinquency amount.')
+		}
+		println 'downpaymentrequired -> ' + downpaymentrequired
+		if( downpaymentrequired  ) {
+			if( compromise.info.downpayment == 0) {
+				compromise.info.downpayment = numSvc.round( compromise.info.amount * downpaymentrate / 100.00 )
+			}
+			else {
+				compromise.info.downpaymentrate = numSvc.roundA( compromise.info.downpayment / compromise.info.amount * 100 , 0)
+			}
+		}
 		compromise.info.amtforinstallment = compromise.info.amount - compromise.info.downpayment
 		compromise.info.amtpaid = compromise.info.downpayment
 		
@@ -1060,6 +1082,17 @@ class RPTCompromiseService {
 		}		
 	}
 		
-	
+	def getListByQuery( namedQuery, criteria, params, pagingkeys = null ) {
+        if( ! params ) params = [ _start:0, _limit:25]
+		def qry = em.sqlContext.createNamedQuery( namedQuery )
+					.setVars(criteria)
+				    .setParameters( criteria )
+				    .setFirstResult( params._start )
+				    .setMaxResults( params._limit );
+				  
+		if( pagingkeys ) qry.setPagingKeys( pagingkeys );
+		
+		return qry.resultList
+	}
 
 }

@@ -10,6 +10,7 @@
         
         <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
         <invoker type="formActions" action="doNext" caption="Next" mnemonic="n" icon="images/next.png" visibleWhen="#{mode=='init'}" />
+        <invoker type="formActions" action="gotoInit" caption="Back" mnemonic="n" icon="images/back.png" visibleWhen="#{mode=='create'}" />
         <invoker type="formActions" action="save" caption="Save" shortcut="ctrl S" mnemonic="s" icon="images/doc-save.png" visibleWhen="#{mode=='create' or mode=='edit' }"/>
         <invoker type="formActions" action="edit" caption="Edit" shortcut="ctrl E" mnemonic="e" icon="images/doc-edit.png" permission="rptcompromise.edit" visibleWhen="#{mode=='view' and entity.docstate=='DRAFT'}" />
         <invoker type="formActions" action="submit" caption="Submit" shortcut="ctrl S" mnemonic="s" icon="images/doc-submit.png" permission="rptcompromise.submit" visibleWhen="#{mode=='view' and entity.docstate=='DRAFT'}" />
@@ -43,6 +44,9 @@ public class RPTCompromiseController
     
     @Service('ETRACSUtilService')
     def utilSvc
+    
+    @Service('Var')
+    def var 
     
     def mode 
     def entity 
@@ -80,13 +84,28 @@ public class RPTCompromiseController
         return InvokerUtil.lookupOpener('rptledger.lookup', [docstate:'APPROVED', onselect:onselectLedger])
     }
 	
-	
+    def gotoInit() {
+        mode = 'init'
+        if( downpaymentRequired ) {
+            entity.info.downpayment = 0.0
+            entity.info.downpaymentrate = getDownpaymentRate()
+        }
+        else {
+            entity.info.downpayment = 0.0
+            entity.info.downpaymentrate = 0
+        }
+        return 'init'
+    }
+    
     /*------------------------------------------------------------------------
     * FormActions  Support
     ------------------------------------------------------------------------ */
     def create() {
         loadComboItemSources()
-        entity = [info:[term:12, numofinstallment:4], signatories:[]]
+        entity = [
+            info :[term:12, numofinstallment:4, downpayment:0.0, downpaymentrate:getDownpaymentRate()], 
+            signatories :[]
+        ]
         mode = 'init' 
         return 'init' 
     }
@@ -156,6 +175,24 @@ public class RPTCompromiseController
     void print() {
         report.viewReport()
         ReportUtil.print( report.report, true )
+    }
+    
+    def getDownpaymentRate(){
+        if( getDownpaymentRequired() ) {
+            try{
+                return Integer.parseInt( var.rpt_compromise_downpayment_rate )
+            }
+            catch( e) {
+                return 0.0
+            }
+        }
+        return 0.0
+    }
+    
+    def getDownpaymentRequired() {
+        if( var.rpt_compromise_downpayment_required == null ) 
+            return false
+        return '1/y/yes/t/true'.indexOf( var.rpt_compromise_downpayment_required.toString().trim().toLowerCase()) >= 0
     }
     
     /*------------------------------------------------------------------------

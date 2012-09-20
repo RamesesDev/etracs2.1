@@ -1,11 +1,11 @@
 [getList]
-SELECT * FROM rptcompromise_list ${where} 
+SELECT * FROM rptcompromise_list WHERE ${whereclause} 
 
 [getLookupList]
 SELECT c.* , rl.tdno, rl.cadastrallotno 
 FROM rptcompromise_list c 
 	INNER JOIN rptledger rl ON c.ledgerid = rl.objid 
-${where} 
+WHERE ${whereclause} 
 
 [getRPTCompromiseById]
 SELECT * 
