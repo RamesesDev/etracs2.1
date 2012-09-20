@@ -569,6 +569,10 @@ class SubdivisionService
             newfaas.info.taxpayeraddress= tpayinfo.taxpayeraddress
 			newfaas.info.ownername   	= tpayinfo.taxpayername 
             newfaas.info.owneraddress	= tpayinfo.taxpayeraddress
+			
+			newfaas.info.administratorname   	= sland.administratorname 
+            newfaas.info.administratoraddress	= sland.administratoraddress
+			
             if( sland.taxpayerid  ) {
                 newfaas.info.taxpayerid     = sland.taxpayer.objid 
                 newfaas.info.taxpayerno     = sland.taxpayer.entityno

@@ -371,8 +371,8 @@ class RPTLedgerService
     
     Map openFaas( faasid )  {
         def faas = em.read( FAASLISTSCHEMA_NAME, [objid:faasid] )
-        faas.datacapture    = faas.datacapture as boolean 
-        faas.taxable        = faas.taxable as boolean 
+        faas.datacapture    = TO_BOOLEAN( faas.datacapture )
+        faas.taxable        = TO_BOOLEAN( faas.taxable )
         return faas 
     }
     

@@ -230,6 +230,8 @@ public class SubdivisionController
             new Column(name:'newtitletype', caption:'New Title Type', editable:true ),
             new Column(name:'newtitleno', caption:'New Title No.', editable:true ),
             new Column(name:'newtitledate', caption:'New Title Date', editable:true ),
+            new Column(name:'administratorname', caption:'Administrator', editable:true ),
+            new Column(name:'administratoraddress', caption:'Address', editable:true ),
             new Column(name:'memoranda', caption:'Memoranda*', editable:true),
             new Column(name:'taxpayer', caption:'Taxpayer', editable:true, type:'lookup', handler:lookupTaxpayer, expression:'#{entityname}'),
         ]},

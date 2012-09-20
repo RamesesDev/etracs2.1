@@ -1,5 +1,11 @@
 set foreign_key_checks=0;
 
+ALTER TABLE lguname_etracs..subdivisionland ADD COLUMN administratorname VARCHAR(500);
+ALTER TABLE lguname_etracs..subdivisionland ADD COLUMN administratoraddress VARCHAR(500);
+
+
+
+
 
 alter table lguname_etracs.noticeofassessment 
 	add column ry int not null,
@@ -406,6 +412,7 @@ CREATE TABLE lguname_etracs.`rptcompromise_credit` (
 
 
 ALTER TABLE lguname_etracs.rptledger ADD COLUMN undercompromised int null;
+ALTER TABLE lguname_etracs.rptledger CHANGE COLUMN undercompromised undercompromised int null;
 
 UPDATE lguname_etracs.rptledger SET undercompromised = 0 WHERE undercompromised IS NULL; 
 
