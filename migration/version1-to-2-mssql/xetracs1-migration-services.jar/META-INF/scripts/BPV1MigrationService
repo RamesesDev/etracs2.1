@@ -300,7 +300,7 @@ class BPV1MigrationService
 			rule.actions = sys_em.serializer.read( rule.actions )
 			
 			list.each {
-				it.expr = it.expr.replace('$V{', '').replace('$F{','').replace('}','')
+				if( it.expr ) it.expr = it.expr.replace('$V{', '').replace('$F{','').replace('}','')
 				rule.actions.add([
 					opener				: 'bp-rule-mgmt:bpassessment_action_taxfeecharge',
 					actiontype			: 'taxfeecharge',
@@ -606,6 +606,7 @@ class BPV1MigrationService
 							bprcvlist << b
 						}
 						rcv.amtpaid = amtpaid
+						rcv.objid = rcv.objid + 4;
 						rcv.iqtr = 4
 						rcv.amount = amt - (qtramt * 3)
 					}
