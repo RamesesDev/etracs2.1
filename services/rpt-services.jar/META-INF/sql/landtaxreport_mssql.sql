@@ -1,9 +1,9 @@
 [getClassificationList] 
-SELECT objid AS classid, propertydesc AS classname, special   
+SELECT objid AS classid, propertycode as classcode, propertydesc AS classname, special   
 FROM propertyclassification  ORDER BY orderno  
 
 [getExemptionList]
-SELECT objid AS classid, exemptdesc AS classname, 0 AS special 
+SELECT objid AS classid, exemptcode as classcode, exemptdesc AS classname, 0 AS special 
 FROM exemptiontype ORDER BY orderno  
 
 [getBarangayList]
