@@ -70,6 +70,8 @@
 	<field name="dtrecommended" class="java.lang.String"/>
 	<field name="annotations" class="java.lang.Object"/>
 	<field name="ownercontactno" class="java.lang.String"/>
+	<field name="recommendedbytitle" class="java.lang.String"/>
+	<field name="approvedbytitle" class="java.lang.String"/>
 
 
 		<group  name="Part1" isStartNewPage="true" >
@@ -1023,20 +1025,6 @@
 				</textField>
 				<staticText>
 					<reportElement
-						x="0"
-						y="203"
-						width="176"
-						height="14"
-						key="staticText-236"
-						positionType="Float"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<text><![CDATA[Assessor]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
 						x="288"
 						y="175"
 						width="176"
@@ -1064,20 +1052,6 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{approvedby}]]></textFieldExpression>
 				</textField>
-				<staticText>
-					<reportElement
-						x="288"
-						y="203"
-						width="176"
-						height="14"
-						key="staticText-238"
-						positionType="Float"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
-					</textElement>
-				<text><![CDATA[Assessor]]></text>
-				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="472"
@@ -1617,6 +1591,34 @@ Clerk Initial]]></text>
 					<dataSourceExpression><![CDATA[$F{annotations}]]></dataSourceExpression>
 					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{AnnotationList}]]></subreportExpression>
 				</subreport>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="204"
+						width="176"
+						height="14"
+						key="textField-10"
+						positionType="Float"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{recommendedbytitle}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="288"
+						y="204"
+						width="176"
+						height="14"
+						key="textField-11"
+						positionType="Float"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{approvedbytitle}]]></textFieldExpression>
+				</textField>
 			</band>
 			</groupHeader>
 			<groupFooter>
