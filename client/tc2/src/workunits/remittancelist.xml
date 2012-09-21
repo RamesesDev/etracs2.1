@@ -47,7 +47,7 @@
                 },
 
                 fetchList : { 
-                    return svc.getList( searchText, OsirisContext.env );
+                    return svc.getList( searchText, it );
                 }
 
             ] as PageListModel;
