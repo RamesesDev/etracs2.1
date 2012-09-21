@@ -271,8 +271,6 @@ class BldgRPUService
         //calculate rpu market value
         rpu.totalareasqm    = calculateSum('area', rpu.info.bldguses )
 			
-		println '='*50
-		println 'rpu.info.useswornamount -> '+ rpu.info.useswornamount
 		if( IS_TRUE( rpu.info.useswornamount )) {
 			rpu.totalbmv        = rpu.info.swornamount 
 			rpu.info.depreciationvalue = numberSvc.round( rpu.totalbmv * rpu.info.depreciation / 100 )
@@ -463,8 +461,7 @@ class BldgRPUService
     @ProxyMethod
     public List lookupActualUse( lguid, ry , searchText, params) {
 		lguid = (lguid ? lguid : '%')
-		println 'lguid -> ' + lguid 
-        def searchValue = (searchText ? searchText+'%' : '%')
+		def searchValue = (searchText ? searchText+'%' : '%')
         def criteria = [lguid:lguid, ry:ry, code:searchValue]
         def list = getListByName('bldgrpu:lookupActualUseByCode', criteria, params, 'bl.objid')
         return list.each {
@@ -638,8 +635,7 @@ class BldgRPUService
 	}
     
     def getBldgAssessmentLevel( lguid, ry, code ) {
-		println "lguid: $lguid ry : $ry   code: $code "
-        def list = lookupActualUse( lguid , ry, code, null)
+		def list = lookupActualUse( lguid , ry, code, null)
         if( ! list ) throw new Exception('Cannot load assessment level for ' + code + '.')
         return list[0] 
     }

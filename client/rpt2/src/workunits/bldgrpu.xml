@@ -116,6 +116,10 @@ public class BldgRPUController
     void setBldgtype( bldgtype ) {
         this.bldgtype = bldgtype 
         rpu.info.bldgtype = bldgtype 
+        rpu.info.predominant = bldgtype.predominant
+        println '='*50
+        println 'rpu.info.predominant  -> '+ rpu.info.predominant 
+        rpu.info.depreciatecoreanditemseparately = bldgtype.depreciatecoreanditemseparately
         clearBldgKindInfo()
         calcBldgAge();
         binding.refresh('rpu.info.bldgtype.*')
