@@ -42,6 +42,7 @@ public class BPApplicationReportService
 			ctcno: bpa.info.ctcno,
 			ctcplaceissued: bpa.info.ctcplaceissued,
 			ctcdateissued: bpa.info.ctcdateissued,
+			contactno: bpa.info.contactno, 
 			infos: buildAppInfo( bpa.appinfos ),
 			requirements: bpsettingSvc.setting.requirements,
 			signatories: bpsettingSvc.setting.applicationsignatories

@@ -270,15 +270,20 @@ insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('BT','BUS
 insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('DISCOUNT','DISCOUNT',3,'bpbilling');
 insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('DISCOUNT','DISCOUNT',3,'rptbilling');
 insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('INIT','INIT',0,'rptbilling');
-insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('INT','INTEREST',2,'ctcassessment');
 insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('INTEREST','INTEREST',1,'bpbilling');
 insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('OC','OTHER CHARGE',6,'bpassessment');
 insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('PENALTY','PENALTY',2,'rptbilling');
 insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('RF','REGULATORY FEE',4,'bpassessment');
 insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('SUM','SUMMARY',8,'bpassessment');
 insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('SURCHARGE','SURCHARGE',2,'bpbilling');
-insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('TAX','TAX',1,'ctcassessment');
 insert  into "rulegroup"("objid","name","sortorder","ruleset") values ('TAX','TAX',1,'rptbilling');
+
+insert into rulegroup (objid,name,sortorder,ruleset)
+values
+ ('TAX', 'TAX', 1, 'ctcassessment'),
+ ('ATAX', 'AFTER TAX', 2, 'ctcassessment'),
+ ('INT', 'INTEREST', 3, 'ctcassessment'),
+ ('AINT', 'AFTER INTEREST', 4, 'ctcassessment');
 
 
 /*Data for the table "sys_ds" */

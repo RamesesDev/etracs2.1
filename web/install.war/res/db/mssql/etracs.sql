@@ -2056,10 +2056,10 @@ CREATE TABLE "postcapture" (
   "dtposted" date NOT NULL,
   "collectorid" varchar(50) NOT NULL,
   "collectorname" varchar(75) NOT NULL,
-  "collectortitle" varchar(25) NOT NULL,
+  "collectortitle" varchar(75) NOT NULL,
   "postedbyid" varchar(50) NOT NULL,
   "postedbyname" varchar(75) NOT NULL,
-  "postedbytitle" varchar(25) NOT NULL,
+  "postedbytitle" varchar(75) NOT NULL,
   "amount" decimal(12,2) NOT NULL,
   "summaries" text NOT NULL,
   PRIMARY KEY  ("objid")

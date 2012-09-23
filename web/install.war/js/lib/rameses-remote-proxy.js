@@ -79,8 +79,8 @@ var Service = new function() {
 			if( err!=null ) {
 				throw new Error(err);
             }
-			var func = eval( '(' + result + ')' );
-			this.services[name] = new func();
+			var func = eval( 'new (' + result + ')' );
+			this.services[name] = func; //new func();
 		}
 		return this.services[name];
 	}

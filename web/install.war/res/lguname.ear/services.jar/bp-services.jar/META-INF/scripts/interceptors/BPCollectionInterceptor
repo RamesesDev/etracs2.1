@@ -267,8 +267,8 @@ class BPCollectionInterceptor {
 	
 	private void removePenaltyRcptItems( receipt ){
 		receipt.items.each{
-			it.amount -= it.surcharge
-			it.amount -= it.interest
+			it.amount -= (it.surcharge ? it.surcharge : 0.00)
+			it.amount -= (it.interest  ? it.interest  : 0.00)
 		}
 	}
 	
@@ -291,7 +291,7 @@ class BPCollectionInterceptor {
 		
 		def bt_items = receipt.items.findAll{ it.systype.equals('BUSINESS_TAX') }
 		def isize = bt_items.size()
-		def lastqtr = fqtr( bt_items[isize-1].iqtr )
+		def lastqtr = fqtr( bt_items ? bt_items[isize-1].iqtr : 1 )
 		
 		bt_items.unique{ it.acctid }.each{ item ->
 			def btiteminfo = receipt.items.findAll{ it.acctid.equals(item.acctid) && it.systype.equals('BUSINESS_TAX') }

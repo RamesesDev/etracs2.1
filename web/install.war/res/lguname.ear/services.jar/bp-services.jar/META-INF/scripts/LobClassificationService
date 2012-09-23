@@ -15,8 +15,16 @@ class LobClassificationService
 	
 	@ProxyMethod
 	public def getList( searchText, params ) {
-		if( ! searchText ) return em.sqlContext.createNamedQuery('lobclassification:getList').resultList
-		return em.sqlContext.createNamedQuery('lobclassification:getListByName').setParameter('name', searchText+'%').resultList
+		def qry;
+		if( ! searchText ) 
+			qry = em.sqlContext.createNamedQuery('lobclassification:getList')
+		else
+			qry = em.sqlContext.createNamedQuery('lobclassification:getListByName').setParameter('name', searchText+'%')
+
+		if( params?._start ) qry.setFirstResult( params._start )
+		if( params?._limit ) qry.setMaxResults( params._limit )
+
+		return qry.resultList
 	}
 	
 	@ProxyMethod
