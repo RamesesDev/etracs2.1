@@ -26,7 +26,7 @@ public class LiquidationReportServices{
 		reportData.amountinwords = numsvc.convertString( reportData.amount + "" );
 		reportData.amountformatted = decformat.format( reportData.amount );
 		
-		reportData.txndate = liquidation.dtposted;
+		reportData.txndate = dtSvc.parse('yyyy-MM-dd', liquidation.info.txndate);
 		liquidation.liquidationid = liquidation.objid
 
 		reportData.otherpayments = em.sqlContext.createNamedQuery("liquidationreport:getOtherPaymentsByLiquidation")
