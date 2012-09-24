@@ -375,6 +375,19 @@ WHERE remittanceid = $P{remittanceid}
 GROUP BY afid, afcontrolid, stubno  
 ORDER BY afid, fromserialno, stubno  
 
+[getOpenCollectionSummaries] 
+SELECT 
+	afid, stubno, 
+	MIN(serialno) AS fromserialno, 
+	MAX(serialno) AS toserialno, 
+	SUM(CASE WHEN voided =0 THEN amount ELSE 0 END ) AS amount 
+FROM receiptlist 
+WHERE docstate = 'OPEN' 
+  AND collectorid = $P{collectorid}
+  AND voided = 0 
+GROUP BY afid, afcontrolid, stubno  
+ORDER BY afid, fromserialno, stubno  
+
 
 [fetchOtherPayments]
 SELECT  

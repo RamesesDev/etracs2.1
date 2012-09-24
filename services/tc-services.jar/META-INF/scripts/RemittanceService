@@ -482,6 +482,11 @@ class RemittanceService {
 		return remittedforms;
 	}
 	
+	@ProxyMethod
+	public def getOpenCollectionSummaries( collectorid ){
+		return em.sqlContext.createNamedQuery("remittance:getOpenCollectionSummaries").setParameters( [collectorid:collectorid] ).resultList;
+	}
+	
 	
 	@ProxyMethod
 	public def update( rem ) {
