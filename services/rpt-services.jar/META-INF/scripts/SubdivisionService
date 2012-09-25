@@ -130,6 +130,9 @@ class SubdivisionService
         em.sqlContext.createNamedExecutor('subdivision:deleteAffectedRpus').setParameter('subdivisionid', subdivisionid ).execute()
         em.sqlContext.createNamedExecutor('subdivision:deleteSubdividedLands').setParameter('subdivisionid', subdivisionid ).execute()
         em.sqlContext.createNamedExecutor('subdivision:deleteSubdivision').setParameter('objid', subdivisionid ).execute()
+		
+		//also remove txn reference
+		txnSvc.delete( subdivision.motherfaasid )
     }
     
     @ProxyMethod
