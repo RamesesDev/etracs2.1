@@ -17,7 +17,9 @@ SELECT * FROM bldgadditionalitem WHERE bldgrysettingid = $P{bldgrysettingid} ORD
 SELECT * FROM bldgtype WHERE bldgrysettingid = $P{bldgrysettingid} ORDER BY code 
 
 [getBldgKindBucc]
-SELECT * FROM bldgkindbucc WHERE bldgtypeid = $P{bldgtypeid} ORDER BY bldgkindcode 
+#-- SELECT * FROM bldgkindbucc WHERE bldgtypeid = $P{bldgtypeid} ORDER BY bldgkindcode
+SELECT * FROM bldgkindbucc WHERE bldgtypeid = $P{bldgtypeid} ORDER BY objid desc -- just order it by objid (how it was encoded)
+
 
 [checkDuplicate]
 SELECT objid 
