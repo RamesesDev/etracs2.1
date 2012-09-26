@@ -107,6 +107,19 @@
             </Property>
           </Properties>
         </Component>
+        <Component class="com.rameses.rcp.control.XComboBox" name="xComboBox4">
+          <Properties>
+            <Property name="caption" type="java.lang.String" value="Barangay"/>
+            <Property name="dynamic" type="boolean" value="true"/>
+            <Property name="emptyText" type="java.lang.String" value="ALL BARANGAYS"/>
+            <Property name="expression" type="java.lang.String" value="#{barangayname}"/>
+            <Property name="items" type="java.lang.String" value="barangaylist"/>
+            <Property name="name" type="java.lang.String" value="barangay"/>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[125, 22]"/>
+            </Property>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

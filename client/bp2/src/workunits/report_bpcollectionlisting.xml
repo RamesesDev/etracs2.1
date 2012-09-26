@@ -34,6 +34,7 @@ class bpcollectionreportlistcontroller
     def qtr
     def month
     def day 
+    def barangay
     def fund
     def reportdata
     
@@ -51,7 +52,7 @@ class bpcollectionreportlistcontroller
     }
     
     void generateReport() {
-        reportdata = svc.getBPPReportLists( year, qtr, month, day )
+        reportdata = svc.getBPPReportLists( year, qtr, month, day, barangay )
         report.viewReport()
     }
     
@@ -66,6 +67,7 @@ class bpcollectionreportlistcontroller
         getParameters : { 
             def params = svcParams.getStandardParameter( OsirisContext.env.USERNAME )
             params.PERIOD = svc.buildPeriod(year, qtr, month, day)
+            params.BARANGAY = barangay ? barangay.barangayname : null 
             
             return params 
         }
@@ -75,16 +77,34 @@ class bpcollectionreportlistcontroller
         return 'default' 
     }
     
+    void setQuarter( quarter ){
+        this.quarter = quarter
+        setMonth( null )
+        setDay( null )
+    }
+    
     List getQuarterlist() {
         return [1,2,3,4]
+    }
+    
+    void setMonth( month ){
+        this.month = month
     }
     
     List getMonthlist() {
         return svc.getMonthList( qtr )
     }
     
+    void setDay( day ){
+        this.day = day
+    }
+    
     List getDaylist() {
         return svc.getNumDays( year, month?.month-1 )
+    }
+    
+    List getBarangaylist(){
+        return svc.getBarangayList()
     }
     
 }

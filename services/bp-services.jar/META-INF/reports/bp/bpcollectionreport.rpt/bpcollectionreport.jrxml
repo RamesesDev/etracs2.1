@@ -35,6 +35,7 @@
 	<parameter name="TREASURERTITLE" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="TREASUREROFFICENAME" isForPrompting="false" class="java.lang.String"/>
 	<parameter name="PERIOD" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="BARANGAY" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="appno" class="java.lang.String"/>
 	<field name="txntype" class="java.lang.String"/>
@@ -207,6 +208,25 @@
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PERIOD}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="78"
+						width="176"
+						height="14"
+						key="textField-34">
+							<printWhenExpression><![CDATA[new Boolean( $P{BARANGAY} != null)]]></printWhenExpression>
+						</reportElement>
+					<box leftPadding="2">					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["BARANGAY : " + $P{BARANGAY}]]></textFieldExpression>
 				</textField>
 			</band>
 		</title>
