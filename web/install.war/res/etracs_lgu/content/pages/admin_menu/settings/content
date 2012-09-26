@@ -1,0 +1,98 @@
+<% 
+	
+def context="sysvar_list"; 
+	
+%>
+
+<style>
+	.category {
+		margin-right: 20px;
+	}
+	.category td {
+		padding:4px;
+		cursor: default;
+	}
+	.category tr.selected {
+		background-color:blue;
+		color:white;
+	}
+	
+	.grid td div { overflow: hidden; }
+</style>
+
+<script>
+	\$register({id: 'sysvar:edit', context:'sysvar_edit', page: '${PAGE.path}/edit', title: 'Edit', options: {width: 500, height: 200}});
+	
+	\$put( 
+		"${context}", 
+		new function() 
+		{
+			var svc = Service.lookup('admin/Var');
+			var self = this;
+			this.selectedItem;
+
+			this.category;
+			this.categoryList;
+			
+			this.onload = function() {
+				this.categoryList = svc.getCategories();
+				if(this.categoryList.length>0 ) this.category = this.categoryList[0];
+			}
+
+			this.listModel = {
+				rows: 15,
+				fetchList: function(o) {
+					if(! self.category ) return [];
+					o.category = self.category;
+					return svc.getList(o);	
+				}
+			}
+
+			this.reloadList = function() {
+				self.listModel.refresh(true);	
+			}
+			
+			this.edit = function() {
+				var h = function(x) {
+					svc.set( x.name, x.value );
+					self.reloadList();
+				}
+				return new PopupOpener( "sysvar:edit", {info:this.selectedItem, saveHandler: h, datatype:this.selectedItem.datatype } );
+			}
+			
+			this.propertyChangeListener = {
+				"category" : function(x) {
+					self.listModel.load();
+				}
+			}
+		}
+	);
+</script>
+
+<table width="100%">
+	<tr>
+		<td valign="top" width="130">
+			<table class="category" r:context="${context}" r:items="categoryList" r:name="category" r:varName="item" width="100%">
+				<tr>
+					<td>#{item}</td>
+				</tr>
+			</table>
+		</td>
+		<td valign="top">
+			<%
+			
+			def cols = [
+				[name:"name", caption: "Name"],
+				[name:"value", caption: "Value"],
+				[html: """
+					<a r:context="${context}" r:name="edit" title="edit">
+						<img src="/res/admin/edit.gif"/>
+					</a>
+				"""],
+			];
+			
+			%>
+			@grid( context: context, model: 'listModel', cols: cols )
+		</td>
+	</tr>
+</table>

@@ -1,0 +1,6 @@
+{
+	title: 		'Server Management',
+	fragment: 	true,
+	sortorder:	2,
+	master:		'fragment_document'
+}

@@ -6,6 +6,8 @@
 
 package etracs2.tc.remittance;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author  alvin
@@ -30,6 +32,9 @@ public class RemittanceInitPage extends javax.swing.JPanel {
         xTextField1 = new com.rameses.rcp.control.XTextField();
         xDateField1 = new com.rameses.rcp.control.XDateField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        formPanel2 = new com.rameses.rcp.util.FormPanel();
+        xNumberField1 = new com.rameses.rcp.control.XNumberField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -72,7 +77,28 @@ public class RemittanceInitPage extends javax.swing.JPanel {
         formPanel1.add(xComboBox1);
 
         jPanel1.add(formPanel1);
-        formPanel1.setBounds(10, 10, 504, 220);
+        formPanel1.setBounds(10, 10, 544, 132);
+
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder2.setTitle("Summary of Collections");
+        xDataTable1.setBorder(xTitledBorder2);
+        xDataTable1.setHandler("summaryHandler");
+        jPanel1.add(xDataTable1);
+        xDataTable1.setBounds(12, 152, 540, 246);
+
+        formPanel2.setCaptionFont(new java.awt.Font("Arial", 1, 14));
+        xNumberField1.setCaption("Total");
+        xNumberField1.setCaptionWidth(60);
+        xNumberField1.setFieldType(BigDecimal.class);
+        xNumberField1.setFont(new java.awt.Font("Arial", 1, 14));
+        xNumberField1.setName("remittanceAmount");
+        xNumberField1.setPattern("#,##0.00");
+        xNumberField1.setPreferredSize(new java.awt.Dimension(0, 24));
+        xNumberField1.setReadonly(true);
+        formPanel2.add(xNumberField1);
+
+        jPanel1.add(formPanel2);
+        formPanel2.setBounds(330, 400, 224, 44);
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -81,10 +107,13 @@ public class RemittanceInitPage extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
+    private com.rameses.rcp.util.FormPanel formPanel2;
     private javax.swing.JPanel jPanel1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDateField xDateField1;
+    private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
     

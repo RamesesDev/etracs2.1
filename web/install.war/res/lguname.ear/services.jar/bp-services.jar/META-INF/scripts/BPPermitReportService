@@ -1,0 +1,215 @@
+import com.rameses.annotations.*;
+
+public class BPPermitReportService
+{
+	@PersistenceContext('main')
+	def em;
+	
+	@Service('Var')
+	def var;
+	
+	def yearFormat = new java.text.SimpleDateFormat('yyyy');
+	def dateFormat = new java.text.SimpleDateFormat('yyyy-MM-dd');
+	
+	@ProxyMethod
+	public def getPermitReportInfo( def applicationid ){
+		def bp = em.sqlContext.createNamedQuery('bpmgmt:findPermitByApplicationId')
+					.setParameters([applicationid: applicationid]).singleResult;
+				   
+		def app = em.read('bpapplication:bpapplication', [objid:applicationid])
+		buidReportInfo( bp, app )		
+		
+		return [
+			reportName: 'bp/businesspermit',
+			info: bp,
+			params: buildReportParameter( bp )
+		]
+	}
+	
+	private void buidReportInfo( def bp, def app ){
+		createBPApplistInfo( bp )
+		createBPReportEntity( bp )
+		createBarCode( bp, app )
+		initializeLOBS( bp, app )
+		buildAppInfo( bp, app.appinfos.findAll{ it.printtopermit == 1 } )
+		doOrganizeColLOB( bp )
+		removeRetireLOB( bp )
+		createORDetail( bp, app )
+	}
+	
+	private void createBPApplistInfo( def bp ){
+		def applistinfo = em.read( 'bplisting:bpapplicationlisting', [objid:bp.applicationid] )
+		bp.taxpayerid = applistinfo.taxpayerid
+		bp.organization = applistinfo.organization
+		bp.barangayname = applistinfo.barangayname
+		bp.barangayname = applistinfo.barangayname 
+		bp.ctcno = applistinfo.ctcno 
+	}
+	
+	private void createBPReportEntity( def bp ){
+		def entity = em.sqlContext.createNamedQuery('bpmgmt:getTaxpayer')
+				   .setParameter('objid', bp.taxpayerid).singleResult
+				   
+		entity.info = em.serializer.read( entity.info )
+		if( entity.entitytype.equals('individual') ){
+			entity.info.middlename = ( entity.info.middlename ) ? " $entity.info.middlename ": " "
+			bp.taxpayername = "$entity.info.firstname$entity.info.middlename$entity.info.lastname".toString()
+			bp.citizenship = entity.info.citizenship
+			bp.civilstatus = entity.info.civilstatus
+		}
+	}
+	
+	private void createBarCode( def bp, def app ){
+		bp.barcode = app.barcode
+		bp.barcodeurl = var.get( 'barcode_url' ).replace( '$P{data}', app.barcode )
+	}
+	
+	private void initializeLOBS( def bp, def app ){
+		bp.txntype = app.txntype
+		bp.lines = em.serializer.read( bp.lobs )
+		bp.linesize = bp.lines.size
+		
+		bp.lob = bp.lines[0]
+		bp.lobs = null;
+		bp.iyear = yearFormat.format( bp.txndate );
+		bp.validity = dateFormat.parse( bp.iyear + '-12-31' );
+	}
+	
+	private def buildAppInfo( def bp, def infos ){
+		bp.infos = []
+		if( infos ){
+			infos.each{
+				bp.infos << [
+					caption: it.varcaption,
+					category: it.lobname,
+					value: getDisplayText( it ),
+				];
+			}
+			
+			bp.infos.sort{ a, b ->
+				def sA = ( a.category ) ? a.category : "";
+				def bA = ( b.category ) ? b.category : "";
+				return sA <=> bA;
+			}
+		}
+	}
+	
+	def getDisplayText( lob ){
+		def sb = new StringBuffer();
+		if( lob.vartype == 'string_array' ){
+			lob.arrayvalues.each{
+				if( it == lob.value ) sb << it ;
+			}
+		}
+		
+		if( lob.vartype == 'boolean' ){
+			def x = " ";
+			if( lob.value != null ) x = (lob.value)? 'x': ' ';
+			sb << "[${x}] TRUE [${x}] FALSE";
+		}
+		
+		def format = { pattern, val ->
+			if( !val ) return "";
+			def f = new java.text.DecimalFormat( pattern );
+			return f.format( val );
+		}
+		
+		if( lob.vartype == 'integer' ) sb << format('#,##0', lob.value );
+		if( lob.vartype == 'decimal' ) sb << format('#,##0.00', lob.value );
+		if( lob.vartype == 'string'  ) sb << ((lob.value == null) ? "" : lob.value);
+		
+		return sb.toString().trim();
+	}
+	
+	private void doOrganizeColLOB( def bp ){
+		if( bp.linesize >= 8 ) {
+			bp.lines2 = []
+			def nextrow = (bp.linesize / 2) as int
+			
+			for( int i=0; i < bp.linesize; i++ ){
+			   if( i < (bp.linesize / 2)){
+				   bp.lines2[i] = [:]
+				   bp.lines2[i].name_1 = bp.lines[i].name
+				   bp.lines2[i].name_2 = bp.lines[nextrow].name
+				   nextrow++
+			   }
+			}
+		}
+	}
+	
+	private void removeRetireLOB( def bp ){
+		def retiredlines = bp.lines.findAll{ it.assessmenttype == 'RETIRE' || it.assessmenttype == 'RETIRELOB' }
+		if( retiredlines ) bp.lines.removeAll( retiredlines )
+	}
+	
+	private void createORDetail( def bp, def app ){
+		def c = app.credits[0]
+		def p = app.payments[0]
+				
+		def or = [orno:'-', ordate:null, amount:null ]	
+		if( c && p  ) {
+			or = [orno   : c.refno+'', 
+				  ordate : dateFormat.parse( c.refdate ),
+				  amount : p.amount
+			];
+		}
+		
+		bp.orlist = [ or ];
+		bp.ordetails = bp.orlist[0]
+		bp.ordetails.businesstax = 0.00;
+		bp.ordetails.regfee = 0.00;
+		bp.ordetails.othercharge = 0.00;
+		
+		em.sqlContext.createQuery('''		
+			select i.systype, sum(r.amount) as total
+			from receiptlist rl
+			inner join receiptitem r on r.receiptid = rl.objid
+			inner join incomeaccount i on r.acctid = i.objid
+			where rl.serialno = ?
+			group by i.systype
+		''')
+		.setParameter(1, bp.ordetails.orno)
+		.resultList
+		.each{
+			if( it.systype == 'BUSINESS_TAX' )
+				bp.ordetails.businesstax += it.total
+			else if( it.systype == 'REG_FEE' )
+				bp.ordetails.regfee += it.total
+			else
+				bp.ordetails.othercharge += it.total
+		};
+	}	
+	
+	private def buildReportParameter( def bp ){
+		def sdf = new java.text.SimpleDateFormat("EEEEE MMMMM dd, yyyy");
+		return [
+			PERMITDATE: sdf.format( bp.txndate ),
+			LGUADDRESS: var.lgu_address,
+			MAYORNAME: var.mayor_name,
+			MAYORTITLE: var.mayor_title,
+			
+			PERMITDAY: getFDate( 'dd', bp.txndate ),
+			PERMITMONTHYR: getFDate( 'MMMMM yyyy', bp.txndate )
+		]	
+	}
+	
+	private def getFDate( def fdt, def txndate ){
+		def strdate = txndate.toString()
+		def date = java.sql.Date.valueOf( strdate )
+		def dt = new java.text.SimpleDateFormat( fdt ).format( date ).toString()
+				
+		if( 'dd'.equals(fdt) ){
+			if( dt.matches('1|21|31') )
+				return dt + 'st';
+			else if( dt.matches('2|22') )
+				return dt + 'nd';
+			else if(dt.matches('3|23')) 
+				return dt + 'rd';
+			else return dt + 'th';
+		}
+		
+		return dt;
+	}
+	
+	
+}

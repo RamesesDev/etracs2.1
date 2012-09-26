@@ -1,0 +1,34 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import com.rameses.reports.jasper.*;
+
+
+class WebBPReportService 
+{	
+    @Service("ReportParameterService")
+    def paramsSvc;
+    
+    @Service("BPAssessmentReportService")
+    def assessSvc;
+	
+	@Service("BPApplicationReportService")
+	def appSvc;
+	
+	@Env
+	def env;
+
+	@ProxyMethod
+	public def getPDFAssessmentReport( appid ){
+		def app = assessSvc.getAssessmentReportInfo( appid );
+		def params = paramsSvc.getStandardParameter( 'Taxpayer Portal v1.0' );
+		return JasperReportManager.instance.getPDF( app.reportName, params, app.info );
+	}
+	
+	@ProxyMethod
+	public def getPDFAppReport( appid ) {
+		def app = appSvc.getApplicationReportInfo( appid );
+		def params = paramsSvc.getStandardParameter( 'Taxpayer Portal v1.0' );
+		return JasperReportManager.instance.getPDF( app.reportName, params, app.info );
+	}
+	
+}

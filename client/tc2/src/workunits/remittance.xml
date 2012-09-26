@@ -62,6 +62,8 @@
             
             def reports;
             def lqofficer
+            def remittanceAmount
+            def collectionSummaries 
             
             def create() {
                 collector = usersvc.getCollector( OsirisContext.env.USERID );
@@ -72,9 +74,24 @@
                     receipts : [],
                     remittedforms : []
                 ];
-                
+                collectionSummaries = svc.getOpenCollectionSummaries( OsirisContext.env.USERID ) 
+                remittanceAmount = 0.0
+                if( collectionSummaries ) {
+                    remittanceAmount = collectionSummaries.amount.sum()
+                }
                 return 'init';
             }
+            
+            def summaryHandler = [
+                getColumns : { return [
+                    new Column(name:'afid', caption:'AF No.', width:50 ),
+                    new Column(name:'stubno', caption:'Stub No.', width:80 ),
+                    new Column(name:'fromserialno', caption:'From', width:120 ),
+                    new Column(name:'toserialno', caption:'To', width:120 ),
+                    new Column(name:'amount', caption:'Amount', type:'decimal', format:'#,##0.00'),
+                ]},
+                fetchList  : { return collectionSummaries }
+            ] as SubListModel 
             
             def open() {
                 if (entity)

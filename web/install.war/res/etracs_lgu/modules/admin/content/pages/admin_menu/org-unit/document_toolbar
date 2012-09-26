@@ -1,0 +1,10 @@
+<table>
+	<tr>
+		<td>
+			<b>Org. Type : </b>
+			<select r:context="orgunit-mgmt" r:name="orgType" r:items="orgTypes" 
+			        r:itemLabel="name" r:allowNull="true" r:emptyText="Select an Org.Type"></select>
+			<button r:context="orgunit-mgmt" r:name="add" r:visibleWhen="#{!isSystemOrgType()}" r:depends="orgType">+Add</button>
+		</td>
+	</tr>
+</table>

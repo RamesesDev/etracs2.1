@@ -38,6 +38,9 @@ class NoticeReportController
     
     def create() {
         notice = [:]
+        taxpayer = null
+        faas = null
+        selectedItem = null
         return 'init'
     }
     
@@ -76,7 +79,11 @@ class NoticeReportController
     }
 
     def report =[
-        getReportName : { "notice" },
+        getReportName : { 
+            if( notice.items.size() == 1 )
+                return "noticebytd" 
+            return "notice" 
+        },
         getReportData : { return notice },
         getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ); }
     ] as ServerReportModel;
@@ -86,7 +93,7 @@ class NoticeReportController
     }
     
     def getLookupFAAS() {
-        return InvokerUtil.lookupOpener( 'faas.lookup', [:] )
+        return InvokerUtil.lookupOpener( 'faas.lookup', [searchText:notice.taxpayerid] )
     }
     
     def back() {

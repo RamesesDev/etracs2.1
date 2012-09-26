@@ -1,0 +1,13 @@
+<table width="100%" height="100%" class="border-layout">
+	<tr>
+		<td class="north" colspan="3" valign="top">${_north}</td>
+	</tr>
+	<tr>
+		<td class="west" valign="top">${_west}</td>
+		<td class="content" valign="top">${_content}</td>
+		<td class="east" valign="top">${_east}</td>
+	</tr>
+	<tr>
+		<td class="south" colspan="3" valign="top">${_south}</td>
+	</tr>
+</table>

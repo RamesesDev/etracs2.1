@@ -56,16 +56,24 @@ class RemittanceService {
 	}
 	
 	private def isCollector( userid ) {
-		def o = userSvc.getCollector( userid );
-		return (o != null)
+		try {
+			def o = userSvc.getCollector( userid );
+			return (o != null)
+		}
+		catch(e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	private def getListAll( searchText, params ) {
+		println 'searchText -> ' + searchText
 		if ( !searchText )
-			return em.sqlContext.createNamedQuery( "remittance:getList" ).resultList;
-		def results = em.sqlContext.createNamedQuery( "remittance:getRemittanceByTxnNo" ).setParameter( "txnno", searchText ).resultList;
+			return getListByQuery( "remittance:getList", [:], params, null )
+			
+		def results = getListByQuery( "remittance:getRemittanceByTxnNo", [txnno:searchText], params, null )
 		if (results) return results;	
-		results = em.sqlContext.createNamedQuery( "remittance:getRemittanceByCollector" ).setParameter( "collectorname", searchText ).resultList;
+		results = getListByQuery( "remittance:getRemittanceByCollector", [txnno:searchText+'%'], params, null )
 		if (results) return results;
 		return [];
 	}
@@ -474,6 +482,11 @@ class RemittanceService {
 		return remittedforms;
 	}
 	
+	@ProxyMethod
+	public def getOpenCollectionSummaries( collectorid ){
+		return em.sqlContext.createNamedQuery("remittance:getOpenCollectionSummaries").setParameters( [collectorid:collectorid] ).resultList;
+	}
+	
 	
 	@ProxyMethod
 	public def update( rem ) {
@@ -759,6 +772,20 @@ class RemittanceService {
 				</body>
 			</html>
 		"""
+	}
+	
+	def getListByQuery( namedQuery, criteria, params, pagingkeys = null ) {
+		println '='*50
+		println params 
+        if( ! params ) params = [ _start:0, _limit:25]
+		def qry = em.sqlContext.createNamedQuery( namedQuery )
+				    .setParameters( criteria )
+				    .setFirstResult( params._start )
+				    .setMaxResults( params._limit );
+				  
+		if( pagingkeys ) qry.setPagingKeys( pagingkeys );
+		
+		return qry.resultList
 	}
 	
 }

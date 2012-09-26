@@ -1,0 +1,35 @@
+<script type="text/javascript">
+	\$put( 
+		"useraccount", 
+		new function() 
+		{
+			this.saveHandler;
+			this.info;
+			
+			this.save = function() {
+				if( this.info.pwd != this.info.confirmpwd )
+					throw new Error( "Password must be the same as the confirm password" );
+				
+				if( confirm( "You are about to save this account. Proceed?") ) {
+					this.saveHandler(this.info);
+					return "_close";	
+				}
+			}
+		}
+	);
+</script>
+
+<%
+def fields = [
+	[type:"label", caption:"Personnel", value:"<b>#{info.lastname}, #{info.firstname}</b>"],
+	[type:"text", caption:"Username", name: "info.uid", required: true],
+	[type:"password", caption:"Password", name: "info.pwd", required: true],
+	[type:"password", caption:"Confirm Password", name: "info.confirmpwd", required: true],
+	[type:"text", caption:"Email", name: "info.email", textcase:"none", required: true],
+];
+%>
+@form( context:"useraccount", fields: fields )
+
+<div style="text-align: right">
+	<button r:context="useraccount" r:name="save">Save</button>
+</div>

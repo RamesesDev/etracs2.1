@@ -22,8 +22,10 @@ UPDATE realproperty SET
 	parcel = $P{parcel}
 WHERE landfaasid = $P{faasid}
 
+
+
 [insertPin]
-REPLACE INTO pin (pin, claimno, docstate) 
+INSERT INTO pin (pin, claimno, docstate) 
 VALUES($P{pin}, '-', $P{docstate}) 
 
 [deletePin]

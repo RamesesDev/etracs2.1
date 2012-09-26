@@ -7,14 +7,14 @@ ORDER BY tradename
 [getListByTradename]
 SELECT a.txnno, b.* FROM business b 
 INNER JOIN bpapplication a ON a.businessid = b.objid 
-WHERE b.tradename LIKE CONCAT( $P{tradename}, '%' ) 
+WHERE b.tradename LIKE $P{tradename} 
 AND b.docstate = 'ACTIVE' 
 ORDER BY b.tradename, b.taxpayername
 
 [getListByOwnername]
 SELECT a.txnno, b.* FROM business b 
 INNER JOIN bpapplication a ON a.businessid = b.objid 
-WHERE b.taxpayername LIKE CONCAT( $P{taxpayername}, '%' ) 
+WHERE b.taxpayername LIKE $P{taxpayername} 
 AND b.docstate = 'ACTIVE' 
 ORDER BY b.tradename, b.taxpayername
 
@@ -27,14 +27,14 @@ ORDER BY tradename
 [getListByTradename1]
 SELECT a.txnno, b.* FROM business b 
 INNER JOIN bpapplication a ON a.objid = b.applicationid 
-WHERE b.tradename LIKE CONCAT( $P{tradename}, '%' ) 
+WHERE b.tradename LIKE $P{tradename} 
 AND b.docstate = 'ACTIVE' 
 ORDER BY b.tradename, b.taxpayername
 
 [getListByOwnername1]
 SELECT a.txnno, b.* FROM business b 
 INNER JOIN bpapplication a ON a.objid = b.applicationid 
-WHERE b.taxpayername LIKE CONCAT( $P{taxpayername}, '%' ) 
+WHERE b.taxpayername LIKE  $P{taxpayername}
 AND b.docstate = 'ACTIVE' 
 ORDER BY b.tradename, b.taxpayername
 
@@ -79,7 +79,7 @@ ORDER BY txnno
 SELECT b.* FROM bpapplication b 
 INNER JOIN bpapplicationlisting l ON l.objid = b.objid 
 WHERE b.businessid = $P{businessid} 
-ORDER BY b.txnno DESC 
+ORDER BY b.iyear DESC 
 
 [updateAppFullypaid]  
 UPDATE bpapplicationlisting   

@@ -61,7 +61,7 @@ class BarangayShareController
     }
     
     def report = [
-        getReportName : { return 'brgyshare' },
+        getReportName : { return 'rptbrgyshare' },
         getReportData : { return reportdata.items },
         getParameters : { 
             def params = svcParams.getStandardParameter( OsirisContext.env.USERNAME )

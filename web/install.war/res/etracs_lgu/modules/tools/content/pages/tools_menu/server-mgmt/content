@@ -1,0 +1,25 @@
+<script>
+	\$put(
+		'server-mgmt',
+		{
+			svcname: '',
+			reloadAllSvc: function() {
+				Service.lookup("tools/ScriptMgmtService").redeployAll();
+				MsgBox.alert('All Script Services reloaded.');
+			},
+			
+			schemaname: '',
+			reloadAllSchema: function() {
+				Service.lookup("tools/SchemaMgmtService").redeployAll();
+				MsgBox.alert('All Database Schema reloaded.');
+			}
+		}
+	);
+</script>
+
+<h3>Script Management</h3>
+<button r:context="server-mgmt" r:name="reloadAllSvc">Reload All</button>
+
+
+<h3>Schema Management</h3>
+<button r:context="server-mgmt" r:name="reloadAllSchema">Reload All</button>

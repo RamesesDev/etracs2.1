@@ -230,6 +230,8 @@ public class SubdivisionController
             new Column(name:'newtitletype', caption:'New Title Type', editable:true ),
             new Column(name:'newtitleno', caption:'New Title No.', editable:true ),
             new Column(name:'newtitledate', caption:'New Title Date', editable:true ),
+            new Column(name:'administratorname', caption:'Administrator', editable:true ),
+            new Column(name:'administratoraddress', caption:'Address', editable:true ),
             new Column(name:'memoranda', caption:'Memoranda*', editable:true),
             new Column(name:'taxpayer', caption:'Taxpayer', editable:true, type:'lookup', handler:lookupTaxpayer, expression:'#{entityname}'),
         ]},
@@ -348,25 +350,27 @@ public class SubdivisionController
     *
     ----------------------------------------------------------*/
     boolean getShowApproveAction() {
-        if( subdivision.lgutype?.toLowerCase() != 'city'  ) return false
         if( subdivision.docstate != 'FORAPPROVAL' ) return false
+        if( subdivision.lgutype?.toLowerCase().trim() == 'municipality'  ) return false
         return true
     }
     
     boolean getShowDisapproveAction() {
-        if( subdivision.lgutype?.toLowerCase() != 'city'  ) return false
         if( subdivision.docstate != 'FORAPPROVAL' ) return false
+        if( subdivision.lgutype?.toLowerCase() == 'municipality'  ) return false
         return true
     }
     
     boolean getShowSubmitToProvinceAction() {
-        if( subdivision.lgutype?.toLowerCase() != 'municipality'  ) return false
+        if( subdivision.lgutype?.toLowerCase() == 'city'  ) return false
+        if( subdivision.lgutype?.toLowerCase() == 'province'  ) return false
         if( subdivision.docstate != 'FORAPPROVAL' ) return false
         return true 
     }
     
     boolean getShowApprovedByProvinceAction() {
-        def lgutype = subdivision.lgutype?.toLowerCase()
+        def lgutype = subdivision.lgutype?.toLowerCase().trim()
+        if( lgutype == 'city' ) return false
         if( lgutype == 'municipality' && subdivision.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && subdivision.docstate != 'FORAPPROVAL' ) return false
         return true
@@ -374,6 +378,7 @@ public class SubdivisionController
     
     boolean getShowDisapproveByProvinceAction() {
         def lgutype = subdivision.lgutype?.toLowerCase()
+        if( lgutype == 'city' ) return false
         if( lgutype == 'municipality' && subdivision.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && subdivision.docstate != 'FORAPPROVAL' ) return false
         return true

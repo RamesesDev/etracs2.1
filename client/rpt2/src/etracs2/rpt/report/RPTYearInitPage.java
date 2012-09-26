@@ -29,6 +29,7 @@ public class RPTYearInitPage extends javax.swing.JPanel {
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
+        xComboBox2 = new com.rameses.rcp.control.XComboBox();
 
         setPreferredSize(new java.awt.Dimension(603, 291));
         xActionBar1.setBorder(new com.rameses.rcp.control.border.XUnderlineBorder());
@@ -46,12 +47,20 @@ public class RPTYearInitPage extends javax.swing.JPanel {
         xNumberField1.setRequired(true);
         formPanel1.add(xNumberField1);
 
-        xComboBox1.setCaption("Order By");
-        xComboBox1.setExpression("#{caption}");
-        xComboBox1.setItems("orderbyColumns");
-        xComboBox1.setName("orderby");
+        xComboBox1.setCaption("Classification");
+        xComboBox1.setEmptyText("ALL CLASSIFICATION");
+        xComboBox1.setExpression("#{classname}");
+        xComboBox1.setItems("classificationList");
+        xComboBox1.setName("classification");
         xComboBox1.setPreferredSize(new java.awt.Dimension(0, 22));
         formPanel1.add(xComboBox1);
+
+        xComboBox2.setCaption("Order By");
+        xComboBox2.setExpression("#{caption}");
+        xComboBox2.setItems("orderbyColumns");
+        xComboBox2.setName("orderby");
+        xComboBox2.setPreferredSize(new java.awt.Dimension(0, 22));
+        formPanel1.add(xComboBox2);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -60,16 +69,16 @@ public class RPTYearInitPage extends javax.swing.JPanel {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, xActionBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE)
             .add(layout.createSequentialGroup()
                 .add(10, 10, 10)
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 304, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(289, 289, 289))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 376, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(217, 217, 217))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(xActionBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 180, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(83, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 199, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(64, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -78,6 +87,7 @@ public class RPTYearInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
+    private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     // End of variables declaration//GEN-END:variables
     

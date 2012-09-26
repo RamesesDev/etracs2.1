@@ -1,0 +1,77 @@
+import com.rameses.annotations.*;
+
+class JobpositionService 
+{
+
+	@PersistenceContext("main")
+	def em;
+	
+	@Service("RoleclassService")
+	def roleclassSvc;
+
+	
+	@ProxyMethod
+	public def getList(def params) {
+		def qry = em.sqlContext.createNamedQuery( "jobposition:list" );
+		qry.setPagingKeys("jp.objid");
+		
+		if(params) {
+			if(params._start) qry.setFirstResult( params._start );
+			if(params._limit) qry.setMaxResults( params._limit );
+			qry.setParameters( params );
+		}
+		return qry.resultList;
+	}
+	
+	@ProxyMethod
+	public def create(@Param(schema="jobposition") o) {
+		if(!o.objid) throw new Exception("Please provide an objid");
+		em.create( "jobposition", o );
+		o.tags.each {
+			em.save("jobposition:tag", [jobid: o.objid, tagid: it]);
+		}
+		return o;
+	}
+	
+	@ProxyMethod
+	public def read(def o) {
+		def jp = em.read( "jobposition", o );
+		jp.tags = em.sqlContext.createNamedQuery('jobposition:get-tags').setParameters([jobid:o.objid]).resultList.collect{it.tagid};
+		jp.availableTags = roleclassSvc.getAvailableTags( [name: jp.roleclass] );
+		return jp;
+	}
+
+	@ProxyMethod
+	public def update(@Param(schema="jobposition") o) {
+		em.update( "jobposition", o );
+		if( o.tags != null ) {
+			em.sqlContext.createNamedExecutor("jobposition:remove-tags").setParameters([jobid:o.objid]).execute();
+			o.tags.each{
+				em.save("jobposition:tag", [jobid: o.objid, tagid: it]);
+			};
+		}
+		return read( o );
+	}
+	
+	@ProxyMethod
+	public def remove(def o) {
+		em.delete( "jobposition", o );
+	}
+	
+	@ProxyMethod
+	public def assign(def o) {
+		def x = em.read( "jobposition", o );
+		x.assigneeid = o.assigneeid;
+		em.update( "jobposition", x );
+		return x;
+	}
+	
+	@ProxyMethod
+	public def unassign(def o) {
+		def x = em.read( "jobposition", o );
+		x.assigneeid = null;
+		em.update( "jobposition", x );
+		return x;
+	}
+	
+}

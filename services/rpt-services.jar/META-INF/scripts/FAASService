@@ -52,6 +52,9 @@ class FAASService
 	
 	@Service('ForTransmittalService')
 	def forTransmittalSvc
+	
+	@Service('EntityService')
+	def entitySvc 
 
     def INTERIM_STATE = 'INTERIM'
     def FORAPPROVAL_STATE = 'FORAPPROVAL'
@@ -93,31 +96,24 @@ class FAASService
 		
 		def qry = em.sqlContext.createNamedQuery('faas:findByFilter')
 		
-		def whereclause = ''
+		def whereclause = ['1=1']
+		
 		if( filter.info.docstate ) {
-			whereclause += ' docstate = $P{docstate} '
+			whereclause << ' docstate = $P{docstate} '
 		}
 		if( filter.info.barangay ) {
-			if( whereclause.length() > 0 ) whereclause += ' AND ' 
-			whereclause += ' barangayid = $P{barangayid} '
+			whereclause << ' barangayid = $P{barangayid} '
 		}
 		if( filter.info.classification ) {
-			if( whereclause.length() > 0 ) whereclause += ' AND ' 
-			whereclause += ' classid = $P{classid} '
+			whereclause << ' classid = $P{classid} '
 		}
 		if( filter.info.rputype ) {
-			if( whereclause.length() > 0 ) whereclause += ' AND ' 
-			whereclause += ' rputype = $P{rputype} '
+			whereclause << ' rputype = $P{rputype} '
 		}
 		if( filter.info.owner ) {
-			if( whereclause.length() > 0 ) whereclause += ' AND ' 
-			whereclause += ' taxpayerid = $P{taxpayerid} '
+			whereclause << ' taxpayerid = $P{taxpayerid} '
 		}
-		
-		if( whereclause.length() > 0 ) {
-			whereclause = ' WHERE ' + whereclause
-		}
-		
+
 		def filtervalue = [
 			docstate 	: ( filter.info.docstate ? filter.info.docstate 		: null ),
 			barangayid 	: ( filter.info.barangay ? filter.info.barangay.objid : null ),
@@ -126,7 +122,7 @@ class FAASService
 			taxpayerid 	: ( filter.info.owner  ? filter.info.owner.objid : null ),
 		]
 		
-		return qry.setVars([whereclause:whereclause])
+		return qry.setVars([whereclause:whereclause.join(' and ')])
 					.setParameters( filtervalue )
 					.setFirstResult( params._start )
 					.setMaxResults( params._limit )
@@ -140,6 +136,7 @@ class FAASService
 		if( ! search ) return getListByQuery('faas:findByState', criteria, params)
 		if( (result = getListByQuery('faas:findByTdNo', criteria, params)) ) return result
 		if( (result = getListByQuery('faas:findByTaxpayerName', criteria, params)) ) return result
+		if( (result = getListByQuery('faas:findByTaxpayerId', criteria, params)) ) return result
 		if( (result = getListByQuery('faas:findByPin', criteria, params)) ) return result
 		if( (result = getListByQuery('faas:findByBarangay', criteria, params)) ) return result
 		if( (result = getListByQuery('faas:findByCadastralLotNo', criteria, params)) ) return result
@@ -162,10 +159,10 @@ class FAASService
 	public List getClearedFaasList( searchText, taxpayerid, params) {
 		def criteria = buildSearchCriteria( searchText, 'CURRENT' )
 		criteria.taxpayerid = taxpayerid 
-		if( ! searchText ) return getListByQuery('faas:findClearedByState', criteria, params)
+		if( ! searchText ) return getListByQuery('faas:findClearedByState', criteria, params, 'f.objid')
 		def result = []
-		if( (result = getListByQuery('faas:findClearedByTdNo', criteria, params)) ) return result
-		if( (result = getListByQuery('faas:findClearedByPin', criteria, params)) ) return result
+		if( (result = getListByQuery('faas:findClearedByTdNo', criteria, params, 'f.objid')) ) return result
+		if( (result = getListByQuery('faas:findClearedByPin', criteria, params, 'f.objid')) ) return result
 		return result
 	}
 	
@@ -204,6 +201,7 @@ class FAASService
             surveyno : search,
             blockno  : search,
 			docstate : ( docstate ? docstate : '%' ),
+			taxpayerid : search, 
         ]
 	}
     
@@ -300,9 +298,12 @@ class FAASService
             em.update( faas.schemaname, faas )
         }
         else {
+            em.update( faas.schemaname, faas );
+			/*
             em.update( faas.schemaname, faas, { diff ->
                 logSvc.logB('UPDATE', 'FAAS', faas.objid, '', diff )
             } as UpdateChangeHandler )
+			*/
         }
         em.update( LISTSCHEMA_NAME, faas )
         return faas 
@@ -316,12 +317,29 @@ class FAASService
 		faas.info.annotated 	= ( faas.info.annotated ? TO_BOOLEAN( faas.info.annotated ) : false )
         faas.info.autonumber 	= TO_BOOLEAN( faas.info.autonumber )
         faas.rpu.taxable 		= TO_BOOLEAN( faas.rpu.taxable )
+		
+		//populate landfaasid : fix for migrated data 
+		if( faas.rpu.rputype != 'land' ) {
+			if( ! faas.info.landfaasid ) 
+				faas.info.landfaasid = faas.rpu.info.landfaasid 
+			if( ! faas.info.landfaastaxpayerid ) 
+				faas.info.landfaastaxpayerid = faas.rpu.info.landfaastaxpayerid
+		}
+		
         initOpenRpuInfo( faas.rpu )
 		
 		//the statements below are for those migrated data with null initialization values
 		if( faas.info.txntype == 'MC' && (!faas.info.claimno || faas.info.claimno.trim() == '-') ) {
 			def result = em.sqlContext.createQuery('select claimno from faaslist where objid=?').setParameter(1, faas.objid).singleResult
 			faas.info.claimno = result.claimno
+		}
+		
+		//some migrated data's effectivityqtr is string
+		if( faas.info.effectivityqtr instanceof String ) {
+			try {
+				faas.info.effectivityqtr = new Integer(faas.info.effectivityqtr);
+			}
+			catch(e) {}
 		}
 		
 		return faas 
@@ -369,6 +387,18 @@ class FAASService
         logSvc.log('APPROVE','FAAS', faas.objid)
 		return faas 
     }
+	
+	@ProxyMethod
+    public Map disapprove( faasid ) {
+        def faasinfo = getFaasInfo( faasid )
+        if( faasinfo.docstate == INTERIM_STATE) throw new Exception('FAAS is still interim.')
+        if( faasinfo.docstate == CURRENT_STATE) throw new Exception('FAAS is already current.')
+        if( faasinfo.docstate == CANCELLED_STATE) throw new Exception('FAAS has already been cancelled.')
+        def faas = open( faasinfo.objid )
+        updateFaasState( faas, INTERIM_STATE )
+        moveOutboxMessageToProcessed( faasid )
+        return faas 
+    }
     
     @ProxyMethod
     public Map approveByProvince( faasid ) {
@@ -392,7 +422,7 @@ class FAASService
         if( faasinfo.docstate == CURRENT_STATE) throw new Exception('FAAS is already current.')
         if( faasinfo.docstate == CANCELLED_STATE) throw new Exception('FAAS has already been cancelled.')
         def faas = open( faasinfo.objid )
-        updateFaasState( faas, FORAPPROVAL_STATE )
+        updateFaasState( faas, INTERIM_STATE )
         moveOutboxMessageToProcessed( faasid )
         return faas 
     }
@@ -1125,7 +1155,7 @@ class FAASService
     }
     
     void checkIfLandExist( faas ){
-    	def faasland = em.sqlContext.createNamedQuery( 'faas:getInfoByPin' ).setParameter( 'pin', faas.rp.pin ).singleResult;
+    	def faasland = em.sqlContext.createNamedQuery( 'faas:getLandReferenceByPin' ).setParameter( 'pin', faas.rp.pin ).singleResult;
     	if( !faasland ) throw new Exception( 'Land reference is required.' );
     }
     
@@ -1150,13 +1180,16 @@ class FAASService
     	faas.rp = faasland.rp
     }
     
-	def getListByQuery( namedQuery, criteria, params ) {
+	def getListByQuery( namedQuery, criteria, params, pagingkeys = null ) {
         if( ! params ) params = [ _start:0, _limit:25]
-		return em.sqlContext.createNamedQuery( namedQuery )
-						.setParameters( criteria )
-						.setFirstResult( params._start )
-						.setMaxResults( params._limit )
-						.resultList
+		def qry = em.sqlContext.createNamedQuery( namedQuery )
+				    .setParameters( criteria )
+				    .setFirstResult( params._start )
+				    .setMaxResults( params._limit );
+				  
+		if( pagingkeys ) qry.setPagingKeys( pagingkeys );
+		
+		return qry.resultList
 	}
 	
 	def faasExists( faasId ) {
@@ -1627,7 +1660,11 @@ class FAASService
 		if( ! remote_connection_debug ) remote_connection_debug = 0
 		
 		if( (faas.info.datacapture == false || TO_BOOLEAN(remote_connection_debug) == true ) && TO_BOOLEAN(remote_connection_active) == true) {
-			def attachment = [ faas:faas, attachments:getAttachments( faas.objid) ]
+			def attachment = [ 
+				faas		: faas, 
+				attachments	: getAttachments( faas.objid),
+				entity		: entitySvc.open( faas.info.taxpayerid, null  ),
+			]
 			def msg = msgSvc.createMessage( 'faas.receive', attachment )
 			msg.refid = faas.objid 
 			msgSvc.send( msg ) 

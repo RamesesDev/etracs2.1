@@ -6,10 +6,14 @@
 
 package etracs2.rpt.compromise;
 
+import com.rameses.rcp.ui.annotations.StyleSheet;
+import java.math.BigDecimal;
+
 /**
  *
  * @author  PRMF
  */
+@StyleSheet("etracs2/rpt/compromise/RPTCompromiseInitPage.style")
 public class RPTCompromiseInitPage extends javax.swing.JPanel {
     
     /** Creates new form RPTCompromiseInitPage */
@@ -32,6 +36,9 @@ public class RPTCompromiseInitPage extends javax.swing.JPanel {
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xNumberField2 = new com.rameses.rcp.control.XNumberField();
+        xSeparator1 = new com.rameses.rcp.control.XSeparator();
+        xNumberField4 = new com.rameses.rcp.control.XNumberField();
+        xNumberField3 = new com.rameses.rcp.control.XNumberField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -76,6 +83,34 @@ public class RPTCompromiseInitPage extends javax.swing.JPanel {
         xNumberField2.setRequired(true);
         formPanel1.add(xNumberField2);
 
+        xSeparator1.setPreferredSize(new java.awt.Dimension(0, 20));
+        org.jdesktop.layout.GroupLayout xSeparator1Layout = new org.jdesktop.layout.GroupLayout(xSeparator1);
+        xSeparator1.setLayout(xSeparator1Layout);
+        xSeparator1Layout.setHorizontalGroup(
+            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 410, Short.MAX_VALUE)
+        );
+        xSeparator1Layout.setVerticalGroup(
+            xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 20, Short.MAX_VALUE)
+        );
+        formPanel1.add(xSeparator1);
+
+        xNumberField4.setCaption("Downpayment Rate");
+        xNumberField4.setCaptionWidth(120);
+        xNumberField4.setFieldType(BigDecimal.class);
+        xNumberField4.setName("entity.info.downpaymentrate");
+        xNumberField4.setPattern("#,##0");
+        xNumberField4.setPreferredSize(new java.awt.Dimension(100, 19));
+        formPanel1.add(xNumberField4);
+
+        xNumberField3.setCaption("Downpayment");
+        xNumberField3.setCaptionWidth(120);
+        xNumberField3.setFieldType(BigDecimal.class);
+        xNumberField3.setName("entity.info.downpayment");
+        xNumberField3.setPreferredSize(new java.awt.Dimension(100, 19));
+        formPanel1.add(xNumberField3);
+
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -108,6 +143,9 @@ public class RPTCompromiseInitPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField2;
+    private com.rameses.rcp.control.XNumberField xNumberField3;
+    private com.rameses.rcp.control.XNumberField xNumberField4;
+    private com.rameses.rcp.control.XSeparator xSeparator1;
     // End of variables declaration//GEN-END:variables
     
 }

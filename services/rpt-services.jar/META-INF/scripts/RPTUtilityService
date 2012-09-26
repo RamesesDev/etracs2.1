@@ -13,6 +13,10 @@ class RPTUtilityService
 	//info: faasid, oldpin, tdno, pintype, municipality, barangay, 
 	//      section, parcel, suffix, newpin, ssection, sparcel 
 	public void updatePin( info ) {
+		println "************************************"
+		println " updating pin $info.oldpin -> $info.newpin, lgutype: $info.lgutype "
+		println "************************************"
+		
 		validatePin( info )
 		checkDuplicatePin(info)
 		updateFaasPinInfo( info )
@@ -58,11 +62,22 @@ class RPTUtilityService
 		else {
 			faas.rp.pin = info.newpin 
 		}
+		
 		faas.rp.section 	= info.ssection 
 		faas.rp.parcel 		= info.sparcel 
 		faas.rp.pintype 	= info.pintype 
-		faas.rp.munidistrictindex	= info.municipality.indexno
-		faas.rp.munidistrict		= info.municipality.lguname 
+		
+		if( info.lgutype == 'city' || info.lgutype == 'CITY' )
+		{
+			faas.rp.munidistrictindex	= info.district.indexno
+			faas.rp.munidistrict		= info.district.lguname 
+		}
+		else 
+		{
+			faas.rp.munidistrictindex	= info.municity.indexno
+			faas.rp.munidistrict		= info.municity.lguname 
+		}
+		
 		faas.rp.barangayindex		= info.barangay.indexno 
 		faas.rp.barangay			= info.barangay.lguname 
 		faas.rp.barangayid			= info.barangay.objid 
@@ -74,8 +89,8 @@ class RPTUtilityService
 	void updateLedgerinInfo( info ){
 		def params = [
 			newpin 		: info.newpin,
-			municityid 	: info.municipality.objid,
-			municityname : info.municipality.lguname ,
+			municityid 	: info.municity.objid,
+			municityname : info.municity.lguname ,
 			faasid 		: info.faasid,
 			barangay	: info.barangay.lguname, 
 		]
@@ -85,16 +100,26 @@ class RPTUtilityService
 	void updateRealPropertyPinInfo( info ){
 		if( info.suffix == 0 ) {
 			def rp = [
-				munidistrict  	: info.municipality.lguname,
 				barangay		: info.barangay.lguname,
 				barangayid		: info.barangay.objid,
 				pintype			: info.pintype,
 				pin				: info.newpin,
-				munidistrictindex : info.municipality.indexno,
 				barangayindex	: info.barangay.indexno,
 				section			: info.ssection,
 				parcel			: info.sparcel,
 			]
+			
+			if( info.lgutype == 'city' || info.lgutype == 'CITY' )
+			{
+				rp.munidistrict  	 = info.district.lguname;
+				rp.munidistrictindex = info.district.indexno;
+			}
+			else
+			{
+				rp.munidistrict  	 = info.municipality.lguname;
+				rp.munidistrictindex = info.municipality.indexno;
+			}
+			
 			em.sqlContext.createNamedExecutor('rptutility:updateRealProperty').setParameters( rp ).execute()
 		}
 	}

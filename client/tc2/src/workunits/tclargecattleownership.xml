@@ -1,19 +1,19 @@
 <workunit>
     <invokers>
-        <invoker type="collection" caption="Large Cattle Ownership" afid="53" appcode="cattle_ownership" permission="collection_cattleownership.create" />
-        <invoker type="inquiry:tc:cattle_ownership" action="initInquiry" permission="collection_cattleownership.inquiry" />
-        <invoker type="tc:cattle_ownership" action="init" caption="Large Cattle Ownership" afid="53" permission="collection_cattleownership.create"  />
+        <invoker type="collection" caption="Large Cattle Ownership" afid="53" appcode="cattle_ownership"  />
+        <invoker type="inquiry:tc:cattle_ownership" action="initInquiry" />
+        <invoker type="tc:cattle_ownership" action="init" caption="Large Cattle Ownership" afid="53" />
         
-        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" permission="collection_cattleownership.create" icon="images/add.png"/>
+        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" icon="images/add.png"/>
         <invoker type="formActions" action="back" caption="Back" mnemonic="b"  immediate="true" visibleWhen="#{mode == 'create'}" icon="images/back.png"/>
         <invoker type="formActions" action="create" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" icon="images/save.png"/>
         <invoker type="formActions" action="update" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'edit'}" icon="images/save.png"/>
-        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" permission="collection_cattleownership.print"/>
-        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view'}" permission="collection_cattleownership.void" icon="images/doc-void.png"/>
+        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" />
+        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view'}" icon="images/doc-void.png"/>
         
-        <invoker type="receipt.actions:tc:cattle_ownership" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup" permission="collection_cattleownership.edit" icon="images/edit.png"/>
-        <invoker type="receipt.actions:tc:cattle_ownership" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" permission="collection_cattleownership.print"/>
-        <invoker type="receipt.actions:tc:cattle_ownership" action="doVoid" caption="Void" mnemonic="v" permission="collection_cattleownership.void" icon="images/doc-void.png"/>
+        <invoker type="receipt.actions:tc:cattle_ownership" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup"  icon="images/edit.png"/>
+        <invoker type="receipt.actions:tc:cattle_ownership" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" />
+        <invoker type="receipt.actions:tc:cattle_ownership" action="doVoid" caption="Void" mnemonic="v" icon="images/doc-void.png"/>
     </invokers>
     <code>
 <![CDATA[

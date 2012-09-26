@@ -1,0 +1,47 @@
+import com.rameses.annotations.*;
+
+
+class RoleclassService {
+
+	@PersistenceContext("system")
+	def em;
+	
+	@ProxyMethod
+	public def getList(def params) {
+		if(!params) params = [rolelevel:0];
+		if(!params.rolelevel) params.rolelevel = 0;
+		def list = em.sqlContext.createNamedQuery( "roleclass:list" ).setParameters(params).resultList;
+		list.each {
+			if(it.tags) it.tags = em.serializer.read( it.tags );
+		}
+		return list;
+	}
+	
+	@ProxyMethod
+	public def getAvailableTags( param ) {
+		def rc = em.read("roleclass", param);
+		return rc?.tags? rc.tags : [];
+	}
+	
+	@ProxyMethod
+	public def read(def o) {
+		def x = em.read( "roleclass", o );
+		x.modules = em.sqlContext.createNamedQuery("roleclass:module-list").setParameters( [roleclass: x.name] ).resultList;
+		return x;
+	}
+
+	@ProxyMethod
+	public def addModule(def o) {
+		assert o.roleclass;
+		assert o.module;
+		em.create( "roleclass:module", o );
+	}
+	
+	@ProxyMethod
+	public def removeModule(def o) {
+		assert o.roleclass;
+		assert o.module;
+		em.delete( "roleclass:module", o );
+	}
+	
+}

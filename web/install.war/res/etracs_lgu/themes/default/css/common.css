@@ -1,0 +1,54 @@
+/*-- jquery dialog customization -----*/
+.ui-dialog .ui-dialog-titlebar {
+	background: #006600 url('../img/page/header-bg.png') repeat-x left center;
+	border: none;
+}
+
+/*-- no titlebar dialog --*/
+.thick-bordered {
+	border: solid 2px #ccc;
+	box-shadow: 0 2px 10px #222;
+	-moz-box-shadow: 0 2px 10px #222;
+	-webkit-box-shadow: 0 2px 10px #222;
+}
+
+.thick-bordered .ui-dialog-titlebar {
+	display: none;
+}
+
+
+/*-- jquery autocomplete ----*/
+.ui-autocomplete {
+	border: solid 1px #888;
+	background: #f0f0f0;
+	background: -moz-linear-gradient(top,#f0f0f0 0,#e0e0e0 100%);
+	background: -ms-linear-gradient(top,#f0f0f0 0,#e0e0e0 100%);
+	background: -o-linear-gradient(top,#f0f0f0 0,#e0e0e0 100%);
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0,#f0f0f0),color-stop(100%,#e0e0e0));
+	background: -webkit-linear-gradient(top,#f0f0f0 0,#e0e0e0 100%);
+	background: linear-gradient(to bottom,#f0f0f0 0,#e0e0e0 100%);	
+}
+
+.ui-autocomplete .ui-state-hover {
+	background: #3B5998;
+	border-color: #fff;
+	color: #fff;
+}
+
+.ui-autocomplete .ui-menu-item a {
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+	padding: 5px 3px;
+}
+
+
+/*-- infobox style --*/
+.infobox {
+	background: #fff;
+	position:absolute;border:solid 1px #ccc; 
+	padding: 10px; overflow: auto; zoom: 1;
+	box-shadow: 0 2px 4px #bbb;
+}
+
+

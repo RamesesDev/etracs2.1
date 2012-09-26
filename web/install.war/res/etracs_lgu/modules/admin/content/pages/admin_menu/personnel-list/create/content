@@ -1,0 +1,39 @@
+<% def UID = "PERSNL" + new java.rmi.server.UID(); %>
+
+<script src="/js/ext/datetime.js"></script>
+
+<script>
+	\$put( 
+		"personnel_create", 
+		new function() 
+		{
+			var svc = Service.lookup( "admin/PersonnelService");
+	
+			this.info =  { objid: '${UID}' };
+			this.saveHandler;
+	
+			this.save = function() {
+				svc.create( this.info );	
+				this.saveHandler();
+				return "_close";
+			}
+		}
+	);
+</script>
+
+<%
+def fields = [
+	[caption:"Staff No.", name:"info.staffno", required:true],
+	[caption:"Last Name", name:"info.lastname", size:40, required:true],
+	[caption:"First Name", name:"info.firstname", size:40, required:true],
+	[caption:"Middle Name", name:"info.middlename", size:40],
+	[type:"date", caption:"Birthdate", name:"info.birthdate"],
+	[type:"radio", caption:"Gender", name:"info.gender", options:"{M:'Male', F:'Female'}", orientation:"vertical", required:true],
+	[type:"text", caption:"Email", name:"info.email", required:true, textcase:"none", size: 40],
+];
+%>
+@form(context:"personnel_create", fields: fields)
+
+<div style="text-align: right">
+	<button r:context="personnel_create" r:name="save">Save</button>
+</div>

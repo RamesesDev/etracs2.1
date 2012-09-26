@@ -318,7 +318,12 @@ public class FAASController
         faas.lguname = lgu.lguname 
         faas.rp.barangayid = barangay.objid
         faas.rp.barangay = barangay.lguname
-        faas.rp.barangayindex = barangay.indexno 
+        if( faas.rp.pintype == 'old' && barangay.oldindexno  ) {
+            faas.rp.barangayindex = barangay.oldindexno 
+        }
+        else {
+            faas.rp.barangayindex = barangay.indexno 
+        }
         faas.rp.munidistrictid = barangay.parentid 
         setSectionInfo()
         setParcelInfo()

@@ -1,19 +1,19 @@
 <workunit>
     <invokers>
         <invoker type="collection" caption="Burial Permit" afid="58" appcode="burial_permit"  />
-        <invoker type="tc:burial_permit" action="init" caption="Burial Permit" afid="58"  permission="collection_burial.create"/>
-        <invoker type="inquiry:tc:burial_permit" action="initInquiry" caption="Inquiry" permission="collection_burial.inquire"/>
+        <invoker type="tc:burial_permit" action="init" caption="Burial Permit" afid="58"  />
+        <invoker type="inquiry:tc:burial_permit" action="initInquiry" caption="Inquiry" />
         
-        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" permission="collection_burial.create" icon="images/add.png"/>
+        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" icon="images/add.png"/>
         <invoker type="formActions" action="back" caption="Back" mnemonic="b"  immediate="true" visibleWhen="#{mode == 'create'}" icon="images/back.png"/>
         <invoker type="formActions" action="create" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" icon="images/save.png"/>
         <invoker type="formActions" action="update" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'edit'}" icon="images/save.png"/>
-        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" permission="collection_burial.print"/>
-        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view'}" permission="collection_burial.void" icon="images/doc-void.png"/>
+        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" />
+        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view'}" icon="images/doc-void.png"/>
 
-        <invoker type="receipt.actions:tc:burial_permit" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup" permission="collection_burial.edit" icon="images/edit.png"/>
-        <invoker type="receipt.actions:tc:burial_permit" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" permission="collection_burial.print"/>
-        <invoker type="receipt.actions:tc:burial_permit" action="doVoid" caption="Void" mnemonic="v"  permission="collection_burial.void" icon="images/doc-void.png"/>
+        <invoker type="receipt.actions:tc:burial_permit" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup"  icon="images/edit.png"/>
+        <invoker type="receipt.actions:tc:burial_permit" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" />
+        <invoker type="receipt.actions:tc:burial_permit" action="doVoid" caption="Void" mnemonic="v"  icon="images/doc-void.png"/>
     </invokers>
     <code>
 <![CDATA[

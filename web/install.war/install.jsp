@@ -4,13 +4,30 @@
 <%@ page import="java.util.*" %>
 <%@ page import="com.rameses.util.*" %>
 
-
-<%
-	Iterator itr = request.getParameterMap().entrySet().iterator();
-	while( itr.hasNext() ) {
-		System.out.println( itr.next() );
+<%!
+Properties loadDBInfo( String dbscheme, String dbhost ) throws Exception
+{
+	Properties p = new Properties();
+	if( "mysql".equals(dbscheme) ) {
+		p.setProperty( "db_url", "jdbc:mysql://" +dbhost+ "/mysql" );
+		p.setProperty( "db_dialect", "com.rameses.sql.dialect.MySqlDialect" );
+		p.setProperty( "db_driver", "com.mysql.jdbc.Driver" );
+	}
+	else if( "mssql".equals(dbscheme) ) {
+		p.setProperty( "db_url", "jdbc:sqlserver://" +dbhost+ ";DatabaseName=tempdb" );
+		p.setProperty( "db_dialect", "com.rameses.sql.dialect.MsSqlDialect" );
+		p.setProperty( "db_driver", "com.microsoft.sqlserver.jdbc.SQLServerDriver" );
+	}
+	else {
+		throw new Exception("Database scheme not yet supported.");
 	}
 	
+	return p;
+}
+%>
+
+
+<%
 	//check if already installed
 	String appname = request.getParameter("appname");
 	String server_port = request.getParameter("server_port");
@@ -32,15 +49,18 @@
 		String dbhost = request.getParameter("dbhost");
 		String dbuser = request.getParameter("dbuser");
 		String dbpwd = request.getParameter("dbpwd");
+		String dbscheme = request.getParameter("dbscheme");
+		Properties dbinfo = loadDBInfo( dbscheme, dbhost );
 		
 		boolean hasError = false;
 		Connection conn = null;
 		
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://" + dbhost + "/mysql", dbuser, dbpwd);
+			Class.forName(dbinfo.getProperty("db_driver"));
+			conn = DriverManager.getConnection(dbinfo.getProperty("db_url"), dbuser, dbpwd);
 		}
 		catch(Exception e) {
+			System.out.println( e.getMessage() );
 			out.write("Error: " + e.getMessage() );
 			hasError = true;
 		}
@@ -53,14 +73,22 @@
 				p.setUserProperty( "ant.file", build.getAbsolutePath() );
 				p.setUserProperty( "rootpath", System.getProperty( "jboss.server.home.dir" )+"/apps" );
 				p.setUserProperty( "appname", appname  );
+				p.setUserProperty( "apphost", "localhost:8080" );
 				p.setUserProperty( "lguname", request.getParameter("lguname")  );
 				p.setUserProperty( "server_address", server_address  );
-				p.setUserProperty( "dbhost", dbhost  );
-				p.setUserProperty( "dbuser", dbuser  );
-				p.setUserProperty( "main_dbname", appname + "_etracs"  );
-				p.setUserProperty( "system_dbname", appname + "_system"  );
-				p.setUserProperty( "dbpwd", dbpwd );
 				
+				p.setUserProperty( "main_dbname", appname + "_etracs"  );
+				p.setUserProperty( "system_dbname", appname + "_system"  );	
+				p.setUserProperty( "db_host", dbhost  );
+				p.setUserProperty( "db_user", dbuser  );
+				p.setUserProperty( "db_pwd", dbpwd );
+				p.setUserProperty( "db_scheme", dbscheme );
+				
+				Iterator itr = dbinfo.entrySet().iterator();
+				while( itr.hasNext() ) {
+					Map.Entry me = (Map.Entry) itr.next();
+					p.setUserProperty( me.getKey()+"", me.getValue()+"" );
+				}
 				
 				//so we can monitor logs in the console
 				DefaultLogger logger = new DefaultLogger();
@@ -95,14 +123,20 @@
 			try {
 				String maindb = appname + "_etracs";
 				String systemdb = appname + "_system";
-				PreparedStatement ps = conn.prepareStatement("update " +maindb+  ".useraccount set uid=?, pwd=? where objid=?");
+				
+				conn.setCatalog(maindb);
+				PreparedStatement ps = conn.prepareStatement("update useraccount set uid=?, pwd=? where objid=?");
 				String uid = request.getParameter("adminuser");
 				String pwd = request.getParameter("adminpwd");
 				ps.setString(1, uid);
 				ps.setString(2, Encoder.MD5.encode(pwd, uid));
 				ps.setString(3, "admin");
 				ps.executeUpdate();
-				ps.executeUpdate("replace into "+systemdb+".sys_var(name,value) select 'server_address', '" +server_address+ "'");
+				
+				conn.setCatalog(systemdb);
+				Statement stm = conn.createStatement();
+				stm.executeUpdate("delete from sys_var where name = 'server_address'");
+				stm.executeUpdate("insert into sys_var(name,value) select 'server_address', '" +server_address+ "'");
 			} 
 			catch(Exception e) {
 				out.write("Error: " + e.getMessage());
@@ -113,7 +147,7 @@
 		}
 		
 		if( !hasError ) {
-			File file  = new File( System.getProperty("jboss.server.home.dir") + "/apps/install.war//installed" );
+			File file  = new File( System.getProperty("jboss.server.home.dir") + "/apps/install.war/installed" );
 			file.createNewFile();
 			out.write("DONE");
 		}

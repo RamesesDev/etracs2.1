@@ -52,7 +52,9 @@
         <field name="areasqm" type="decimal" required="true"/>
         <field name="areaha" type="decimal" required="true"/>
         <field name="memoranda"  required="true" />
-        <field name="taxpayerid"  />
+        <field name="administratorname"  />
+        <field name="administratoraddress"  />
+		<field name="taxpayerid"  />
         <field name="taxpayerno"  />
         <field name="taxpayername"  />
         <field name="taxpayeraddress"  />

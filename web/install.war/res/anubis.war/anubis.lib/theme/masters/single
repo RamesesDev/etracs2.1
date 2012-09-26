@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		@head/import-fonts('opensans')
+		@head/favicon()
+		@head/standard()
+		@@head/page-imports()
+		@head/css('default')
+	</head>
+	
+	<body>
+		<table class="master-layout" cellpadding="0" cellspacing="0">
+			<tr>
+				<td class="master-header">${_singleheader}</td>
+			</tr>
+			<tr>
+				<td class="master-content">${_content}</td>
+			</tr>	
+			<tr>
+				<td class="master-footer">${_singlefooter}</td>
+			</tr>
+		<table>
+	</body>
+</html>
+

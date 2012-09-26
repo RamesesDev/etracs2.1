@@ -99,7 +99,7 @@ SELECT
 	tdno, titleno, totalareasqm, totalareasqm, totalav, totalmv 
 FROM faaslist   
 WHERE barangayid = $P{barangayid} 
-  AND docstate = 'CURRENT'  
+  AND docstate IN ('CURRENT', 'CANCELLED')
   AND section LIKE $P{section} 
 ORDER BY fullpin   
 
@@ -680,6 +680,7 @@ SELECT t.* FROM (
 		null as cancelledbytdnos, null as cancelreason, canceldate 
 	FROM faaslist 
 	WHERE docstate = 'CURRENT'  
+	  ${classidfilter}
 
 	UNION 
 
@@ -691,6 +692,7 @@ SELECT t.* FROM (
 	FROM faaslist  
 	WHERE docstate = 'CANCELLED'   
 	  AND YEAR(canceldate) = $P{currentyear}  
+	  ${classidfilter}
 ) t 
 ${orderby} 
 

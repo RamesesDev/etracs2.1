@@ -1,0 +1,75 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+
+public class CollectionGroupService
+{
+	@PersistenceContext("main")
+	def em
+	
+	
+	@ProxyMethod
+	public def getList( param ) {
+		if( !param ) param = [:]
+		
+		def qry;
+		if( param.searchText ) {
+			param.searchText += '%'
+			qry = em.sqlContext.createNamedQuery('collectiongroup:get-list-byname')
+		}
+		else {
+			qry = em.sqlContext.createNamedQuery('collectiongroup:get-list')
+		}
+		//qry.setPagingKeys("objid")
+		qry.setParameters(param)
+		
+		if( param._start ) qry.setFirstResult(param._start)
+		if( param._limit ) qry.setMaxResults(param._limit)
+		return qry.resultList
+	}
+	
+	@ProxyMethod
+	public def save( entity ) {
+		def old = em.read('collectiongroup', entity)
+		if( !old ) {			
+			def result = em.create('collectiongroup', entity)
+			if( entity.items ) {
+				entity.items.each { 
+					addItem(it) 
+				}
+			}
+			return result
+		}
+		
+		return em.update('collectiongroup', entity)
+	}
+	
+	@ProxyMethod
+	public void remove( entity ) {
+		em.sqlContext.createNamedExecutor('collectiongroup:remove-all-items').setParameters(entity).execute()
+		em.delete('collectiongroup', entity)
+	}
+	
+	@ProxyMethod
+	public def getItems( entity ) {
+		return em.sqlContext.createNamedQuery('collectiongroup:get-items').setParameters(entity).resultList
+	}
+	
+	@ProxyMethod
+	public def addItem( item ) {
+		return em.create('collectiongroup:item', item)
+	}
+	
+	@ProxyMethod
+	public void removeItem( item ) {
+		em.delete('collectiongroup:item', item)
+	}
+	
+	@ProxyMethod
+	public def getIncomeAccounts( param ) {
+		return em.sqlContext.createNamedQuery('collectiongroup:get-incomeaccounts').setParameters(param).resultList
+	}
+	
+}
+
+
+

@@ -1,0 +1,14 @@
+<%
+def cols = [
+	[name:"code", caption:"Code", width:"20%"],
+	[name:"title", caption:"Title"],
+	[name:"role", caption:"Role"],
+	[html:"""
+		<a r:context="personnelinfo" r:name="unassignPosition">Unassign</a>
+		&nbsp;&nbsp
+		<a r:context="personnelinfo" r:name="viewPermissions">Permissions</a>
+	"""]
+];
+%>
+
+@grid( context:"personnelinfo", model:"positionListModel", name:"selectedPosition", cols: cols )

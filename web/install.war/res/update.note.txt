@@ -1,8 +1,4 @@
-app_template:
-
- admin.war
-  - do not replace web.xml
-
+lguname.ear:
  downloads.war
   - do not replace downloads/etracs2/bin/client.conf
   - do not replace downloads/modules/updates.xml

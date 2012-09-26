@@ -58,15 +58,21 @@ class RPTReportService
 	}
 	
 	@ProxyMethod 
-	public List generateMasterList( year, orderby  ) { 
+	public List generateMasterList( year, classid, orderby  ) { 
+		def classidfilter = ''
+		if( classid ) {
+			classidfilter = ' AND classid LIKE $P{classid} '
+		}
 		def orderbyclause = ''
-		if( orderby ) {
+		if( orderby ) { 
 			orderbyclause = 'ORDER BY ' + orderby.fieldname 
 		}
-		return em.sqlContext.createNamedQuery('rptreport:getMasterList')
-					.setVars( [orderby:orderbyclause] )
-					.setParameter('currentyear', dateSvc.serverYear )
+		def list = em.sqlContext.createNamedQuery('rptreport:getMasterList')
+					.setVars( [orderby:orderbyclause, classidfilter:classidfilter] )
+					.setParameters([currentyear:dateSvc.serverYear, classid:classid ])
 					.resultList 
+		if( ! list ) throw new Exception('Record not found.')
+		return list 
 	}
     
     @ProxyMethod
@@ -100,12 +106,20 @@ class RPTReportService
 		
 		em.validate( 'rptreport:noticeofassessment', notice )
 		em.create( 'rptreport:noticeofassessment', notice )
+		
+		if( notice.items.size() == 1 ) {
+			notice.putAll( notice.items[0] )
+		}
 		return notice 
 	}
 	
 	@ProxyMethod 
 	public def openNotice( noticeid ) {
-		return em.read('rptreport:noticeofassessment', [objid:noticeid] )
+		def notice = em.read('rptreport:noticeofassessment', [objid:noticeid] )
+		if( notice.items.size() == 1 ) {
+			notice.putAll( notice.items[0] )
+		}
+		return notice 
 	}
 	
 	@ProxyMethod

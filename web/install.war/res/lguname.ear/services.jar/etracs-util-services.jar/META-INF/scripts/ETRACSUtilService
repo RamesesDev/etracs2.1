@@ -1,0 +1,108 @@
+import com.rameses.annotations.*
+import java.math.BigDecimal 
+
+public class ETRACSUtilService 
+{
+	@PersistenceContext('main')
+	def em
+	
+	@Service('Var')
+	def var;
+	
+	@Service('DateService')
+	def dateService;
+	
+	@Env
+	def env;
+	
+	@ProxyMethod 
+	public def getListByQuery(namedQuery, criteria, params ) {
+		if( ! params ) params = [ _start:0, _limit:50 ]
+		return em.sqlContext.createNamedQuery( namedQuery ).setParameters(criteria)
+					.setFirstResult( params._start )
+					.setMaxResults( params._limit )
+					.resultList
+	}
+	
+	@ProxyMethod 
+	public def getListByVar(namedQuery, criteria, params ) {
+		if( ! params ) params = [ _start:0, _limit:50 ]
+		return em.sqlContext.createNamedQuery( namedQuery )
+					.setVars( criteria )
+					.setParameters(criteria)
+					.setFirstResult( params._start )
+					.setMaxResults( params._limit )
+					.resultList
+	}
+	
+	@ProxyMethod
+	public boolean toBoolean( value, defaultvalue ) {
+		if( value == null ) return defaultvalue
+		if( value instanceof Boolean ) return value 
+		return '1/y/yes/true/t'.indexOf( value.toString().toLowerCase() ) >= 0
+	}
+	
+	@ProxyMethod
+	public boolean isTrue( value ) {
+		return TO_BOOLEAN( value, false ) == true 
+	}
+	
+	
+	@ProxyMethod
+	public void required(field, value ) {
+		if( ! value ) throw new Exception(field + ' is required.')
+	}
+	
+	@ProxyMethod
+    public List getNationalityList() {
+		return ['FILIPINO', 'AMERICAN', 'CHINESE', 'JAPANESE', 'TAIWANESE', 'INDONESIAN']
+    }
+    
+	@ProxyMethod
+    public List getCivilStatusList() {
+        return ['SINGLE', 'MARRIED', 'WIDOW']
+    }
+    
+	@ProxyMethod
+    public List getGenderList() {
+        return ['MALE', 'FEMALE']
+    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*==================================================================
+	** 
+	** METHODS FOR DEPRECAITION
+	**
+	==================================================================*/
+	
+	@ProxyMethod
+	public void updateSysInfo( entity ) {
+		entity.sys_lastupdate = dateService.currentTimeStamp;
+		entity.sys_lastupdateby = (env.USERID ? env.USERID : 'SYSTEM');
+	}
+	
+	@ProxyMethod
+	public void validateLastUpdate( entity, oldentity ) {
+		if( oldentity && entity.sys_lastupdate && entity.sys_lastupdate != oldentity.sys_lastupdate ) {
+			throw new Exception("Document has already been edited by $oldentity.sys_lastupdateby.\nPlease reload.");
+		}
+		updateSysInfo( entity );
+	}
+	
+	@ProxyMethod
+	public def acceptMsg(  domain ) {
+		return ( domain == var.lgu_index );
+	}
+	
+	@ProxyMethod
+	public void checkDuplicateError( count, message ) {
+		if( count > 0 ) throw new Exception( message );
+	}
+}

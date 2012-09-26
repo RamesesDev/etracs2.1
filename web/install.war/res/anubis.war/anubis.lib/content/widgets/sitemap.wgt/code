@@ -1,0 +1,13 @@
+<!--
+    Widget requirements: 
+    There must be a folder marked sitemap under the files
+	This folder should contain pages or links. check each page
+-->
+
+<%
+	def cols = 3;
+	def style = OPTIONS.style ? OPTIONS.style : 'horizontal'
+	def items = ANUBIS.getFolder( "/sitemap" ).allowedChildren;
+%>
+
+${ ANUBIS.getTemplate( "sitemap/" + style, items, null, OPTIONS ) }

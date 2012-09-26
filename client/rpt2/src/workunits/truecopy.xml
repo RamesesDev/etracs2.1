@@ -32,7 +32,6 @@
             
             def createEntity() {
                 return [
-                    txnno       : getTxnNo(),
                     issuedate   : new Date(),
                     purpose     : 'FOR ANY LEGAL PURPOSE IT MAY SERVE.',
                     oramount    : 0.0,
@@ -61,15 +60,6 @@
                 },
             ] as SubListModel;
 
-            
-            def getTxnNo(){
-                def txnno;
-                def data = svc.getLastRecord();
-                if( !data ) txnno = 1;
-                else txnno = Integer.parseInt( data.txnno ) + 1;
-                
-                return txnno + "";
-            }
             
             def lookupFaas(){
                 return InvokerUtil.lookupOpener("faas.lookup", [searchText:entity.tdno, onselect:selectedFaasHandler])

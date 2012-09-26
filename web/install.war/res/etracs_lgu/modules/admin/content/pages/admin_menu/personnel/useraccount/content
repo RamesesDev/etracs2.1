@@ -1,0 +1,18 @@
+<div class="personnel-info">
+	<div r:context="personnelinfo" r:visibleWhen="#{useraccount}">
+		<%
+		def fields = [
+			[type:"label", caption:"Fulle Name", value:"#{useraccount.lastname}, #{useraccount.firstname} #{useraccount.middlename}"],
+			[type:"label", caption:"Username", value:"#{useraccount.uid}"],
+			[type:"label", caption:"Email", value:"#{useraccount.email}"],
+		];
+		%>
+		@form( context:"personnelinfo", fields: fields)
+		<button r:context="personnelinfo" r:name="changePassword">Change Password</button>
+		<button r:context="personnelinfo" r:name="removeLogin">Remove Login Account</button>
+	</div>
+	<div r:context="personnelinfo" r:visibleWhen="#{!useraccount}">
+		<h3>No login account.</h3>
+		<button r:context="personnelinfo" r:name="createUserAccount">Create Login Account</button>
+	</div>
+</div>

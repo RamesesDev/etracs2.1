@@ -1,0 +1,9 @@
+<% if( !PARAMS.datatype || PARAMS.datatype == 'text' ) { %>
+	${_edit_text}
+<% } else if( PARAMS.datatype == 'image' ) { %>
+	${_edit_image}
+<% } else { %>
+	Datatype not yet supported.
+<% }%>
+
+

@@ -1,0 +1,13 @@
+<h1 style="background: navy; color:#fff">Listing: Layout 1</h1>
+<table>
+	<tr>
+		<td>
+			
+		</td>
+	</tr>
+	<tr>
+		<td>
+			${ANUBIS.getBlock('listing_body')}
+		</td>
+	</tr>
+</table>

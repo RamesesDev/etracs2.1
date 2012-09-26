@@ -1,0 +1,28 @@
+<% def context="lgu"; %>
+
+<h2>LGU Information</h2>
+
+
+@form( context: context, fields: [
+	[type:"combo", name:"entity.lgutype", caption:"LGU Type", items:"lgutypes", required:"true"],
+	[name:"entity.indexno", caption:"Index No.", size:"10", required:"true"],
+	[name:"entity.lguname", caption:"Name", size:"30", required:"true"],
+	[name:"sys.lgu_address", caption:"Address", required:"true", size:"50"],
+])
+
+<div r:context="${context}" r:visibleWhen="#{entity.lgutype!='PROVINCE'}" r:depends="entity.lgutype" style="display:none">
+	<h3>Mayor Information</h3>
+	@form( context: context, fields: [
+		[name:"sys.mayor_name", caption:"Name", size:"30", required:"true"],
+		[name:"sys.mayor_title", caption:"Mayor Title", size:"30", required:"true"],
+		[name:"sys.mayor_office_name", caption:"Office Name", size:"30", required:"true", size:"50"],
+	])
+</div>
+<div r:context="${context}" r:visibleWhen="#{entity.lgutype=='MUNICIPALITY'}" r:depends="entity.lgutype" style="display:none">
+	<h3>Province Information</h3>
+	@form( context: context, fields: [
+		[name:"province.indexno", caption:"Index No.", size:"10", required:"true"],
+		[name:"province.lguname", caption:"Name", size:"30", required:"true"],
+	])
+</div>
+<button r:context="${context}" r:name="next">Next</button>

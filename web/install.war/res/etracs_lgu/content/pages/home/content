@@ -1,0 +1,5 @@
+@pagetitle()
+
+<h1>Welcome to ETRACS</h1>
+
+@navbar(style:'vertical', class: 'home')

@@ -1,0 +1,150 @@
+/*
+* @author    : jzamora
+* @copyright : Rameses Systems Inc
+* @date      : june 6, 2011
+*/
+
+import com.rameses.annotations.*
+import com.rameses.common.*
+import java.rmi.server.UID
+
+class RuleService {
+
+	@PersistenceContext('system')
+	def em
+	
+	@Service
+	def ruleSvc;
+	
+	@Service('LogService')
+	def logService
+	
+	@Resource('RuleMgmt')
+	def ruleMgmt 
+	
+	def SCHEMA_NAME = 'rule'
+	def SCHEMA_VERSION = '1.0'
+	def DRAFT_STATE = 'DRAFT'
+	def DEPLOYED_STATE = 'DEPLOYED'
+	def APPROVED_STATE = 'APPROVED' 
+	
+	
+	@ProxyMethod
+	public def getList( ruleset, searchText, params ) {
+		if( ! ruleset ) return []
+		if( ! params ) params = [_start:0, _limit:50]
+		params.ruleset = ruleset
+		
+		def vars = [filter: '']
+		if( params.state ) vars.filter = ' and docstate=$P{state} ';
+		
+		if( ! searchText ) {
+			return em.sqlContext.createNamedQuery('rule:list')
+					.setVars(vars)
+					.setParameters( params )
+					.setFirstResult( params._start )
+					.setMaxResults( params._limit )
+					.resultList
+		}
+		
+		params.name = searchText+'%';
+		
+		return em.sqlContext.createNamedQuery('rule:list-byname')
+					.setVars(vars)
+					.setParameters( params )
+					.setFirstResult( params._start )
+					.setMaxResults( params._limit )
+					.resultList
+	}
+	
+	@ProxyMethod
+	public def open( objid ) {
+		return em.read( SCHEMA_NAME, [objid:objid] )
+	}
+	
+	@ProxyMethod
+	public def openByName( rulename ) {
+		def rule = em.sqlContext.createNamedQuery('rule:get-byname').setParameter(1, rulename).singleResult;
+		return rule ? em.read( SCHEMA_NAME, rule ) : null
+	}
+	
+	@ProxyMethod
+	public def create( rule ) {
+		rule.objid = 'R' + new UID()
+		rule.schemaname = SCHEMA_NAME
+		rule.schemaversion = SCHEMA_VERSION
+		rule.rulename = rule.rulename.replaceAll('\\W', '_');
+		rule.docstate = DRAFT_STATE
+		rule.packagename = rule.ruleset + "._" + rule.rulename 
+		em.validate(rule.schemaname, rule );
+		
+		def data = em.sqlContext.createNamedQuery('rule:check-duplicate').setParameters( rule ).singleResult 
+		if( data ) throw new Exception('Rule ' + rule.rulename + ' already exists.' )
+
+		em.create( rule.schemaname, rule )
+		logService.log( 'CREATE', 'Rule', rule.objid )
+		return rule 
+	}
+	
+	@ProxyMethod
+	public def update( rule ) {
+		em.validate(rule.schemaname, rule )
+		em.update( rule.schemaname, rule)
+		logService.log( 'UPDATE', 'Rule', rule.objid )
+		return rule
+	}
+	
+	@ProxyMethod
+	public void remove( objid ) {
+		def rule = open( objid )
+		if( ! rule ) return // probably deleted already 
+		if( rule.docstate != DRAFT_STATE ) throw new Exception('Only Draft rule can be deleted.')
+		em.delete(rule.schemaname, rule)
+	}
+	
+	@ProxyMethod
+	public def deploy( objid ) {
+		def rule = em.read(SCHEMA_NAME, [objid:objid])
+		ruleSvc.buildRuleText( rule );
+		if( !rule.ruletext ) throw new Exception('Rule text must be implemented.');
+		
+		rule.docstate = DEPLOYED_STATE
+		em.update( rule.schemaname, rule )
+		
+		try 
+		{
+			ruleMgmt.addRulePackage( rule.ruleset, '', rule.packagename, rule.ruletext );
+		}
+		catch(e) {
+			println "\n---- debug ---------"
+			println rule.ruletext
+			println "--------------------"
+			throw e;
+		}
+		
+		logService.log('DEPLOY', 'Rule', rule.objid)
+		return rule 
+	}
+	
+	@ProxyMethod
+	public def undeploy( objid ) {
+		def rule = em.read(SCHEMA_NAME, [objid:objid])
+		rule.docstate = DRAFT_STATE
+		em.update( rule.schemaname, rule )
+		ruleMgmt.removeRulePackage( rule.ruleset, '', rule.packagename );
+		logService.log('UNDEPLOY', 'Rule', rule.objid)
+		return rule 
+	}
+	
+	@ProxyMethod
+	public void buildRuleText( rule ) {
+		//this is hooked by interceptors
+		//do not delete this method
+	}
+	
+	@ProxyMethod
+	public def getAgendaGroups( ruleset ) {
+		return em.sqlContext.createNamedQuery('rule:rule-groups').setParameter('ruleset', ruleset).resultList;
+	}	
+}
+

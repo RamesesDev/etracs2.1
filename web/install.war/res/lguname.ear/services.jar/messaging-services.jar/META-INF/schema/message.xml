@@ -1,0 +1,36 @@
+<schema>
+    <element name="inbox" tablename="sys_inbox">
+        <link ref="info"/>
+    </element>
+	
+	<element name="outbox" tablename="sys_outbox">
+        <link ref="info"/>
+    </element>
+	
+	<element name="processedinbox" tablename="sys_processedinbox">
+        <link ref="info"/>
+    </element>
+	
+	<element name="processedoutbox" tablename="sys_processedoutbox">
+        <link ref="info"/>
+    </element>
+
+	<element name="info">
+		<field name="objid" primary="true"/>
+		<field name="schemaname" required="true"/>
+        <field name="schemaversion" required="true"/>
+		<field name="action" required="true" />
+        <field name="senderid" required="true" />
+		<field name="sendername" required="true" />
+		<field name="receiverid" required="true" />
+		<field name="receivername" required="true" />
+		<field name="message"  />
+        <complex name="attachment" serializer="default"/> 
+        <complex name="status" ref="status" serializer="default" /> 
+	</element>
+	
+	<element name="status" >
+		<field name="iserror" type="boolean"/>
+		<field name="errormsg " />
+	</element>
+</schema>

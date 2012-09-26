@@ -10,6 +10,9 @@ class ProvinceFAASMessageInterceptor
 	@Service('LogService')
     def logSvc
 	
+	@Service('ProvinceFAASService')
+	def svc
+	
 	@Service('MessengerService')
 	def msgSvc
 	
@@ -21,20 +24,30 @@ class ProvinceFAASMessageInterceptor
 	public void interceptOnReceive( evt ) {
         def msg = evt.result 
         if( msg.action == 'faas.receive') {
-            def faas = msg.attachment.faas 
-            em.create( faas.schemaname, faas )
-            em.create( LISTSCHEMA_NAME, faas )
-			
-			// save attachments
-			msg.attachment.attachments.each { attachment -> 
-				em.create('faas:faasattachment', attachment )
-			}
-			
-			msgSvc.processedSuccessfully( msg ) 
-            logSvc.log('ONLINE-RECEIVED', 'FAAS', faas.objid);
+			processReceiveFaas( msg )
         }
 	}
 	
+	void processReceiveFaas( msg ) {
+		createEntity( msg )
+		def faas = msg.attachment.faas 
+		if( ! svc.faasExists( faas.objid ) ) {
+			em.create( faas.schemaname, faas )
+		}
+		em.save( LISTSCHEMA_NAME, faas )
+		
+		msg.attachment.attachments.each { attachment -> 
+			em.save('faas:faasattachment', attachment )
+		}
+		
+		msgSvc.processedSuccessfully( msg ) 
+		logSvc.log('ONLINE-RECEIVED', 'FAAS', faas.objid);
+	}
+	
+	void createEntity( msg ) {
+		def entity = msg.attachment.entity 
+		em.save( entity.schemaname, entity )
+	}
 	
 }
 

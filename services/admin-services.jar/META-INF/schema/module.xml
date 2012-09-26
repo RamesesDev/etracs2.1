@@ -1,0 +1,15 @@
+<schema>
+
+	<element name="module" tablename="sys_module" >
+		<field name="name" primary="true"/>
+		<field name="title" />
+		<field name="description" />
+		<field name="version" />
+		<field name="filename" />
+		<field name="lastmodified" />
+		<complex name="permissions" serializer="default" />
+		<field name="type" />
+		<field name="jarfile" />
+    </element>
+	
+</schema>

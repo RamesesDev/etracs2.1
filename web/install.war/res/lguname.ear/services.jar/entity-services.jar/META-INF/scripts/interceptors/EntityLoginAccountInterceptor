@@ -1,0 +1,45 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*
+import java.rmi.server.UID;
+
+class EntityLoginAccountInterceptor {
+
+	@Service("UserAccountService")
+	def usrSvc;
+
+	@After(pattern="EntityService\\.open.*", eval="args[1] == 'individual'") 
+	public void onOpen( evt  ) {
+		def r = evt.result;
+		if( !r ) return;
+		
+		def acct = usrSvc.getAccount( [objid: r.objid] );
+		if(acct) {
+			//remove the password. very impt
+			acct.remove( "pwd");
+			r.useraccount = acct;
+		}	
+	}
+	
+	@After(pattern="EntityService\\.update.*") 
+	public void onUpdate( evt ) {
+		def r = evt.result;
+		def u = [objid: r.objid];
+		u.lastname = r.info.lastname;
+		u.firstname = r.info.firstname;
+		u.middlename = r.info.middlename;
+		try {
+			usrSvc.update( u );
+		}
+		catch(e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@After(pattern="EntityService\\.delete.*") 
+	public void onDelete( evt ) {
+		def r = evt.args[0];
+		def u = [objid: r.objid];
+		usrSvc.remove( u );
+	}	
+	
+}

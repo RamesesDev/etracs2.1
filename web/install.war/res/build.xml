@@ -1,41 +1,57 @@
 <project default="build-app" basedir=".">
-	<import file="mysql.xml"/>
+	<import file="build-db.xml"/>
+	
 	<target name="build-app">
 		<echo>Start Initializing App</echo>
 
-		<echo message="${dbuser}"/>
+		<echo message="${db_user}"/>
 		<antcall target="init-db"/>
 		
 		<echo message="Start building app ${appname}" />
 		<copy todir="${appname}.ear">
-			<fileset dir="app_template"/>
+			<fileset dir="lguname.ear"/>
 		</copy>
-		<replace file="${appname}.ear/admin.war/WEB-INF/web.xml" token="@appname" value="${appname}"/>
-		<replace file="${appname}.ear/admin.war/WEB-INF/web.xml" token="@apphost" value="${apphost}"/>
-		<replace file="${appname}.ear/admin.war/WEB-INF/web.xml" token="@sessionhost" value="${sessionhost}"/>
 		
 		<replace file="${appname}.ear/META-INF/application.xml" token="@appname" value="${appname}"/>
-		<replace file="${appname}.ear/META-INF/application.xml" token="@webroot" value="${webroot}"/>
 		<replace file="${appname}.ear/META-INF/jboss-app.xml" token="@appname" value="${appname}"/>
 		<replace file="${appname}.ear/META-INF/app-service.xml" token="@appname" value="${appname}"/>
 		
-		<replace file="${appname}.ear/downloads.war/downloads/etracs2/bin/client.conf" token="@lguname" value="${lguname}"/>
 		<replace file="${appname}.ear/downloads.war/downloads/etracs2/bin/client.conf" token="@server_address" value="${server_address}"/>
 		<zip destfile="${appname}.ear/downloads.war/downloads/etracs2.zip">
             <zipfileset dir="${appname}.ear/downloads.war/downloads/etracs2" prefix="etracs2"/>
         </zip>
 		
 		<replace file="${appname}.ear/downloads.war/modules/updates.xml" token="@appname" value="${appname}"/>		
-		<replace file="${appname}.ear/downloads.war/modules/updates.xml" token="@server_address" value="${server_address}"/>		
+		<replace file="${appname}.ear/downloads.war/modules/updates.xml" token="@server_address" value="${server_address}"/>	
+		<replace file="${appname}.ear/downloads.war/modules/updates.xml" token="@lguname" value="${lguname}"/>	
 		
-		<copy file="app.conf" tofile="app.temp.conf"/>
-		<replace file="app.temp.conf" token="@appname" value="${appname}"/>
-		<replace file="app.temp.conf" token="@main_dbname" value="${main_dbname}"/>
-		<replace file="app.temp.conf" token="@system_dbname" value="${system_dbname}"/>
-		<replace file="app.temp.conf" token="@dbuser" value="${dbuser}"/>
-		<replace file="app.temp.conf" token="@dbpwd" value="${dbpwd}"/>
-		<move file="app.temp.conf" tofile="${appname}.ear/META-INF/app.conf"/>
+		<replace file="${appname}.ear/META-INF/app.conf" token="@appname" value="${appname}"/>
+		<replace file="${appname}.ear/META-INF/app.conf" token="@main_dbname" value="${main_dbname}"/>
+		<replace file="${appname}.ear/META-INF/app.conf" token="@system_dbname" value="${system_dbname}"/>
+		<replace file="${appname}.ear/META-INF/app.conf" token="@dbhost" value="${db_host}"/>
+		<replace file="${appname}.ear/META-INF/app.conf" token="@dbuser" value="${db_user}"/>
+		<replace file="${appname}.ear/META-INF/app.conf" token="@dbpwd" value="${db_pwd}"/>
+		<replace file="${appname}.ear/META-INF/app.conf" token="@dbdialect" value="${db_dialect}"/>
 		
+		
+		<!-- install the ear -->
 		<move file="${appname}.ear" todir="${rootpath}/" />
+		
+		
+		<!-- install the anubis project -->
+		<copy todir="${rootpath}/../etracs_lgu">
+			<fileset dir="etracs_lgu"/>
+		</copy>
+		<replace file="${rootpath}/../etracs_lgu/services/user-service" token="@appname" value="${appname}"/>
+		<replace file="${rootpath}/../etracs_lgu/modules/admin/services/admin" token="@appname" value="${appname}"/>
+		<replace file="${rootpath}/../etracs_lgu/modules/tools/services/tools" token="@appname" value="${appname}"/>
+		
+		
+		<!-- install anubis war -->
+		<copy todir="ROOT.war">
+			<fileset dir="anubis.war"/>
+		</copy>
+		
+		<move file="ROOT.war" todir="${rootpath}/" />
 	</target>
 </project>

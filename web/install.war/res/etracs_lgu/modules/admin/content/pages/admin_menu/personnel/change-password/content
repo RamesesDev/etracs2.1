@@ -1,0 +1,34 @@
+<script type="text/javascript">
+	\$put( 
+		"changepass", 
+		new function() 
+		{
+			this.saveHandler;
+			this.info;
+			
+			this.save = function() {
+				if( this.info.newpassword != this.info.confirmpwd )
+					throw new Error( "Password must be the same as the confirm password" );
+				
+				if( confirm( "You are about to save this account. Proceed?") ) {
+					this.saveHandler(this.info);
+					return "_close";	
+				}
+			}
+		}
+	);
+</script>
+
+<%
+def fields = [
+	[type:"label", caption:"Username", value: "<b>#{info.uid}</b>"],
+	[type:"password", caption:"Password", name: "info.oldpassword", required: true],
+	[type:"password", caption:"Password", name: "info.newpassword", required: true],
+	[type:"password", caption:"Confirm Password", name: "info.confirmpwd", required: true],
+];
+%>
+@form( context:"changepass", fields: fields )
+
+<div style="text-align: right">
+	<button r:context="changepass" r:name="save">Save</button>
+</div>

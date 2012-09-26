@@ -1,0 +1,9 @@
+{
+	title: 		'Personnel',
+	context:	'personnellist',
+	fragment: 	true,
+	sortorder:	7,
+	secured:	true,
+	permission:	'personnel:personnel.viewList',
+	layout:		'document-layout',
+}

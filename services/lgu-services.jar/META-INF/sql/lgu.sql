@@ -26,6 +26,9 @@ WHERE l.parentid = $P{parentid}
 [getBarangays]
 SELECT objid, lguname AS name FROM lgu WHERE lgutype  = 'BARANGAY' ORDER BY objid  
 
+[getBarangayListByName]
+SELECT objid, lguname AS name FROM lgu WHERE lgutype  = 'BARANGAY' AND lguname LIKE $P{name} ORDER BY objid  
+
 
 [lookupMunicipality]
 SELECT objid, lguname, pin FROM lgu 
