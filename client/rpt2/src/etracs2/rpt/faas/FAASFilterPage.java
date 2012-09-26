@@ -63,7 +63,6 @@ public class FAASFilterPage extends javax.swing.JPanel {
         xTextField1.setName("filter.name");
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField1.setRequired(true);
-        xTextField1.setTextCase(com.rameses.rcp.constant.TextCase.NONE);
         formPanel1.add(xTextField1);
 
         xComboBox4.setCaption("State");

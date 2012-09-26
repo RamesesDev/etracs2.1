@@ -140,7 +140,7 @@ public class FAASMgmtController
     }
     
     List getFilterlist() {
-        if( ! filterlist ) {
+        if( filterlist == null ) {
             filterlist = svc.getFilterList()
         }
         return filterlist 

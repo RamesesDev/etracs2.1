@@ -36,6 +36,17 @@ public class FAASFilterController {
     def onadd //handler 
     def onremove //handler
     
+    
+    void initFilter() {
+        mode = 'view'
+        filter = [
+            objid   : 'F' + new UID(),
+            name    : null,
+            refname : 'faas', 
+            info    : [:],
+        ]
+    }
+    
     void initNew() {
         filter = [refname:'faas', info:[:]]
         mode = 'create'
@@ -53,23 +64,12 @@ public class FAASFilterController {
         if( ! filter.objid ) return 
         if( MsgBox.confirm('Delete selected filter?') ) {
             svc.removeFilter( filter )
-            filterlist.remove( filter )
             if( onremove ) onremove( filter )
             filter = [refname:'faas', info:[:]]
             binding.refresh('filter.*|filterlist')
         }
     }
     
-    
-    void initFilter() {
-        mode = 'view'
-        filter = [
-            objid   : 'F' + new UID(),
-            name    : null,
-            refname : 'faas', 
-            info    : [:],
-        ]
-    }
     
     void create() {
         filter = svc.createFilter( filter ) 
