@@ -7,7 +7,7 @@
 		<field name="name" required="true" />
 		<field name="classification" required="true" />
 		<field name="classificationid" required="true" />
-		<complex name="attributes" ref="attribute" type="list" serializer="default" />
+		<complex name="attributes" ref="attribute" type="list" serializer="default" required="false"/>
 	</element>
 	
 	<element name="attribute">

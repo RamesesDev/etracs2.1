@@ -96,6 +96,10 @@ public class FAASPage extends javax.swing.JPanel {
         xLookupField4 = new com.rameses.rcp.control.XLookupField();
         xTextField9 = new com.rameses.rcp.control.XTextField();
         xTextField20 = new com.rameses.rcp.control.XTextField();
+        xTextField21 = new com.rameses.rcp.control.XTextField();
+        jLabel28 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
+        xTextField22 = new com.rameses.rcp.control.XTextField();
         jPanel8 = new javax.swing.JPanel();
         jPanel10 = new javax.swing.JPanel();
         jLabel32 = new javax.swing.JLabel();
@@ -232,7 +236,7 @@ public class FAASPage extends javax.swing.JPanel {
         xTextField1.setCaption("TD No.");
         xTextField1.setName("faas.info.tdno");
         jPanel5.add(xTextField1);
-        xTextField1.setBounds(74, 0, 218, 19);
+        xTextField1.setBounds(74, 0, 218, 20);
 
         xComboBox1.setImmediate(true);
         xComboBox1.setItems("titleTypes");
@@ -245,25 +249,25 @@ public class FAASPage extends javax.swing.JPanel {
         xTextField2.setDepends(new String[] {"faas.info.titletype"});
         xTextField2.setName("faas.info.titleno");
         jPanel5.add(xTextField2);
-        xTextField2.setBounds(74, 38, 88, 19);
+        xTextField2.setBounds(74, 38, 88, 20);
 
         xDateField1.setDepends(new String[] {"faas.info.titletype"});
         xDateField1.setName("faas.info.titledate");
         jPanel5.add(xDateField1);
-        xDateField1.setBounds(214, 38, 78, 19);
+        xDateField1.setBounds(214, 38, 78, 20);
 
         xDateField2.setCaption("Issue Date");
         xDateField2.setName("faas.info.issuedate");
         xDateField2.setRequired(true);
         jPanel5.add(xDateField2);
-        xDateField2.setBounds(74, 57, 218, 19);
+        xDateField2.setBounds(74, 57, 218, 20);
 
         xNumberField1.setCaption("Effectivity Year");
         xNumberField1.setFieldType(Integer.class);
         xNumberField1.setName("faas.info.effectivityyear");
         xNumberField1.setRequired(true);
         jPanel5.add(xNumberField1);
-        xNumberField1.setBounds(74, 76, 88, 19);
+        xNumberField1.setBounds(74, 76, 88, 20);
 
         xComboBox2.setCaption("Effectivity Qtr");
         xComboBox2.setItems("quarters");
@@ -296,7 +300,7 @@ public class FAASPage extends javax.swing.JPanel {
         xNumberField4.setFieldType(Integer.class);
         xNumberField4.setName("faas.info.backtaxyrs");
         jPanel5.add(xNumberField4);
-        xNumberField4.setBounds(74, 114, 88, 19);
+        xNumberField4.setBounds(74, 114, 88, 20);
 
         jLabel21.setText("  Claim # :");
         jLabel21.setPreferredSize(new java.awt.Dimension(34, 19));
@@ -308,7 +312,7 @@ public class FAASPage extends javax.swing.JPanel {
         xTextField6.setName("faas.info.claimno");
         xTextField6.setReadonly(true);
         jPanel5.add(xTextField6);
-        xTextField6.setBounds(216, 114, 76, 19);
+        xTextField6.setBounds(216, 114, 76, 20);
 
         jPanel4.add(jPanel5);
         jPanel5.setBounds(8, 22, 298, 138);
@@ -347,7 +351,7 @@ public class FAASPage extends javax.swing.JPanel {
 
         xTextField3.setName("faas.info.prevtdno");
         jPanel6.add(xTextField3);
-        xTextField3.setBounds(100, 0, 378, 19);
+        xTextField3.setBounds(100, 0, 378, 20);
 
         jLabel15.setText("<html>  Prev. AV <font color=\"red\">*</font>: </html>");
         jLabel15.setPreferredSize(new java.awt.Dimension(34, 19));
@@ -361,7 +365,7 @@ public class FAASPage extends javax.swing.JPanel {
 
         xTextField5.setName("faas.info.prevpin");
         jPanel6.add(xTextField5);
-        xTextField5.setBounds(100, 19, 378, 19);
+        xTextField5.setBounds(100, 19, 378, 20);
 
         xNumberField2.setCaption("Previous MV");
         xNumberField2.setFieldType(BigDecimal.class);
@@ -369,7 +373,7 @@ public class FAASPage extends javax.swing.JPanel {
         xNumberField2.setPattern("#,##0.00");
         xNumberField2.setRequired(true);
         jPanel6.add(xNumberField2);
-        xNumberField2.setBounds(100, 38, 130, 19);
+        xNumberField2.setBounds(100, 38, 130, 20);
 
         xNumberField3.setCaption("Prev. AV");
         xNumberField3.setFieldType(BigDecimal.class);
@@ -377,11 +381,11 @@ public class FAASPage extends javax.swing.JPanel {
         xNumberField3.setPattern("#,##0.00");
         xNumberField3.setRequired(true);
         jPanel6.add(xNumberField3);
-        xNumberField3.setBounds(298, 38, 180, 19);
+        xNumberField3.setBounds(298, 38, 180, 20);
 
         xTextField4.setName("faas.info.prevowner");
         jPanel6.add(xTextField4);
-        xTextField4.setBounds(100, 57, 378, 19);
+        xTextField4.setBounds(100, 57, 378, 20);
 
         jLabel17.setText("<html>  Date <font color=\"red\">*</font>: </html>");
         jLabel17.setPreferredSize(new java.awt.Dimension(34, 19));
@@ -392,7 +396,7 @@ public class FAASPage extends javax.swing.JPanel {
         xDateField3.setName("faas.info.dtappraised");
         xDateField3.setRequired(true);
         jPanel6.add(xDateField3);
-        xDateField3.setBounds(384, 76, 94, 19);
+        xDateField3.setBounds(384, 76, 94, 20);
 
         jLabel18.setText("<html>  Date <font color=\"red\">*</font>: </html>");
         jLabel18.setPreferredSize(new java.awt.Dimension(34, 19));
@@ -403,7 +407,7 @@ public class FAASPage extends javax.swing.JPanel {
         xDateField4.setName("faas.info.dtrecommended");
         xDateField4.setRequired(true);
         jPanel6.add(xDateField4);
-        xDateField4.setBounds(384, 95, 94, 19);
+        xDateField4.setBounds(384, 95, 94, 20);
 
         jLabel19.setText("<html>  Date <font color=\"red\">*</font>: </html>");
         jLabel19.setPreferredSize(new java.awt.Dimension(34, 19));
@@ -414,7 +418,7 @@ public class FAASPage extends javax.swing.JPanel {
         xDateField5.setName("faas.info.dtapproved");
         xDateField5.setRequired(true);
         jPanel6.add(xDateField5);
-        xDateField5.setBounds(384, 114, 94, 19);
+        xDateField5.setBounds(384, 114, 94, 20);
 
         xLookupField1.setCaption("Appraised By");
         xLookupField1.setExpression("#{name}");
@@ -422,7 +426,7 @@ public class FAASPage extends javax.swing.JPanel {
         xLookupField1.setName("appraiser");
         xLookupField1.setRequired(true);
         jPanel6.add(xLookupField1);
-        xLookupField1.setBounds(100, 76, 238, 19);
+        xLookupField1.setBounds(100, 76, 238, 20);
 
         xLookupField2.setCaption("Recommended By");
         xLookupField2.setExpression("#{name}");
@@ -430,7 +434,7 @@ public class FAASPage extends javax.swing.JPanel {
         xLookupField2.setName("recommender");
         xLookupField2.setRequired(true);
         jPanel6.add(xLookupField2);
-        xLookupField2.setBounds(100, 95, 238, 19);
+        xLookupField2.setBounds(100, 95, 238, 20);
 
         xLookupField3.setCaption("Approved By");
         xLookupField3.setExpression("#{name}");
@@ -438,7 +442,7 @@ public class FAASPage extends javax.swing.JPanel {
         xLookupField3.setName("approver");
         xLookupField3.setRequired(true);
         jPanel6.add(xLookupField3);
-        xLookupField3.setBounds(100, 114, 238, 19);
+        xLookupField3.setBounds(100, 114, 238, 20);
 
         jPanel4.add(jPanel6);
         jPanel6.setBounds(312, 22, 482, 138);
@@ -476,7 +480,7 @@ public class FAASPage extends javax.swing.JPanel {
         xTextField7.setName("faas.info.ownername");
         xTextField7.setRequired(true);
         jPanel7.add(xTextField7);
-        xTextField7.setBounds(104, 43, 360, 19);
+        xTextField7.setBounds(104, 43, 360, 20);
 
         jLabel25.setText("<html> Address <font color=\"red\">*</font>:</html>");
         jLabel25.setPreferredSize(new java.awt.Dimension(40, 19));
@@ -497,26 +501,46 @@ public class FAASPage extends javax.swing.JPanel {
         xTextField8.setName("faas.info.owneraddress");
         xTextField8.setRequired(true);
         jPanel7.add(xTextField8);
-        xTextField8.setBounds(528, 43, 266, 19);
+        xTextField8.setBounds(528, 43, 266, 20);
 
         xLookupField4.setExpression("#{entityname}");
         xLookupField4.setHandler("lookupTaxpayer");
         xLookupField4.setName("taxpayer");
         jPanel7.add(xLookupField4);
-        xLookupField4.setBounds(104, 24, 360, 19);
+        xLookupField4.setBounds(104, 24, 360, 20);
 
         xTextField9.setCaption("Owner");
         xTextField9.setName("faas.info.administratorname");
         jPanel7.add(xTextField9);
-        xTextField9.setBounds(104, 62, 360, 19);
+        xTextField9.setBounds(104, 62, 360, 20);
 
         xTextField20.setCaption("Owner Address");
         xTextField20.setName("faas.info.administratoraddress");
         jPanel7.add(xTextField20);
-        xTextField20.setBounds(528, 62, 266, 19);
+        xTextField20.setBounds(528, 62, 266, 20);
+
+        xTextField21.setCaption("Owner");
+        xTextField21.setName("faas.info.representative");
+        jPanel7.add(xTextField21);
+        xTextField21.setBounds(104, 81, 360, 20);
+
+        jLabel28.setText("Representative :");
+        jLabel28.setPreferredSize(new java.awt.Dimension(40, 19));
+        jPanel7.add(jLabel28);
+        jLabel28.setBounds(10, 81, 96, 18);
+
+        jLabel29.setText("Address :");
+        jLabel29.setPreferredSize(new java.awt.Dimension(40, 19));
+        jPanel7.add(jLabel29);
+        jLabel29.setBounds(468, 81, 60, 18);
+
+        xTextField22.setCaption("Owner Address");
+        xTextField22.setName("faas.info.representativeaddress");
+        jPanel7.add(xTextField22);
+        xTextField22.setBounds(528, 81, 266, 20);
 
         jPanel3.add(jPanel7);
-        jPanel7.setBounds(8, 172, 802, 90);
+        jPanel7.setBounds(8, 172, 802, 110);
 
         jPanel8.setLayout(null);
 
@@ -549,15 +573,15 @@ public class FAASPage extends javax.swing.JPanel {
         xTextField10.setName("faas.rp.cadastrallotno");
         xTextField10.setRequired(true);
         jPanel10.add(xTextField10);
-        xTextField10.setBounds(72, 22, 254, 19);
+        xTextField10.setBounds(72, 22, 254, 20);
 
         xTextField11.setName("faas.rp.blockno");
         jPanel10.add(xTextField11);
-        xTextField11.setBounds(72, 40, 58, 19);
+        xTextField11.setBounds(72, 40, 58, 20);
 
         xTextField12.setName("faas.rp.surveyno");
         jPanel10.add(xTextField12);
-        xTextField12.setBounds(198, 40, 128, 19);
+        xTextField12.setBounds(198, 40, 128, 20);
 
         xLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel11.setFont(new java.awt.Font("Arial", 1, 14));
@@ -595,15 +619,15 @@ public class FAASPage extends javax.swing.JPanel {
 
         xTextField13.setName("faas.rp.houseno");
         jPanel11.add(xTextField13);
-        xTextField13.setBounds(72, 4, 128, 19);
+        xTextField13.setBounds(72, 4, 128, 20);
 
         xTextField14.setName("faas.rp.street");
         jPanel11.add(xTextField14);
-        xTextField14.setBounds(72, 23, 128, 19);
+        xTextField14.setBounds(72, 23, 128, 20);
 
         xTextField15.setName("faas.rp.purok");
         jPanel11.add(xTextField15);
-        xTextField15.setBounds(72, 42, 128, 19);
+        xTextField15.setBounds(72, 42, 128, 20);
 
         jPanel8.add(jPanel11);
         jPanel11.setBounds(336, 22, 206, 64);
@@ -612,13 +636,13 @@ public class FAASPage extends javax.swing.JPanel {
         xTextField17.setName("faas.rp.east");
         xTextField17.setRequired(true);
         jPanel8.add(xTextField17);
-        xTextField17.setBounds(78, 108, 458, 19);
+        xTextField17.setBounds(78, 108, 458, 20);
 
         xTextField16.setCaption("North Boundary");
         xTextField16.setName("faas.rp.north");
         xTextField16.setRequired(true);
         jPanel8.add(xTextField16);
-        xTextField16.setBounds(78, 90, 458, 19);
+        xTextField16.setBounds(78, 90, 458, 20);
 
         jLabel39.setText("<html>North <font color=\"red\">*</font>:</html>");
         jLabel39.setPreferredSize(new java.awt.Dimension(34, 19));
@@ -634,13 +658,13 @@ public class FAASPage extends javax.swing.JPanel {
         xTextField18.setName("faas.rp.west");
         xTextField18.setRequired(true);
         jPanel8.add(xTextField18);
-        xTextField18.setBounds(78, 144, 458, 19);
+        xTextField18.setBounds(78, 144, 458, 20);
 
         xTextField19.setCaption("East Boundary");
         xTextField19.setName("faas.rp.south");
         xTextField19.setRequired(true);
         jPanel8.add(xTextField19);
-        xTextField19.setBounds(78, 126, 458, 19);
+        xTextField19.setBounds(78, 126, 458, 20);
 
         jLabel41.setText("<html>South <font color=\"red\">*</font>:</html>");
         jLabel41.setPreferredSize(new java.awt.Dimension(34, 19));
@@ -653,7 +677,7 @@ public class FAASPage extends javax.swing.JPanel {
         jLabel42.setBounds(8, 144, 70, 19);
 
         jPanel3.add(jPanel8);
-        jPanel8.setBounds(8, 264, 546, 174);
+        jPanel8.setBounds(8, 284, 546, 174);
 
         jPanel9.setLayout(null);
 
@@ -718,7 +742,7 @@ public class FAASPage extends javax.swing.JPanel {
         formPanel2.setBounds(6, 50, 238, 122);
 
         jPanel3.add(jPanel9);
-        jPanel9.setBounds(560, 264, 250, 174);
+        jPanel9.setBounds(560, 284, 250, 174);
 
         xTextArea1.setColumns(20);
         xTextArea1.setLineWrap(true);
@@ -730,7 +754,7 @@ public class FAASPage extends javax.swing.JPanel {
         jScrollPane1.setViewportView(xTextArea1);
 
         jPanel3.add(jScrollPane1);
-        jScrollPane1.setBounds(8, 440, 800, 70);
+        jScrollPane1.setBounds(8, 460, 800, 70);
 
         jPanel2.add(jPanel3, java.awt.BorderLayout.CENTER);
 
@@ -762,6 +786,8 @@ public class FAASPage extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
@@ -837,6 +863,8 @@ public class FAASPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XTextField xTextField19;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField20;
+    private com.rameses.rcp.control.XTextField xTextField21;
+    private com.rameses.rcp.control.XTextField xTextField22;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;
