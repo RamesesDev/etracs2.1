@@ -65,6 +65,7 @@
                 entity.business = [ 
                     tradename       : sb.tradename,
                     businessaddress : sb.businessaddress,
+                    taxpayerno      : sb.taxpayerno,
                     taxpayerid      : sb.taxpayerid,
                     taxpayername    : sb.taxpayername,
                     taxpayeraddress : sb.taxpayeraddress,
@@ -74,7 +75,8 @@
                     lastyrpaid      : sb.lastyrpaid,
                     lastqtrpaid     : sb.lastqtrpaid
                 ];
-                binding.refresh();
+         
+                binding.refresh()
             }
             
             def getLookupBusiness() {
@@ -220,6 +222,7 @@
             }
             
             def previewledger(){
+                if( !application ) return 
                 reportname = 'bp/bpledger'
                 generateReport()
             }
@@ -228,11 +231,18 @@
                 this.application = application
             }
             
+            def getApplication(){
+                return applicaiton
+            }
+            
             def generateReport() {
                 entity.info = [
                     applicationid : application.objid,
                     appno         : application.txnno,
                     taxpayerid    : application.taxpayerid,
+                    taxpayerno    : entity.business.taxpayerno, 
+                    taxpayername  : entity.business.taxpayername,
+                    taxpayeraddress : entity.business.taxpayeraddress, 
                     tradename     : ( application.tradename ? application.tradename : '%' ),
                     barangayid    : ( application.barangayid ? application.barangayid : '%' )
                 ]

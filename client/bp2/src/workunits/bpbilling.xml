@@ -68,17 +68,19 @@
                 if( st ) {
                     entity.info.applicationid = st.objid
                     entity.info.appno = st.appno
-                    entity.info.taxpayerid = st.payorid;
-                    entity.info.taxpayername = st.taxpayername;
+                    entity.info.taxpayerid = st.payorid
+                    entity.info.taxpayername = st.taxpayername
+                    entity.info.taxpayerno = st.taxpayerno
                     entity.info.tradename = st.tradename
                     entity.info.businessaddress = st.businessaddress
-                    entity.info.taxpayeraddress = st.taxpayeraddress;
+                    entity.info.taxpayeraddress = st.taxpayeraddress
                 }else{
                     entity.info.applicationid = null
                     entity.info.appno = null
-                    entity.info.taxpayerid = null;
-                    entity.info.taxpayername = null;
+                    entity.info.taxpayerid = null
+                    entity.info.taxpayername = null
                     entity.info.tradename = null
+                    entity.info.taxpayerno = null
                     entity.info.businessaddress = null
                     entity.info.taxpayeraddress = null
                 }
