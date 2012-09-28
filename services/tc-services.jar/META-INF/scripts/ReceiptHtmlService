@@ -41,38 +41,43 @@ class ReceiptHtmlService
 	@ProxyMethod 
 	public def buildInfo( rct ) {
 		def amount = numSvc.format('#,##0.00', rct.info.amount)
-		return """
-			<table border="0">
-				<tr>
-					<td>AF No.</td>
-					<td>$rct.info.afid</td>
-				</tr>
-				<tr>
-					<td>Serial No.</td>
-					<td>$rct.info.serialno</td>
-				</tr>
-				<tr>
-					<td>Txn Date</td>
-					<td>$rct.info.txndate</td>
-				</tr>
-				<tr>
-					<td>Payor</td>
-					<td>$rct.info.payorname</td>
-				</tr>
-				<tr>
-					<td>Address</td>
-					<td>$rct.info.payoraddress</td>
-				</tr>
-				<tr>
-					<td>Paid By</td>
-					<td>$rct.info.paidby</td>
-				</tr>
-				<tr>
-					<td>Receipt Amount</td>
-					<td>$amount</td>
-				</tr>
-			</table>
-		"""
+		StringBuffer htmlText = new StringBuffer("<table border='0'>");
+		if( rct.voided == 1)
+		{
+			htmlText << " <tr> <td colspan='2'> <font size='5' color='red'><b> VOIDED<b></font> </td> </tr>";
+		}
+		htmlText << """
+							<tr>
+								<td>AF No.</td>
+								<td>$rct.info.afid</td>
+							</tr>
+							<tr>
+								<td>Serial No.</td>
+								<td>$rct.info.serialno</td>
+							</tr>
+							<tr>
+								<td>Txn Date</td>
+								<td>$rct.info.txndate</td>
+							</tr>
+							<tr>
+								<td>Payor</td>
+								<td>$rct.info.payorname</td>
+							</tr>
+							<tr>
+								<td>Address</td>
+								<td>$rct.info.payoraddress</td>
+							</tr>
+							<tr>
+								<td>Paid By</td>
+								<td>$rct.info.paidby</td>
+							</tr>
+							<tr>
+								<td>Receipt Amount</td>
+								<td>$amount</td>
+							</tr>
+						</table>
+					"""
+		return htmlText.toString();
 	}
 	
 	@ProxyMethod
