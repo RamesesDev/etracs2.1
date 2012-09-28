@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="rptcompromise.capturepayment" action="init" caption="Compromise Agreement : Capture Payment" permissionx="rptcompromise.capturepayment" target="popup" />
+    </invokers>
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*
+import java.rmi.server.UID
+
+public class RPTCompromiseCapturePaymentController 
+{
+    @Binding 
+    def binding
+    
+    @Service('RPTCompromiseService')
+    def svc 
+    
+    def entity 
+    def onadd   //handler 
+    def pmt
+    def unpaidItems 
+    
+    def init() {
+        unpaidItems = svc.getUnpaidInstallments( entity.objid ) 
+        if( ! unpaidItems ) throw new Exception('Compromise has already been fully paid.')
+        
+        unpaidItems.each{ it.pay = false  }
+        unpaidItems[0].pay = true 
+        pmt = [amount:0.0, voided:0, mode:'capture']
+        calculateORAmount()
+    }
+    
+    def savePayment(){
+        if( MsgBox.confirm('Verify that all entries are correct.\nPayment cannot be edited once posted.')) {
+            def paymentlist = buildPaymentList()
+            svc.addCapturedPayment( paymentlist )
+            if( onadd ) {
+                onadd( paymentlist )
+            }
+            return '_close' 
+        }
+        return null 
+    }
+    
+    def buildPaymentList() {
+        def paymentlist = []
+        def paiditems = unpaidItems.findAll{ it.pay == true }
+        if( ! paiditems ) throw new Exception('At least one (1) installment must be paid.')
+        paiditems.each{
+            def item = [
+                objid           : 'CC' + new UID() ,
+                receiptid       : 'CAPTURE',
+                ledgerid        : it.ledgerid,
+                rptcompromiseid : it.rptcompromiseid,
+                installmentno   : it.installmentno,
+                installmentid   : it.objid ,
+            ]
+            def origamount = it.amount 
+            item.putAll( pmt )
+            item.amount = origamount 
+            paymentlist.add( item )
+        }
+        return paymentlist 
+    }
+    
+    def installmentListHandler = [
+        fetchList  : { return unpaidItems },
+        getRows    : { return 50 },
+        getColumns : { return [
+            new Column(name:'pay', caption:'Pay?', width:50, type:'boolean', editable:true),
+            new Column(name:'installmentno', caption:'Installment No.'),
+            new Column(name:'duedate', caption:'Due Date', type:'date'),
+            new Column(name:'amount', caption:'Amount', type:'decimal', format:'#,##0.00'),
+        ]},
+        onColumnUpdate : {item, colname -> 
+            if( 'pay' == colname ) {
+                def idx = unpaidItems.indexOf(item)
+                if( item.pay ) {
+                    for( int i=0; i < idx; i++ ) {
+                        unpaidItems[i].pay = item.pay 
+                    }
+                }
+                for( int i=idx+1; i< unpaidItems.size(); i++) {
+                    unpaidItems[i].pay = false
+                }
+                calculateORAmount()
+                installmentListHandler.load()
+            }
+        },
+    ] as SubListModel
+    
+    void calculateORAmount(){
+        try {
+            pmt.amount = unpaidItems.findAll{it.pay == true}?.amount.sum()
+        }
+        catch( e ) {
+            pmt.amount = 0.0
+        }
+        binding?.refresh('pmt.amount')
+    }
+    
+    
+    def cancelAddPayment() {
+        if( MsgBox.confirm('Cancel capture payment?')) {
+            return '_close'
+        }
+        return null 
+    }   
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.compromise.RPTCompromiseCaptureCreditPage" />
+    </pages>
+</workunit>

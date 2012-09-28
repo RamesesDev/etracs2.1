@@ -7,3 +7,29 @@
     enabled:true;
 }   
 
+
+"capturePayment" [entity.docstate != 'APPROVED'] {
+    enabled:false;
+}
+
+"capturePayment" [entity.docstate == 'APPROVED'] {
+    enabled:true;
+}
+
+
+"captureDownpayment|captureCYPayment" [entity.docstate != 'FORPAYMENT'] {
+    enabled:false;
+}
+
+"captureDownpayment|captureCYPayment" [entity.docstate == 'FORPAYMENT'] {
+    enabled:true;
+}
+
+
+"captureDownpayment" [entity.info.downpaymentorno != null ] {
+    enabled:false;
+}
+
+"captureCYPayment" [entity.info.cypaymentorno != null ] {
+    enabled:false;
+}

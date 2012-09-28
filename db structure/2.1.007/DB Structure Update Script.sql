@@ -1,5 +1,19 @@
 set foreign_key_checks=0;
 
+ALTER TABLE lguname_etracs.rptcompromise_credit 
+DROP FOREIGN KEY FK_rptcompromise_credit;
+
+ALTER TABLE lguname_etracs.rptcompromise_credit 
+DROP INDEX FK_rptcompromise_credit;
+
+ALTER TABLE lguname_etracs.rptcompromise_credit 
+	ADD COLUMN paidby VARCHAR(100),
+	ADD COLUMN paidbyaddress VARCHAR(100),
+	ADD MODE VARCHAR(25);
+
+
+
+
 ALTER TABLE lguname_etracs..subdivisionland ADD COLUMN administratorname VARCHAR(500);
 ALTER TABLE lguname_etracs..subdivisionland ADD COLUMN administratoraddress VARCHAR(500);
 
