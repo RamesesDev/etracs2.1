@@ -261,3 +261,16 @@ WHERE lq.txntimestamp LIKE $P{txntimestamp}
   AND r.doctype = 'RPT' 
   AND r.voided = 0 
 GROUP BY pc.propertycode  
+
+
+[getCompromisedPayments]
+SELECT 
+	l.taxpayername, l.tdno, l.barangay, c.orno, c.ordate, c.amount 
+FROM liquidationlist q 
+INNER JOIN remittancelist m ON m.liquidationid=q.objid 
+INNER JOIN receiptlist r on r.remittanceid=m.objid 
+INNER JOIN rptcompromise_credit c ON c.receiptid=r.objid 
+INNER JOIN rptledger l on l.objid=c.ledgerid 
+WHERE q.txntimestamp LIKE $P{txntimestamp} 
+  AND r.voided = 0 
+ORDER BY c.orno 

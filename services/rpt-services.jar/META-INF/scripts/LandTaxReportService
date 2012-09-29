@@ -359,6 +359,22 @@ class LandTaxReportService
 	}
 	
 	@ProxyMethod
+	public def buildCompromisedPaymentReportData( year, qtr, month, day ) {
+		def parsedate = dateSvc.parseCurrentDate()
+		if( year > parsedate.year ) throw new Exception('Year must not exceed current year.')
+		
+		def txntimestamp = resolveTimeStamp( year, qtr, month, day )
+		def items = em.sqlContext.createNamedQuery('landtaxreport:getCompromisedPayments').setParameter('txntimestamp', txntimestamp).resultList
+		if( !items ) throw new Exception('No records found.')
+		
+		return [
+			title    : 'COMPROMISED TAXES PAYMENT',
+			period   : buildPeriod( year, qtr, month, day ),
+			items    : items
+		]
+	}
+	
+	@ProxyMethod
 	public List getNumDays( year, month ) {
 		if ( !month && month < 0 ) return []
 		
@@ -571,5 +587,4 @@ class LandTaxReportService
 			throw new Exception('Invalid ' + sharename + ' value.')
 		}
 	}
-	
 }	
