@@ -8,18 +8,18 @@ class BPPaymentService{
 	def em
 	
 	@ProxyMethod
-	public def getBPPReportLists( def year, def qtr, def month, def day ){
-
+	public def getBPPReportLists( def year, def qtr, def month, def day, def barangay ){
+		
 		def param = [
 			iyear : year,
 			iqtr : qtr,
 			imonth : ( month?.month ? month.month : '%' ),
-			iday : month?.month ? ( day ? day : '%' ) : '%'
+			iday : month?.month ? ( day ? day : '%' ) : '%', 
+			barangayid: ( barangay ? barangay.barangayid : '%' )
 		]
-		
+
 		def result = getBPPReportLists( param )
-		if( !result ) 
-			throw new Exception('Records found.')
+		if( !result ) throw new Exception('Records found.')
 		
 		return result
 	}
@@ -90,9 +90,11 @@ class BPPaymentService{
 	}
 	 
 	private def getBPPReportLists( def param ){
-	
 		return em.sqlContext.createNamedQuery( "bppayment:getBPPReportLists" ).setParameters( param ).resultList					
 	}
 	
-
+	@ProxyMethod
+	public def getBarangayList(){
+		return em.sqlContext.createNamedQuery( 'bppayment:getBarangayList' ).resultList
+	}
 }

@@ -30,6 +30,7 @@ public class BPCollectonReportListingPage extends javax.swing.JPanel {
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
+        xComboBox4 = new com.rameses.rcp.control.XComboBox();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -76,6 +77,15 @@ public class BPCollectonReportListingPage extends javax.swing.JPanel {
         xComboBox3.setPreferredSize(new java.awt.Dimension(125, 22));
         formPanel1.add(xComboBox3);
 
+        xComboBox4.setCaption("Barangay");
+        xComboBox4.setDynamic(true);
+        xComboBox4.setEmptyText("ALL BARANGAYS");
+        xComboBox4.setExpression("#{barangayname}");
+        xComboBox4.setItems("barangaylist");
+        xComboBox4.setName("barangay");
+        xComboBox4.setPreferredSize(new java.awt.Dimension(125, 22));
+        formPanel1.add(xComboBox4);
+
         add(formPanel1, java.awt.BorderLayout.CENTER);
 
     }// </editor-fold>//GEN-END:initComponents
@@ -87,6 +97,7 @@ public class BPCollectonReportListingPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
+    private com.rameses.rcp.control.XComboBox xComboBox4;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     // End of variables declaration//GEN-END:variables
     

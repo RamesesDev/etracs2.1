@@ -1,6 +1,9 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/bp" action="init" caption="BP Collection Report Listing" target="window" index="10" permission="bpreport.bpcollectionreport" />
+        <invoker folderid="/report/bp" action="init" caption="Business Permit Listing" target="window" index="4" permission="bpreport.bppermitlisting" />
+        <invoker type="bpreport"         action="init" opener="bppermitlisting" caption="Business Permit Listing" target="window" index="4" permission="bpreport.bppermitlisting" />
+        <invoker type="bpreport.bppermitlisting"    action="init" caption="Business Permit Listing" target="window" />
+        
         <invoker type="formActions"     action="_close" caption="Back" mnemonic="b" shortcut="ctrl + B" icon="images/back.png"/>
         <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png"/>
         <invoker type="formActions"     action="preview" caption="Preview" mnemonic="v"             icon="images/doc-view.png"/>
@@ -15,7 +18,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
-class bpcollectionreportlistcontroller
+class BusinessComparativeListingController
 {
     @Binding
     def binding
@@ -23,36 +26,27 @@ class bpcollectionreportlistcontroller
     @Service("ReportParameterService")
     def svcParams;
     
-    @Service('BPPaymentService') 
+    @Service('BPPermitReportService') 
     def svc 
     
-    @Service('DateService')
-    def dtSvc
+    @Service('BPReportService') 
+    def svcReport
     
-    def chart
-    def year 
-    def qtr
-    def month
-    def day 
+    @Service('DateService')
+    def dateSvc
+    
+    def entity = [:]
     def barangay
-    def fund
     def reportdata
     
     void init() {
-        def parsedate = dtSvc.parseCurrentDate()
-        year = parsedate.year 
-        qtr  = parsedate.qtr 
-        month = svc.getMonth( parsedate.month )
-        day   = parsedate.day 
-    }
-    
-    def preview() {
-        generateReport()
-        return 'preview' 
+        def parsedate = dateSvc.parseCurrentDate()
+        entity.iyear = parsedate.year
     }
     
     void generateReport() {
-        reportdata = svc.getBPPReportLists( year, qtr, month, day, barangay )
+        entity.barangay = barangay
+        reportdata = svc.getPermitList( entity )
         report.viewReport()
     }
     
@@ -62,57 +56,35 @@ class bpcollectionreportlistcontroller
     }
     
     def report = [
-        getReportName : { return 'bp/bpcollectionreport' }, 
+        getReportName : { return 'bp/bppermitlisting' },
         getReportData : { return reportdata },
         getParameters : { 
             def params = svcParams.getStandardParameter( OsirisContext.env.USERNAME )
-            params.PERIOD = svc.buildPeriod(year, qtr, month, day)
-            params.BARANGAY = barangay ? barangay.barangayname : null 
+            params.YEAR = entity.iyear
+            params.BARANGAY = entity?.barangay?.barangayname 
             
-            return params 
+            return params
         }
     ] as ServerReportModel;
-        
+    
     def back() {
         return 'default' 
     }
     
-    void setQuarter( quarter ){
-        this.quarter = quarter
-        setMonth( null )
-        setDay( null )
+    def preview() {
+        generateReport()
+        return 'preview' 
     }
     
-    List getQuarterlist() {
-        return [1,2,3,4]
+    List getBarangaylist() {
+        return svcReport.getBarangayList()
     }
-    
-    void setMonth( month ){
-        this.month = month
-    }
-    
-    List getMonthlist() {
-        return svc.getMonthList( qtr )
-    }
-    
-    void setDay( day ){
-        this.day = day
-    }
-    
-    List getDaylist() {
-        return svc.getNumDays( year, month?.month-1 )
-    }
-    
-    List getBarangaylist(){
-        return svc.getBarangayList()
-    }
-    
 }
 ]]>        
         
     </code>
     <pages>
-        <page template="etracs2.bp.report.BPCollectonReportListingPage" />
+        <page template="etracs2.bp.report.BPBusinessPermitListingPage" />
         <page name="preview" template="etracs2.common.PreviewPage" />
     </pages>
 </workunit>

@@ -80,14 +80,15 @@ public class BPBillingService
 					bill.fourth_qtr_total = new BigDecimal('0.0');
 					
 					bill.taxfees.each{
-						def duedate = getSurchargeDueDate( bpsetting, it.qtr );
+						def duedate  = getSurchargeDueDate( bpsetting, it.qtr );
 						it.discount  = 	new BigDecimal( numSvc.round(it.discount  ? it.discount.toString()  : '0.0') )
 						it.surcharge = 	new BigDecimal( numSvc.round(it.surcharge ? it.surcharge.toString() : '0.0') )
 						it.interest  = 	new BigDecimal( numSvc.round(it.interest  ? it.interest.toString()  : '0.0') )
 						it.amount    = 	new BigDecimal( numSvc.round(it.amount    ? it.amount.toString()    : '0.0') )
 						
-						it.total = it.amount + it.surcharge + it.interest - it.discount;
-						it.duedate = it.year+"-"+duedate.month+"-"+duedate.day;
+						it.total 	 = it.amount + it.surcharge + it.interest - it.discount;
+						it.duedate   = it.year+"-"+duedate.month+"-"+duedate.day;
+						it.period 	 = formatQtr( it.qtr ) + ", $it.year".toString()
 						
 						bill.totalamount += it.amount;
 						bill.totalsurcharge += it.surcharge;
@@ -117,6 +118,14 @@ public class BPBillingService
 		return billing;
 	}
 	
+	private def formatQtr( qtr ){
+		if( !qtr ) return
+		else if( qtr == 1 ) return qtr+"st Qtr"
+		else if( qtr == 2 ) return qtr+"nd Qtr"
+		else if( qtr == 3 ) return qtr+"rd Qtr"
+		else return qtr+"th Qtr"
+	}
+	
 	private void validateAdvBill( billing ){
 		def currentdate = dtService.parseCurrentDate()
 		advancepayment = null 
@@ -127,9 +136,8 @@ public class BPBillingService
 			if( billdate.date.time <= currentdate.date.time )
 				throw new Exception( "Bill date should be later than today." )
 		}
-		else {
-			billdate = null 
-		}
+		else billdate = null 
+		
 	}
 	
 	private def calculateExpirydate( def bpsetting ){
@@ -177,6 +185,7 @@ public class BPBillingService
 			tradename 		: ( billing.info.tradename ? billing.info.tradename : '%' ),
 			barangayid 		: ( billing.info.barangayid ? billing.info.barangayid : '%' ),
 		]
+		println params 
 		return em.sqlContext.createNamedQuery( 'business:getListByTaxpayerid').setParameters( params ).resultList;
 	}
 	

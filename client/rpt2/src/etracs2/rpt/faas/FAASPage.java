@@ -335,7 +335,7 @@ public class FAASPage extends javax.swing.JPanel {
         jPanel6.add(jLabel12);
         jLabel12.setBounds(0, 76, 100, 19);
 
-        jLabel13.setText("<html>Recommended By <font color=\"red\">*</font>:</html>");
+        jLabel13.setText("Recommended By :");
         jLabel13.setPreferredSize(new java.awt.Dimension(34, 19));
         jPanel6.add(jLabel13);
         jLabel13.setBounds(0, 95, 100, 19);
@@ -394,14 +394,13 @@ public class FAASPage extends javax.swing.JPanel {
         jPanel6.add(xDateField3);
         xDateField3.setBounds(384, 76, 94, 19);
 
-        jLabel18.setText("<html>  Date <font color=\"red\">*</font>: </html>");
+        jLabel18.setText("Date :");
         jLabel18.setPreferredSize(new java.awt.Dimension(34, 19));
         jPanel6.add(jLabel18);
         jLabel18.setBounds(344, 95, 40, 19);
 
         xDateField4.setCaption("Date Recommended");
         xDateField4.setName("faas.info.dtrecommended");
-        xDateField4.setRequired(true);
         jPanel6.add(xDateField4);
         xDateField4.setBounds(384, 95, 94, 19);
 
@@ -428,7 +427,6 @@ public class FAASPage extends javax.swing.JPanel {
         xLookupField2.setExpression("#{name}");
         xLookupField2.setHandler("lookupRecommender");
         xLookupField2.setName("recommender");
-        xLookupField2.setRequired(true);
         jPanel6.add(xLookupField2);
         xLookupField2.setBounds(100, 95, 238, 19);
 
