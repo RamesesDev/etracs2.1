@@ -382,7 +382,6 @@ SELECT
 FROM receiptlist 
 WHERE docstate = 'OPEN' 
   AND collectorid = $P{collectorid}
-  AND voided = 0 
 GROUP BY afid, afcontrolid, stubno  
 ORDER BY afid, fromserialno, stubno  
 
