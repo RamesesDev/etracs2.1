@@ -130,8 +130,8 @@ class FundService{
 	}
 	
 	private void checkReferencedId( fund ){
-		def data = em.sqlContext.createNamedQuery('fund:checkReferencedId').setParameter("fundid", fund.objid).singleResult
-		if( data.count > 0 ) util.checkDuplicateError( data.count, "Delete not allowed. Fund has already been referenced." )
+		def data = em.sqlContext.createNamedQuery('fund:checkReferencedId').setParameter("fundid", fund.objid).setMaxResults(1).singleResult
+		if( data ) throw new Exception("Delete not allowed. Fund has already been referenced." )
 	}
 	
 	private def getListByQuery(namedQuery, values, params ) {

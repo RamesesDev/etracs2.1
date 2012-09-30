@@ -20,4 +20,4 @@ SELECT fund FROM fund
 SELECT COUNT(*) AS count FROM fund WHERE fundname = $P{fundname}
 
 [checkReferencedId]
-SELECT COUNT(*) AS count FROM incomeaccount WHERE fundid = $P{fundid}
+SELECT * FROM incomeaccount WHERE fundid = $P{fundid}
