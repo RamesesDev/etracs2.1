@@ -54,10 +54,10 @@ class LiquidationService {
 			updateLiquidationInfo( liq, 'multi' )
 			// from now on, check for open liquidationrcds 
 			liq.docstate = 'CLOSED' 
-			updateCashierInfo( liq )
-			closeMultiCashierRemittance( liq );
 			em.validate( SCHEMANAME, liq );
 			em.create( SCHEMANAME, liq );
+			updateCashierInfo( liq )
+			closeMultiCashierRemittance( liq );
 			createListingItem( liq );
 			postLiquidationRcdMulti( liq )
 			return liq;
@@ -77,10 +77,10 @@ class LiquidationService {
 			updateCashierInfo( liq )
 			updateRCDCashierInfo( liq )
 			updateRCDDenomination( liq )
-			closeRemittance( liq );
 			liq.fundsummaries = getFundSummaries( liq.objid );
 			em.validate( SCHEMANAME, liq );
 			em.create( SCHEMANAME, liq );
+			closeRemittance( liq );
 			createListingItem( liq );
 			postLiquidationRcd( liq )
 			return liq;
