@@ -31,7 +31,7 @@ class AFControlService
 		afcontrol.schemaversion	= SCHEMAVERSION
 		afcontrol.docstate		= PENDING_STATE
 		afcontrol.active		= 0
-		afcontrol.afinventorycreditid = '-'
+		afcontrol.afinventorycreditid = null
 		if( afcontrol.aftype == 'serial' ) {
 			afcontrol.beginseries	= afcontrol.currentseries
 			afcontrol.beginqty		= afcontrol.endseries - afcontrol.currentseries + 1
