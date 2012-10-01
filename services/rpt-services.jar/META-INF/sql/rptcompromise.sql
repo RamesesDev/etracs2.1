@@ -26,10 +26,27 @@ FROM rptcompromise_installment
 WHERE rptcompromiseid = $P{rptcompromiseid} 
 ORDER BY installmentno
 
-[getRPTCompromiseCredits]
+[getUnpaidInstallments]
 SELECT * 
-FROM rptcompromise_credit  
-WHERE rptcompromiseid = $P{rptcompromiseid}
+FROM rptcompromise_installment  
+WHERE rptcompromiseid = $P{rptcompromiseid} 
+  AND fullypaid = 0
+ORDER BY installmentno
+
+
+[getRPTCompromiseCredits]
+SELECT 
+	cl.installmentno,
+	cr.ordate,
+	cr.orno,
+	cr.amount,
+	cr.collectorname,
+	CASE WHEN rl.paidby IS NULL THEN cr.paidby ELSE rl.paidby END as paidby 
+FROM rptcompromise_credit cr	
+	INNER JOIN rptcompromise_installment cl ON cr.installmentid = cl.objid 
+	LEFT JOIN receiptlist rl ON cr.receiptid = rl.objid 
+WHERE cr.rptcompromiseid = $P{rptcompromiseid}	 
+ORDER BY cl.installmentno 	
 
 [getActiveCompromiseByLedgerId]
 SELECT * 
@@ -82,6 +99,12 @@ UPDATE rptcompromise_installment SET
 	fullypaid = CASE WHEN amount = amtpaid + $P{amtpaid} THEN 1 ELSE 0 END ,
 	amtpaid = amtpaid + $P{amtpaid}
 WHERE objid = $P{objid}	 
+
+[updateCapturedInstallmentPayment]
+UPDATE rptcompromise_installment SET 
+	fullypaid = 1,
+	amtpaid = amount 
+WHERE objid = $P{objid}	 
 	
 	
 [getFaasInfo]	
@@ -109,3 +132,6 @@ WHERE objid = $P{objid} AND docstate = 'APPROVED'
 SELECT *
 FROM rptcompromise_credit 
 WHERE receiptid = $P{receiptid} 
+
+	
+	

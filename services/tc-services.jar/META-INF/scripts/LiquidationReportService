@@ -240,8 +240,38 @@ public class LiquidationReportServices{
 	}
 	
 	@ProxyMethod
+	public def buildReportByFundAndAFNoData( def liquidationid, def fundid, def afid ) {
+		def liquidation = em.read( "liquidation:liquidation", [objid:liquidationid] )
+		
+		if( !liquidation ) throw new Exception("Liquidation with objid $liquidationid not found.");
+		def reportData = buildLiquidationData( liquidation )
+		
+		reportData.list = em.sqlContext.createNamedQuery("liquidationreport:getReportByFundAndAFNo")
+					 .setParameters([liquidationid:liquidationid, fundid:fundid, afid:afid])
+					 .resultList
+		
+		def fundTotal = reportData.list.amount.sum()
+		if( !fundTotal ) fundTotal = 0.0
+		
+		reportData.amountinwords 	= numsvc.convertString( fundTotal + '' ).toUpperCase() + ' PESOS' 
+		reportData.amountformatted	= decformat.format( fundTotal )
+		
+		return reportData
+	}
+	
+	@ProxyMethod
 	public def getFundList(){
 		return em.sqlContext.createNamedQuery("liquidationreport:getFundList").resultList;
+	}
+	
+	@ProxyMethod
+	public def getLiquidatedFundList( def liquidationid ) {
+		return em.sqlContext.createNamedQuery("liquidationreport:getLiquidatedFundList").setParameter("liquidationid", liquidationid).resultList
+	}
+	
+	@ProxyMethod
+	public def getLiquidatedAfList( def liquidationid ) {
+		return em.sqlContext.createNamedQuery("liquidationreport:getLiquidatedAfList").setParameter("liquidationid", liquidationid).resultList
 	}
 
 	private def buildTree( def list, def display ){

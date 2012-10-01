@@ -352,20 +352,11 @@ class RPTCompromiseService {
 
 	@ProxyMethod
 	public def initCompromise( compromise ) {
-		println '='*50
-		println compromise 
 		def cypaymentrequired = utilSvc.toBoolean( var.rpt_compromise_cy_payment_required, false)
 		def downpaymentrequired = utilSvc.toBoolean( var.rpt_compromise_downpayment_required, false)
+		def rpt_compromise_downpayment_rate = utilSvc.toDecimal( var.rpt_compromise_downpayment_rate, 0.00 )
 		
-		if( downpaymentrequired &&  compromise.info.downpayment == 0 ) {
-			if( compromise.info.downpaymentrate <= 0 ) {
-				throw new Exception('Downpayment must be greater than zero.')
-			}
-			if( compromise.info.downpaymentrate > 100  ) {
-				throw new Exception('Downpayment Rate must be less than or equal to 100 percent.')
-			}
-		}
-		
+		validateDownPaymentRate( compromise, downpaymentrequired, rpt_compromise_downpayment_rate )
 		validateTermAndNumOfInstallment( compromise.info.term, compromise.info.numofinstallment)
 		
 		def parsedate = dateSvc.parseCurrentDate()
@@ -394,7 +385,6 @@ class RPTCompromiseService {
 		def downpaymentrate = compromise.info.downpaymentrate
 		
 		compromise.objid 		= 'RC' + new UID()
-		compromise.txndate		= parsedate.date 
 		compromise.docstate 	=  STATE_DRAFT
 		compromise.faasid		= ledger.faasid
 		compromise.tdno             = ledger.tdno 
@@ -417,7 +407,7 @@ class RPTCompromiseService {
 			startqtr 			: (ledger.lastqtrpaid == 4 ? 1 : ledger.lastqtrpaid + 1),
 			endyear				: compromise.info.endyear,
 			endqtr				: compromise.info.endqtr,
-			enddate				: dateSvc.findNextDate( '1y' ),
+			enddate				: dateSvc.findNextFromDate( compromise.txndate, '1y' ),
 			cypaymentrequired	: cypaymentrequired,
 			downpaymentrequired	: downpaymentrequired,
 			downpaymentrate		: downpaymentrate,
@@ -437,13 +427,18 @@ class RPTCompromiseService {
 		if( compromise.info.downpayment >= compromise.info.amount ) {
 			throw new Exception('Downpayment must be less than the delinquency amount.')
 		}
-		println 'downpaymentrequired -> ' + downpaymentrequired
+		
 		if( downpaymentrequired  ) {
 			if( compromise.info.downpayment == 0) {
 				compromise.info.downpayment = numSvc.round( compromise.info.amount * downpaymentrate / 100.00 )
 			}
 			else {
 				compromise.info.downpaymentrate = numSvc.roundA( compromise.info.downpayment / compromise.info.amount * 100 , 0)
+				if( compromise.info.downpaymentrate < rpt_compromise_downpayment_rate ) {
+					def minimum_downpayment = numSvc.format('#,##0.00',numSvc.roundA( compromise.info.amount * rpt_compromise_downpayment_rate / 100, 0))
+					throw new Exception('A minimum downpayment of ' + minimum_downpayment + ' is required.')
+				}	
+				validateDownPaymentRate( compromise, downpaymentrequired, rpt_compromise_downpayment_rate )
 			}
 		}
 		compromise.info.amtforinstallment = compromise.info.amount - compromise.info.downpayment
@@ -452,6 +447,20 @@ class RPTCompromiseService {
 		//build installments 
 		compromise._installments = buildInstallments( compromise )
 		return compromise
+	}
+	
+	void validateDownPaymentRate( compromise, downpaymentrequired, rpt_compromise_downpayment_rate ) {
+		if( downpaymentrequired  == false ) return 
+		if( compromise.info.downpaymentrate == 0 && compromise.info.downpayment > 0 ) return 
+		if( compromise.info.downpaymentrate <= 0 ) {
+			throw new Exception('Downpayment Rate must be greater than zero.')
+		}
+		if( rpt_compromise_downpayment_rate > 0 && compromise.info.downpaymentrate < rpt_compromise_downpayment_rate ) {
+			throw new Exception('Downpayment Rate must be greater than or equal to ' + rpt_compromise_downpayment_rate + ' percent.')
+		}
+		if( compromise.info.downpaymentrate >= 100  ) {
+			throw new Exception('Downpayment Rate must be less than 100 percent.')
+		}
 	}
 	
 	@ProxyMethod
@@ -521,6 +530,7 @@ class RPTCompromiseService {
 					ordate			: receipt.info.txndate,
 					amount			: item.total,
 					voided			: false,
+					mode			: 'online', 
 				]
 				em.create(CREDIT_SCHEMA_NAME, credit)
 				compromise.info.amtpaid += item.total 
@@ -561,6 +571,7 @@ class RPTCompromiseService {
 				ordate			: receipt.info.txndate,
 				amount			: item.amount,
 				voided			: false,
+				mode			: 'online', 
 			]
 			em.create(CREDIT_SCHEMA_NAME, credit)
 			compromise.info.amtpaid += item.amount 
@@ -571,6 +582,33 @@ class RPTCompromiseService {
 		
 		em.update(SCHEMA_NAME, compromise )
 		em.update(LIST_SCHEMA_NAME, compromise )
+	}
+	
+	@ProxyMethod
+	public void addCapturedPayment( paymentlist ){
+		def ordate = dateSvc.parse('yyyy-MM-dd', paymentlist[0].ordate )
+		if( ordate > dateSvc.serverDate ) throw new Exception('O.R. Date must not be greater than current date.')
+		
+		def compromise = em.read(SCHEMA_NAME, [objid:paymentlist[0].rptcompromiseid])
+		if( !compromise) throw new Exception('Compromise Agreement does not exists.')
+		
+		paymentlist.each{ payment -> 
+			em.sqlContext.createNamedExecutor('rptcompromise:updateCapturedInstallmentPayment')
+						.setParameters([objid:payment.installmentid ])
+						.execute()
+			em.create(CREDIT_SCHEMA_NAME, payment)
+			compromise.info.amtpaid += payment.amount 
+		}
+		
+		em.update(SCHEMA_NAME, compromise )
+		em.update(LIST_SCHEMA_NAME, compromise )
+	}
+	
+	@ProxyMethod
+	public List getUnpaidInstallments( objid )  {
+		return em.sqlContext.createNamedQuery('rptcompromise:getUnpaidInstallments')
+					.setParameter('rptcompromiseid', objid )
+					.resultList
 	}
 	
 	@ProxyMethod
@@ -714,8 +752,16 @@ class RPTCompromiseService {
 			.execute()
 	}
 	
-	
-	
+	@ProxyMethod
+	public def postCapturedRequiredPayment( compromise ) {
+		validateInfo( compromise )
+		em.validate( SCHEMA_NAME, compromise )
+		submitForApprovalIfPaymentComplied( compromise )
+		em.update( SCHEMA_NAME, compromise )
+		em.update( LIST_SCHEMA_NAME, compromise )
+		logSvc.log( 'UPDATE', REF_NAME, compromise.objid )
+		return compromise 
+	}
 	
 	void submitForApprovalIfPaymentComplied( compromise ){
 		def complied = true 

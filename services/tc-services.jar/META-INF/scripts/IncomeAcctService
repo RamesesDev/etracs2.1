@@ -7,6 +7,9 @@ class IncomeAcctService
 	@PersistenceContext("main")
 	def em
 	
+	@PersistenceContext('java:system')
+	def sysem 
+	
 	@Service('ETRACSUtilService')
 	def util
 	
@@ -127,7 +130,7 @@ class IncomeAcctService
 		def data = em.sqlContext.createNamedQuery('incomeacct:checkReferencedId').setParameter("acctid", incomeacct.objid).singleResult
 		if( data.count > 0 ) util.checkDuplicateError( data.count, "Delete not allowed. Income Account has already been referenced." )
 				
-		def acct = em.sqlContext.createNamedQuery( 'incomeacct:getAccttitleAtRule' ).setParameter( 'acctid', '%' + incomeacct.objid + '%' ).singleResult
+		def acct = sysem.sqlContext.createNamedQuery( 'incomeacct:getAccttitleAtRule' ).setParameter( 'acctid', '%' + incomeacct.objid + '%' ).singleResult
 		if( acct ) throw new Exception('Delete not allowed. Income Account has already been referenced at Business Rule.')
 	}
 	

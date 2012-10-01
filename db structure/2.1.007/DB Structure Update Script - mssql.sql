@@ -1,3 +1,20 @@
+alter table lguname_etracs..rptcompromise_credit 
+drop FK_rptcompromise_credit
+go 
+
+alter table lguname_etracs..rptcompromise_credit
+add paidby varchar(100)
+go
+
+alter table lguname_etracs..rptcompromise_credit
+add paidbyaddress varchar(100)
+go
+
+alter table lguname_etracs..rptcompromise_credit
+add mode varchar(25)
+go
+
+
 alter table lguname_etracs..subdivisionland add administratorname varchar(500)
 go
 alter table lguname_etracs..subdivisionland add administratoraddress varchar(500)

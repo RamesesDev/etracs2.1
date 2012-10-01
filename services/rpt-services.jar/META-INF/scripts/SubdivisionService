@@ -349,10 +349,11 @@ class SubdivisionService
     
     void initNewFaasInfo( newfaas, subdivision ) {
         newfaas.info.txn         =  faasSvc.resolveTxnType( newfaas.info.txntype )
-        newfaas.info.memoranda   = (subdivision.memoranda ? subdivision.memoranda : '-' )
         newfaas.info.datacapture = false
         newfaas.info.issuedate   = subdivision.issuedate 
-        newfaas.info.memoranda      = (subdivision.memoranda ? subdivision.memoranda  : '-')
+		if( ! newfaas.info.memoranda ) {
+			newfaas.info.memoranda  = (subdivision.memoranda ? subdivision.memoranda  : '-')
+		}
         newfaas.info.appraisedby    = subdivision.appraisedby 
         newfaas.info.appraisedbytitle    = subdivision.appraisedbytitle 
         newfaas.info.dtappraised    = subdivision.dtappraised

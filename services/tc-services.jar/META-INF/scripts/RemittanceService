@@ -126,11 +126,10 @@ class RemittanceService {
 		if( ! rem.info.txndate ) {
 			rem.info.txndate = dtsvc.format( "yyyy-MM-dd", rem.dtposted );
 		}
-		// updateLiquidatingOfficerInfo( rem )
-		closeReceipts( rem );
-		updateAfControls( rem );
 		em.validate( SCHEMANAME, rem );
 		em.create( SCHEMANAME, rem );
+		closeReceipts( rem );
+		updateAfControls( rem );
 		postRemittedForms( rem );
 		createListingItem( rem );
 		

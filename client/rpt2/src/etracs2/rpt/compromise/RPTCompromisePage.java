@@ -91,12 +91,18 @@ public class RPTCompromisePage extends javax.swing.JPanel {
         formPanel7 = new com.rameses.rcp.util.FormPanel();
         xTextField13 = new com.rameses.rcp.control.XTextField();
         xDateField4 = new com.rameses.rcp.control.XDateField();
+        xNumberField8 = new com.rameses.rcp.control.XNumberField();
         formPanel8 = new com.rameses.rcp.util.FormPanel();
         xTextField14 = new com.rameses.rcp.control.XTextField();
         xDateField5 = new com.rameses.rcp.control.XDateField();
         xNumberField7 = new com.rameses.rcp.control.XNumberField();
+        xButton2 = new com.rameses.rcp.control.XButton();
+        xButton3 = new com.rameses.rcp.control.XButton();
         jPanel5 = new javax.swing.JPanel();
         xDataTable2 = new com.rameses.rcp.control.XDataTable();
+        jPanel8 = new javax.swing.JPanel();
+        xDataTable4 = new com.rameses.rcp.control.XDataTable();
+        xButton1 = new com.rameses.rcp.control.XButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -236,7 +242,7 @@ public class RPTCompromisePage extends javax.swing.JPanel {
         xSeparator3.setLayout(xSeparator3Layout);
         xSeparator3Layout.setHorizontalGroup(
             xSeparator3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 253, Short.MAX_VALUE)
+            .add(0, 226, Short.MAX_VALUE)
         );
         xSeparator3Layout.setVerticalGroup(
             xSeparator3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -263,7 +269,7 @@ public class RPTCompromisePage extends javax.swing.JPanel {
         xSeparator1.setLayout(xSeparator1Layout);
         xSeparator1Layout.setHorizontalGroup(
             xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 253, Short.MAX_VALUE)
+            .add(0, 226, Short.MAX_VALUE)
         );
         xSeparator1Layout.setVerticalGroup(
             xSeparator1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -298,7 +304,7 @@ public class RPTCompromisePage extends javax.swing.JPanel {
         xSeparator2.setLayout(xSeparator2Layout);
         xSeparator2Layout.setHorizontalGroup(
             xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 253, Short.MAX_VALUE)
+            .add(0, 226, Short.MAX_VALUE)
         );
         xSeparator2Layout.setVerticalGroup(
             xSeparator2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -326,9 +332,9 @@ public class RPTCompromisePage extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 267, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(formPanel6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 240, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xDataTable3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
+                .add(xDataTable3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -500,21 +506,18 @@ public class RPTCompromisePage extends javax.swing.JPanel {
         xTextField11.setCaptionWidth(90);
         xTextField11.setName("entity.info.notarizedby");
         xTextField11.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField11.setRequired(true);
         formPanel5.add(xTextField11);
 
         xTextField12.setCaption("Title ");
         xTextField12.setCaptionWidth(90);
         xTextField12.setName("entity.info.notarizedbytitle");
         xTextField12.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField12.setRequired(true);
         formPanel5.add(xTextField12);
 
         xDateField3.setCaption("Date");
         xDateField3.setCaptionWidth(90);
         xDateField3.setName("entity.info.notarizeddate");
         xDateField3.setPreferredSize(new java.awt.Dimension(0, 19));
-        xDateField3.setRequired(true);
         formPanel5.add(xDateField3);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder8 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -559,6 +562,13 @@ public class RPTCompromisePage extends javax.swing.JPanel {
         xDateField4.setPreferredSize(new java.awt.Dimension(120, 19));
         formPanel7.add(xDateField4);
 
+        xNumberField8.setCaption("O.R. Amount");
+        xNumberField8.setFieldType(BigDecimal.class);
+        xNumberField8.setName("entity.info.downpayment");
+        xNumberField8.setPreferredSize(new java.awt.Dimension(120, 19));
+        xNumberField8.setReadonly(true);
+        formPanel7.add(xNumberField8);
+
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder10 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder10.setTitle("Current Year Payment Information");
         formPanel8.setBorder(xTitledBorder10);
@@ -578,15 +588,25 @@ public class RPTCompromisePage extends javax.swing.JPanel {
         xNumberField7.setPreferredSize(new java.awt.Dimension(120, 19));
         formPanel8.add(xNumberField7);
 
+        xButton2.setText("Capture Downpayment");
+        xButton2.setName("captureDownpayment");
+
+        xButton3.setText("Capture Current Year Payment");
+        xButton3.setName("captureCYPayment");
+
         org.jdesktop.layout.GroupLayout jPanel7Layout = new org.jdesktop.layout.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(formPanel7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 274, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(formPanel7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 274, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 279, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(formPanel8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 279, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(298, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
@@ -596,7 +616,11 @@ public class RPTCompromisePage extends javax.swing.JPanel {
                 .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(formPanel8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 164, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(formPanel7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 164, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(107, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(xButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
         jTabbedPane1.addTab("Required Payments", jPanel7);
 
@@ -619,6 +643,35 @@ public class RPTCompromisePage extends javax.swing.JPanel {
                 .addContainerGap())
         );
         jTabbedPane1.addTab("Delinquent Data", jPanel5);
+
+        xDataTable4.setHandler("creditListHandler");
+        xDataTable4.setShowRowHeader(true);
+
+        xButton1.setMnemonic('m');
+        xButton1.setText("Capture Payment");
+        xButton1.setName("capturePayment");
+
+        org.jdesktop.layout.GroupLayout jPanel8Layout = new org.jdesktop.layout.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(xDataTable4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 847, Short.MAX_VALUE)
+                    .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(xDataTable4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jTabbedPane1.addTab("Credits", jPanel8);
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -669,8 +722,12 @@ public class RPTCompromisePage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JTabbedPane jTabbedPane1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
+    private com.rameses.rcp.control.XButton xButton1;
+    private com.rameses.rcp.control.XButton xButton2;
+    private com.rameses.rcp.control.XButton xButton3;
     private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XCheckBox xCheckBox2;
     private com.rameses.rcp.control.XComboBox xComboBox1;
@@ -682,6 +739,7 @@ public class RPTCompromisePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XDataTable xDataTable2;
     private com.rameses.rcp.control.XDataTable xDataTable3;
+    private com.rameses.rcp.control.XDataTable xDataTable4;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDateField xDateField3;
@@ -705,6 +763,7 @@ public class RPTCompromisePage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XNumberField xNumberField5;
     private com.rameses.rcp.control.XNumberField xNumberField6;
     private com.rameses.rcp.control.XNumberField xNumberField7;
+    private com.rameses.rcp.control.XNumberField xNumberField8;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     private com.rameses.rcp.control.XSeparator xSeparator2;
     private com.rameses.rcp.control.XSeparator xSeparator3;

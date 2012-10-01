@@ -12,6 +12,9 @@ public class ETRACSUtilService
 	@Service('DateService')
 	def dateService;
 	
+	@Service('NumberService') 
+	def numSvc
+	
 	@Env
 	def env;
 	
@@ -40,6 +43,23 @@ public class ETRACSUtilService
 		if( value == null ) return defaultvalue
 		if( value instanceof Boolean ) return value 
 		return '1/y/yes/true/t'.indexOf( value.toString().toLowerCase() ) >= 0
+	}
+	
+	@ProxyMethod
+	public def toDecimal( value, defaultvalue ) {
+		if( value == null ) return defaultvalue
+		if( value instanceof BigDecimal ) return value 
+		try {
+			if ( value instanceof Number ) {
+				return new BigDecimal( numSvc.format('0.00',value ))
+			}
+			return new BigDecimal( value+'')
+		}
+		catch( e ) {
+			println '='*50
+			e.printStackTrace()
+			return defaultvalue 
+		}
 	}
 	
 	@ProxyMethod

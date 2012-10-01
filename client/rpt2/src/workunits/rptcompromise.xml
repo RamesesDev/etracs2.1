@@ -103,7 +103,8 @@ public class RPTCompromiseController
     def create() {
         loadComboItemSources()
         entity = [
-            info :[term:12, numofinstallment:4, downpayment:0.0, downpaymentrate:getDownpaymentRate()], 
+            txndate : dateSvc.serverDate,
+            info    :[term:12, numofinstallment:4, downpayment:0.0, downpaymentrate:getDownpaymentRate()], 
             signatories :[]
         ]
         mode = 'init' 
@@ -209,6 +210,61 @@ public class RPTCompromiseController
         ]},
     ] as SubListModel
     
+    /*------------------------------------------------------------------------
+    * Credit Tab Support
+    ------------------------------------------------------------------------ */
+    def creditListHandler = [
+        fetchList  : { return entity._credits },
+        getRows    : { return 50 },
+        getColumns : { return [
+            new Column(name:'installmentno', caption:'Installment No.'),
+            new Column(name:'paidby', caption:'Paid By'),
+            new Column(name:'collectorname', caption:'Collected By'),
+            new Column(name:'orno', caption:'O.R. No.'),
+            new Column(name:'ordate', caption:'O.R. Date'),
+            new Column(name:'amount', caption:'Amount'),
+        ]},
+    ] as SubListModel
+    
+    def onaddCreditHandler = { 
+        entity._credits.addAll( it )
+        it.each{ pmt -> 
+            def installment = entity._installments.find{ it.objid == pmt.installmentid }
+            if( installment ){
+                installment.amtpaid = pmt.amount 
+                installment.fullypaid = 1 
+            }
+        }
+        creditListHandler.load()
+        installmentListHandler.load()
+    }
+    
+    def capturePayment() {
+        return InvokerUtil.lookupOpener('rptcompromise.capturepayment', [entity:entity, onadd:onaddCreditHandler])
+    }
+    
+    def onaddDownpaymentHandler = { pmt -> 
+        entity.info.downpaymentorno = pmt.orno
+        entity.info.downpaymentordate = pmt.ordate
+        entity.docstate = svc.postCapturedRequiredPayment( entity ).docstate 
+        binding.refresh('.*')
+    }
+    
+    def captureDownpayment() {
+        return InvokerUtil.lookupOpener('rptcompromise.capturedownpayment', [amount:entity.info.downpayment, onadd:onaddDownpaymentHandler])
+    }
+    
+    def onaddCYPaymentHandler = { pmt -> 
+        entity.info.cypaymentorno = pmt.orno
+        entity.info.cypaymentordate = pmt.ordate 
+        entity.info.cypaymentoramount = pmt.amount 
+        entity.docstate = svc.postCapturedRequiredPayment( entity ).docstate 
+        binding.refresh('.*')
+    }
+    
+    def captureCYPayment() {
+        return InvokerUtil.lookupOpener('rptcompromise.capturecypayment', [onadd:onaddCYPaymentHandler])
+    }
     
     /*------------------------------------------------------------------------
     * Agreement Information Tab Support
@@ -220,7 +276,7 @@ public class RPTCompromiseController
     }
     
     /*------------------------------------------------------------------------
-    * Installment Tab Support
+    * Witness Tab Support
     ------------------------------------------------------------------------ */
     def selectedWitness 
     

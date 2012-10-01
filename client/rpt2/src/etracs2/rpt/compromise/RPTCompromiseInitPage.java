@@ -33,6 +33,7 @@ public class RPTCompromiseInitPage extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         formPanel1 = new com.rameses.rcp.util.FormPanel();
+        xDateField1 = new com.rameses.rcp.control.XDateField();
         xLookupField1 = new com.rameses.rcp.control.XLookupField();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xNumberField2 = new com.rameses.rcp.control.XNumberField();
@@ -59,6 +60,14 @@ public class RPTCompromiseInitPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Initial Information");
         formPanel1.setBorder(xTitledBorder1);
+        xDateField1.setCaption("Date Executed");
+        xDateField1.setCaptionWidth(120);
+        xDateField1.setIndex(-10);
+        xDateField1.setName("entity.txndate");
+        xDateField1.setPreferredSize(new java.awt.Dimension(100, 19));
+        xDateField1.setRequired(true);
+        formPanel1.add(xDateField1);
+
         xLookupField1.setCaption("TD No.");
         xLookupField1.setCaptionWidth(120);
         xLookupField1.setExpression("#{tdno}");
@@ -140,6 +149,7 @@ public class RPTCompromiseInitPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XActionBar xActionBar1;
+    private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XNumberField xNumberField1;
     private com.rameses.rcp.control.XNumberField xNumberField2;

@@ -1,0 +1,7 @@
+"pmt.amount" [true == true] {
+    enabled:false;
+}
+
+"pmt.amount" [type == 'cypayment'] {
+    enabled:true;
+}

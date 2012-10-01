@@ -149,5 +149,8 @@
 		<field name="ordate" required="true"/>
 		<field name="amount" type="decimal" required="true"/>
 		<field name="voided" type="boolean" required="true"/>
+		<field name="mode" required="true"/>
+		<field name="paidby" required="true"/>
+		<field name="paidbyaddress" required="true"/>
 	</element>
 </schema>
