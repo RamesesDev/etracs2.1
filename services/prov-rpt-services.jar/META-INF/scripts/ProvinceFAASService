@@ -192,9 +192,10 @@ class ProvinceFAASService
         dfaas.objid  = 'DF' + new UID()
         dfaas.faasid = faas.objid 
 		em.create(DISAPPROVED_SCHEMANAME, dfaas)
-        em.delete(faas.schemaname, faas)
+		em.sqlContext.createNamedExecutor('faas:deleteFaasAttachments').setParameter('faasid', faas.objid).execute()
         em.delete( LISTSCHEMA_NAME, faas)
-		
+		em.delete(faas.schemaname, faas)
+        
 		sendToOutbox( faas, 'faas.disapprove', [
 			faasid		: faas.objid,
 			tdno		: faas.info.tdno,

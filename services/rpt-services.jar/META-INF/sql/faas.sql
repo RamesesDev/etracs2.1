@@ -170,6 +170,9 @@ WHERE faasid = $P{faasid}
 [deleteFAASAnnotations]
 DELETE FROM faasannotation WHERE faasid = $P{faasid} 
 
+[deleteFaasAttachments]
+DELETE FROM faasattachment WHERE faasid = $P{faasid}
+
 #----------------------------------------------------------------
 # INSERT
 #----------------------------------------------------------------
