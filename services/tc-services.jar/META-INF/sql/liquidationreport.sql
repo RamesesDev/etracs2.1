@@ -191,3 +191,23 @@ FROM revenue r
 WHERE r.liquidationid = $P{liquidationid} 
 ORDER BY r.collectorname, rl.objid, r.afid, r.serialno, r.receiptdate 
 
+[getLiquidatedFundList]
+SELECT DISTINCT r.fundid, f.fundname FROM revenue r 
+INNER JOIN fund f ON f.objid=r.fundid 
+WHERE liquidationid = $P{liquidationid} 
+ORDER BY f.fundname 
+
+[getLiquidatedAfList]
+SELECT DISTINCT afid FROM revenue 
+WHERE liquidationid = $P{liquidationid} 
+ORDER BY afid 
+
+[getReportByFundAndAFNo]
+SELECT 
+	SUM( r.amount ) as amount, r.remittanceid, r.remittanceno, r.collectorname 
+FROM revenue r 
+WHERE r.liquidationid = $P{liquidationid} 
+AND   r.fundid = $P{fundid} 
+AND	  r.afid = $P{afid} 
+AND r.voided = 0  
+GROUP BY r.remittanceid, r.remittanceno, r.collectorname  

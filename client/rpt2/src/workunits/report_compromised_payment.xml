@@ -1,0 +1,98 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/report/landtax" action="init" caption="Realty Tax Compromised Payments" target="window" index="11" permission="landtax.rptcompromisepayment" />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" shortcut="ctrl + C" icon="images/cancel.png" />
+        <invoker type="formActions" action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png" />
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" shortcut="ctrl + V" icon="images/doc-view.png" />
+        
+        <invoker type="previewActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl + B" icon="images/back.png" immediate="true" />
+    </invokers>
+    
+    <code>
+        <![CDATA[
+            import com.rameses.rcp.common.*
+            import com.rameses.rcp.annotations.*
+            import com.rameses.osiris2.client.*
+            import com.rameses.osiris2.reports.*
+            
+            class CompromisedPaymentReportController 
+            {
+                @Service('ReportParameterService')
+                def svcParams
+                
+                @Service('LandTaxReportService')
+                def svc
+                
+                @Service('DateService')
+                def dateSvc
+                
+                def year
+                def qtr
+                def month
+                def day
+                
+                def reportdata
+                
+                void init() {
+                    def parsedate = dateSvc.parseCurrentDate()
+                    year = parsedate.year
+                    qtr = parsedate.qtr
+                    month = svc.getMonth( parsedate.month )
+                    day = parsedate.day
+                }
+                
+                def preview() {
+                    generateReport()
+                    return 'preview'
+                }
+                
+                void print() {
+                    generateReport()
+                    ReportUtil.print( report.report, true )
+                }
+                
+                void generateReport() {
+                    reportdata = svc.buildCompromisedPaymentReportData( year, qtr, month?.month, day )
+                    report.viewReport()
+                }
+                
+                def report = [
+                    getReportName : { return 'rptcompromisepayments' },
+                    getReportData : { return reportdata },
+                    getParameters : {  svcParams.getStandardParameter( OsirisContext.env.USERNAME ) }
+                ] as ServerReportModel
+                
+                def back() {
+                    return 'default'
+                }
+                
+                void setQtr( qtr ) {
+                    this.qtr = qtr
+                    month = null
+                }
+                
+                void setMonth( month ) {
+                    this.month = month
+                    day = null
+                }
+                
+                List getQuarterlist() {
+                    return [1,2,3,4]
+                }
+                
+                List getMonthlist() {
+                    return svc.getMonthList( qtr )
+                }
+                
+                List getDaylist() {
+                    return svc.getNumDays( year, month?.month-1 )
+                }
+            }
+        ]]>
+    </code>
+    <pages>
+        <page template="etracs2.rpt.report.RPTCompromisedPaymentInitPage" />
+        <page name="preview" template="etracs2.common.PreviewPage" />
+    </pages>
+</workunit>

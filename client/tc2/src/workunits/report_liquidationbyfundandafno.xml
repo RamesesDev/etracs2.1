@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker type="liquidation:report" action="init" caption="Liquidation Report By Fund And AF No." index="5" />
+        <invoker type="formActions" action="back" caption="Back" icon="images/back.png"/>
+    </invokers>
+
+    <code lang="groovy">
+        <![CDATA[
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.reports.*
+
+        public class LiquidationReportByFund {
+
+            @Service("ReportParameterService")
+            def svcParam
+
+            @Service("LiquidationReportService")
+            def svc
+            
+            def fund
+            def af
+            def liquidation
+            
+            def param = [:]
+            
+            void init() {
+                setFund( fundList[0] )
+                setAf( afList[0] )
+            }
+            
+            def reportModel = [
+                getReportName : { return 'liquidation/LiquidationByFundAndAFNo' },
+                getReportData : { return getLiquidationData() },
+                getParameters : { return svcParam.getStandardParameter( OsirisContext.env.USERNAME ) + param }
+            ] as ServerReportModel
+            
+            def getLiquidationData() {
+                if( !fund ) setFund( fundList[0] )
+                if( !af ) setAf( afList[0] )
+                return svc.buildReportByFundAndAFNoData( liquidation.objid, fund?.fundid, af?.afid )
+            }
+            
+            def getReport() {
+                reportModel.viewReport()
+                return reportModel.report
+            }
+            
+            def funds
+            def getFundList() {
+                if( !funds ) this.funds = svc.getLiquidatedFundList( liquidation.objid )
+                return funds
+            }
+            
+            def afnos
+            def getAfList() {
+                if( !afnos ) this.afnos = svc.getLiquidatedAfList( liquidation.objid )
+                return afnos
+            }
+            
+            void setFund( def val ) {
+                this.fund = val
+                this.param.put("FUND", val.fundname)
+            }
+            
+            void setAf( def val ) {
+                this.af = val
+                this.param.put("AFNO", val.afid)
+            }
+            
+            def back() {
+                return "_close"
+            }
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.tc.liquidation.LiquidationReportByFundAndAFNoPage" />
+    </pages>
+</workunit>
