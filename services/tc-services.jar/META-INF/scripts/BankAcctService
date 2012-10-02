@@ -79,6 +79,11 @@ class BankAcctService{
 		}
 	}
 	
+	@ProxyMethod
+	public List getAccountTypeList() {
+		return ["CHECKING", "SAVINGS", "TIME DEPOSIT", "HYSA"]
+	}
+	
 	private void validate( bankacct ){
 		def oldbankAcct = em.read(bankacct.schemaname, bankacct);
 		//util.validateLastUpdate( bankacct, oldbankAcct );
