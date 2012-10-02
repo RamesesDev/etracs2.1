@@ -965,7 +965,7 @@ class FAASService
 		
 		attachments.each{
 			def thumbfilename = buildThumbnailFileName( it )
-			def imagepage = "http://${var.server_address}/admin/faasattachment.jsp?faasid=${safefaasid}&resid=${thumbfilename}"
+			def imagepage = "http://${var.server_address}/downloads.war/faasattachment.jsp?faasid=${safefaasid}&resid=${thumbfilename}"
 			def deleteicon = "http://${var.server_address}/downloads/images/delete.jpg"
 			html += '<tr>'
 			html += '<td><a href="displayAttachment?' + it.objid +'"><img src="' + imagepage + '"></img></a>' 
@@ -980,9 +980,9 @@ class FAASService
 			html += ' </table>'
 			html += '</td>'
 			html += '</tr>'
-			html += '<tr>'
-			html += '      <td><a title="remove" href="removeAttachment?' + it.objid +'">Delete</a></td>' 
-			html += '</tr>'
+			// html += '<tr>'
+			// html += '      <td><a title="remove" href="removeAttachment?' + it.objid +'">Delete</a></td>' 
+			// html += '</tr>'
 			html += '<tr><td><br></td></tr>'
 		}
 		html += '</table>'
