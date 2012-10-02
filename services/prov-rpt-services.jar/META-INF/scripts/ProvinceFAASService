@@ -123,7 +123,7 @@ class ProvinceFAASService
         em.sqlContext.createNamedExecutor('faas:updateListTdNo').setParameters([tdno:faas.info.tdno, objid:faas.objid]).execute()
         
 		createPIN( faas ) 
-		createEntity( faas )
+		// createEntity( faas )
 		
 		//default value for post_municipal_rptledger_to_province must be false 
 		if( TO_BOOLEAN( var.post_municipal_rptledger_to_province ) == true ) {
@@ -145,31 +145,19 @@ class ProvinceFAASService
 	}
 	
 	void createEntity( faas ) {
-		def entity = em.sqlContext.createNamedQuery('entity:getListByNo')
-						.setParameter('entityno', faas.info.taxpayerno)
-						.singleResult
-						
-		println 'entity -> ' + entity 
-		if( ! entity ) {
-			entity = [
-				objid 		: faas.info.taxpayerid,
-				schemaname 	: 'entity',
-				schemaversion: '1.0',
-				entityno	: faas.info.taxpayerno,
-				entityname  : faas.info.taxpayername, 
-				entityaddress: faas.info.taxpayeraddress,
-				mailingaddress: null,
-				entitytype : 'individual',
-				lguname    : (faas.rp.lgutype == 'municipality' ? faas.rp?.munidistrict : faas.rp?.provcity ),
-				info       : [:],
-			]
-			try {
-				em.create( entity.schemaname, entity )
-			}
-			catch( e) {
-				println 'createEntity [Error]: ' + e.message 
-			}
-		}
+		def entity = [
+			objid 		: faas.info.taxpayerid,
+			schemaname 	: 'entity',
+			schemaversion: '1.0',
+			entityno	: faas.info.taxpayerno,
+			entityname  : faas.info.taxpayername, 
+			entityaddress: faas.info.taxpayeraddress,
+			mailingaddress: null,
+			entitytype : 'individual',
+			lguname    : faas.lguname,
+			info       : [:],
+		]
+		em.save( entity.schemaname, entity )
 	}
     
     @ProxyMethod
