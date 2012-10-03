@@ -254,6 +254,11 @@
                 new Column(name:'amount', caption:'Amount', type:'decimal'),
             ]},
             onColumnUpdate : { item, colname -> processColumnUpdate( item, colname) },
+            validate       : { li -> 
+                if( payoption == 'remote' ) {
+                    processBillToRemote( li.item )
+                }
+            },
             fetchList   : { return bill?.items }
         ] as SubListModel
 
@@ -290,9 +295,9 @@
                         item.toqtr = item.fromqtr 
                     }   
                     
-                    if( payoption == 'remote' )
-                        processBillToRemote( item )
-                    else if( payoption == 'compromise' )
+                    if( payoption == 'remote') 
+                        return 
+                    if( payoption == 'compromise' )
                         processDefaultCompromise( item )
                     else 
                         processBillTo( item )
@@ -484,7 +489,6 @@
         *
         ================================================================================================*/
         def remotedomain
-        def itemrecalculated = false 
         
         def taskmgr 
         def timertask
@@ -517,29 +521,29 @@
             }
             bill = createBill()
             svc.sendRemoteBillingRequest( payor.objid, remotedomain, bill )
-            
+            startTimer()
+        }
+        
+        void startTimer() {
             msg = 'Sending request to ' + remotedomain.domainname + ' server. Please wait...' 
-            
+            stopped = false
             taskmgr = new TaskManager()
             timertask = new TTimerTask( ontimer : ontimer, sleeptime:1000)
             taskmgr.addTask( timertask )
             taskmgr.start()   
-            
         }
         
         void processBillToRemote( item ) {
-            return 
-            /*
-            def newbill = createBill()
-            newbill.ledgerids.add( item.objid )
-            newbill.billtoyear = item.toyear
-            newbill.billtoqtr  = item.toqtr 
-            newbill.fullpayment = ( item.toyear == parsedate.year && item.toqtr == 4 )
-            newbill.qtrlypaymentavailed = ( item.toqtr != 4 )
-            newbill.advancepayment  = (item.toyear > parsedate.year )
-            itemrecalculated = true 
-            svc.sendRemoteBillingRequest( payor.objid, remotedomain, newbill )
-            */
+            bill = createBill()
+            bill.ledgerids.add( item.objid )
+            bill.billtoyear = item.toyear
+            bill.billtoqtr  = item.toqtr 
+            bill.fullpayment = ( item.toyear == parsedate.year && item.toqtr == 4 )
+            bill.qtrlypaymentavailed = ( item.toqtr != 4 )
+            bill.advancepayment  = (item.toyear > parsedate.year )
+            svc.sendRemoteBillingRequest( payor.objid, remotedomain, bill )
+            startTimer()
+            binding.fireNavigation('wait')
         }
         
         List getRemoteDomainList() {
@@ -557,47 +561,22 @@
                 stopTimer( msg )
             }
             else {
-                def newbill = response.data.bill 
-                if( ! newbill ) return 
+                msg = ''    
+                stopTimer('')
+                updateRemoteMessage()
+                
+                bill = response.data.bill 
+                if( ! bill ) return 
+                
                 billingSvc.deleteRemoteGeneratedBill( bill.sessionid )
-
-                newbill.items.each { 
+                bill.items.each { 
                     it.pay    = true 
                     it.amount = it.total
-                }
-                if( ! bill ) {
-                    bill = newbill 
-                }
-                else if( itemrecalculated )  {
-                    updateRecalculatedItem( newbill )
-                    itemrecalculated = false 
-                }
-                else {
-                    bill.items.addAll( newbill.items )
                 }
                 listHandler.load()
                 calculateReceiptAmount()
                 binding.fireNavigation('remote')
-                msg = ''
-                updateRemoteMessage()
-                stopTimer('')
             }
-        }
-        
-        void updateRecalculatedItem( newbill ) {
-            def newitem = newbill.items[0]
-            if( !newitem )  throw new Exception('Cannot process bill for this item.')
-            
-            def toyear = item.toyear
-            def toqtr = item.toqtr
-            
-            item.details.clear()
-            item.putAll( newitem )
-            item.toyear = toyear
-            item.toqtr  = toqtr 
-            item.pay = true
-            item.amount = newitem.total
-            calculateReceiptAmount()
         }
         
         void stopTimer( msg ) {
@@ -608,6 +587,7 @@
             taskmgr?.removeTask( timertask )
             taskmgr?.stop()
             taskmgr = null
+            timertask = null
             showError( msg )
         }
         

@@ -80,7 +80,7 @@ SELECT entityid, entityname, entityaddress FROM entitymapping  WHERE parentid = 
 
 [getSenderInfo]
 SELECT 
-	CONCAT(provcityindex, '-', munidistrictindex) as senderid, 
+	fl.lguid as senderid, 
 	munidistrict AS sendername    
 FROM rptledger rl  
 INNER JOIN faaslist fl ON rl.faasid = fl.objid   
