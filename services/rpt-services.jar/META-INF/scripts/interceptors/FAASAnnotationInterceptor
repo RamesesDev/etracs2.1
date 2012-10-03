@@ -1,0 +1,74 @@
+import com.rameses.annotations.*
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+
+class FAASAnnotationInterceptor
+{
+	@PersistenceContext('main')
+	def em
+    
+	@Service('LogService')
+    def logSvc
+    
+	@Service('FAASAnnotationService')
+	def svc 
+	
+	@Service('MessengerService')
+	def msgSvc
+	
+	@Service('Var')
+	def var 
+	
+	
+	/*==============================================================
+	** LOCAL INTERCEPTORS 
+	==============================================================*/
+	@After(pattern='FAASAnnotationService.approve') 
+	public void interceptApprove( evt ) {
+		def annotation = evt.result 
+		def attachment = [ 
+			annotation : evt.result 
+		]
+		def msg = msgSvc.createMessage( 'faasannotation.post', attachment )
+		msg.refid = annotation.objid 
+		updateReceiverInfo( msg, annotation )
+		msgSvc.send( msg ) 
+	}
+	
+	void updateReceiverInfo( msg, annotation ) {
+		if( 'province'.equalsIgnoreCase( var.lgu_type) ) {
+			def info = svc.getFaasInfo( annotation.faasid ) 
+			msg.receiverid = info?.lguid
+			msg.receivername = info?.lguname
+		}
+	}
+	
+	
+	
+	/*==============================================================
+	** REMOTE INTERCEPTORS 
+	==============================================================*/
+	@After(pattern='MessengerService.onreceive') 
+	public void interceptOnReceive( evt ) {
+        def msg = evt.result 
+        if( msg.action == 'faasannotation.post') 
+			postAnnotation( msg ) 
+	}
+    
+    void postAnnotation( msg ) {
+        try {
+            println 'Processing message -> ' + msg.action 
+			svc.postRemoteAnnotation( msg.attachment.annotation )
+            msgSvc.processedSuccessfully( msg )
+        }
+        catch( e ) {
+            println '='*50
+            e.printStackTrace()
+            msgSvc.errorProcessing( msg, e.message )
+            throw e 
+        }
+    }
+    
+}
+
+

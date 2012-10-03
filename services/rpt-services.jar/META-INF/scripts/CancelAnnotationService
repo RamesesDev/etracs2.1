@@ -140,12 +140,40 @@ class CancelAnnotationService
 	}
 	
 	@ProxyMethod
+	public void postRemoteCancelAnnotation( cancelannotation ) {
+		def annotation = openAnnotation( cancelannotation.annotationid )
+		if( annotation && annotation.docstate == 'CANCELLED' ) {
+			// the annotation has been cancelled locally
+			// just return 
+			return 
+		}
+		 
+		if( annotation ) {
+			annotation.docstate = 'CANCELLED'
+			em.update( annotation.schemaname, annotation)
+		}
+		
+		em.save( cancelannotation.schemaname, cancelannotation )
+		cancelFAASAnnotation( cancelannotation )
+		txnrefSvc.delete( cancelannotation.annotationid )
+		txnrefSvc.delete( cancelannotation.faasid )
+		logSvc.log('POST-REMOTE-CANCELFAAS-ANNOTATION', 'CancelAnnotation', cancelannotation.objid )
+	}
+	
+	@ProxyMethod
 	public void remove( cancelannotation ) {
 		def old = em.read( cancelannotation.schemaname, cancelannotation)
 		if( old.docstate == APPROVED_STATE ) throw new Exception('Cancel Annotation has already been approved.')
 		txnrefSvc.delete( cancelannotation.annotationid )
 		em.delete( cancelannotation.schemaname, cancelannotation)
 		logSvc.log('DELETE', 'CancelAnnotation', cancelannotation.objid )
+	}
+	
+	@ProxyMethod 
+	public def getFaasInfo( faasid ) {
+		return em.sqlContext.createNamedQuery('annotation:getFaasInfo')
+				.setParameter('objid', faasid)
+				.singleResult 
 	}
 	
 	void validateInfo( cancelannotation ) {
