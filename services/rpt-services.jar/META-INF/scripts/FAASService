@@ -510,12 +510,14 @@ class FAASService
 		logSvc.log('APPROVE','FAAS', faas.objid)
     }
 	
-	void insertRPUItems( faas ) {
+	@ProxyMethod
+	public void insertRPUItems( faas ) {
 		if( faas.rpu.rputype == 'land' )
 			landRpuSvc.insertRPUItems( faas )
 	}
     
-	void approveCarryOverAnnotations( faas ){
+	@ProxyMethod 
+	public void approveCarryOverAnnotations( faas ){
 		// approve carryover annotations 
 		em.sqlContext.createNamedExecutor('faas:updateFAASAnnotationInfo')
 				.setParameters([
@@ -1028,7 +1030,8 @@ class FAASService
     *  applied only for the following if the transaction is not 
     *  datacapture 
     */
-    void updateImprovementLandReference( faas ) {
+	@ProxyMethod 
+    public void updateImprovementLandReference( faas ) {
         if( faas.info.datacapture == true ) return 
         if( faas.rpu.rputype != LAND_TYPE ) return 
         def prevfaasid = ( faas.previousfaases ? faas.previousfaases[0].faasid : null )
@@ -1329,7 +1332,8 @@ class FAASService
         }
     }
     
-    void cancelPreviousFaas( faas ) {
+	@ProxyMethod 
+    public void cancelPreviousFaas( faas ) {
         faas.previousfaases.each {
             def prevfaas = em.read( faas.schemaname, [objid:it.faasid])
             if( prevfaas ) {
@@ -1344,7 +1348,8 @@ class FAASService
         }
     }
     
-    void deleteTxnReference( faas ) {
+	@ProxyMethod 
+    public void deleteTxnReference( faas ) {
         em.sqlContext.createNamedExecutor('faas:deleteTxnReference').setParameter('refid', faas.objid ).execute()
     }
     
