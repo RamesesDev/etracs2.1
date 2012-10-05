@@ -982,9 +982,9 @@ class FAASService
 			html += ' </table>'
 			html += '</td>'
 			html += '</tr>'
-			// html += '<tr>'
-			// html += '      <td><a title="remove" href="removeAttachment?' + it.objid +'">Delete</a></td>' 
-			// html += '</tr>'
+			html += '<tr>'
+			html += '      <td><a title="remove" href="removeAttachment?' + it.objid +'">Delete</a></td>' 
+			html += '</tr>'
 			html += '<tr><td><br></td></tr>'
 		}
 		html += '</table>'

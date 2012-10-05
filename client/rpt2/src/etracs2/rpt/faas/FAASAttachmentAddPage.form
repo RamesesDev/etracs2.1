@@ -12,17 +12,20 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
+          <Group type="102" max="-2" attributes="0">
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="xLabel2" alignment="0" min="-2" pref="513" max="-2" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
+                      <Component id="xLabel1" min="-2" pref="373" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="xButton2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="xButton1" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="formPanel1" alignment="1" min="-2" pref="499" max="-2" attributes="0"/>
+                  <Component id="formPanel1" alignment="0" pref="513" max="32767" attributes="1"/>
               </Group>
-              <EmptySpace pref="83" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -30,13 +33,18 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="formPanel1" min="-2" pref="280" max="-2" attributes="0"/>
+              <Component id="xLabel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="xButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="xButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Component id="formPanel1" min="-2" pref="215" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="xButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="xButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="xLabel1" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="113" max="32767" attributes="0"/>
+              <EmptySpace pref="63" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -103,18 +111,36 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="com.rameses.rcp.control.XButton" name="xButton2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Upload"/>
+        <Property name="name" type="java.lang.String" value="upload"/>
+      </Properties>
+    </Component>
+    <Component class="com.rameses.rcp.control.XLabel" name="xLabel1">
+      <Properties>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="0" green="0" red="99" type="rgb"/>
+        </Property>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Arial" size="14" style="1"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="msg"/>
+      </Properties>
+    </Component>
     <Component class="com.rameses.rcp.control.XButton" name="xButton1">
       <Properties>
-        <Property name="mnemonic" type="int" value="99"/>
         <Property name="text" type="java.lang.String" value="Cancel"/>
         <Property name="immediate" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="doCancel"/>
       </Properties>
     </Component>
-    <Component class="com.rameses.rcp.control.XButton" name="xButton2">
+    <Component class="com.rameses.rcp.control.XLabel" name="xLabel2">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Upload"/>
-        <Property name="name" type="java.lang.String" value="upload"/>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Arial" size="18" style="0"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="caption"/>
       </Properties>
     </Component>
   </SubComponents>
