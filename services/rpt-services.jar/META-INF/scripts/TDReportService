@@ -22,6 +22,26 @@ class TDReportService
 	@Service('FAASService')
 	def faasSvc 
     
+	
+	
+	@ProxyMethod
+	public def getTDReportName() {
+		def setting = rptSettingSvc.open()
+		if( setting.usenewtdprintout == 0 )
+			return 'tdreport_old'
+		
+		return 'tdreport'
+	}
+	
+	@ProxyMethod
+	public def getTrueCopyReportName() {
+		def setting = rptSettingSvc.open()
+		if( setting.usenewtdprintout == 0 )
+			return 'tdreport_old_truecopy'
+		
+		return 'tdreport'
+	}
+	
     @ProxyMethod 
     public def getReportData( faasid ) {
 		def td =[:]
@@ -121,6 +141,11 @@ class TDReportService
 			td.approvedby = ( td.approvedby ? '(SGD.) ' + td.approvedby : null )
 		}
 		
+		if( setting.usenewtdprintout == 0 ) 
+		{
+			buildOldFormatData( td, faas, setting )
+		}
+		
 		return td;
     }
 	
@@ -210,14 +235,20 @@ class TDReportService
 			def item = [
 				classification	: rpu.classname,
 				actualuse 		: it.actualusename,
+				actualuseid		: it.actualuseid,
 				specificclass 	: it.specificclassname,
+				subclass		: it.subclassname,
 				area			: it.area,
 				areasqm			: it.areasqm,
 				areaha			: it.areaha,
 				areatype		: it.areatype,
 				assesslevel		: it.assesslevel,
 				marketvalue		: it.marketvalue,
-				assessedvalue	: it.assessedvalue
+				basemarketvalue	: it.basemarketvalue,
+				assessedvalue	: it.assessedvalue,
+				unitvalue		: it.unitvalue,
+				basevalue		: it.basevalue,
+				adjustment		: it.adjustment,
 			];
 			
 			data.add( item );
@@ -284,8 +315,10 @@ class TDReportService
 				def item = [
 					classification	: rpu.classname,
 					actualuse		: it.actualuse.actualusename,
+					actualuseid		: it.actualuse.actualuseid,
 					assesslevel		: it.assesslevel,
 					marketvalue		: it.marketvalue ,
+					basemarketvalue	: it.basemarketvalue,
 					assessedvalue	: it.assessedvalue,
 					area			: it.area,
 				];
@@ -310,10 +343,16 @@ class TDReportService
 						classification		: rpu.classname,
 						machine				: it.machinename,
 						actualuse			: mu.actualuse.actualusename,
+						actualuseid			: mu.actualuse.actualuseid,
 						depreciation		: it.depreciation,
 						marketvalue			: it.marketvalue,
+						basemarketvalue		: it.basemarketvalue,
 						assesslevel			: it.assesslevel,
-						assessedvalue		: it.assessedvalue
+						assessedvalue		: it.assessedvalue,
+						operationyear		: it.operationyear,
+						replacementcost		: it.replacementcost,
+						brand				: it.brand,
+						model				: it.model,
 					];
 					
 					data.add( item );
@@ -323,7 +362,9 @@ class TDReportService
 				data << [
 					classification		: rpu.classname,
 					actualuse			: mu.actualuse.actualusename,
+					actualuseid			: mu.actualuse.actualuseid,
 					marketvalue			: mu.marketvalue,
+					basemarketvalue		: mu.basemarketvalue,
 					assesslevel			: mu.assesslevel,
 					assessedvalue		: mu.assessedvalue,
 					area				: 0.00,
@@ -393,6 +434,7 @@ class TDReportService
 				miscitem			: it.miscitemname,
 				actualuse			: rpu.info.actualusename,
 				marketvalue			: it.marketvalue,
+				basemarketvalue		: it.basemarketvalue,
 				assesslevel			: it.assesslevel,
 				assessedvalue		: it.assessedvalue
 			];
@@ -420,6 +462,121 @@ class TDReportService
 			return true
 		return false 
 	}
+
 	
+	/******************************************************
+		* Old TD Report Format Support
+	*******************************************************/
+	
+	private void buildOldFormatData( td, faas, setting ) 
+	{
+		td.prevlandav = 0.00
+		td.previmprovementav = 0.00
+		td.totaladjustment = 0.00
+		td.rollyear = 0 //ask tommorow
+		
+		if( faas.rpu.rputype == 'land' ) 
+		{
+			if( td.prevav ) td.prevlandav = td.prevav
+			td.assessmentitems = td.lands
+			td.assessmentitems.each { it.kind = 'LAND' }
+			buildLand1and2Infos( td, faas, setting )
+		}
+		else 
+		{
+			if( td.prevav ) td.previmprovementav = td.prevav
+			
+			if( faas.rpu.rputype == 'bldg' ) {
+				td.assessmentitems = td.buildings
+				td.assessmentitems.each { it.kind = 'BLDG' }
+				td.bldgitemamv = td.totalmv
+				td.bldgtotalamv = td.totalmv
+				td.bldgitemfloorarea = td.totalareasqm
+				td.bldgitemfloorcount = td.floorcount
+				td.bldgitemconstructionmaterials = faas.rpu.bldgstructures.findAll{ it.materialname }*.materialname.unique().join(',')
+			}
+			else if( faas.rpu.rputype == 'mach' ) {
+				td.assessmentitems = td.machines
+				td.assessmentitems.each { 
+					it.kind = 'MACH' 
+					it.description = it.machine
+					if( it.brand ) it.description += ' - ' + it.brand
+					if( it.model ) it.description += ' ' + it.model
+						
+				}
+				
+				td.machtotalmv = td.totalbmv
+				td.machtotalamv = td.totalmv
+			}
+			else if( faas.rpu.rputype == 'planttree' ) {
+				td.assessmentitems = td.plants
+				td.assessmentitems.each { it.kind = 'PLANT/TREE' }
+			}
+			else if( faas.rpu.rputype == 'misc' ) {
+				td.assessmentitems = td.miscitems
+				td.assessmentitems.each { it.kind = 'MISC' }
+			}
+		}
+		
+		summarizeItems( td )
+	}
+	
+	private void buildLand1and2Infos( td, faas, setting )
+	{
+		td.land1s = []		
+		td.land2s = []
+		
+		if( setting.landreportbasedonactualuse == 1 )
+		{
+			td.lands.each {
+				if( isInLand1s( setting, it.actualuseid ) )
+					td.land1s.add( it )
+				else
+					td.land2s.add( it )
+			}
+		}
+		else
+		{
+			if( isInLand1s( setting, td.classid ) )
+				td.land1s.addAll( td.lands )
+			else 
+				td.land2s.addAll( td.lands )
+		}
+		
+		td.land1totalmv = td.land1s*.basemarketvalue.sum()
+		td.land1totalamv = td.land1s*.marketvalue.sum()
+		
+		td.land2totalmv = td.land2s*.basemarketvalue.sum()
+		td.land2totalamv = td.land2s*.marketvalue.sum()
+	}
+	
+	private boolean isInLand1s( setting, classid ) 
+	{
+		return setting.propertyclassifications.find { it.objid == classid } ? true : false
+	}
+	
+	private void summarizeItems( td )
+	{
+		def newitems = [:]
+		
+		td.assessmentitems.each {
+			def item = newitems[it.actualuseid]
+			if( item ) {
+				item.marketvalue += it.marketvalue
+				item.assessedvalue += it.assessedvalue
+			}
+			else {
+				newitems[it.actualuseid] = [
+					kind			: it.kind,
+					actualuse		: it.actualuse,
+					marketvalue		: it.marketvalue,
+					assesslevel 	: it.assesslevel,
+					assessedvalue	: it.assessedvalue,
+				]
+			}
+		}
+		
+		td.assessmentitems = newitems.values() as List
+	}
 	
 }

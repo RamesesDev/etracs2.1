@@ -44,9 +44,7 @@ class UserLookupController extends LookupModel
     List fetchList( Map params ) { 
         def s = search
         if( !s ) s = searchText 
-        def list = svc.getList( s, params );
-        if( list ) return list;
-        throw new Exception("Record not found.");
+        return svc.getList( s, params );
     }
 }  
 
