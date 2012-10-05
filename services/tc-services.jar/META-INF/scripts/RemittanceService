@@ -217,6 +217,7 @@ class RemittanceService {
 	
 	@ProxyMethod
 	public def createRemittance( rem ) {
+		checkUnpostedCapturedCollections( rem.collectorid )
 		rem.receipts = getUnremittedReceipts( rem.collectorid );
 		if ( !rem.receipts )
 			throw new Exception( "There are no unremitted receipts." );
@@ -231,6 +232,24 @@ class RemittanceService {
 		rem.remittedforms = createRemittedForms( rem );
 		
 		return rem;
+	}
+	
+	void checkUnpostedCapturedCollections( collectorid ) {
+		println 'pass...'
+		def unpostedCaptures = em.sqlContext.createNamedQuery('remittance:getUnpostedBatchCaptureCollections')
+								.setParameter('collectorid', collectorid)
+								.resultList
+		if( unpostedCaptures ) {
+			throw new Exception('There are still unposted batch captures.\nOpen and post the batch captured records before remittance.')
+		}
+		
+		def unpostedItems = em.sqlContext.createNamedQuery('remittance:getUnpostedCaptureReceipts')
+								.setParameter('collectorid', collectorid)
+								.resultList
+		if( unpostedItems ) {
+			throw new Exception('There are still unposted captured receipts.\nKindly perform the post capture transaction before remittance.')
+		}
+
 	}
 	
 	/*-----------------------------------------------------
