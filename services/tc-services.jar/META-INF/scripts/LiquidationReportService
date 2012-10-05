@@ -303,7 +303,7 @@ public class LiquidationReportServices{
 	
 	def buildLiquidationData( liquidation ) {
 		return [
-			txndate: liquidation.dtposted,
+			txndate: dtSvc.parse('yyyy-MM-dd', liquidation.info.txndate),
 			txnno: liquidation.info.txnno,
 			liquidatingofficername: liquidation.info.liquidatingofficername,
 			liquidatingofficertitle: liquidation.info.liquidatingofficertitle,
