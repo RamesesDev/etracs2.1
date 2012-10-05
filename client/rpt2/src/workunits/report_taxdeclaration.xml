@@ -43,7 +43,7 @@ class TaxDeclarationReportController
     }
     
     def report =[
-        getReportName : { return 'tdreport' },
+        getReportName : { return svc.getTDReportName() },
         getReportData : { return data; },
         getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ); }
     ] as ServerReportModel;
