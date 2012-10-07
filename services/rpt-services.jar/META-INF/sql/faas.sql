@@ -367,39 +367,42 @@ DELETE FROM filter WHERE objid = $P{objid}
 # CLEARED FINDERS
 #----------------------------------------------------------------
 [findClearedByState]
-SELECT  
-	f.objid, f.tdno, f.fullpin, f.classcode, f.txntype, f.rputype, f.barangay, 
-	f.totalmv as marketvalue, f.totalav as assessedvalue,  f.totalareasqm, f.totalareaha, f.taxable, 
-	f.cadastrallotno, f.taxpayername, rl.lastyearpaid, rl.lastqtrpaid , rl.objid as ledgerid     
+SELECT  f.*, rl.lastyearpaid, rl.assessedvalue, rl.lastqtrpaid , rl.objid as ledgerid     
 FROM faaslist f 
 	INNER JOIN rptledger rl ON f.objid = rl.faasid  
 WHERE f.docstate LIKE $P{docstate} 
-  AND f.taxpayerid = $P{taxpayerid} 
+  AND f.taxpayerid LIKE $P{taxpayerid} 
   AND rl.docstate = 'APPROVED' 
   
 [findClearedByTdNo]
 SELECT  
-	f.objid, f.tdno, f.fullpin, f.classcode, f.txntype, f.rputype, f.barangay, 
-	f.totalmv as marketvalue, f.totalav as assessedvalue,  f.totalareasqm, f.totalareaha,  f.taxable, 
-	f.cadastrallotno, f.taxpayername, rl.lastyearpaid, rl.lastqtrpaid , rl.objid as ledgerid     
+	f.*, rl.assessedvalue, rl.lastyearpaid, rl.lastqtrpaid , rl.objid as ledgerid     
 FROM faaslist f 
 	INNER JOIN rptledger rl ON f.objid = rl.faasid  
 WHERE f.docstate LIKE $P{docstate} 
-  AND f.taxpayerid = $P{taxpayerid} 
+  AND f.taxpayerid LIKE $P{taxpayerid} 
   AND f.tdno = $P{tdno} 
   AND rl.docstate = 'APPROVED' 
   
 [findClearedByPin]
 SELECT  
-	f.objid, f.tdno, f.fullpin, f.classcode, f.txntype, f.rputype, f.barangay, 
-	f.totalmv as marketvalue, f.totalav as assessedvalue,  f.totalareasqm, f.totalareaha,  f.taxable, 
-	f.cadastrallotno, f.taxpayername, rl.lastyearpaid, rl.lastqtrpaid, rl.objid as ledgerid   
+	f.*, rl.lastyearpaid, rl.assessedvalue, rl.lastqtrpaid, rl.objid as ledgerid   
 FROM faaslist f 
 	INNER JOIN rptledger rl ON f.objid = rl.faasid  
 WHERE f.docstate LIKE $P{docstate} 
-  AND f.taxpayerid = $P{taxpayerid} 
+  AND f.taxpayerid LIKE $P{taxpayerid} 
   AND f.pin = $P{pin} 
   AND rl.docstate = 'APPROVED' 
+  
+[findClearedByTaxpayername]
+SELECT  
+	f.*, rl.lastyearpaid, rl.assessedvalue, rl.lastqtrpaid, rl.objid as ledgerid   
+FROM faaslist f 
+	INNER JOIN rptledger rl ON f.objid = rl.faasid  
+WHERE f.docstate LIKE $P{docstate} 
+  AND f.taxpayerid LIKE $P{taxpayerid} 
+  AND f.taxpayername LIKE $P{taxpayername} 
+  AND rl.docstate = 'APPROVED'   
 
 [findByExaminer]
 SELECT * FROM faaslist ${whereClause}

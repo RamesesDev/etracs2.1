@@ -1,10 +1,11 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/landtax" action="init" caption="Realty Tax Clearance" target="window" index="2" permission="landtax.rptclearance"/>
-        <invoker folderid="/txn/landtax" action="init" caption="Realty Tax Clearance" target="window" index="2" permission="landtax.rptclearance"/>
-        <invoker folderid="/menu/rpt/landtax" action="init" caption="Realty Tax Clearance" target="window" index="2" permission="landtax.rptclearance"/>
+        <invoker folderid="/report/landtax" action="init" caption="Realty Tax Clearance (By TD)" target="window" index="2" permission="landtax.rptclearance"/>
+        <invoker folderid="/txn/landtax" action="init" caption="Realty Tax Clearance (By TD)" target="window" index="2" permission="landtax.rptclearance"/>
+        <invoker folderid="/menu/rpt/landtax" action="init" caption="Realty Tax Clearance (By TD)" target="window" index="2" permission="landtax.rptclearance"/>
         
-        <invoker type="formActions"     action="_close" caption="Back" mnemonic="b" shortcut="ctrl + B" icon="images/back.png"/>
+        <invoker type="formActions"     action="_close" caption="Close" mnemonic="c" shortcut="alt + C" icon="images/cancel.png" immediate="true" />
+        <invoker type="formActions"     action="init" caption="New" mnemonic="n" shortcut="ctrl + N" icon="images/doc-new.png" visibleWhen="#{mode != 'create'}" />
         <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png"/>
         <invoker type="formActions"     action="preview" caption="Preview" mnemonic="v"             icon="images/doc-view.png"/>
         
@@ -18,7 +19,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*;
 
-class RPTTaxClearanceController
+class RPTTaxClearanceByTDController
 {
     @Binding
     def binding
@@ -31,6 +32,8 @@ class RPTTaxClearanceController
     
     @Service('DateService')
     def dateSvc
+    
+    def mode 
     
     def entity
     def owner
@@ -51,7 +54,9 @@ class RPTTaxClearanceController
             purpose     : 'for whatever purpose it may serve him/her.' ,
             items       : [], 
         ] 
-        
+        faas = null
+        binding?.focus('faas')
+        mode = 'create' 
     }
     
     /* ----------------------------------------------------------------------------
@@ -74,17 +79,38 @@ class RPTTaxClearanceController
         binding.refresh( 'entity.requestedby' )
     }
     
-    def lookupClearedFaas(){
-        return InvokerUtil.lookupOpener('faascleared.lookup', [
-            taxpayerid  : entity.ownerid,
-            onselect    : {
-                if( !isOnList( it)  ) {
-                    entity.items.add( it )
-                }
-                listHandler.load()
-                binding.focus( 'faas' )
-            },
-        ])
+    def onselectFaas = { 
+        if ( entity.year == null || entity.year == 0 ) 
+            throw new Exception('Clearance Year is required.')
+        if (it.docstate != 'CURRENT' ) 
+            throw new Exception('FAAS is not current')
+        if (it.lastyearpaid < entity.year ) 
+            throw new Exception('FAAS is not cleared for the year ' + entity.year + '.' )
+        if (it.lastyearpaid == entity.year && it.lastqtrpaid < entity.qtr ) 
+            throw new Exception('FAAS is not cleared for the ' + formalizeQtr() + ' of ' + entity.year + '.' )
+    }
+    
+    void setFaas( faas ) {
+        this.faas = faas 
+        entity.ownerno      = faas?.taxpayerno
+        entity.ownername    = faas?.ownername
+        entity.owneraddress = faas?.owneraddress
+        entity.requestedby  = faas?.taxpayername
+        entity.items.clear()
+        if( faas ) entity.items.add( faas )
+        binding.refresh( 'entity.requestedby' )
+
+    }
+    
+    def formalizeQtr() {
+        if( entity.qtr == 1 ) return '1st Quarter'
+        if( entity.qtr == 2 ) return '2nd Quarter'
+        if( entity.qtr == 3 ) return '3rd Quarter'
+        if( entity.qtr == 4 ) return '4th Quarter'
+    }
+    
+    def getLookupClearedFaas(){
+        return InvokerUtil.lookupOpener('faascleared.lookup', [taxpayerid:null, onselect:onselectFaas])
     }
     
     def listHandler = [
@@ -136,6 +162,7 @@ class RPTTaxClearanceController
     void generateReport() {
         reportdata = svc.generateTaxClearance( entity  )
         report.viewReport()
+        mode = 'view'
     }
     
     void print(){
@@ -163,7 +190,7 @@ class RPTTaxClearanceController
         
     </code>
     <pages>
-        <page template="etracs2.rpt.report.RPTTaxClearanceInitPage" />
+        <page template="etracs2.rpt.report.RPTTaxClearanceByTDPage" />
         <page name="preview" template="etracs2.common.PreviewPage" />
     </pages>
 </workunit>

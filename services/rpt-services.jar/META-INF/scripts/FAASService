@@ -157,12 +157,13 @@ class FAASService
 	
 	@ProxyMethod
 	public List getClearedFaasList( searchText, taxpayerid, params) {
-		def criteria = buildSearchCriteria( searchText, 'CURRENT' )
-		criteria.taxpayerid = taxpayerid 
+		def criteria = buildSearchCriteria( searchText, null )
+		criteria.taxpayerid = ( taxpayerid  ? taxpayerid : '%' )
 		if( ! searchText ) return getListByQuery('faas:findClearedByState', criteria, params, 'f.objid')
 		def result = []
 		if( (result = getListByQuery('faas:findClearedByTdNo', criteria, params, 'f.objid')) ) return result
 		if( (result = getListByQuery('faas:findClearedByPin', criteria, params, 'f.objid')) ) return result
+		if( (result = getListByQuery('faas:findClearedByTaxpayername', criteria, params, 'f.objid')) ) return result
 		return result
 	}
 	
@@ -201,7 +202,6 @@ class FAASService
             surveyno : search,
             blockno  : search,
 			docstate : ( docstate ? docstate : '%' ),
-			taxpayerid : search, 
         ]
 	}
     
