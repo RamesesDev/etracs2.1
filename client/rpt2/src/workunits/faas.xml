@@ -65,11 +65,14 @@
         <invoker type="formActions" action="_close"         caption="Close"                 shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
         <invoker type="formActions" action="save"           caption="Save"                  shortcut="ctrl S"   mnemonic="s"  visibleWhen="#{showSaveAction == true}"  icon="images/save.png" />
         <invoker type="formActions" action="submit"         caption="Submit For Approval"   shortcut="ctrl M"   mnemonic="m"  visibleWhen="#{faas.docstate == 'INTERIM' and mode != 'create'}"   icon="images/doc-submit.png" permission="faas.submit" />
+        <invoker type="formActions" action="submitRemote"   caption="Submit For Approval (Remote)"   shortcut="ctrl M"   mnemonic="m"  visibleWhen="#{faas.docstate == 'FORREVIEW' and mode != 'create'}"   icon="images/doc-submit.png" permission="faas.submit" />
         <invoker type="formActions" action="remove"         caption="Delete"                shortcut="ctrl D"   mnemonic="d"  visibleWhen="#{showDelete == true }" immediate="true"   icon="images/doc-delete.png" permission="faas.delete" />
         <invoker type="formActions" action="disapprove"     caption="Disapprove"            shortcut="ctrl e"   mnemonic="a"  visibleWhen="#{showDisapproveAction == true}"  icon="images/disapprove.png" permission="faas.disapprove" />
         <invoker type="formActions" action="approve"        caption="Approve"               shortcut="ctrl A"                 visibleWhen="#{showApproveAction == true}"   icon="images/approve.png" permission="faas.approve" />
+        <invoker type="formActions" action="approveRemote"  caption="Approve (Remote)"       shortcut="ctrl A"                 visibleWhen="#{showApproveRemoteAction == true}"   icon="images/approve.png" permission="faas.approve" />
         <invoker type="formActions" action="submitToProvince" caption="Submit To Province"  shortcut="ctrl M"   mnemonic="m"  visibleWhen="#{showSubmitToProvinceAction == true}"   icon="images/doc-submit.png" permission="faas.submittoprovince" />
         <invoker type="formActions" action="disapproveByProvince" caption="Disapprove"      shortcut="ctrl D"                 visibleWhen="#{showDisapproveByProvinceAction == true}"  icon="images/disapprove.png" permission="faas.disapprove" />
+        <invoker type="formActions" action="disapproveRemote" caption="Disapprove (Remote)"      shortcut="ctrl D"                 visibleWhen="#{showDisapproveRemoteAction == true}"  icon="images/disapprove.png" permission="faas.disapprove" />
         <invoker type="formActions" action="approveByProvince" caption="Approve"            shortcut="ctrl A"   mnemonic="a"  visibleWhen="#{showApprovedByProvinceAction == true}"   icon="images/approve.png" permission="faas.approvebyprovince" />
         
         <invoker type="formActions" action="showAttachments"    caption="Attachments"   visibleWhen="#{mode != 'create'}"  mnemonic="m" />
@@ -170,10 +173,22 @@ public class FAASController
         }
     }
     
+    void submitRemote() {
+        if( MsgBox.confirm('Submit FAAS?') ) {
+            faas = svc.submitRemoteApproval( faas.objid )
+        }
+    }
+    
     void approve() {
         if( MsgBox.confirm('Approve FAAS?') ) {
             save()
             faas = svc.approve( faas.objid )
+        }
+    }
+    
+    void approveRemote() {
+        if( MsgBox.confirm('Approve FAAS?') ) {
+            faas = svc.approveRemote( faas.objid )
         }
     }
     
@@ -202,6 +217,27 @@ public class FAASController
             save()
             faas = svc.disapproveByProvince( faas.objid )
         }
+    }
+    
+    def caption 
+    def remarks 
+    public def disapproveRemote() {
+        if( MsgBox.confirm('Disapprove FAAS record?') ) {
+            remarks = null 
+            caption = 'Disapprove Reason'
+            return 'message' 
+        }
+        return null
+    }
+    
+    
+    def doDisapproveRemote() {
+        faas = svc.disapproveRemote( faas.objid, remarks )
+        return '_close' 
+    }
+    
+    def doCancelDisapproveRemote() {
+        return 'default' 
     }
     
     def onupdateRpu = { rpu ->
@@ -379,6 +415,7 @@ public class FAASController
     
     
     boolean getShowSaveAction() {
+        if( faas.remote == true ) return false 
         if( faas.docstate == 'INTERIM' ) return true
         if( faas.docstate == 'FORAPPROVAL' ) return true
         return false 
@@ -391,6 +428,11 @@ public class FAASController
         return true
     }
     
+    boolean getShowApproveRemoteAction() {
+        if( faas.docstate != 'FORAPPROVAL' ) return false
+        return faas.remote == true 
+    }
+    
     boolean getShowDisapproveAction() {
         if( faas.lgutype?.toLowerCase() != 'city'  ) return false
         if( faas.docstate != 'FORAPPROVAL' ) return false
@@ -398,6 +440,7 @@ public class FAASController
     }
     
     boolean getShowSubmitToProvinceAction() {
+        if( faas.remote != null && faas.remote == true ) return false 
         if( faas.lgutype?.toLowerCase() != 'municipality'  ) return false
         if( faas.docstate != 'FORAPPROVAL' ) return false
         return true 
@@ -417,6 +460,12 @@ public class FAASController
         if( lgutype == 'municipality' && faas.docstate == 'FORPROVAPPROVAL' ) return true
         if( lgutype == 'province' && faas.docstate == 'FORAPPROVAL' ) return true
         return false
+    }
+    
+    boolean getShowDisapproveRemoteAction() {
+        if( faas.docstate == 'CURRENT' || faas.docstate == 'CANCELLED' ) return false 
+        if( faas.remote == null ) return false
+        return faas.remote == true 
     }
     
     /*-----------------------------------------------------------------------------
@@ -484,6 +533,8 @@ public class FAASController
     }
     
     boolean getAllowEdit() {
+        if( faas.docstate == 'FORREVIEW' ) return false
+        if( faas.remote == true ) return false 
         if( faas.docstate == 'FORPROVAPPROVAL' ) return false
         if( faas.docstate == 'CURRENT' ) return false
         if( faas.docstate == 'CANCELLED' ) return false
@@ -506,6 +557,7 @@ public class FAASController
     }
     
     boolean getShowDelete(){
+        if( faas.docstate == 'FORREVIEW') return false 
         if( mode == 'create' ) return false
         if( faas.docstate == 'CURRENT' ) return false
         if( faas.docstate == 'CANCELLED' ) return false
@@ -621,6 +673,7 @@ public class FAASController
         <page name="ndinit" template="etracs2.rpt.faas.FAASNDInitPage"/>
         <page name="grinit" template="etracs2.rpt.faas.FAASGRInitPage"/>
         <page name="txninit" template="etracs2.rpt.faas.FAASTxnInitPage"/>
+        <page name="message" template="etracs2.rpt.faas.MessagePage"/>
     </pages>
 </workunit>
 

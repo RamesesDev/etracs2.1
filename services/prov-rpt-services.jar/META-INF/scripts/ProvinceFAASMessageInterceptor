@@ -31,6 +31,8 @@ class ProvinceFAASMessageInterceptor
 	void processReceiveFaas( msg ) {
 		createEntity( msg )
 		def faas = msg.attachment.faas 
+		faas.docstate  = 'FORREVIEW'
+		faas.remote    = true 
 		if( ! svc.faasExists( faas.objid ) ) {
 			em.create( faas.schemaname, faas )
 		}

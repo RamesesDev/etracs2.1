@@ -60,12 +60,15 @@ class FAASService
     def FORAPPROVAL_STATE = 'FORAPPROVAL'
     def FORTAXMAP_STATE = 'FORTAXMAP'
     def FORPROVAPPROVAL_STATE = 'FORPROVAPPROVAL'
+	def DISAPPROVED_STATE = 'DISAPPROVED'
 	def CURRENT_STATE = 'CURRENT'
 	def CANCELLED_STATE = 'CANCELLED'
+	def FORREVIEW_STATE = 'FORREVIEW' 
 	
 	def SCHEMA_NAME = 'faas'
     def SCHEMA_VERSION = '1.0'
     def LISTSCHEMA_NAME = 'faas:faaslist'
+	def DISAPPROVED_SCHEMANAME = 'faas:disapprovedfaas'
 	
     def LAND_TYPE = 'land' 
     def BLDG_TYPE = 'bldg'
@@ -355,15 +358,37 @@ class FAASService
     
     @ProxyMethod
     public Map submit( faasid ) {
-        def faasinfo = getFaasInfo( faasid )
-        validateSubmit( faasinfo )
-        def faas = open( faasinfo.objid )
-        updateFaasState( faas, FORAPPROVAL_STATE )
-        logSvc.log('SUBMIT','FAAS', faasid)
-        return faas 
+		def faasinfo = getFaasInfo( faasid )
+		validateSubmit( faasinfo )
+		def faas = open( faasinfo.objid )
+		updateFaasState( faas, FORAPPROVAL_STATE )
+		logSvc.log('SUBMIT','FAAS', faasid)
+		return faas 
     }
-    
-    @ProxyMethod 
+	
+	@ProxyMethod 
+	public def submitRemoteApproval( faasid ) {
+		def faas = open( faasid )
+		if( faas.docstate == FORAPPROVAL_STATE ) throw new Exception('FAAS has already been submitted for approval.')
+        if( faas.docstate == CURRENT_STATE ) throw new Exception('FAAS is already current.')
+        if( faas.docstate == DISAPPROVED_STATE ) throw new Exception('FAAS has already been disapproved.')
+        if( faas.docstate == CANCELLED_STATE ) throw new Exception('FAAS has already been cancelled.')
+		
+		faas.docstate = FORAPPROVAL_STATE
+		if( ! faas.info.datacapture   ) {
+			def currDate            = dateSvc.getServerDate()
+			faas.info.reviewedby    = env.USERNAME
+			faas.info.reviewedbytitle = env.JOBTITLE
+			faas.info.dtreviewed    = currDate
+			faas.message            = null
+		}
+		
+		em.update( SCHEMA_NAME, faas )
+        updateFaasListState( faasid, FORAPPROVAL_STATE )
+		return faas
+	}
+	
+	@ProxyMethod 
     public Map submitToProvince( faasid ) {
         def faasinfo = getFaasInfo( faasid )
         validateSubmitToProvince( faasinfo )
@@ -387,6 +412,65 @@ class FAASService
         logSvc.log('APPROVE','FAAS', faas.objid)
 		return faas 
     }
+	
+	
+	@ProxyMethod
+	public def approveRemote( faasid ) { 
+		def faas = open( faasid )
+        if( faas.docstate == FORPROVAPPROVAL_STATE ) throw new Exception('FAAS has not yet beeen reviewed.')
+        if( faas.docstate == CURRENT_STATE ) throw new Exception('FAAS is already current.')
+        if( faas.docstate == DISAPPROVED_STATE ) throw new Exception('FAAS has already been disapproved.')
+        if( faas.docstate == CANCELLED_STATE ) throw new Exception('FAAS has already been cancelled.')
+        
+		checkDuplicatePin( faas.info.txntype, faas.info.datacapture, faas.rpu.fullpin, faas.info.claimno  )
+		
+		if( assignNewTdNo( faas ) ) {
+			def newtdno = getNextAutonumberTdNo( faas )
+			checkDuplicateTdNo( faas.objid, newtdno )
+            faas.info.tdno = newtdno 
+		}
+		
+		faas.docstate  = CURRENT_STATE 
+		if (faas.info.datacapture == false ) {
+			def currDate            = dateSvc.getServerDate()
+			faas.info.issuedate     = dateSvc.format('yyyy-MM-dd', currDate)
+			faas.info.dtapproved    = currDate
+			faas.approvedby         = var.provincial_assessor_name
+			faas.approvedbytitle    = var.provincial_assessor_title
+			faas.sys_dtapproved     = currDate
+			faas.message            = null
+		}
+		
+        em.update( faas.schemaname, faas )
+        updateFaasListState( faasid, CURRENT_STATE )
+        em.sqlContext.createNamedExecutor('faas:updateListTdNo').setParameters([tdno:faas.info.tdno, objid:faas.objid]).execute()
+        
+		createPIN( faas ) 
+		// createEntity( faas )
+		
+		updateImprovementLandReference( faas ) 
+		approveCarryOverAnnotations( faas )
+		insertRPUItems( faas )
+		cancelPreviousFaas( faas )
+		deleteTxnReference( faas )
+		
+		//default value for post_municipal_rptledger_to_province must be false 
+		if( TO_BOOLEAN( var.post_municipal_rptledger_to_province ) == true ) {
+			ledgerSvc.post( faas.objid )
+		}
+		
+        sendRemoteMessage( faas, 'faas.approve', [
+			faasid		: faas.objid,
+			docstate	: faas.docstate,
+			approvedby	: faas.info.approvedby,
+			approvedbytitle : faas.info.approvedbytitle,
+			dtapproved		: faas.info.dtapproved,
+			tdno			: faas.info.tdno,
+			pin				: faas.rp.pin,
+			fullpin			: faas.rpu.fullpin, 
+		])
+		return faas 
+	}
 	
 	@ProxyMethod
     public Map disapprove( faasid ) {
@@ -450,6 +534,42 @@ class FAASService
         em.update(LISTSCHEMA_NAME, faas )
         invokeCommonApproveActions( faas )
     }
+	
+	@ProxyMethod
+	public def disapproveRemote( faasid, remarks )  {
+		def faas = open( faasid )
+		if( faas.docstate == DISAPPROVED_STATE ) throw new Exception('FAAS has already been disapproved.')
+        if( faas.docstate == CANCELLED_STATE ) throw new Exception('FAAS has already been cancelled.')
+		
+		// copy to disapproved faas 
+        def currDate            = dateSvc.getServerDate()
+		faas.docstate           = DISAPPROVED_STATE
+		faas.message            = remarks
+		if( faas.info.datacapture == false ) {
+			faas.sys_dtapproved     = null
+			faas.info.approvedby    = null 
+			faas.info.approvedbytitle = null 
+			faas.info.dtapproved      = null 
+		}
+        
+        def dfaas = [:]
+        dfaas.putAll( faas )
+        dfaas.objid  = 'DF' + new UID()
+        dfaas.faasid = faas.objid 
+		em.create(DISAPPROVED_SCHEMANAME, dfaas)
+		em.sqlContext.createNamedExecutor('faas:deleteFaasAttachments').setParameter('faasid', faas.objid).execute()
+        em.delete( LISTSCHEMA_NAME, faas)
+		em.delete(faas.schemaname, faas)
+        
+		sendRemoteMessage( faas, 'faas.disapprove', [
+			faasid		: faas.objid,
+			tdno		: faas.info.tdno,
+			pin			: faas.rp.pin,
+			fullpin		: faas.rpu.fullpin, 
+			message		: faas.message 	
+		])
+		return faas
+	}
     
     @ProxyMethod
     public void onlineDisapprove( faasid, disapprovaldata ) {
@@ -1656,6 +1776,16 @@ class FAASService
 		]
 		forTransmittalSvc.create( fortransmittal )
 	}
+	
+	void sendRemoteMessage( faas, action, data ) {
+		def receiverid = faas.rp.provcityindex + '-' + faas.rp.munidistrictindex
+		def receivername = faas.rp.munidistrict
+		
+		def msg = msgSvc.createMessage( action, data )
+		msg.receiverid = receiverid 
+		msg.receivername = receivername 
+		msgSvc.send( msg )   
+    }
     
     void sendToOutbox( faas ) {	
 		def remote_connection_active = var.remote_connection_active
@@ -1675,6 +1805,12 @@ class FAASService
 			msgSvc.send( msg ) 
 		}
     }
+	
+   
+	void updateFaasListState( faasid, docstate) {
+        def params = [ objid:faasid, docstate:docstate ]
+        em.sqlContext.createNamedExecutor('faas:updateListState').setParameters( params ).execute()
+    }
     
     void moveOutboxMessageToProcessed( refid ) {
 		//msgSvc.processOutboxMessage( refid )
@@ -1688,6 +1824,37 @@ class FAASService
 		if( value instanceof Boolean ) return value 
 		return '1/y/yes/true/t'.indexOf( value.toString().toLowerCase() ) >= 0
 	}
+	
+	def getNextAutonumberTdNo( faas ) {
+        if( faas.info.datacapture == true ||  faas.info.autonumber == false ) {
+            return faas.info.tdno 
+        }
+        //TD Formatting Options:
+        // Y - revision year
+        // P - province index 
+        // C - city index 
+        // M - municipality index 
+        // D - district index 
+        // B - barangay index 
+        def ry              = faas.rpu.ry +''
+        def provindex       = faas.rp.provcityindex 
+        def cityindex       = faas.rp.provcityindex 
+        def muniindex       = faas.rp.munidistrictindex
+        def districtindex   = faas.rp.munidistrictindex
+        def barangayindex   = faas.rp.barangayindex
+        
+        def values = [Y:ry, P:provindex, C:cityindex, M:muniindex, D:districtindex, B:barangayindex]
+        def tdno   = var.td_format 
+        values.keySet().each {
+            tdno = tdno.replace( it, values[it] )
+        }
+		
+		def seqno = seqSvc.getNextFormattedSeries( tdno )
+        if( var.td_format.contains( '-') ) {
+            return  tdno + '-' + seqno 
+        }
+        return  tdno + seqno
+    }
 	
 }
 
