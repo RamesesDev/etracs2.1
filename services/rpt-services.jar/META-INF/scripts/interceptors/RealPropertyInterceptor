@@ -24,6 +24,9 @@ public class RealPropertyInterceptor
 			def realproperty = [:]
 			realproperty.putAll( faas.rp )
 			realproperty.landfaasid = faas.objid
+			if( faas.info.txntype == 'TRC' ) {
+				realproperty.objid = faas.objid 
+			}
 			svc.save( realproperty )
 		}
 	}
