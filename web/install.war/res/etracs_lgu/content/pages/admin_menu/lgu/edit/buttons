@@ -1,0 +1,2 @@
+<button r:context="edit_item" r:name="save">Save</button>
+<button r:context="edit_item" r:name="_close" immediate="true">Close</button>

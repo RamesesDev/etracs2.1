@@ -3,18 +3,24 @@
 		"jobposition_create", 
 		new function() {
 			var svc = Service.lookup("admin/JobpositionService");
+			var orgSvc = Service.lookup( "admin/OrgunitService" );
+			
 			this.saveHandler;
 			this.jobposition;
 			var self = this;
 			
 			this.selectedRoleclass;
-				
+			this.selectedOrgUnit;	
+			this.orgUnits;
+			
 			var roleSvc;
 	
 			this.onload = function() {
+				this.orgUnits = orgSvc.getUserOrgunits({});
 				this.jobposition.objid = "<%="JOBP"+new java.rmi.server.UID()%>";
 				this.jobposition.jobstatus = "R";
 				this.jobposition.tags = [];
+				this.selectedOrgUnit = this.orgUnits.find( function(x) { return x.objid == self.jobposition.orgunitid }   );
 			}
 			
 			this.getRoleClasses = function() {
@@ -29,6 +35,12 @@
 			}
 	
 			this.save = function() {
+				if( !this.selectedOrgUnit ) {
+					alert( 'Please select an org unit' );
+					return;
+				}
+				this.jobposition.orgunitid = this.selectedOrgUnit.objid;
+				this.jobposition.orgunitcode = this.selectedOrgUnit.code;
 				this.jobposition = svc.create( this.jobposition );
 				this.saveHandler();
 				return "_close";
@@ -40,18 +52,20 @@
 					self.jobposition.tags = [];
 				}
 			}
+			
 		}
 	);
 </script>
-
 <%
 def fields = [
+
 	[type:"text", name:"jobposition.code", caption:"Code"],
 	[type:"text", name:"jobposition.title", caption:"Title", size:"50"],
+	[type:"combo", name:"selectedOrgUnit", caption:"Org Unit", items:"orgUnits", allowNull:"true", itemLabel:"code"],
 	[type:"radio", name:"jobposition.jobstatus", caption:"Job Status", options:"{R:'Regular', D:'Delegated'}"],
 	[type:"combo", name:"selectedRoleclass", caption:"Role Class", items:"getRoleClasses()", allowNull:"true", itemLabel:"name"],
 	[type:"combo", name:"jobposition.role", caption:"Role", items:"getRoles()", allowNull:"true", itemKey:"name", itemLabel:"name", depends:"selectedRoleclass"],
-	
+
 	[type:"label", caption:"Tags", html: """
 		<table r:context="jobposition_create" r:items="selectedRoleclass.tags" r:varName="item" r:depends="selectedRoleclass"> 
 			<tr>
@@ -67,7 +81,3 @@ def fields = [
 ];
 %>
 @form( context: 'jobposition_create', fields: fields )
-
-<div style="text-align: right">
-	<button r:context="jobposition_create" r:name="save">Save</button>
-</div>

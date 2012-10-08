@@ -14,12 +14,28 @@ class JobpositionService
 	public def getList(def params) {
 		def qry = em.sqlContext.createNamedQuery( "jobposition:list" );
 		qry.setPagingKeys("jp.objid");
-		
 		if(params) {
 			if(params._start) qry.setFirstResult( params._start );
 			if(params._limit) qry.setMaxResults( params._limit );
+
+			def sb = new StringBuffer();
+			def condition = '';
+			if( params.orgunitid ) {
+				sb.append( ''' orgunitid=$P{orgunitid} ''' );	
+			}	
+			if( params.searchText ) {
+				params.searchText = "%" + params.searchText + "%";
+				if( sb.length() > 0 ) sb.append( ' and ' );
+				sb.append( ''' code like $P{searchText} or title like $P{searchText} ''' );	
+			}	
+			
+			if( sb.length() > 0 ) {
+				condition = ' where ' + sb.toString();
+			}	
+			qry.setVars( [ condition: condition ] );	
 			qry.setParameters( params );
 		}
+		
 		return qry.resultList;
 	}
 	

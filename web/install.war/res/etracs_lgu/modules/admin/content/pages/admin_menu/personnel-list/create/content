@@ -34,6 +34,3 @@ def fields = [
 %>
 @form(context:"personnel_create", fields: fields)
 
-<div style="text-align: right">
-	<button r:context="personnel_create" r:name="save">Save</button>
-</div>

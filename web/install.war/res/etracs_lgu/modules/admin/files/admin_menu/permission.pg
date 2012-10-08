@@ -3,5 +3,6 @@
 	context:	'permission',
 	options:	{width: 820, height: 550},
 	fragment: 	true,
-	hidden: 	true
+	hidden: 	true,
+	layout:		'popup-layout',
 }

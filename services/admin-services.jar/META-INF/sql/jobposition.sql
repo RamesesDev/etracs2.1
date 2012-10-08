@@ -1,8 +1,12 @@
 [list]
-select jp.*, concat(p.lastname, ',' , p.firstname) as assignee 
-from jobposition jp 
+select jp.*, p.lastname + ',' + p.firstname as assignee 
+from ( 
+  select * 
+  from jobposition  
+  ${condition} 
+) jp 
 left join personnel p on jp.assigneeid = p.objid  
-where jp.orgunitid=$P{orgunitid} order by p.lastname, p.firstname 
+order by p.lastname, p.firstname 
 
 
 [get-job-permissions]
