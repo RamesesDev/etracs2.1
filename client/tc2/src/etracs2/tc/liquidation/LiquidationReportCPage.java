@@ -44,7 +44,7 @@ public class LiquidationReportCPage extends javax.swing.JPanel {
         );
         xReportPanel1Layout.setVerticalGroup(
             xReportPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 293, Short.MAX_VALUE)
+            .add(0, 311, Short.MAX_VALUE)
         );
         add(xReportPanel1, java.awt.BorderLayout.CENTER);
 
@@ -73,10 +73,8 @@ public class LiquidationReportCPage extends javax.swing.JPanel {
 
         jPanel1.add(formPanel1, java.awt.BorderLayout.SOUTH);
 
-        xActionBar1.setButtonBorderPainted(false);
-        xActionBar1.setButtonContentAreaFilled(false);
+        xActionBar1.setBorder(new com.rameses.rcp.control.border.XUnderlineBorder());
         xActionBar1.setName("formActions");
-        xActionBar1.setPreferredSize(new java.awt.Dimension(104, 40));
         jPanel1.add(xActionBar1, java.awt.BorderLayout.NORTH);
 
         jPanel1.add(jSeparator1, java.awt.BorderLayout.CENTER);

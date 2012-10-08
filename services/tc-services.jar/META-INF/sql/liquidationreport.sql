@@ -211,3 +211,50 @@ AND   r.fundid = $P{fundid}
 AND	  r.afid = $P{afid} 
 AND r.voided = 0  
 GROUP BY r.remittanceid, r.remittanceno, r.collectorname  
+
+
+
+[getLiquidationSummaryBySRE]
+SELECT 
+	ll.txnno, ll.txndate, ll.liquidatingofficername, ll.liquidatingofficertitle, ri.fundname, 
+	CONCAT( IFNULL(p2.acctcode, ''), ' - ', p2.accttitle ) AS p2account, 
+	CONCAT(IFNULL(p1.acctcode,''),  ' - ',  p1.accttitle) AS p1account, 
+	CONCAT(IFNULL(p.acctcode,''),  ' - ',  p.accttitle) AS paccount,
+	SUM(ri.amount) AS amount 
+FROM liquidationlist ll  
+	INNER JOIN remittancelist rem ON ll.objid = rem.liquidationid 
+	INNER JOIN receiptlist rl ON rem.objid = rl.remittanceid 
+	INNER JOIN receiptitem ri ON rl.objid = ri.receiptid 
+	INNER JOIN incomeaccount ia ON ri.acctid = ia.objid 
+	LEFT JOIN account p ON ia.ngasid = p.objid 
+	LEFT JOIN account p1 ON p.parentid = p1.objid 
+	LEFT JOIN account p2 ON p1.parentid = p2.objid 
+WHERE ll.objid = $P{objid}
+  AND ri.fundid = $P{fundid}
+  AND rl.voided = 0 
+GROUP BY ll.txnno, ll.txndate, ll.liquidatingofficername, ll.liquidatingofficertitle, ri.fundname, 
+		 p2.acctcode, p2.accttitle, p1.acctcode, p1.accttitle, p.acctcode, p.accttitle
+ORDER BY p2.acctcode, p2.accttitle, p1.acctcode, p1.accttitle, p.acctcode, p.accttitle
+	
+[getLiquidationSummaryByNGAS]
+SELECT 
+	ll.txnno, ll.txndate, ll.liquidatingofficername, ll.liquidatingofficertitle, ri.fundname, 
+	CONCAT( IFNULL(p2.acctcode, ''), ' - ', p2.accttitle ) AS p2account, 
+	CONCAT(IFNULL(p1.acctcode,''),  ' - ',  p1.accttitle) AS p1account, 
+	CONCAT(IFNULL(p.acctcode,''),  ' - ',  p.accttitle) AS paccount,
+	SUM(ri.amount) AS amount 
+FROM liquidationlist ll  
+	INNER JOIN remittancelist rem ON ll.objid = rem.liquidationid 
+	INNER JOIN receiptlist rl ON rem.objid = rl.remittanceid 
+	INNER JOIN receiptitem ri ON rl.objid = ri.receiptid 
+	INNER JOIN incomeaccount ia ON ri.acctid = ia.objid 
+	LEFT JOIN account p ON ia.ngasid = p.objid 
+	LEFT JOIN account p1 ON p.parentid = p1.objid 
+	LEFT JOIN account p2 ON p1.parentid = p2.objid 
+WHERE ll.objid = $P{objid}
+  AND ri.fundid = $P{fundid}
+  AND rl.voided = 0 
+GROUP BY ll.txnno, ll.txndate, ll.liquidatingofficername, ll.liquidatingofficertitle, ri.fundname, 
+		 p2.acctcode, p2.accttitle, p1.acctcode, p1.accttitle, p.acctcode, p.accttitle
+ORDER BY p2.acctcode, p2.accttitle, p1.acctcode, p1.accttitle, p.acctcode, p.accttitle	
+	
