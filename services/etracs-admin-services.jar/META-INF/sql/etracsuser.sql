@@ -106,6 +106,8 @@
  ORDER BY name
 
 
-
-
-
+[getPersonnelInfo]
+SELECT * 
+FROM personnel p 
+	LEFT JOIN personnel_txncode t ON p.objid = t.personnelid  
+WHERE p.objid = $P{objid}	 

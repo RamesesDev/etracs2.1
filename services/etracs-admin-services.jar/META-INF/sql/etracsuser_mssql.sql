@@ -105,6 +105,11 @@
  ORDER BY p.lastname,p.firstname,p.middlename
 
 
+[getPersonnelInfo]
+SELECT * 
+FROM personnel p 
+	LEFT JOIN personnel_txncode t ON p.objid = t.personnelid  
+WHERE p.objid = $P{objid}	 
 
 
 

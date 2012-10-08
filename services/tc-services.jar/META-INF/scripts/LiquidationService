@@ -12,7 +12,7 @@ class LiquidationService {
 	def remsvc;
 	
 	@Service("ETRACSUserService")
-	def usrsvc;
+	def userSvc;
 	
 	@Service("SequenceService")
 	def seqsvc;
@@ -97,7 +97,7 @@ class LiquidationService {
 		liq.docstate = 'OPEN';
 		liq.opener = opener 
 		liq.dtposted = dtsvc.getServerDate()
-		liq.info.txnno = generateLiqNo();
+		liq.info.txnno = generateLiqNo( liq.info.liquidatingofficerid );
 		if( ! liq.info.txndate ) {
 			liq.info.txndate = dtsvc.format( "yyyy-MM-dd", liq.dtposted);
 		}
@@ -262,14 +262,21 @@ class LiquidationService {
 			throw new Exception( "There are new transactions not included in this Liquidation." );
 	}
 	
-	private def generateLiqNo() {
+	private def generateLiqNo( liquidatingofficerid ) {
 		def dt = dtsvc.getServerDate();
 		def cal = Calendar.instance;
 		cal.time = dt;
 		def yr = cal.get(Calendar.YEAR);
-		def series = seqsvc.getNextFormattedSeries( 'LIQ-' + yr );
 		
-		return 'LIQ-' + yr + '-' + series;
+		def key = 'LIQ-' + yr
+		
+		def userTxnCode = userSvc.getUserTxnCode( liquidatingofficerid ) 
+		if( userTxnCode ) {
+			key = userTxnCode + '-' + yr 
+		}
+				
+		def series = seqsvc.getNextFormattedSeries( key );
+		return key + '-' + series;
 	}
 	
 	private void closeRemittance( liq ) {
@@ -281,19 +288,6 @@ class LiquidationService {
 		];
 		em.sqlContext.createNamedExecutor( "liquidation:closeRemittanceByLiquidatingOfficer" ).setParameters( params ).execute();
 		em.sqlContext.createNamedExecutor( "liquidation:closeRemittanceListByLiquidatingOfficer" ).setParameters( params ).execute();
-		/*
-		for ( collector in getSubordinates( liq.info.liquidatingofficerid ) ) {
-			def params = [
-				liquidationid : liq.objid,
-				liquidationno : liq.info.txnno,
-				liquidationdate : liq.info.txndate,
-				liquidatingofficerid : liq.info.liquidatingofficerid,
-				collectorid : collector.objid
-			];
-			em.sqlContext.createNamedExecutor( "liquidation:closeRemittances" ).setParameters( params ).execute();
-			em.sqlContext.createNamedExecutor( "liquidation:closeRemittanceLists" ).setParameters( params ).execute();
-		}
-		*/
 	}
 	
 	private void closeMultiCashierRemittance( liq ) { 	
@@ -397,12 +391,6 @@ class LiquidationService {
 		liq.info.amount 			= reminfo.totalamount;
 		liq.info.totalcash 			= reminfo.totalcash;
 		liq.info.totalotherpayment 	= reminfo.totalotherpayment;
-	}
-	
-	
-	
-	private def getSubordinates( userid ) {
-		return usrsvc.getCollectorsByLqOfficerId( userid );
 	}
 	
 	@ProxyMethod
