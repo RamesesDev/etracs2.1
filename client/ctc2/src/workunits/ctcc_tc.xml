@@ -128,6 +128,7 @@
     </code>
     
     <pages>
+        <page template="etracs2.ctc.tc.ui.CorporatePage"/>
         <page name="init" template="etracs2.ctc.tc.ui.CTCInitPage"/>
         <page name="new" template="etracs2.ctc.tc.ui.CorporatePage"/>
         <page name="view" template="etracs2.tc.collection.CollectionViewPage"/>
