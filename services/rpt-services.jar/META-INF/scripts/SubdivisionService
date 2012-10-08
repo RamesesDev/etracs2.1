@@ -127,10 +127,20 @@ class SubdivisionService
         def subdivision = em.read( SCHEMA_NAME, [objid:subdivisionid] )
         if( subdivision.docstate == FORPROVAPPROVAL_STATE ) throw new Exception('Subdivision has already been submitted to province.')
         if( subdivision.docstate == APPROVED_STATE ) throw new Exception('Subdivision has already been approved.')
-        em.sqlContext.createNamedExecutor('subdivision:deleteAffectedRpus').setParameter('subdivisionid', subdivisionid ).execute()
+		deleteSubdvdLandFaas( subdivisionid )  
+        em.sqlContext.createNamedExecutor( 'subdivision:deleteTxnReferecnce' ).setParameter( 'refid', subdivisionid ).execute()
+		em.sqlContext.createNamedExecutor('subdivision:deleteAffectedRpus').setParameter('subdivisionid', subdivisionid ).execute()
         em.sqlContext.createNamedExecutor('subdivision:deleteSubdividedLands').setParameter('subdivisionid', subdivisionid ).execute()
         em.sqlContext.createNamedExecutor('subdivision:deleteSubdivision').setParameter('objid', subdivisionid ).execute()
     }
+	
+	private void deleteSubdvdLandFaas( subdivisionid ){
+		em.sqlContext.createNamedQuery( 'subdivision:getSubdividedLands')
+			.setParameter( 'subdivisionid', subdivisionid ).resultList.each{ sl ->
+				em.delete( 'faas', [objid:sl.newfaasid] )
+				em.delete( 'faas:faaslist', [objid:sl.newfaasid] )
+		}
+	}
     
     @ProxyMethod
     public Map submit( subdivisionid ) {
