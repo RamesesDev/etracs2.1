@@ -135,6 +135,43 @@ GROUP BY p.pathbytitle, a.acctcode, a.accttitle
 ORDER BY p.pathbytitle, a.acctcode   
 
 
+[getStatementOfRevenueSimplifiedSRE] 
+SELECT  
+	MIN(a.acctcode) AS acctcode,  
+	MIN(a.accttitle) AS accttitle, 
+	MIN(p.acctcode) as parentcode, 
+	MIN(p.accttitle) as parenttitle, 
+	MIN(ISNULL(p.target, 0.0)) AS target, 
+	SUM(r.amount) AS amount 
+FROM revenue r 
+	INNER JOIN incomeaccount ia ON r.acctid = ia.objid 
+	LEFT JOIN account a ON a.objid = ia.sreid  
+	LEFT JOIN account p on p.objid = a.parentid 
+WHERE r.liquidationtimestamp LIKE $P{txntimestamp}  
+  AND ia.fundid LIKE $P{fundid} 
+  AND r.voided = 0 
+GROUP BY a.acctcode, a.accttitle 
+ORDER BY a.acctcode 
+
+
+[getStatementOfRevenueSimplifiedNGAS] 
+SELECT  
+	MIN(a.acctcode) AS acctcode,  
+	MIN(a.accttitle) AS accttitle, 
+	MIN(p.acctcode) as parentcode, 
+	MIN(p.accttitle) as parenttitle, 
+	MIN(ISNULL(p.target, 0.0)) AS target, 
+	SUM(r.amount) AS amount 
+FROM revenue r 
+	INNER JOIN incomeaccount ia ON r.acctid = ia.objid 
+	LEFT JOIN account a ON a.objid = ia.ngasid  
+	LEFT JOIN account p on p.objid = a.parentid 
+WHERE r.liquidationtimestamp LIKE $P{txntimestamp}  
+  AND ia.fundid LIKE $P{fundid} 
+  AND r.voided = 0 
+GROUP BY a.acctcode, a.accttitle 
+ORDER BY a.acctcode 
+
 
 [getStatementOfRevenueDetailedSRE]  
 SELECT * FROM (

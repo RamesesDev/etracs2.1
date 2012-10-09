@@ -1,0 +1,14 @@
+import com.rameses.anubis.web.*;
+import com.rameses.anubis.*;
+
+def request = AnubisContext.currentContext.request;
+def sessionVar = CookieUtil.getCookie( "SESSIONID", request );
+System.out.println( sessionVar?.value);
+if(sessionVar?.value) {
+   def sess = sessionVar.value;
+   sess = sess.substring( 0, sess.indexOf("!") );
+   def svc = SERVICE.lookup('user-service/SessionService');
+   def info = svc.getInfo(sess);
+   request.setAttribute( "SESSION_INFO", info );
+}
+return sessionVar ? [SESSIONID: sessionVar.value] : null;

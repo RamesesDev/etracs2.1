@@ -1,0 +1,7 @@
+".*" [true == true ]{
+    enabled:true;
+}
+
+"attachment.*|file|upload" [stopped == false ]{
+    enabled:false;
+}

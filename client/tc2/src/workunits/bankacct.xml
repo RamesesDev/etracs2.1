@@ -61,7 +61,7 @@ class BankAcctController extends etracs2.groovy.CRUDController
     ] as SubListModel;
     
     def getAccttype() {
-        return ["CHECKING", "SAVINGS", "TIME DEPOSIT"];
+        return svc.getAccountTypeList()
     }
     
     def getFunds() {

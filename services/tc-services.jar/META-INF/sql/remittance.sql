@@ -124,6 +124,18 @@ AND docstate = 'OPEN'
 AND collectorid = $P{collectorid} 
 ORDER BY serialno DESC, txndate DESC
 
+
+[getUnpostedBatchCaptureCollections]
+SELECT objid 
+FROM batchcapture 
+WHERE collectorid = $P{collectorid} AND docstate <> 'POSTED' 
+
+[getUnpostedCaptureReceipts]
+SELECT * FROM receiptlist 
+WHERE remittanceid IS NULL 
+AND docstate = 'CAPTURED' 
+AND collectorid = $P{collectorid} 
+
 [getOtherPayments]
 SELECT pi.* FROM paymentitem pi, receiptlist rl 
 WHERE rl.objid = pi.receiptid 

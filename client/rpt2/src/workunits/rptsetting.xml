@@ -41,7 +41,6 @@
                     entity = createEntity();
                 }
                 agricultural = [classname:entity.agriculturaltitle]
-                
             }
             
             def createEntity(){
@@ -88,15 +87,14 @@
             }
             
             def add(){
-                def opener = InvokerUtil.lookupOpener("propertyclass.lookup",[onselect:selectPropertyclass]);
-                return opener;
+                return InvokerUtil.lookupOpener("propertyclass.lookup",[onselect:selectPropertyclass]);
             }
             
              def selectPropertyclass = { property ->
                 entity.propertyclassifications.add( [
-                    objid           : property.objid,
-                    propertycode    : property.propertycode,
-                    propertydesc    : property.propertydesc
+                    objid           : property.classid,
+                    propertycode    : property.classcode,
+                    propertydesc    : property.classname
                 ]);
                 
                 binding.refresh("entity.*");

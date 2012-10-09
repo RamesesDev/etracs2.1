@@ -1,0 +1,112 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/report/tc" action="init" opener="abstract" caption="Statement of Revenue (Simplified)" target="window" index="10" permission="tcreport.statementofrevenue" />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" shortcut="ctrl + C" icon="images/cancel.png" />
+        <invoker type="formActions" action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png" />
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" shortcut="ctrl + V" icon="images/doc-view.png" />
+        
+        <invoker type="previewActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl + B" icon="images/back.png" />
+    </invokers>
+
+    <code>
+        <![CDATA[
+        import com.rameses.rcp.common.*
+        import com.rameses.rcp.annotations.*
+        import com.rameses.osiris2.client.*
+        import com.rameses.osiris2.reports.*
+        
+        class StatementOfRevenueSimplified {
+            
+            @Service('ReportParameterService')
+            def svcParams
+            
+            @Service('TCReportService')
+            def svc
+            
+            @Service('DateService')
+            def dateSvc
+            
+            def chart
+            def year
+            def qtr
+            def month
+            def day
+            def fund
+            def reportdata
+            
+            def report = [
+                getReportName : { return 'treasury/statementofrevenuesimplified' },
+                getReportData : { return reportdata },
+                getParameters : {
+                    def params = svcParams.getStandardParameter( OsirisContext.env.USERNAME )
+                    params.TITLE  = reportdata.title
+                    params.PERIOD = reportdata.period
+                    return params
+                }
+            ] as ServerReportModel
+            
+            void init() {
+                def parsedate = dateSvc.parseCurrentDate()
+                year = parsedate.year
+                qtr = parsedate.qtr
+                month = svc.getMonth( parsedate.month )
+            }
+            
+            def preview() {
+                generateReport()
+                return 'preview'
+            }
+            
+            void print() {
+                generateReport()
+                ReportUtil.print( report.report, true )
+            }
+            
+            void generateReport() {
+                reportdata = svc.generateStatementOfRevenueSimplified( chart, year, qtr, month?.month, day, fund )
+                report.viewReport()
+            }
+            
+            def back() {
+                return 'default'
+            }
+            
+            void setQtr( qtr ) {
+                this.qtr = qtr
+                month = null
+            }
+            
+            void setMonth( month ) {
+                this.month = month
+                day = null
+            }
+            
+            List getChartlist() {
+                return ['NGAS', 'SRE']
+            }
+            
+            List getQuarterlist() {
+                return [1,2,3,4]
+            }
+            
+            List getMonthlist() {
+                return svc.getMonthList( qtr )
+            }
+            
+            List getDaylist() {
+                return svc.getNumDays( year, month?.month-1 )
+            }
+            
+            List getFundlist() {
+                return svc.getFundList()
+            }
+        }
+        ]]>
+    </code>
+
+    <pages>
+        <page template="etracs2.tc.report.AbstractInit2Page" />
+        <page name="preview" template="etracs2.common.PreviewPage" />
+    </pages>
+</workunit>

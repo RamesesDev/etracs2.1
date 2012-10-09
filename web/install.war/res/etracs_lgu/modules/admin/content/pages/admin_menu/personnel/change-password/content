@@ -29,6 +29,3 @@ def fields = [
 %>
 @form( context:"changepass", fields: fields )
 
-<div style="text-align: right">
-	<button r:context="changepass" r:name="save">Save</button>
-</div>

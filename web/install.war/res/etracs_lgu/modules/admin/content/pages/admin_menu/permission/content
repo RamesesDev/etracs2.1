@@ -99,6 +99,7 @@
 				)
 				self.objectListModel.refresh();
 				self.permissionListModel.refresh();
+				self.moduleListModel.refresh();
 			}
 
 			this.toggleObject = function() {
@@ -155,6 +156,7 @@
 		<td width="250px">
 			<div id="label">Modules</div>
 			<div class="selectionbox">
+			
 				<table r:context="${context}" r:model="moduleListModel" r:varName="item" r:name="selectedModule" 
 					r:varStatus="stat"  width="100%" class="selectionList" cellpadding="0" cellspacing="0">
 					<tbody>
@@ -162,11 +164,12 @@
 							<td width="20">
 								<a r:context="${context}" r:name="toggleModule" r:visibleWhen="#{item.allowed_count == 0}">
 									<img src="/res/admin/unchecked.png"/>
+									
 								</a>
 								<a r:context="${context}" r:name="toggleModule" r:visibleWhen="#{item.allowed_count==item.all_count}">
 									<img src="/res/admin/checked.png"/>
 								</a>
-								<a r:context="${context}" r:name="toggleModule" r:visibleWhen="#{!(item.allowed_count==item.all_count || item.allowed_count==0)}">
+								<a r:context="${context}" r:name="toggleModule" r:visibleWhen="#{!(item.allowed_count==item.all_count||item.allowed_count==0)}">
 									<img src="/res/admin/partial_checked.png"/>
 								</a>
 							</td>
@@ -225,6 +228,3 @@
 	</table>
 </table>	
 
-<div style="text-align: right">
-	<button r:context="permission" r:name="save">Save</button>
-</div>

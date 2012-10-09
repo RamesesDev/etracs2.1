@@ -1,0 +1,74 @@
+import com.rameses.annotations.*
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+
+class CancelAnnotationInterceptor
+{
+	@PersistenceContext('main')
+	def em
+    
+	@Service('LogService')
+    def logSvc
+    
+	@Service('CancelAnnotationService')
+	def svc 
+	
+	@Service('MessengerService')
+	def msgSvc
+	
+	@Service('Var')
+	def var 
+	
+	
+	/*==============================================================
+	** LOCAL INTERCEPTORS 
+	==============================================================*/
+	@After(pattern='CancelAnnotationService.approve') 
+	public void interceptApprove( evt ) {
+		def cancelannotation = evt.result 
+		def attachment = [ 
+			cancelannotation : evt.result 
+		]
+		def msg = msgSvc.createMessage( 'faascancelannotation.post', attachment )
+		msg.refid = cancelannotation.objid 
+		updateReceiverInfo( msg, cancelannotation )
+		msgSvc.send( msg ) 
+	}
+	
+	void updateReceiverInfo( msg, cancelannotation ) {
+		if( 'province'.equalsIgnoreCase( var.lgu_type) ) {
+			def info = svc.getFaasInfo( cancelannotation.faasid ) 
+			msg.receiverid = info?.lguid
+			msg.receivername = info?.lguname
+		}
+	}
+	
+	
+	
+	/*==============================================================
+	** REMOTE INTERCEPTORS 
+	==============================================================*/
+	@After(pattern='MessengerService.onreceive') 
+	public void interceptOnReceive( evt ) {
+        def msg = evt.result 
+        if( msg.action == 'faascancelannotation.post') 
+			postCancelAnnotation( msg ) 
+	}
+    
+    void postCancelAnnotation( msg ) {
+        try {
+            println 'Processing message -> ' + msg.action 
+			svc.postRemoteCancelAnnotation( msg.attachment.cancelannotation )
+            msgSvc.processedSuccessfully( msg )
+        }
+        catch( e ) {
+            println '='*50
+            e.printStackTrace()
+            msgSvc.errorProcessing( msg, e.message )
+            throw e 
+        }
+    }
+    
+}
+
+

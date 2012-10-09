@@ -1,0 +1,196 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/report/landtax" action="init" caption="Realty Tax Clearance (By TD)" target="window" index="2" permission="landtax.rptclearance"/>
+        <invoker folderid="/txn/landtax" action="init" caption="Realty Tax Clearance (By TD)" target="window" index="2" permission="landtax.rptclearance"/>
+        <invoker folderid="/menu/rpt/landtax" action="init" caption="Realty Tax Clearance (By TD)" target="window" index="2" permission="landtax.rptclearance"/>
+        
+        <invoker type="formActions"     action="_close" caption="Close" mnemonic="c" shortcut="alt + C" icon="images/cancel.png" immediate="true" />
+        <invoker type="formActions"     action="init" caption="New" mnemonic="n" shortcut="ctrl + N" icon="images/doc-new.png" visibleWhen="#{mode != 'create'}" />
+        <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png"/>
+        <invoker type="formActions"     action="preview" caption="Preview" mnemonic="v"             icon="images/doc-view.png"/>
+        
+        <invoker type="previewActions"  action="back" caption="Back" icon="images/back.png" immediate="true" />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class RPTTaxClearanceByTDController
+{
+    @Binding
+    def binding
+    
+    @Service("ReportParameterService")
+    def svcParams;
+    
+    @Service('LandTaxReportService') 
+    def svc 
+    
+    @Service('DateService')
+    def dateSvc
+    
+    def mode 
+    
+    def entity
+    def owner
+    def faas 
+    def year 
+    def qtr
+    def month
+    def day 
+    
+    def reportdata
+    
+    void init() {
+        def parsedate = dateSvc.parseCurrentDate()
+        year = parsedate.year 
+        entity = [
+            year        : year,
+            qtr         :  4, 
+            purpose     : 'for whatever purpose it may serve him/her.' ,
+            items       : [], 
+        ] 
+        faas = null
+        binding?.focus('faas')
+        mode = 'create' 
+    }
+    
+    /* ----------------------------------------------------------------------------
+    *
+    * IMPLEMENTATION SUPPORT 
+    *
+    ---------------------------------------------------------------------------- */
+    
+    def getLookupOwner() {
+        return InvokerUtil.lookupOpener('entity.lookup', [:])
+    }
+    
+    void setOwner( owner ) {
+        this.owner = owner
+        entity.ownerid      = owner.objid
+        entity.ownerno      = owner.entityno
+        entity.ownername    = owner.entityname
+        entity.owneraddress = owner.entityaddress
+        entity.requestedby  = owner.entityname 
+        binding.refresh( 'entity.requestedby' )
+    }
+    
+    def onselectFaas = { 
+        if ( entity.year == null || entity.year == 0 ) 
+            throw new Exception('Clearance Year is required.')
+        if (it.docstate != 'CURRENT' ) 
+            throw new Exception('FAAS is not current')
+        if (it.lastyearpaid < entity.year ) 
+            throw new Exception('FAAS is not cleared for the year ' + entity.year + '.' )
+        if (it.lastyearpaid == entity.year && it.lastqtrpaid < entity.qtr ) 
+            throw new Exception('FAAS is not cleared for the ' + formalizeQtr() + ' of ' + entity.year + '.' )
+    }
+    
+    void setFaas( faas ) {
+        this.faas = faas 
+        entity.ownerno      = faas?.taxpayerno
+        entity.ownername    = faas?.ownername
+        entity.owneraddress = faas?.owneraddress
+        entity.requestedby  = faas?.taxpayername
+        entity.items.clear()
+        if( faas ) entity.items.add( faas )
+        binding.refresh( 'entity.requestedby' )
+
+    }
+    
+    def formalizeQtr() {
+        if( entity.qtr == 1 ) return '1st Quarter'
+        if( entity.qtr == 2 ) return '2nd Quarter'
+        if( entity.qtr == 3 ) return '3rd Quarter'
+        if( entity.qtr == 4 ) return '4th Quarter'
+    }
+    
+    def getLookupClearedFaas(){
+        return InvokerUtil.lookupOpener('faascleared.lookup', [taxpayerid:null, onselect:onselectFaas])
+    }
+    
+    def listHandler = [
+        getColumns : { return [
+            new Column(name:'tdno', caption:'TD No.'),
+            new Column(name:'fullpin', caption:'PIN'),
+            new Column(name:'rputype', caption:'Type'),
+            new Column(name:'classcode', caption:'Classification'),
+            new Column(name:'marketvalue', caption:'Market Value', type:'decimal', format:'#,##0.00'),
+            new Column(name:'assessedvalue', caption:'Assessed Value', type:'decimal', format:'#,##0.00'),
+            new Column(name:"lastyearpaid", caption:"Last Yr. Paid", type:'integer', format:'0000' ),
+            new Column(name:"lastqtrpaid", caption:"Last Qtr Paid", type:'integer', format:'0' ),
+        ]},
+        
+        onRemoveItem   : { item -> 
+            if( MsgBox.confirm( 'Remove selected item?' ) ) {
+                entity.items.remove( item )
+            }
+        },
+        
+        fetchList  : { return entity.items },
+        
+    ] as SubListModel 
+    
+    
+    
+    
+    
+    boolean isOnList( faas ) {
+        if( entity.items.find{ it.objid == faas.objid } )
+            return true
+        return false 
+    }
+    
+    List getQuarterList() {
+        return [1,2,3,4]
+    }
+    
+    /* ----------------------------------------------------------------------------
+    *
+    * REPORT SUPPORT 
+    *
+    ---------------------------------------------------------------------------- */
+    def preview() {
+        generateReport()
+        return 'preview' 
+    }
+    
+    void generateReport() {
+        reportdata = svc.generateTaxClearance( entity  )
+        report.viewReport()
+        mode = 'view'
+    }
+    
+    void print(){
+        generateReport()
+        ReportUtil.print( report.report, true )
+    }
+    
+    def report = [
+        getReportName : { return 'rpttaxclearance' },
+        getReportData : { return reportdata },
+        getParameters : { 
+            def params = svcParams.getStandardParameter( OsirisContext.env.USERNAME )
+            return params 
+        }
+    ] as ServerReportModel;
+        
+    def back() {
+        return 'default' 
+    }
+    
+
+    
+}
+]]>        
+        
+    </code>
+    <pages>
+        <page template="etracs2.rpt.report.RPTTaxClearanceByTDPage" />
+        <page name="preview" template="etracs2.common.PreviewPage" />
+    </pages>
+</workunit>

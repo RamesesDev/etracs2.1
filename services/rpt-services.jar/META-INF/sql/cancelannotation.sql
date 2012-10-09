@@ -13,3 +13,7 @@ SELECT * FROM cancelannotation  WHERE docno LIKE $P{docno} ORDER BY docno DESC
 [getListByAnnotationno]
 SELECT * FROM cancelannotation  WHERE annotationno LIKE $P{annotationno} ORDER BY docno DESC 
 
+[getFaasInfo]
+SELECT *
+FROM faaslist	 
+WHERE objid = $P{objid} 

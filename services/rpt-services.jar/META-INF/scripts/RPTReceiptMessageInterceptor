@@ -16,6 +16,7 @@ class RPTReceiptMessageInterceptor
 	@Service('MessengerService')
 	def msgSvc
 	
+	
 	@After(pattern='MessengerService.onreceive') 
 	public void interceptOnReceive( evt ) {
         def msg = evt.result 
@@ -41,6 +42,8 @@ class RPTReceiptMessageInterceptor
             logSvc.log('RPTRECEIPT-POST-REMOTE-COLLECTION', 'RPTReceipt', msg.objid )
         }
         catch( e ) {
+			println 'postRemoteRPTCollection' + ('='*50)
+			e.printStackTrace()
 			msgSvc.errorProcessing(msg, e.message )
         }
     }

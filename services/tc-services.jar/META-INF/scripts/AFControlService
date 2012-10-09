@@ -67,7 +67,36 @@ class AFControlService
 	
 	@ProxyMethod
 	public void deleteAFControl( afcontrol ) {
+		afcontrol = em.read( SCHEMANAME, afcontrol )
+		
+		//deleted already 
+		if( ! afcontrol ) return 
+		
+		checkNotIRAFIssued( afcontrol )
+		checkNoReceiptReference( afcontrol )
+		checkNoBatchCaptureReference( afcontrol )
+		
 		em.delete( SCHEMANAME, afcontrol ) 
+		
+		def afcredit  = em.sqlContext.createNamedQuery('afcontrol:getAFInventoryCredit')
+							.setParameter('objid', afcontrol.afinventorycreditid)
+							.singleResult 
+		
+		em.sqlContext.createNamedExecutor('afcontrol:deleteCraafByInventoryId')
+				.setParameter('afinventoryid', afcredit.afinventoryid)
+				.execute()
+				
+		em.sqlContext.createNamedExecutor('afcontrol:deleteCraafByInventoryCreditId')
+				.setParameter('afinventorycreditid', afcredit.objid)
+				.execute()
+				
+		em.sqlContext.createNamedExecutor('afcontrol:deleteAFInventoryCredit')
+				.setParameter('objid', afcredit.objid)
+				.execute()
+				
+		em.sqlContext.createNamedExecutor('afcontrol:deleteAFInventory')
+				.setParameter('objid', afcredit.afinventoryid )
+				.execute()
 	}
 	
 	@ProxyMethod
@@ -472,4 +501,28 @@ class AFControlService
 		}
 	}
 	
+	void checkNoReceiptReference( afcontrol ) {
+		def rct = em.sqlContext.createNamedQuery('afcontrol:getReferencedReceipt')
+						.setParameter('afcontrolid', afcontrol.objid)
+						.setMaxResults(1)
+						.singleResult 
+		if( rct ) throw new Exception('AF Control is already referenced by a receipt.')
+	}
+		
+	void checkNotIRAFIssued( afcontrol ) {
+		def credit = em.sqlContext.createNamedQuery('afcontrol:getIRAFInfo')
+						.setParameter('objid', afcontrol.objid)
+						.setMaxResults(1)
+						.singleResult 
+		if( credit ) throw new Exception('Cannot delete an IRAF issued AF Control.')
+	}
+	
+	void checkNoBatchCaptureReference( afcontrol ) {
+		def batch = em.sqlContext.createNamedQuery('afcontrol:getOpenBatchCapture')
+						.setParameter('afcontrolid', '%' + afcontrol.objid + '%')
+						.setMaxResults(1)
+						.singleResult 
+		if( batch ) throw new Exception('AF Control is already referenced by a Batch Capture transaction.')
+	}
+		
 }

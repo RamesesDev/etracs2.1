@@ -13,13 +13,20 @@ if( PARAMS.objid ) {
 	\$put( "jobposition_edit", 
 		new function() {
 			var svc = Service.lookup("admin/JobpositionService");
+			var orgSvc = Service.lookup( "admin/OrgunitService" );
+			
 			this.saveHandler;
 			
 			this.jobposition = <%=JsonUtil.toString(data)%>;
 			this.availableTags;
+			this.selectedOrgUnit;
+			this.orgUnits;
+			var self = this;
 			
 			this.onload = function() {
+				this.orgUnits = orgSvc.getUserOrgunits({});
 				this.availableTags = this.jobposition.availableTags;
+				this.selectedOrgUnit = this.orgUnits.find( function(x) { return x.objid == self.jobposition.orgunitid }   );
 			}
 			
 			var roleSvc;
@@ -32,6 +39,13 @@ if( PARAMS.objid ) {
 			}
 	
 			this.save = function() {
+				if( !this.selectedOrgUnit ) {
+					alert( 'Please select an org unit' );
+					return;
+				}
+				this.jobposition.orgunitid = this.selectedOrgUnit.objid;
+				this.jobposition.orgunitcode = this.selectedOrgUnit.code;
+			
 				svc.update(this.jobposition);
 				this.saveHandler();
 				return "_close";
@@ -46,6 +60,7 @@ if( PARAMS.objid ) {
 def fields = [
 	[type:"text", name:"jobposition.code", caption:"Code"],
 	[type:"text", name:"jobposition.title", caption:"Title", size:"50"],
+	[type:"combo", name:"selectedOrgUnit", caption:"Org Unit", items:"orgUnits", allowNull:"true", itemLabel:"code"],
 	[type:"radio", name:"jobposition.jobstatus", caption:"Job Status", options:"{R:'Regular', D:'Delegated'}"],
 	[type:"label", caption:"Role class", value:"#{jobposition.roleclass}"],
 	[type:"combo", name:"jobposition.role", caption:"Role : ", items:"getRoles()", allowNull:"true", itemKey:"name", itemLabel:"name", depends:"jobposition.roleclass"],
@@ -66,7 +81,4 @@ def fields = [
 @form( context: 'jobposition_edit', fields: fields )
 
 
-<div style="text-align: right;">
-	<button r:context="jobposition_edit" r:name="save">Save</button>
-</div>
 

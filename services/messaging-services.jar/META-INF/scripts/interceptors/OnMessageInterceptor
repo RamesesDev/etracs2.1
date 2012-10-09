@@ -8,7 +8,7 @@ class OnMessageInterceptor
 	def inboundTask 
 	
 	
-	@Before(pattern="ResponseMessageHandler.onMessage.*") 
+	@Before(pattern="MessageListenerService.onMessage.*") 
 	public void beforeOnMessage( evt ) {
 		inboundTask.fetchMessage( null ) 
 	}

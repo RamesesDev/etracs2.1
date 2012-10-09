@@ -25,12 +25,21 @@ public class RuleTextBuilderService
 	public String buildConstraints( cond ) {
 		String s = ''
 		cond.constraints.each { constraint ->
-			if( s.length() > 0 ) s += ', '
-			if( constraint.fieldvar ) s += constraint.fieldvar + ':' 
+			if( s.length() > 0 ) 		s += ', '
+			if( constraint.fieldvar ) 	s += constraint.fieldvar + ':' 
+			
 			s += constraint.field.name
-			if( constraint.operator ) s += ' ' + constraint.operator.name 
-			if( constraint.operator && constraint.operator.name != 'matches' && constraint.value!=null ) s += ' ' + constraint.value 
-			else if( constraint.operator && constraint.operator.name == 'matches' && constraint.value!=null ) s += ' "' + constraint.value.objid.join('|') + '"'
+			if( constraint.operator ) 	s += ' ' + constraint.operator.name 
+			
+			if( constraint.operator && constraint.operator.name != 'matches' && constraint.value!=null ) {
+				if( !constraint.usevar && constraint.field.datatype == 'string' )
+					s += ' "' + constraint.value + '"'
+				else
+					s += ' ' + constraint.value 
+			}
+			else if( constraint.operator && constraint.operator.name == 'matches' && constraint.value!=null ) {
+				s += ' "' + constraint.value.objid.join('|') + '"'
+			}
 		}
         return s 
 	}

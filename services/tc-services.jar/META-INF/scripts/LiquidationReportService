@@ -260,6 +260,26 @@ public class LiquidationReportServices{
 	}
 	
 	@ProxyMethod
+	public def buildLiquidationSummaryByFund( def liquidationid, def charttype, def fundid, def fundname  ) {
+		if( !liquidationid ) throw new Exception('Liquidation is required.')
+		if( !charttype ) throw new Exception('Chart is required.')
+		if( ! fundid ) throw new Exception('Fund is required.')
+		
+		def reporttitle = 'LIQUIDATION SUMMARY BY ' + charttype + ' ACCOUNT'
+		
+		return em.sqlContext.createNamedQuery("liquidationreport:getLiquidationSummaryBy${charttype}")
+				.setParameters([
+					objid   	: liquidationid,
+					fundid  	: fundid,
+					reporttitle : reporttitle,
+				])
+				.resultList 
+				.each{ it.reporttitle = reporttitle }
+	}
+	
+	
+	
+	@ProxyMethod
 	public def getFundList(){
 		return em.sqlContext.createNamedQuery("liquidationreport:getFundList").resultList;
 	}
@@ -303,7 +323,7 @@ public class LiquidationReportServices{
 	
 	def buildLiquidationData( liquidation ) {
 		return [
-			txndate: liquidation.dtposted,
+			txndate: dtSvc.parse('yyyy-MM-dd', liquidation.info.txndate),
 			txnno: liquidation.info.txnno,
 			liquidatingofficername: liquidation.info.liquidatingofficername,
 			liquidatingofficertitle: liquidation.info.liquidatingofficertitle,

@@ -137,8 +137,11 @@ public class RPTBillingService
 			msg.status =[date:new Date(), iserror:false, errormsg:'']
 			msg.attachment = [sessionid:bill.sessionid, bill:bill] 
 			msgSvc.send( msg ) 
+			println 'Sending Bill to ' + sendername
 		}
 		catch( e ) {
+			println 'generateRemoteRequestedBill' + ('='*50)
+			e.printStackTrace()
 			msg.attachment = [sessionid:bill.sessionid, bill:[:]] 
 			msg.status =[date:new Date(), iserror:true, errormsg:e.message]
 			msgSvc.send( msg ) 
@@ -158,13 +161,21 @@ public class RPTBillingService
 			receiverid  : msg.receiverid,
 			receivername: msg.receivername,
 		]
-		em.sqlContext.createNamedExecutor('messenger:insertResponseData')
-				.setParameters( data )
-				.execute()
+		try{
+			em.sqlContext.createNamedExecutor('messenger:insertResponseData')
+					.setParameters( data )
+					.execute()
+		}
+		catch( e ) {
+			println '='*50
+			println 'postRemoteGeneratedBill ->  ' + e.message 
+			// bypass duplicate 
+		}
 	}	
 	
 	@ProxyMethod 
 	public def getRemoteResponse( sessionid ) {
+		println 'getRemoteResponse(sessionid) -> ' + sessionid
 		def response = em.sqlContext.createNamedQuery('messenger:getResponseData')
 						.setParameter('sessionid', sessionid )
 						.singleResult

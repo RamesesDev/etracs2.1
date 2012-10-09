@@ -15,6 +15,7 @@
 		[type:"label", caption:"Birthdate", value:"#{info.birthdate}"],
 		[type:"label", caption:"Gender", value:"#{!info.gender ? '' : info.gender == 'M' ? 'Male' : 'Female'}"],
 		[type:"label", caption:"Email", value:"#{info.email}"],
+		[type:"label", caption:"Txn Code", value:"#{info.txncode}"],
 	];
 	%>
 	@form(context:"personnelinfo", fields: fields)

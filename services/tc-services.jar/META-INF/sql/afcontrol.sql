@@ -89,3 +89,39 @@ UPDATE craaf c, afinventorycredit cr SET
 WHERE c.afinventoryid = cr.afinventoryid  
   AND cr.objid = $P{afinventorycreditid}  
   
+  
+[getReferencedReceipt]  
+SELECT objid 
+FROM receiptlist 
+WHERE afcontrolid = $P{afcontrolid}
+
+[getIRAFInfo]
+SELECT i.objid 
+FROM afcontrol afc 
+	INNER JOIN afinventorycredit ac ON afc.afinventorycreditid = ac.objid 
+	INNER JOIN afinventory inv ON ac.afinventoryid = inv.objid 
+	INNER JOIN iraf i ON inv.irafid = i.objid 
+WHERE afc.objid = $P{objid}
+
+
+[getOpenBatchCapture]
+SELECT bc.objid 
+FROM batchcapture bc
+WHERE bc.afcontrol LIKE $P{afcontrolid} 
+  AND bc.docstate <> 'POSTED' 
+ 	
+[getAFInventoryCredit]	
+SELECT * FROM afinventorycredit WHERE objid = $P{objid} 
+
+
+[deleteCraafByInventoryId]
+DELETE FROM craaf WHERE afinventoryid = $P{afinventoryid}
+
+[deleteCraafByInventoryCreditId]
+DELETE FROM craaf WHERE afinventorycreditid = $P{afinventorycreditid}
+
+[deleteAFInventoryCredit]
+DELETE FROM afinventorycredit WHERE objid = $P{objid}
+
+[deleteAFInventory]
+DELETE FROM afinventory WHERE objid = $P{objid}
