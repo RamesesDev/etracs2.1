@@ -121,6 +121,7 @@
 	<field name="txntype" class="java.lang.String"/>
 	<field name="prevav" class="java.math.BigDecimal"/>
 	<field name="rputype" class="java.lang.String"/>
+	<field name="info.additionalinfo" class="java.lang.String"/>
 
 
 		<group  name="TDFRONTPAGE" isStartNewColumn="true" isStartNewPage="true" >
@@ -815,7 +816,7 @@ Total Adjustment                     %
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{north}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["land".equals($F{rputype}) ? $F{north} : null]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -855,7 +856,7 @@ Total Adjustment                     %
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{west}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["land".equals($F{rputype}) ? $F{west} : null]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -876,7 +877,7 @@ Total Adjustment                     %
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{south}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["land".equals($F{rputype}) ? $F{south} : null]]></textFieldExpression>
 				</textField>
 				<line direction="TopDown">
 					<reportElement
@@ -2482,7 +2483,7 @@ Total Adjustment                     %
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{east}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["land".equals($F{rputype}) ? $F{east} : null]]></textFieldExpression>
 				</textField>
 				<line direction="TopDown">
 					<reportElement
@@ -4164,6 +4165,27 @@ Total Adjustment                     %
 					</textElement>
 				<text><![CDATA[Amount Paid :     P]]></text>
 				</staticText>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="171"
+						width="283"
+						height="13"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-81"
+						isPrintRepeatedValues="false"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["bldg".equals($F{rputype}) ? $F{info.additionalinfo} : null]]></textFieldExpression>
+				</textField>
 			</band>
 			</groupHeader>
 			<groupFooter>
@@ -6987,7 +7009,9 @@ instead of P948, P1,000 instead of P1,004]]></text>
 						height="11"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
-						key="staticText-138"/>
+						key="staticText-138">
+							<printWhenExpression><![CDATA[new Boolean($F{bldgitemfloorcount} != null)]]></printWhenExpression>
+						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
@@ -7578,7 +7602,7 @@ instead of P948, P1,000 instead of P1,004]]></text>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["true".equals($F{taxable}+"") ? "TAXABLE" : "EXEMPT"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[("true".equals($F{taxable}+"") && $F{totalav}.doubleValue() > 0.00 ) ? "TAXABLE" : "EXEMPT"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
