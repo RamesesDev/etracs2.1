@@ -2,13 +2,16 @@ import com.rameses.annotations.*
 import com.rameses.eserver.*;
 import com.rameses.common.*;
 
-class TransmittalService
+class ForTransmittalService
 {
     @PersistenceContext('main')
     def em
 	
 	@Env
 	def env 
+	
+	@Service('Var')
+	def sys_var
     
 	def FOR_TRANSMITTAL_SCHEMA_NAME = 'fortransmittal:fortransmittal'
 	
@@ -21,6 +24,10 @@ class TransmittalService
 	
 	@ProxyMethod
 	public def create( entity ) {
+		//don't create if "faas_create_transmittal_on_submit_to_prov" is set to 0 or '0'
+		if( sys_var.faas_create_transmittal_on_submit_to_prov == 0 ) return;
+		if( sys_var.faas_create_transmittal_on_submit_to_prov == '0' ) return;
+		
 		entity.schemaname 	= FOR_TRANSMITTAL_SCHEMA_NAME
 		entity.postedbyid 	= env.USERID 
 		entity.postedby   	= env.USERFORMALNAME
