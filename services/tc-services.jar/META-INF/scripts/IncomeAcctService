@@ -114,8 +114,8 @@ class IncomeAcctService
 		
 		checkDuplicates( incomeacct );
 
-		if( ! incomeacct.amounttype ) incomeacct.defaultvalue = 0.0;
-		if( incomeacct.amounttype && incomeacct.defaultvalue < 0.0)  throw new Exception("Default Value must be greater than zero." );
+		if( incomeacct.defaultvalue == null ) incomeacct.defaultvalue = 0.0;
+		if( incomeacct.defaultvalue < 0.0)  throw new Exception("Default Value must be greater than zero." );
 
 		em.validate(incomeacct.schemaname, incomeacct);
 	}
