@@ -31,7 +31,7 @@ class LiquidationInterceptor
 				params = [
 					liquidationrcdid : rcd.objid ,
 					liquidationid 	 : liquidation.objid, 
-					timestamp     	 : dateSvc.buildCustomTimeStamp( liquidation.dtposted ) 
+					timestamp     	 : dateSvc.buildCustomTimeStamp( liquidation.info.txndate ) 
 				]
 				em.sqlContext.createNamedExecutor('revenue:postLiquidationByRcd').setParameters( params ).execute()
 			}	
@@ -39,7 +39,7 @@ class LiquidationInterceptor
 		else {
 			params = [
 				liquidationid : liquidation.objid, 
-				timestamp     : dateSvc.buildCustomTimeStamp( liquidation.dtposted ) 
+				timestamp     : dateSvc.buildCustomTimeStamp( liquidation.info.txndate ) 
 			]
 			em.sqlContext.createNamedExecutor('revenue:postLiquidation').setParameters( params ).execute()
 		}
