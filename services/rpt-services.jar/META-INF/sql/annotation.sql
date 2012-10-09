@@ -32,11 +32,7 @@ SELECT * FROM faasannotation WHERE faasid = $P{faasid}  AND docstate = 'APPROVED
 
 
 [getFaasInfo]
-SELECT 
-	objid, docstate, tdno, issuedate, 
-	ownername, owneraddress, 
-	fullpin, classcode, cadastrallotno, surveyno, blockno, 
-	totalmv, totalav  
+SELECT *
 FROM faaslist	 
 WHERE objid = $P{objid} 
 

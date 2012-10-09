@@ -139,6 +139,20 @@ catch(e) {
 				}
 				return new PopupOpener( "personnel:edit", {saveHandler:h, info: this.info} );
 			}
+			
+			this.addTxnCode = function() {
+				var o = prompt('Enter the txn code');
+				if(o) {
+					var c = svc.addTxnCode( {personnelid: self.info.objid, txncode: o} );	
+					self.info.txncode = o;
+				}
+			}
+			this.removeTxnCode = function() {
+				if( confirm("You are about to remove the txn code for this personnel. Continue?")) {
+					var c = svc.removeTxnCode( {personnelid: self.info.objid } );	
+					self.info.txncode = null;
+				}
+			}
 		},
 		{
 			"default": "${PAGE.path}/data",
@@ -151,7 +165,9 @@ catch(e) {
 
 <a r:context="personnelinfo" r:name="_default">Information</a> |
 <a r:context="personnelinfo" r:name="_positions">Position(s)</a> |
-<a r:context="personnelinfo" r:name="viewUserAccount">Login Account</a>
+<a r:context="personnelinfo" r:name="viewUserAccount">Login Account</a> |
+<a r:context="personnelinfo" r:name="addTxnCode" r:visibleWhen="#{!info.txncode}">Set TxnCode</a>
+<a r:context="personnelinfo" r:name="removeTxnCode"  r:visibleWhen="#{info.txncode}">Remove TxnCode</a>
 
 <div r:controller="personnelinfo"></div>
 

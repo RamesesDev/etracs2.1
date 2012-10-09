@@ -39,7 +39,7 @@ class TaxDeclarationReportController
     }
     
     def report =[
-        getReportName : { return 'tdreport' },
+        getReportName : { return svc.getTrueCopyReportName() },
         getReportData : { return data; },
         getParameters : { getStandardReportParams(); }
     ] as ServerReportModel;

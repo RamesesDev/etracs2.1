@@ -1,6 +1,8 @@
+<script src="/js/ext/datetime.js"></script>
+
 <script type="text/javascript">
 	
-	\$register({id:"scheduler:info", context:"taskinfo", page: "${PAGE.path}/info"});
+	\$register({id:"scheduler:info", context:"taskinfo", page: "${PAGE.path}/info", title: 'Task Info', options: {width: 415, height: 536}});
 	
 	\$put(
 		"tasklist",
@@ -40,16 +42,23 @@
 				*/
 			}
 			
+			this.refresh = function() {
+				this.listModel.refresh(true);
+			};
+			
 			this.suspend = function() {
 				if(this.task) svc.suspend({id: this.task.id});
+				this.refresh();
 			}
 
 			this.resume = function() {
 				if(this.task) svc.resume({id:this.task.id});
+				this.refresh();
 			}
 
 			this.resumeError = function() {
 				if(this.task) svc.resumeError({id:this.task.id});
+				this.refresh();
 			}
 
 			this.addTask = function() {
@@ -81,6 +90,7 @@
 </script>
 
 <div>
+	<button r:context="tasklist" r:name="refresh">Refresh</button>
 	<button r:context="tasklist" r:name="addTask">Add Task</button>
 </div>
 
@@ -101,10 +111,13 @@ def cols = [
 				<a r:context="tasklist" r:name="remove">Delete</a>
 			</span>
 			
-			<a r:context="tasklist" r:name="recover" r:visibleWhen="#{item.status == 'error'}">Recover</a>
+			<a r:context="tasklist" r:name="resumeError" r:visibleWhen="#{item.status == 'error'}">Recover</a>
 		</nobr>
 	"""],
 ];
 %>
 
 @grid( context:'tasklist', model:'listModel', name:'task', cols:cols )
+
+
+

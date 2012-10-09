@@ -1,0 +1,2 @@
+<button r:context="role_info" r:name="save" r:visibleWhen="#{mode == 'create'}">Save</button>
+<button r:context="role_info" r:name="update" r:visibleWhen="#{mode != 'create'}">Save</button>

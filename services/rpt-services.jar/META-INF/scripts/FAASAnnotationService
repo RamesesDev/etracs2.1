@@ -126,6 +126,8 @@ class FAASAnnotationService
 		annotation.objid = 'A'+ new UID()
 		annotation.docno = seqSvc.getNextFormattedSeries('FAASAnnotation')
 		//createAnnotationDetail( annotation )
+		annotation.schemaname = SCHEMA_NAME
+		annotation.schemaversion = SCHEMA_VERSION
 		em.validate( annotation.schemaname, annotation )
 		em.create( annotation.schemaname, annotation )
 		logSvc.log('CREATE', 'Annotation', annotation.objid )
@@ -209,6 +211,13 @@ class FAASAnnotationService
 	}
 	
 	@ProxyMethod
+	public void postRemoteAnnotation( annotation ) {	
+		em.save( annotation.schemaname, annotation)
+		annotateFAAS( annotation )
+		logSvc.log('POST-REMOTE-ANNOTATION', 'FaasAnnotation', annotation.objid )
+	}
+	
+	@ProxyMethod
 	public void remove( annotation ) {
 		def old = em.read( annotation.schemaname, annotation)
 		if( old.docstate == APPROVED_STATE ) throw new Exception('Annotation has already been approved.')
@@ -216,6 +225,13 @@ class FAASAnnotationService
 		txnrefSvc.delete( annotation.faasid )
 		em.delete( 'annotation', annotation)
 		logSvc.log('DELETE', 'Annotation', annotation.objid )
+	}
+	
+	@ProxyMethod 
+	public def getFaasInfo( faasid ) {
+		return em.sqlContext.createNamedQuery('annotation:getFaasInfo')
+				.setParameter('objid', faasid)
+				.singleResult 
 	}
 
 	

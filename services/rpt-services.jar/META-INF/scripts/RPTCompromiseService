@@ -61,11 +61,11 @@ class RPTCompromiseService {
 		if( ! searchtext ) return getListByQuery( namedsql, criteria, params, null );
 		
 		def result = [];
-		criteria = [whereclause:' WHERE txnno LIKE $P{searchtext} ', searchtext:searchtext]
+		criteria = [whereclause:' txnno LIKE $P{searchtext} ', searchtext:searchtext]
 		if((result = getListByQuery( namedsql, criteria, params, null ))) return result;
-		criteria = [whereclause:' WHERE secondpartyrepresentative LIKE $P{searchtext} ', searchtext:searchtext+'%']
+		criteria = [whereclause:' secondpartyrepresentative LIKE $P{searchtext} ', searchtext:searchtext+'%']
 		if((result = getListByQuery( namedsql, criteria, params, null ))) return result;
-		criteria = [whereclause:' WHERE secondpartyname LIKE $P{searchtext} ', searchtext:searchtext+'%']
+		criteria = [whereclause:' secondpartyname LIKE $P{searchtext} ', searchtext:searchtext+'%']
 		if((result = getListByQuery( namedsql, criteria, params, null ))) return result;
 		return result;
 	}

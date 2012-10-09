@@ -13,6 +13,7 @@
 			this.selectedItem;
 			this.orgUnits;
 			this.orgUnit;
+			this.searchText;
 	
 			this.onload = function() {
 				this.orgUnits = svc.getUserOrgunits({});
@@ -21,8 +22,11 @@
 			this.listModel = {
 				rows: 10,
 				fetchList: function(o) {
+					o.orgunitid = null;
+					o.searchText = null;
 					if(self.orgUnit) o.orgunitid = self.orgUnit.objid;
-					return jobpossvc.getList( o );	
+					if(self.searchText) o.searchText = self.searchText;
+					return jobpossvc.getList( o );
 				}
 			}
 	
@@ -48,17 +52,13 @@
 			}
 
 			this.add = function() {
-				if(!this.orgUnit)
-					throw new Error("Please select an org unit first");
-				return new PopupOpener( "jobposition:create", {saveHandler:refreshList, 
-					jobposition : {orgunitid: this.orgUnit.objid, orgunitcode: this.orgUnit.code } } );
+				var j = {};
+				if( this.orgUnit ) j = {orgunitid: this.orgUnit.objid, orgunitcode: this.orgUnit.code };	
+				return new PopupOpener( "jobposition:create", {saveHandler:refreshList, jobposition : j } );
 			}
 
 			this.edit = function() {
-				return new PopupOpener( "jobposition:edit", {
-					saveHandler:refreshList, 
-					objid:this.selectedItem.objid
-				} );
+				return new PopupOpener( "jobposition:edit", {saveHandler:refreshList, objid:this.selectedItem.objid} );
 			}
 	
 			this.propertyChangeListener = {
@@ -83,13 +83,37 @@
 			this.viewPermissions = function() {
 				return permissionViewer( this.selectedItem );
 			}
+			
+			this.doSearch = function() {
+				refreshList();
+			}
+			this.reset = function() {
+				this.searchText = null;	
+				refreshList();
+			}
 		}
 	);
 </script>
 
 
+<div style="border:1px solid lightgrey;padding:10px;" r:context="jobpositionlist">
+	<table width="100%" cellpadding="0" cellspacing="0">
+		<tr>
+			<td>
+				<b>Search</b>
+				<input type="text" r:context="jobpositionlist" r:name="searchText" style="width:250px"/>
+				<button r:context="jobpositionlist" r:name="doSearch">Go</button>
+				<button r:context="jobpositionlist" r:name="reset">Reset</button>
+			</td>
+		</tr>
+	</table>
+</div>	
+
+
+
 <%
 def cols = [
+	[name:"orgunitid", caption:"Org"],
 	[name:"code", caption:"Code"],
 	[name:"title", caption:"Title"],
 	[caption:"Assignee", html: """
@@ -102,6 +126,7 @@ def cols = [
 			<a r:context="jobpositionlist" r:name="removeAssignee"> [Unassign]</a>
 		</div>
 	"""],
+	
 	[html: """ <a r:context="jobpositionlist" r:name="viewPermissions">Permissions</a> """],
 	[html: """
 		<a r:context="jobpositionlist" r:name="edit">

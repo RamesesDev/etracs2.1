@@ -1,5 +1,5 @@
 {
-	'app.host': 	'localhost:8080',
-	'app.context':	'@appname',
+	'app.host': 	'${app.host}',
+	'app.context':	'${app.context}',
 	'handler':		'script',
 }

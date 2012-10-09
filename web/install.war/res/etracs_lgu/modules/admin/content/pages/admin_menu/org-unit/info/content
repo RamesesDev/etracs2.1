@@ -33,7 +33,3 @@ def fields = [
 @form( context: "orgunitinfo", fields: fields )
 
 
-<div style="text-align: right;">
-	<button r:context="orgunitinfo" r:name="save">Save</button>
-</div>
-

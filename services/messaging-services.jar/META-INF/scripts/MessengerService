@@ -20,8 +20,8 @@ class MessengerService
 	@Service('DomainService')
 	def domainSvc
 	
-	@Resource('MessagingService')
-	def res 
+	@Service('NotificationService')
+	def notifier
 	
 	
 	def INBOX_SCHEMA_NAME = 'message:inbox' 
@@ -32,16 +32,14 @@ class MessengerService
 	def PROCESSED_STATE = 'PROCESSED'
 	
 	
-	/*-------------------------------------------------------------------------------- 
-	* OpenFire Support: method to send message to openfire clients 
-	-------------------------------------------------------------------------------- */
 	@ProxyMethod
 	public void sendMessage( receiverid, msg ) {
-		println 'Sending OpenFire message to -> ' + receiverid 
-		def req = [
-			responseUsername : receiverid,
-		]
-		res.notify( req, msg )
+		notifier.send( 'receiverid:' + receiverid )
+	}
+	
+	@ProxyMethod
+	public void notify( receiverid ) {
+		notifier.send( 'receiverid:' + receiverid )
 	}
 	
 	
@@ -59,7 +57,7 @@ class MessengerService
 	public void send( msg  ) {
 		em.validate( OUTBOX_SCHEMA_NAME, msg )
 		em.create(OUTBOX_SCHEMA_NAME, msg ) 
-		broadcastUsingOpenFire( msg, 'etracs' )
+		notify( msg.receiverid )
     }
 	
 	@ProxyMethod
@@ -179,13 +177,6 @@ class MessengerService
             em.create('message:processedoutbox', msg )
             em.delete('message:outbox', msg )
         }
-	}
-	
-	void broadcastUsingOpenFire( msg, module ) {
-		def messaging_openfire_active = (var.messaging_openfire_active ? var.messaging_openfire_active : 0 )
-		if( TO_BOOLEAN( messaging_openfire_active ) == true ) {
-			sendMessage(msg.receiverid, [receiverid:msg.receiverid, module:module, action:msg.action] )
-		}
 	}
 	
 	def getMessageInfo( msgid ) {

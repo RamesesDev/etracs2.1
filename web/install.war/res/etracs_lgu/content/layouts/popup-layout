@@ -1,0 +1,6 @@
+<div class="dialog-content dialog-body-area">
+	${_content}
+</div>
+<div class="dialog-content dialog-buttons-area">
+	${_buttons}
+</div>

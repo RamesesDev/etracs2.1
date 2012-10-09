@@ -1,7 +1,7 @@
 import com.rameses.annotations.*
 import com.rameses.common.*
 import com.rameses.io.*;
-import webutil.ImageUtil;
+import imagewebutil.ImageUtil;
 
 public class ETRACSFileTransferService
 {

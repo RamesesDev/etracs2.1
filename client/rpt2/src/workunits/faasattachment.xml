@@ -17,6 +17,9 @@ import java.rmi.server.UID
 import com.rameses.io.FileTransfer
 import com.rameses.invoker.client.DynamicHttpTransfer
 import java.io.*
+import etracs2.groovy.*
+import etracs2.rpt.groovy.*
+import com.rameses.rcp.framework.TaskManager;
 
 
 public class FAASAttachmentController {
@@ -32,10 +35,11 @@ public class FAASAttachmentController {
     def faas 
     def selectedItem
     def attachments
+    def caption 
     
     
     void open() {
-        //removeCachedDirectory()
+        caption = 'Attachment for PIN No. ' + faas.rpu.fullpin 
         attachments = faasSvc.getAttachments( faas.objid )
     }
     
@@ -137,29 +141,89 @@ public class FAASAttachmentController {
         return 'attachment' 
     }
     
-    def doCancel() {
-        return 'default' 
+    
+    /* ========================================================== */
+    /*  Temporary : create this as a helper class */
+    /* ========================================================== */
+    
+    def msg
+    def displaymsg 
+    def stopped = true 
+    def taskmgr 
+    def timertask
+    def uploadTask
+            
+    def ontimer = {
+        if( ! stopped ) {
+            updateMessage()
+        }
     }
     
-    def upload() {
-        def app = getAppInfo()
-        attachment.filename  = makeSafeFileName( attachment.objid ) + getFileExtension( file )
-        attachment.directory = makeSafeFileName( faas.objid ) 
+    void updateMessage() {
+        if( displaymsg ) {
+            displaymsg = false
+            showMessage('')
+        }
+        else {
+            displaymsg = true
+            showMessage( 'Uploading document. Please wait...'  )
+        }
+    }
+    
+    void showMessage( msg ) {
+        this.msg = msg
+        binding.refresh('msg')
+    }
         
-        FileTransfer.FileInputSource fis = new FileTransfer.FileInputSource( file )
-        DynamicHttpTransfer.Out handler = new DynamicHttpTransfer.Out(app.host , app.context, 'ETRACSFileTransferService', 'uploadAttachment')
-        handler.parameters.put('attachment', attachment )
-        
-        FileTransfer ft = new FileTransfer()
-        ft.transfer(fis, handler)
-        try { Thread.sleep(1000) }catch( e ){}
-        svc.uploadComplete( attachment )
-        
-        copyToCache( file )
-        faasSvc.addAttachment( faas.objid, attachment )
-        attachments.add( attachment )
-        listHandler.load()
-        return 'default' 
+    def doCancel() {
+        if( ! stopped ) {
+            stopTimer()
+        }
+        else {
+            return 'default'
+        }
+    }
+    
+    
+    void startTimer() {
+        stopped = false
+        taskmgr = new TaskManager()
+        timertask = new TTimerTask( ontimer : ontimer, sleeptime:1000)
+        uploadTask = new UploadTask( parent:this )
+        taskmgr.addTask( timertask )
+        taskmgr.addTask( uploadTask )
+        taskmgr.start()   
+    }
+    
+    void stopTimer( ) {
+        stopped = true 
+        displaymsg = false
+        timertask.setCancelled( true )
+        timertask.setEnded( true )
+        uploadTask.setCancelled( true )
+        uploadTask.setEnded(true)
+        taskmgr?.removeTask( timertask )
+        taskmgr?.removeTask( uploadTask )
+        taskmgr?.stop()
+        taskmgr = null
+        timertask = null
+        showMessage('')
+    }
+
+    
+    
+    void upload() {
+        validateFile()
+        startTimer()
+    }
+    
+    void validateFile() {
+        // accept jpg, jpeg, png, bmp extension only
+        def extn = getFileExtension( file )
+        extn = extn.replace('.','')
+        if( 'jpg/jpeg/png/bmp/gif/pdf'.indexOf( extn ) < 0 ) {
+            throw new Exception('File to upload is invalid.\nOnly the following extensions are supported: jpg, jpeg, png, bmp, gif and pdf.')
+        }
     }
     
     def getFileExtension( file ) {
@@ -210,6 +274,50 @@ public class FAASAttachmentController {
     }
     
 }
+
+class UploadTask extends com.rameses.rcp.common.Task {
+    def ended = false
+    def cancelled = false 
+    def parent 
+
+    public boolean accept() {
+       return !ended && !cancelled 
+    }
+
+    public boolean isEnded() {
+        return ended || cancelled 
+    }
+
+    public void execute() {
+        try {
+            def attachment  = parent.attachment 
+            def faas        = parent.faas 
+            def app         = parent.getAppInfo()
+            
+            attachment.filename  = parent.makeSafeFileName( attachment.objid ) + parent.getFileExtension( parent.file )
+            attachment.directory = parent.makeSafeFileName( faas.objid ) 
+
+            FileTransfer.FileInputSource fis = new FileTransfer.FileInputSource( parent.file )
+            DynamicHttpTransfer.Out handler = new DynamicHttpTransfer.Out(app.host , app.context, 'ETRACSFileTransferService', 'uploadAttachment')
+            handler.parameters.put('attachment', attachment )
+
+            FileTransfer ft = new FileTransfer()
+            ft.transfer(fis, handler)
+            
+            parent.svc.uploadComplete( attachment )
+            parent.copyToCache( parent.file )
+            parent.faasSvc.addAttachment( faas.objid, attachment )
+            parent.stopTimer()
+            parent.attachments.add( attachment )
+            parent.listHandler.load()
+            parent.binding.fireNavigation('default')
+        }
+        catch( e ) {
+            e.printStackTrace()
+        }
+    }
+}  
+
 
 
 ]]>

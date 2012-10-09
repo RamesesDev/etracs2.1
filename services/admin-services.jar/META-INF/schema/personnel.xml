@@ -41,4 +41,10 @@
 		<field name="province"/>
 		<field name="zipcode"/>
 	</element>
+	
+	<element name="txncode"  tablename="personnel_txncode">
+		<field name="personnelid" primary="true" />
+		<field name="txncode"/>
+	</element>
+	
 </schema>

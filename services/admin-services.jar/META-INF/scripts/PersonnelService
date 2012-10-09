@@ -57,8 +57,11 @@ class PersonnelService {
 	
 	@ProxyMethod
 	public def read(def o) {
+		print "entering service";
 		o =  em.read( "personnel", o );
 		if(o.birthdate) o.birthdate =  dateSvc.format("yyyy-MM-dd", o.birthdate );
+		def txncode = em.read( "personnel:txncode", [personnelid: o.objid] )?.txncode;
+		if(txncode) o.txncode = txncode;
 		return o; 
 	}
 
@@ -70,6 +73,16 @@ class PersonnelService {
 	@ProxyMethod
 	public def remove(def o) {
 		em.delete( "personnel", o );
+	}
+
+	@ProxyMethod
+	public def addTxnCode(def o) {
+		return em.create( "personnel:txncode", o );
+	}
+	
+	@ProxyMethod
+	public def removeTxnCode(def o) {
+		em.delete( "personnel:txncode", o );
 	}
 
 }

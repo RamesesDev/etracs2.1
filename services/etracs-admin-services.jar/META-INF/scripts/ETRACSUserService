@@ -132,6 +132,13 @@ class ETRACSUserService
 		params.searchText = searchText;
 		return getUsersByTagid( LIQUIDATING_OFFICER_ROLE, params );
 	}
+	
+	@ProxyMethod
+	public def getUserTxnCode( userid ) {
+		def user = em.sqlContext.createNamedQuery('etracsuser:getPersonnelInfo')
+						.setParameter('objid', userid).singleResult 
+		return user?.txncode 
+	}
 		
 	private def getListByName( namedQuery, values, params ) {
 		def qry = em.sqlContext.createNamedQuery( namedQuery )

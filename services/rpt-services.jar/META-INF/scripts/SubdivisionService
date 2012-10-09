@@ -63,12 +63,12 @@ class SubdivisionService
             taxpayername        : searchText+'%',
         ]
         def result = null
-		if( (result = getListByQuery('subdivision:getList', criteria, params)) ) return result
-        if( (result = getListByQuery('subdivision:getListByDocno', criteria, params)) ) return result
-		if( (result = getListByQuery('subdivision:getListByTdno', criteria, params)) ) return result
-		if( (result = getListByQuery('subdivision:getListByPIN', criteria, params)) ) return result
-		if( (result = getListByQuery('subdivision:getListByCadastral', criteria, params)) ) return result
-		if( (result = getListByQuery('subdivision:getListByTaxpayer', criteria, params)) ) return result
+		if( (result = getListByQuery('subdivision:getList', criteria, params, 'objid' )) ) return result
+        if( (result = getListByQuery('subdivision:getListByDocno', criteria, params, 'objid')) ) return result
+		if( (result = getListByQuery('subdivision:getListByTdno', criteria, params, 'objid')) ) return result
+		if( (result = getListByQuery('subdivision:getListByPIN', criteria, params, 'objid')) ) return result
+		if( (result = getListByQuery('subdivision:getListByCadastral', criteria, params, 'objid')) ) return result
+		if( (result = getListByQuery('subdivision:getListByTaxpayer', criteria, params, 'objid')) ) return result
 		return result
     }
     
@@ -526,13 +526,16 @@ class SubdivisionService
         throw new Exception('Current revision year is not set in RPT Setting.')
     }
     
-    def getListByQuery( namedQuery, criteria, params ) {
+	def getListByQuery( namedQuery, criteria, params, pagingkeys = null ) {
         if( ! params ) params = [ _start:0, _limit:25]
-		return em.sqlContext.createNamedQuery( namedQuery )
-						.setParameters( criteria )
-						.setFirstResult( params._start )
-						.setMaxResults( params._limit )
-						.resultList
+		def qry = em.sqlContext.createNamedQuery( namedQuery )
+				    .setParameters( criteria )
+				    .setFirstResult( params._start )
+				    .setMaxResults( params._limit );
+				  
+		if( pagingkeys ) qry.setPagingKeys( pagingkeys );
+		
+		return qry.resultList
 	}
     
     
