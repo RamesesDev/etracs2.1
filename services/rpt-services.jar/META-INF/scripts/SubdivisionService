@@ -62,9 +62,12 @@ class SubdivisionService
             mothercadastrallotno: searchText,
             taxpayername        : searchText+'%',
         ]
-        def result = null
-		if( (result = getListByQuery('subdivision:getList', criteria, params, 'objid' )) ) return result
-        if( (result = getListByQuery('subdivision:getListByDocno', criteria, params, 'objid')) ) return result
+		if( ! searchText ) {
+			return getListByQuery('subdivision:getList', criteria, params, 'objid' )
+		}
+		
+		def result = null
+		if( (result = getListByQuery('subdivision:getListByDocno', criteria, params, 'objid')) ) return result
 		if( (result = getListByQuery('subdivision:getListByTdno', criteria, params, 'objid')) ) return result
 		if( (result = getListByQuery('subdivision:getListByPIN', criteria, params, 'objid')) ) return result
 		if( (result = getListByQuery('subdivision:getListByCadastral', criteria, params, 'objid')) ) return result
@@ -168,7 +171,7 @@ class SubdivisionService
     }
     
     @ProxyMethod
-    public Map approve( subdivisionid ) {
+    public Map approve( subdivisionid ) {	
         def subdivision = em.read( SCHEMA_NAME, [objid:subdivisionid] )
         if( !subdivision ) throw new Exception('Subdivision does not exists or is already deleted.\nPlease requiry and verify that the document still exists.')
         if( subdivision.docstate == DRAFT_STATE ) throw new Exception('Subdivision is not yet submitted for approval.')
@@ -186,13 +189,15 @@ class SubdivisionService
         if( subdivision.docstate == FORPROVAPPROVAL_STATE ) throw new Exception('Subdivision has already been submitted to province.')
         if( subdivision.docstate == APPROVED_STATE ) throw new Exception('Subdivision has already been approved.')      
         subdivision.docstate = DRAFT_STATE
+		deleteNewFaasAffectedRpus( subdivision )
+		deleteNewFaasSubdividedLands( subdivision )
         em.update( subdivision.schemaname, subdivision )
         return subdivision
     }
     
     @ProxyMethod
     public Map approveByProvince( subdivisionid ) {
-        def subdivision = em.read( SCHEMA_NAME, [objid:subdivisionid] )
+		def subdivision = em.read( SCHEMA_NAME, [objid:subdivisionid] )
         if( !subdivision ) throw new Exception('Subdivision does not exists or is already deleted.\nPlease requiry and verify that the document still exists.')
         if( subdivision.docstate == DRAFT_STATE ) throw new Exception('Subdivision is not yet submitted for approval.')
 		if( var.lgu_type?.toLowerCase() == 'municipality') {
@@ -210,8 +215,10 @@ class SubdivisionService
         if( subdivision.docstate == DRAFT_STATE ) throw new Exception('Subdivision is not yet submitted for approval.')
         if( subdivision.docstate == FORAPPROVAL_STATE ) throw new Exception('Subdivision has already been submitted to province.')
         if( subdivision.docstate == APPROVED_STATE ) throw new Exception('Subdivision has already been approved.')      
-        subdivision.docstate = FORAPPROVAL_STATE
-        em.update(subdivision.schemaname, subdivision )
+        subdivision.docstate = DRAFT_STATE
+		deleteNewFaasAffectedRpus( subdivision )
+		deleteNewFaasSubdividedLands( subdivision )
+        em.update( subdivision.schemaname, subdivision )
         return subdivision
     }
     
@@ -236,6 +243,33 @@ class SubdivisionService
     public List getAffectedRpus( subdivisionid ) {
         return em.sqlContext.createNamedQuery('subdivision:getAffectedRpus').setParameter('subdivisionid', subdivisionid ).resultList 
     }
+	
+	void deleteNewFaasSubdividedLands( subdivision ) {
+		def slands = getSubdividedLands( subdivision.objid )
+		slands.each{
+			def newfaasid = it.newfaasid
+			it.newfaasid = null 
+			if( it.rp instanceof String ) {
+				it.rp  = em.serializer.read( it.rp )
+				it.rpu = em.serializer.read( it.rpu )
+			}
+			em.update(SUBDIVISIONLAND_SCHEMANAME, it )
+			em.delete(FAASLIST_SCHEMANAME, [objid:newfaasid])
+			em.delete(FAAS_SCHEMANAME, [objid:newfaasid] )
+			
+		}
+	}
+	
+	void deleteNewFaasAffectedRpus( subdivision ) {
+		def arpus = getAffectedRpus( subdivision.objid )
+		arpus.each{
+			def newfaasid = it.newfaasid
+			it.newfaasid = null 
+			em.update(AFFECTEDRPU_SCHEMANAME, it )
+			em.delete(FAASLIST_SCHEMANAME, [objid:newfaasid])
+			em.delete(FAAS_SCHEMANAME, [objid:newfaasid] )
+		}
+	}
     
     
     /*-------------------------------------------------------------------

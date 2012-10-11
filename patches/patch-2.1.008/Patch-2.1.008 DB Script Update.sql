@@ -1,8 +1,12 @@
 SET FOREIGN_KEY_CHECKS=0;
 
-ALTER TABLE blank_etracs.afcontrol CHANGE COLUMN afinventorycreditid afinventorycreditid VARCHAR(50) NULL;
+ALTER TABLE lguname_etracs.subdivisionland 
+	ADD COLUMN administratorname VARCHAR(200),
+	ADD COLUMN administratoraddress VARCHAR(200);
+	
+ALTER TABLE lguname_etracs.afcontrol CHANGE COLUMN afinventorycreditid afinventorycreditid VARCHAR(50) NULL;
 
-CREATE TABLE blank_etracs.`personnel_txncode` (
+CREATE TABLE lguname_etracs.`personnel_txncode` (
   `personnelid` VARCHAR(50) NOT NULL,
   `txncode` VARCHAR(10) NOT NULL,
   PRIMARY KEY  (`personnelid`,`txncode`),
@@ -11,13 +15,13 @@ CREATE TABLE blank_etracs.`personnel_txncode` (
 
 
 
-ALTER TABLE blank_etracs.noticeofassessment 
+ALTER TABLE lguname_etracs.noticeofassessment 
 	ADD COLUMN ry INT NOT NULL,
 	ADD COLUMN EXTENDED TEXT ;
 	
-DROP TABLE IF EXISTS blank_etracs.`rptcompromise`;
+DROP TABLE IF EXISTS lguname_etracs.`rptcompromise`;
 
-CREATE TABLE blank_etracs.`rptcompromise` (                                                                       
+CREATE TABLE lguname_etracs.`rptcompromise` (                                                                       
                  `objid` VARCHAR(50) NOT NULL,                                                                      
                  `docstate` VARCHAR(25) NOT NULL,                                                                   
                  `txnno` VARCHAR(10) DEFAULT NULL,                                                                  
@@ -35,9 +39,9 @@ CREATE TABLE blank_etracs.`rptcompromise` (
                ) ENGINE=INNODB DEFAULT CHARSET=latin1 ;
 
 
-DROP TABLE IF EXISTS blank_etracs.`rptcompromise_list`;
+DROP TABLE IF EXISTS lguname_etracs.`rptcompromise_list`;
 
-CREATE TABLE blank_etracs.`rptcompromise_list` (                                                                       
+CREATE TABLE lguname_etracs.`rptcompromise_list` (                                                                       
                       `objid` VARCHAR(50) NOT NULL,                                                                           
                       `docstate` VARCHAR(25) NOT NULL,                                                                        
                       `txnno` VARCHAR(25) DEFAULT NULL,                                                                       
@@ -73,9 +77,9 @@ CREATE TABLE blank_etracs.`rptcompromise_list` (
 
 
 
-DROP TABLE IF EXISTS blank_etracs.`rptcompromise_installment`;
+DROP TABLE IF EXISTS lguname_etracs.`rptcompromise_installment`;
 
-CREATE TABLE blank_etracs.`rptcompromise_installment` (                                                                                       
+CREATE TABLE lguname_etracs.`rptcompromise_installment` (                                                                                       
                              `objid` VARCHAR(50) NOT NULL,                                                                                                  
                              `rptcompromiseid` VARCHAR(50) NOT NULL,                                                                                        
                              `ledgerid` VARCHAR(50) NOT NULL,                                                                                               
@@ -91,9 +95,9 @@ CREATE TABLE blank_etracs.`rptcompromise_installment` (
                              CONSTRAINT `FK_rptcompromise_installment_rptledger` FOREIGN KEY (`ledgerid`) REFERENCES `rptledger` (`objid`)                  
                            ) ENGINE=INNODB DEFAULT CHARSET=latin1   ;
 
-DROP TABLE IF EXISTS blank_etracs.`rptcompromise_item`;
+DROP TABLE IF EXISTS lguname_etracs.`rptcompromise_item`;
 						   
-CREATE TABLE blank_etracs.`rptcompromise_item` (                                                                                       
+CREATE TABLE lguname_etracs.`rptcompromise_item` (                                                                                       
                       `objid` VARCHAR(50) NOT NULL,                                                                                           
                       `rptcompromiseid` VARCHAR(50) NOT NULL,                                                                                 
                       `iyear` INT(11) NOT NULL,                                                                                               
@@ -125,9 +129,9 @@ CREATE TABLE blank_etracs.`rptcompromise_item` (
 
 
 
-DROP TABLE IF EXISTS blank_etracs.`rptcompromise_credit`;
+DROP TABLE IF EXISTS lguname_etracs.`rptcompromise_credit`;
 
-CREATE TABLE blank_etracs.`rptcompromise_credit` (                                                                                               
+CREATE TABLE lguname_etracs.`rptcompromise_credit` (                                                                                               
                         `objid` VARCHAR(50) NOT NULL,                                                                                                     
                         `receiptid` VARCHAR(50) NOT NULL,                                                                                                 
                         `ledgerid` VARCHAR(50) NOT NULL,                                                                                                  
@@ -155,9 +159,9 @@ CREATE TABLE blank_etracs.`rptcompromise_credit` (
 
 
 
-ALTER TABLE blank_etracs.rptledger ADD COLUMN undercompromised INT NOT NULL;
+ALTER TABLE lguname_etracs.rptledger ADD COLUMN undercompromised INT NOT NULL;
 
-UPDATE blank_etracs.rptledger SET undercompromised = 0 WHERE undercompromised IS NULL; 
+UPDATE lguname_etracs.rptledger SET undercompromised = 0 WHERE undercompromised IS NULL; 
 
 
 SET FOREIGN_KEY_CHECKS=1;	
