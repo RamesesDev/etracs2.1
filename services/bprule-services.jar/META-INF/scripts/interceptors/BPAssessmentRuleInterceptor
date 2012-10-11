@@ -305,6 +305,7 @@ public class BPAssessmentRuleInterceptor
         s += 'm.put("rulename", "' + rule.rulename + '");\n'
         s += 'm.put("appid", $appid);\n'
         
+		/*
 		if( action.applytype.name == 'PERLINE' ) {
             s += 'm.put("lobid", $lobid);\n'
             s += 'm.put("lobname", $lobname);\n'
@@ -313,6 +314,15 @@ public class BPAssessmentRuleInterceptor
             s += 'm.put("lobid", null);\n'
             s += 'm.put("lobname", null);\n'
         }
+		*/
+		
+		//just apply all as perline of business
+		//then, we will just get the MAX and MIN based
+		//on the taxfees that applies to each app lob
+		s += 'm.put("lobid", $lobid);\n'
+        s += 'm.put("lobname", $lobname);\n'
+		
+		
         s += 'm.put("expr", "' + expr + '");\n'
         s += 'm.put("acctid", "' + action.acctid + '");\n'
         s += 'm.put("accttitle", "' + action.accttitle + '");\n'

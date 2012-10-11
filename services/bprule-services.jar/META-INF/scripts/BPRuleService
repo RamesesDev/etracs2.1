@@ -52,6 +52,7 @@ public class BPRuleService
 		buildActionCommands( app, facts, actionList )
 		getTaxFeeAgendaGroups().each { group ->
 			ruleService.execute( BPASSESSMENT_RULESET, facts, [actionList:actionList], group.objid )
+			processApplyOnceTaxFees( app )
 		}
 		sortTaxFees( app )
 		return app
@@ -196,6 +197,21 @@ public class BPRuleService
 		}		
 	}
 	
+	void processApplyOnceTaxFees( app ) {
+		def minmaxtaxfees = app.taxfees.findAll { it.applytype == 'MAX' || it.applytype == 'MIN' }
+		app.taxfees.removeAll( minmaxtaxfees )
+		
+		def util = new AddTaxFeeHandler( app : app )
+		minmaxtaxfees.each { taxfee ->
+			taxfee.lobid = null
+			taxfee.lobname = null
+			
+			if( taxfee.applytype == 'MAX' )
+				util.processApplyMaxValue( [:], taxfee )
+			else
+				util.processApplyMinValue( [:], taxfee )
+		}
+	}
 	
 }
 
@@ -253,9 +269,29 @@ class AddTaxFeeHandler implements RuleActionHandler
 			assessedvalue : av, 
 			amountdue     : av,
 		]
+		
+		/*
 		if( tfvalue.applytype == 'MAX' ) processApplyMaxValue( drools, taxfee )
 		else if( tfvalue.applytype == 'MIN' ) processApplyMinValue( drools, taxfee )
 		else  processApplyPerLine( drools, taxfee )
+		*/
+		
+		//this is a new routine, we will add the MAX and MIN as perline of lob
+		//then, lets just find the highest or lowest at the end
+		//of this agenda group 
+		if( taxfee.lobid ) {
+			if( tfvalue.applytype == 'MAX' || tfvalue.applytype == 'MIN' )
+				taxfee.applytype = tfvalue.applytype
+			
+			processApplyPerLine( drools, taxfee )
+		}
+		//fallback to old routine
+		else {
+			if( tfvalue.applytype == 'MAX' ) processApplyMaxValue( drools, taxfee )
+			else if( tfvalue.applytype == 'MIN' ) processApplyMinValue( drools, taxfee )
+			else  processApplyPerLine( drools, taxfee )
+		}
+		
 		(new Util(ruleService:ruleService)).insertTaxFeeSummaryFact(drools, app)
 	}
 	
