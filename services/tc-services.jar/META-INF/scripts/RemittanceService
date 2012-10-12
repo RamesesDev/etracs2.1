@@ -340,6 +340,10 @@ class RemittanceService {
 		em.create(SCHEMANAME, data.remittance )
 		em.create(LISTSCHEMANAME, data.remittance )
 		
+		data.remittance.postedby = env.USERNAME 
+		data.remittance.dtposted = dtsvc.serverDate 
+		em.create( REMITTANCE_IMPORT_SCHEMA, data.remittance)
+		
 		data.remittedforms.each { rf ->
 			def importedafc = data.afcontrols.find{ a -> a.objid == rf.afcontrolid  }
 			if( ! importedafc ) throw new Exception('Imported Accountable Form with stub no. ' + rf.stubno + ' does not exists.')
@@ -349,9 +353,6 @@ class RemittanceService {
 			rf.afcontrolid = afc.objid 
 			em.create(REMITTED_FORM_SCHEMANAME, rf )
 		}
-		
-		data.receiptitems.each{ em.create(RECEIPT_ITEM_SCHEMA, it ) }
-		data.paymentitems.each{ em.create(PAYMENT_ITEM_SCHEMA, it ) }
 		
 		postImportedAFControls( data ) 
 		
@@ -364,11 +365,12 @@ class RemittanceService {
 			em.create(RECEIPT_LIST_SCHEMA, receipt)
 		}
 		
+		data.receiptitems.each{ em.create(RECEIPT_ITEM_SCHEMA, it ) }
+		data.paymentitems.each{ em.create(PAYMENT_ITEM_SCHEMA, it ) }
+		
 		postToRevenue( data.remittance )
 		
-		data.remittance.postedby = env.USERNAME 
-		data.remittance.dtposted = dtsvc.serverDate 
-		em.create( REMITTANCE_IMPORT_SCHEMA, data.remittance)
+		
 	}
 	
 	void buildDatePartInfo( receipt ) {
