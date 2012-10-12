@@ -365,7 +365,7 @@ class TDReportService
 					depreciation		: it.depreciation,
 					marketvalue			: it.marketvalue,
 					assesslevel			: it.assesslevel,
-					assessedvalue		: it.assessedvalue
+					assessedvalue		: it.assessedvalue,
 					actualuseid			: mu.actualuse.actualuseid,
 					marketvalue			: mu.marketvalue,
 					basemarketvalue		: mu.basemarketvalue,
