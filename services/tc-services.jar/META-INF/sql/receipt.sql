@@ -1,3 +1,34 @@
+[getReceipt]
+SELECT 
+	objid, docstate, doctype, opener, collectorid,
+	capturedbyid, remittanceid, remittanceno, remittancedate,
+	voided, voidreason, extended
+FROM receiptlist 
+WHERE objid = $P{objid}	 
+
+[getReceiptInfo]
+SELECT 
+	mode, txndate, dtposted, afid, afcontrolid, series,
+	serialno, stubno, collectiontypeid, collectiontype,
+	payorid, payorname, payoraddress, paidby, paidbyaddress, collectorid,
+	collectorname, collectortitle, capturedbyid, capturedbyname, capturedbytitle,
+	totalpayment, cash, otherpayment, amount, remarks
+FROM receiptlist 
+WHERE objid = $P{objid}	 	
+	
+[getReceiptItems]	
+SELECT * FROM receiptitem WHERE receiptid = $P{receiptid} 
+	
+[getReceiptItems]	
+SELECT * FROM receiptitem WHERE receiptid = $P{receiptid} 
+
+[getPaymentItems]
+SELECT * FROM paymentitem WHERE receiptid = $P{receiptid} 
+
+
+
+
+	
 [getList]
 SELECT * FROM receiptlist 
 WHERE collectorid LIKE $P{collectorid} 
@@ -42,10 +73,10 @@ WHERE collectorid LIKE $P{collectorid}
 ORDER BY afid, serialno 
 
 [getState]
-SELECT docstate FROM receipt WHERE objid = $P{objid}
+SELECT docstate FROM receiptlist WHERE objid = $P{objid}
 
 [getVoidedStatus]
-SELECT voided FROM receipt WHERE objid = $P{objid}
+SELECT voided FROM receiptlist WHERE objid = $P{objid}
 
 [getSerialNo]
 SELECT serialno FROM receiptlist WHERE objid = $P{objid} 
@@ -60,14 +91,14 @@ SELECT objid, serialno FROM receiptlist WHERE serialno = $P{serialno} AND afid =
 
 
 [voidReceipt]
-UPDATE receipt SET voided = 1, voidreason = $P{voidreason} WHERE objid = $P{objid} 
+UPDATE receiptlist SET voided = 1, voidreason = $P{voidreason} WHERE objid = $P{objid} 
 
 [voidReceiptList]
 UPDATE receiptlist SET voided = 1, voidreason = $P{voidreason} WHERE objid = $P{objid} 
 
 
 [deleteReceipt]
-DELETE FROM receipt WHERE objid = $P{objid}
+DELETE FROM receiptlist WHERE objid = $P{objid}
 
 [deleteReceiptList]
 DELETE FROM receiptlist WHERE objid = $P{objid}

@@ -154,7 +154,6 @@
                         remittancelist     : svc.exportRemittanceList( entity.objid ),   
                         remittedforms      : svc.exportRemittedForms( entity.objid ),   
                         revenues           : svc.exportRevenues( entity.objid ),   
-                        receipts           : svc.exportReceipts( entity.objid ),   
                         receiptlists       : svc.exportReceiptLists( entity.objid ),   
                         receiptitems       : svc.exportReceiptItems( entity.objid ),                                           
                         paymentitems       : svc.exportPaymentItems( entity.objid ),  

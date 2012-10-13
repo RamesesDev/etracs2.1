@@ -50,22 +50,16 @@ WHERE collectorid = $P{collectorid}
   AND afid = $P{afid} 
 ORDER BY stubno, serialno  
 
-[postCapturedReceipts]
-UPDATE receipt SET docstate = 'OPEN' WHERE collectorid = $P{collectorid} AND docstate = 'CAPTURED' 
-
 [postCapturedReceiptList]
-UPDATE receiptlist SET docstate = 'OPEN' WHERE collectorid = $P{collectorid} AND docstate = 'CAPTURED' 
-
-[postCapturedReceiptsBySubcollector]
-UPDATE receipt SET 
-	docstate = 'OPEN'  
-WHERE collectorid = $P{collectorid} 
-  AND capturedbyid = $P{capturedbyid} 
-  AND docstate = 'CAPTURED' 
+UPDATE receiptlist SET 
+	docstate = 'OPEN',
+	postcaptureid = $P{postcaptureid}
+WHERE collectorid = $P{collectorid} AND docstate = 'CAPTURED' 
 
 [postCapturedReceiptListBySubcollector]
 UPDATE receiptlist SET 
-	docstate = 'OPEN'  
+	docstate = 'OPEN',
+	postcaptureid = $P{postcaptureid}  
 WHERE collectorid = $P{collectorid} 
   AND capturedbyid = $P{capturedbyid} 
   AND docstate = 'CAPTURED' 

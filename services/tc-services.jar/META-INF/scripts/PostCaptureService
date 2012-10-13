@@ -85,18 +85,18 @@ class PostCaptureService
 		entity.schemaversion = SCHEMAVERSION
 		entity.docstate = POSTED_STATE
 		entity.dtposted = new Date()
-		validate( entity, capturedbyid  )		
+		validate( entity, capturedbyid  )	
+		em.create( entity.schemaname, entity )		
 		if( capturedbyid && capturedbyid == entity.collectorid ) {
-			em.sqlContext.createNamedExecutor('postcapture:postCapturedReceipts').setParameter('collectorid', entity.collectorid).execute()
-			em.sqlContext.createNamedExecutor('postcapture:postCapturedReceiptList').setParameter('collectorid', entity.collectorid).execute()
+			em.sqlContext.createNamedExecutor('postcapture:postCapturedReceiptList')
+					.setParameters([postcaptureid:entity.objid,collectorid:entity.collectorid])
+					.execute()
 		}
 		else {
-			em.sqlContext.createNamedExecutor('postcapture:postCapturedReceiptsBySubcollector')
-						.setParameters([collectorid:entity.collectorid, capturedbyid:capturedbyid]).execute()
 			em.sqlContext.createNamedExecutor('postcapture:postCapturedReceiptListBySubcollector')
-						.setParameters([collectorid:entity.collectorid, capturedbyid:capturedbyid]).execute()
+						.setParameters([postcaptureid:entity.objid,collectorid:entity.collectorid, capturedbyid:capturedbyid])
+						.execute()
 		}
-		em.create( entity.schemaname, entity )
 		return entity 
 	}
 	
