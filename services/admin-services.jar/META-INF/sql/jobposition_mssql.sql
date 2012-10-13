@@ -1,12 +1,9 @@
 [list]
-select jp.*, p.lastname + ',' + p.firstname as assignee 
-from ( 
-  select * 
-  from jobposition  
-  ${condition} 
-) jp 
-left join personnel p on jp.assigneeid = p.objid  
-order by jp.code 
+SELECT jp.*, p.lastname + ', ' + p.firstname + ' '  + ISNULL(p.middlename,'') AS assignee 
+FROM jobposition jp
+	LEFT JOIN personnel p ON jp.assigneeid = p.objid  
+${condition} 	
+ORDER BY p.lastname, p.firstname 
 
 
 [get-job-permissions]

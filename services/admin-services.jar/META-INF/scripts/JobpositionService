@@ -26,7 +26,7 @@ class JobpositionService
 			if( params.searchText ) {
 				params.searchText = "%" + params.searchText + "%";
 				if( sb.length() > 0 ) sb.append( ' and ' );
-				sb.append( ''' code like $P{searchText} or title like $P{searchText} ''' );	
+				sb.append( ''' jp.code like $P{searchText} or jp.title like $P{searchText} or p.lastname like $P{searchText} or p.firstname like $P{searchText} ''' );	
 			}	
 			
 			if( sb.length() > 0 ) {
