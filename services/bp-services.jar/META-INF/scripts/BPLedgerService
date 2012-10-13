@@ -66,8 +66,15 @@ class BPLedgerService {
 		
 		if( !bp ) throw new Exception("Business with objid $app.tradename no longer exists.");
 		def getUnpaidReceivables = { 
-			def list = app.receivables.findAll{ it.amount > it.amtpaid };
-			return list.findAll{ it.iqtr <= payment.qtr || it.applicationtype?.matches('ADDLOB|NEW|RETIRE|RETIRELOB')}
+			def unpdrcvbls = []
+			for( rc in app.receivables ){
+				if( rc.amtpaid < rc.amount ){
+					rc.amount -= rc.amtpaid
+					unpdrcvbls << rc
+				}
+			}
+
+			return unpdrcvbls.findAll{ it.iqtr <= payment.qtr || it.applicationtype?.matches('ADDLOB|NEW|RETIRE|RETIRELOB')}
 		}
 		
 		def bill = [ 
