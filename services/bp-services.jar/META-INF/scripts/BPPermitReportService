@@ -143,8 +143,8 @@ public class BPPermitReportService
 	}
 	
 	private void createORDetail( def bp, def app ){
-		def c = app.credits[0]
-		def p = app.payments[0]
+		def c = (app.credits ? app.credits[0] : null )
+		def p = (app.payments ? app.payments[0] : null )
 				
 		def or = [orno:'-', ordate:null, amount:null ]	
 		if( c && p  ) {
