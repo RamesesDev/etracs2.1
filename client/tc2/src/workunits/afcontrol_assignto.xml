@@ -1,0 +1,119 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/tc/txn" action="init" caption="Assign AF Control to Subcollector" permission="afcontrol.assignto" index="2" />
+        <invoker folderid="/txn/tc/txn" action="init" caption="Assign AF Control to Subcollector" permission="afcontrol.assignto" index="2" />
+        <invoker type="quick_launcher" code="AFC03" action="init" caption="Assign AF Control to Subcollector" permission="afcontrol.activate" />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/cancel.png"/>
+        <invoker type="formActions" action="assign" caption="Assign To" mnemonic="a" shortcut="ctrl + A" icon="images/deploy.png"/>
+        <invoker type="formActions" action="cancelAssign" caption="Cancel Assign" mnemonic="c" icon="images/doc-cancel.png"/>
+    </invokers>
+    <code>
+<![CDATA[        
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+
+class AFControlAssignToController
+{
+    @Service('AFControlService')
+    def svc
+    
+    @Service('ETRACSUserService')
+    def userSvc
+    
+    def afid
+    def selectedItem
+    def afcontrolList 
+    def forassignList
+    def collector 
+    
+    void init() {
+        collector = userSvc.getCollector( OsirisContext.env.USERID )
+        loadAFControls()
+    }
+    
+    void loadAFControls() {
+        afcontrolList = []
+        if( collector ) {
+            afcontrolList = svc.getOpenAFControlList( collector.objid, null )
+            afcontrolList.each{ it.assign = false  }
+        }
+        listHandler?.load()
+    }
+    
+    def onselectAssignTo = { subcollector ->
+        svc.assignAFControls( forassignList, subcollector )
+        loadAFControls()
+    }
+    
+    def assign() {
+        forassignList = afcontrolList.findAll{ it.assign == true }
+        if( ! forassignList ) throw new Exception('Accountable Control for assignment is required. ')
+        if( MsgBox.confirm('Assign the selected accountable forms to a subcollector?' ) ) {
+            return InvokerUtil.lookupOpener('assignto.create', [
+                onselect : onselectAssignTo,
+                items    : getSubcollectorList()
+            ])
+        }
+        return null
+    }
+    
+    void cancelAssign() {
+        def cancelList = afcontrolList.findAll{ it.assign == true }
+        if( ! cancelList ) throw new Exception('Accountable Control for cancel assignment is required. ')
+        if( MsgBox.confirm('Cancel subcollector assignment for the selected Accountable Controls?') ) {
+            svc.cancelAFControlAssign( cancelList )
+            loadAFControls()
+        }
+    }
+    
+    
+    def listHandler = [
+        getRows    : { return 50 },
+        getColumns : { 
+            return [
+                new Column(name:'assign', caption:'Selected', maxWidth:80, type:'boolean', editable:true ),
+                new Column(name:'assignedtoname', caption:'Assigned To', width:300),
+                new Column(name:'afid', caption:'AF No.', width:100),
+                new Column(name:'stubno', caption:'Stub No.', width:150),
+                new Column(name:'active', caption:'Active', type:'boolean', width:100),
+                new Column(name:'startseries', caption:'Start Series', format:'0000000', width:150),
+                new Column(name:'endseries', caption:'End Series', format:'0000000', width:150),
+                new Column(name:'currentseries', caption:'Current Series', format:'0000000', width:150),
+                new Column(name:'balance', caption:'Balance', type:'integer', width:150),
+                new Column(name:'mode', caption:'Mode', width:150),
+            ]
+        },
+        fetchList : { return afcontrolList },
+    ] as SubListModel
+    
+    void selectAll() {
+        afcontrolList.each{ 
+            it.assign = true
+            listHandler.load()
+        }
+    }
+    
+    void deselectAll() {
+        afcontrolList.each{
+            it.assign = false
+            listHandler.load()
+        }
+    }
+    
+    List getSubcollectorList(){
+        def list = userSvc.getSubcollectorList()
+        if( ! list ) throw new Exception('There are no subcollectors defined.')
+        return list
+    }
+    
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.tc.af.AFControlAssignToPage"/>
+    </pages>
+</workunit>

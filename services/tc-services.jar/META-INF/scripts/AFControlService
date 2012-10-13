@@ -477,7 +477,18 @@ class AFControlService
 			collectorid : collectorid, 
 			afid		: ( afid ? afid : '%' )
 		]
-		return em.sqlContext.createNamedQuery('afcontrol:getOpenAFControlList').setParameters( params ).resultList 
+		return em.sqlContext.createNamedQuery('afcontrol:getOpenAFControlList')
+					.setParameters( params )
+					.resultList
+					.each{
+						it.active = it.active == 1
+						if( it.cancelledseries == null ) {
+							it.cancelledseries = []
+						}
+						else {
+							it.cancelledseries = em.serializer.read( it.cancelledseries)
+						}
+					}
 	}
 	
 	@ProxyMethod
@@ -490,6 +501,28 @@ class AFControlService
 		//set to new mode and reset active to 0
 		def params = [ objid:afcontrolid, newmode:newmode ]
 		em.sqlContext.createNamedExecutor('afcontrol:changeMode').setParameters( params ).execute()
+	}
+	
+	@ProxyMethod
+	public void assignAFControls( afcontrolList, subcollector ) {
+		afcontrolList.each{ afcontrol ->
+			afcontrol.assignedtoid 		= subcollector.objid 
+			afcontrol.assignedtoname 	= subcollector.name 
+			afcontrol.assignedtotitle 	= subcollector.jobtitle 
+			afcontrol.active 			= false 
+			em.update( afcontrol.schemaname, afcontrol )
+		}
+	}
+	
+	@ProxyMethod
+	public void cancelAFControlAssign( cancelList ) {
+		cancelList.each{ afcontrol ->
+			afcontrol.assignedtoid 		= null 
+			afcontrol.assignedtoname 	= null 
+			afcontrol.assignedtotitle 	= null 
+			afcontrol.active 			= false 
+			em.update( afcontrol.schemaname, afcontrol )
+		}
 	}
 	
 	void deactivateCurrentControl( afcontrol ) {

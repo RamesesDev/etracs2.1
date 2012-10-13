@@ -19,6 +19,7 @@ class ETRACSUserService
 	def CASHIER_ROLE = 'CASHIER'
 	def COLLECTOR_ROLE = 'COLLECTOR'
 	def LIQUIDATING_OFFICER_ROLE = 'LIQUIDATING_OFFICER'
+	def SUBCOLLECTOR = 'SUBCOLLECTOR' 
 	
 	
 	
@@ -117,6 +118,11 @@ class ETRACSUserService
 	@ProxyMethod
 	public List getCollectorList() {
 		return getUsersByRole( COLLECTOR_ROLE )
+	}
+	
+	@ProxyMethod
+	public List getSubcollectorList(){
+		return getUsersByRole( SUBCOLLECTOR )
 	}
 	
 	/*
