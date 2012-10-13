@@ -39,7 +39,7 @@ public class BPApplicationReportService
 			officetype: bpa.officetype,
 			tin: bpa.info.tin,
 			sss: bpa.info.sss,
-			ctcno: bpa.info.ctcno,
+			ctcno: bpa.info.ctcno+'',
 			ctcplaceissued: bpa.info.ctcplaceissued,
 			ctcdateissued: bpa.info.ctcdateissued,
 			infos: buildAppInfo( bpa.appinfos ),
