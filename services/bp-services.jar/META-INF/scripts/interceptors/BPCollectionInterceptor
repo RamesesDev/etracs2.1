@@ -291,7 +291,11 @@ class BPCollectionInterceptor {
 		
 		def bt_items = receipt.items.findAll{ it.systype.equals('BUSINESS_TAX') }
 		def isize = bt_items.size()
-		def lastqtr = fqtr( bt_items[isize-1].iqtr )
+		
+		def lastqtr = fqtr( receipt.items[0].iqtr  )
+		if( isize > 0 ) {
+			lastqtr = fqtr( bt_items[isize-1].iqtr )
+		}
 		
 		bt_items.unique{ it.acctid }.each{ item ->
 			def btiteminfo = receipt.items.findAll{ it.acctid.equals(item.acctid) && it.systype.equals('BUSINESS_TAX') }
