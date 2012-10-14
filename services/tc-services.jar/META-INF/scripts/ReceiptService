@@ -140,6 +140,7 @@ class ReceiptService
 		if( !searchParam.docstate ) searchParam.docstate = '%'
 		if( !searchParam.collectorid ) searchParam.collectorid = '%'
 		if( !searchParam.capturedbyid ) searchParam.capturedbyid = '%'
+		if( searchParam.collectorid != '%' ) searchParam.capturedbyid = '%'
 		if( ! searchParam.searchText ) return getListByQuery('receipt:getList', searchParam, params)
 		
 		searchParam.serialno    = searchParam.searchText

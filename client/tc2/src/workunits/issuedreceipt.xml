@@ -54,6 +54,7 @@ class IssuedReceiptController
                 new Column(name:'paidby', caption:'Paid By'),
                 new Column(name:'amount', caption:'Amount', type:'decimal'),
                 new Column(name:'voidreason', caption:'Voided'),
+                new Column(name:'capturedbyname', caption:'Issued By'),
             ]
         }, 
         fetchList : { 
@@ -81,7 +82,7 @@ class IssuedReceiptController
     def buildSearchParam() {
         return [ 
             collectorid  : collector?.objid, 
-            capturedbyid : OsirisContext.env.USERID, 
+            capturedbyid : (collector ? null : OsirisContext.env.USERID ), 
             docstate     : 'OPEN',
             searchText   : searchText 
         ]
