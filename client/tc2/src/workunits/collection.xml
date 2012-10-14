@@ -219,8 +219,13 @@ class CollectionController
     }
     
     def getSubCollector(){
-        if( txnmode != CAPTURE_MODE )
-            return userService.getSubCollector( OsirisContext.env.USERID  )
+        if( txnmode != CAPTURE_MODE ) {
+            try {
+                return userService.getSubCollector( OsirisContext.env.USERID  )
+            }catch( e ) {
+                return null
+            }
+        }
         return subcollector
     }
     
