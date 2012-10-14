@@ -34,3 +34,44 @@ ALTER TABLE lguname_etracs..paymentitem
 	ADD CONSTRAINT FK_paymentitem_receiptlist FOREIGN KEY(receiptid) REFERENCES lguname_etracs..receiptlist(objid)
 go	
 
+
+ALTER TABLE tagoloan_etracs..afcontrol ADD assignedtoid VARCHAR(50) NULL
+go
+ALTER TABLE tagoloan_etracs..afcontrol ADD assignedtoname VARCHAR(100) NULL
+go
+ALTER TABLE tagoloan_etracs..afcontrol ADD assignedtotitle VARCHAR(50) NULL
+go
+	
+UPDATE tagoloan_etracs..afcontrol SET 
+	assignedtoid = collectorid,
+	assignedtoname = collectorname,
+	assignedtotitle = collectortitle
+go	
+	
+	
+ALTER TABLE tagoloan_etracs..batchcapture ADD collectortitle VARCHAR(50)
+go
+ALTER TABLE tagoloan_etracs..batchcapture ADD encodedbytitle VARCHAR(50)
+go
+
+UPDATE b SET
+	b.encodedbytitle = j.title 
+FROM tagoloan_etracs..batchcapture b, tagoloan_etracs..jobposition j	
+WHERE b.encodedbyid = j.assigneeid
+go
+
+
+UPDATE b SET
+	b.collectortitle = j.title 
+FROM tagoloan_etracs..batchcapture b, tagoloan_etracs..jobposition j 	
+WHERE b.collectorid = j.assigneeid
+GO
+
+UPDATE tagoloan_system..sys_roleclass SET 
+	tags='[''AFO'', ''COLLECTOR'', ''SUBCOLLECTOR'', ''LIQUIDATING_OFFICER'', ''CASHIER'', ]'
+WHERE name = 'TREASURY'
+go 
+
+	
+
+

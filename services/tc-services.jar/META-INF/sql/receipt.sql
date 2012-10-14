@@ -31,7 +31,8 @@ SELECT * FROM paymentitem WHERE receiptid = $P{receiptid}
 	
 [getList]
 SELECT * FROM receiptlist 
-WHERE collectorid LIKE $P{collectorid} 
+WHERE collectorid LIKE $P{collectorid}  
+   AND capturedbyid LIKE $P{capturedbyid}
    AND docstate LIKE $P{docstate} 
 ORDER BY afid, serialno 
 
@@ -40,35 +41,36 @@ SELECT * FROM receiptlist
 
 [getListBySerialNo]
 SELECT * FROM receiptlist 
-WHERE collectorid LIKE $P{collectorid} 
+WHERE collectorid LIKE $P{collectorid}  
+  AND capturedbyid LIKE $P{capturedbyid}
   AND docstate LIKE $P{docstate} 
   AND serialno = $P{serialno} 
   
 [getListByStubNo]
 SELECT * FROM receiptlist 
-WHERE collectorid LIKE $P{collectorid} 
-  AND docstate LIKE $P{docstate} 
+WHERE collectorid LIKE $P{collectorid}  
+  AND capturedbyid LIKE $P{capturedbyid}
   AND stubno = $P{stubno} 
 ORDER BY afid, serialno 
 
 [getListByTxnDate]
 SELECT * FROM receiptlist 
-WHERE collectorid LIKE $P{collectorid} 
-  AND docstate LIKE $P{docstate} 
+WHERE collectorid LIKE $P{collectorid}  
+  AND capturedbyid LIKE $P{capturedbyid}
   AND txndate = $P{txndate} 
 ORDER BY afid, serialno 
 
 [getListByPayor]
 SELECT * FROM receiptlist 
-WHERE collectorid LIKE $P{collectorid} 
-  AND docstate LIKE $P{docstate} 
+WHERE collectorid LIKE $P{collectorid}  
+  AND capturedbyid LIKE $P{capturedbyid}
   AND payorname LIKE $P{payorname} 
 ORDER BY afid, serialno 
 
 [getListByPaidBy]
 SELECT * FROM receiptlist 
-WHERE collectorid LIKE $P{collectorid} 
-  AND docstate LIKE $P{docstate} 
+WHERE collectorid LIKE $P{collectorid}  
+  AND capturedbyid LIKE $P{capturedbyid}
   AND paidby LIKE $P{paidby} 
 ORDER BY afid, serialno 
 
@@ -111,7 +113,8 @@ DELETE FROM paymentitem WHERE receiptid = $P{receiptid}
 
 [getIssuedTotal]
 SELECT SUM(amount) as amount FROM receiptlist 
-WHERE collectorid = $P{collectorid} 
+WHERE collectorid LIKE $P{collectorid}  
+   AND capturedbyid LIKE $P{capturedbyid}
    AND docstate = $P{docstate} 
    AND voided = 0 
 

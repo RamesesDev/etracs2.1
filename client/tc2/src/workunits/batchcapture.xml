@@ -20,6 +20,7 @@
 import com.rameses.rcp.annotations.*
 import com.rameses.rcp.common.*
 import com.rameses.osiris2.client.*
+import java.rmi.server.UID
 
 
 public class BatchCaptureController
@@ -47,7 +48,6 @@ public class BatchCaptureController
     
     def ondelete //handler
 
-    def collector
     def afcontrol
     def collectiontype
     def defaulttxndate 
@@ -56,26 +56,33 @@ public class BatchCaptureController
     def DRAFT_STATE = 'DRAFT'
     def POSTED_STATE = 'POSTED' 
     def selectedItem 
+    def mode 
     
     
     def init() {
+        mode = 'create' 
         return 'init' 
     }
     
     def open() {
         entity = svc.open( entity.objid )
-        collector = entity.collector
         collectiontype = entity.collectiontype
         afcontrol = entity.afcontrol 
         defaulttxndate = entity.defaulttxndate
+        mode = 'view' 
     }
     
     void save() {
         entity.amount = getTotal()
-        def batch = svc.save( entity )
-        entity.objid = batch.objid 
-        entity.schemaname = batch.schemaname 
-        entity.schemaversion = batch.schemaversion 
+        if( mode == 'create' ) {
+            def batch = svc.create( entity )
+            entity.schemaname = batch.schemaname 
+            entity.schemaversion = batch.schemaversion  
+        }
+        else {
+            svc.update( entity )
+        }
+        mode = 'view'
     }
     
     def delete() {
@@ -88,18 +95,23 @@ public class BatchCaptureController
     
     void post() {
         if( MsgBox.confirm('Post capture collection?') ) {
-            svc.save( entity )
+            save()
             svc.post( entity )
             entity.docstate = POSTED_STATE 
         }
     }
 
     def createBatch() {
+        if( ! afcontrol ) throw new Exception('AF Control is required.')
         defaulttxndate = svc.validateTxnDate( defaulttxndate )
         entity = [
+                objid           : 'B' + new UID(),
                 docstate        : DRAFT_STATE, 
                 opener          : 'batchcapture', 
-                collector 	: collector, 
+                collector 	: userSvc.getCollector( afcontrol.collectorid ), 
+                collectorid     : afcontrol.collectorid,
+                collectorname   : afcontrol.collectorname,
+                collectortitle  : afcontrol.collectortitle,
                 afcontrol	: afcontrol,
                 collectiontype	: collectiontype,
                 defaulttxndate  : defaulttxndate,
@@ -107,11 +119,9 @@ public class BatchCaptureController
                 afid            : afcontrol.afid, 
                 startseries     : afcontrol.currentseries,
                 series          : afcontrol.currentseries,
-                encodedbyid     : OsirisContext.env.USERID, 
-                encodedby       : OsirisContext.env.USERNAME,
-                encodedbytitle  : OsirisContext.env.JOBTITLE,
-                collectorid     : collector.objid,
-                collectorname   : collector.name, 
+                encodedbyid     : afcontrol.assignedtoid,
+                encodedby       : afcontrol.assignedtoname,
+                encodedbytitle  : afcontrol.assignedtotitle,
         ]
         return 'default'
     }
@@ -198,12 +208,8 @@ public class BatchCaptureController
         return p + (series+'').padLeft(serieslength, '0') + s  
     }
 
-    public List getCollectorlist() {
-        return userSvc.getCollectorList()
-    }
-
     public List getAfcontrollist() {
-        return afcontrolSvc.getInactiveSerialCaptureList( collector?.objid )
+        return afcontrolSvc.getInactiveSerialCaptureList( OsirisContext.env.USERID )
     }   
 
     public List getCollectiontypelist() {

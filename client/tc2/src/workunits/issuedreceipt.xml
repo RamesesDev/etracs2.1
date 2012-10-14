@@ -28,13 +28,8 @@ class IssuedReceiptController
     def total
     
     void init() {
-        collector = userService.getCollector( OsirisContext.env.USERID )
-        def searchParam = [ 
-            collectorid: collector.objid, 
-            docstate : 'OPEN',
-            searchText: searchText 
-        ]
-        total = svc.getIssuedTotal( searchParam )
+        collector = getCollector()
+        total = svc.getIssuedTotal( buildSearchParam() )
     }
     
     void setSelectedItem( item ) {
@@ -62,11 +57,7 @@ class IssuedReceiptController
             ]
         }, 
         fetchList : { 
-            def searchParam = [ 
-                collectorid: collector.objid, 
-                docstate : 'OPEN',
-                searchText: searchText 
-            ]
+            def searchParam = buildSearchParam()
             total = svc.getIssuedTotal( searchParam )
             binding?.refresh('total')
             return svc.getList( searchParam, it ) 
@@ -78,6 +69,23 @@ class IssuedReceiptController
         binding.refresh('total')
     }
     
+    def getCollector() {
+        try {
+            return userService.getCollector( OsirisContext.env.USERID )
+        }
+        catch( e) {
+            return null 
+        }
+    }
+    
+    def buildSearchParam() {
+        return [ 
+            collectorid  : collector?.objid, 
+            capturedbyid : OsirisContext.env.USERID, 
+            docstate     : 'OPEN',
+            searchText   : searchText 
+        ]
+    }
 }
 
 ]]>        

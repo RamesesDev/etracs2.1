@@ -61,7 +61,7 @@ class PostCaptureController
     void setSelectedSummary( selectedSummary ) {
         this.selectedSummary = selectedSummary
         if( selectedSummary && ! selectedSummary.details ) {
-            selectedSummary.details = svc.getCapturedReceipts( entity.collectorid, OsirisContext.env.USERID, selectedSummary?.afid )
+            selectedSummary.details = svc.getCapturedReceipts( entity.collectorid, OsirisContext.env.USERID, selectedSummary?.afcontrolid )
             selectedSummary.detailSize = selectedSummary.details.size()
         }
         detailHandler.load()
@@ -122,6 +122,7 @@ class PostCaptureController
         getRows    : { return 50 },
         getColumns : { return [
             new Column( name:'afid', caption:'AF No.', maxWidth:80 ),
+            new Column( name:'stubno', caption:'Stub No.', maxWidth:80 ),
             new Column( name:'amount', caption:'Total Collection', type:'decimal' ),
         ]},
         fetchList  : { return entity.summaries },
@@ -137,20 +138,20 @@ class PostCaptureController
             new Column( name:'payorname', caption:'Payor Name'),
             new Column( name:'amount', caption:'Amount', type:'decimal'),
             new Column( name:'voidreason', caption:'Void' ),
-            
+            new Column( name:'capturedbyname', caption:'Captured By' ),
         ]},
         fetchList  : { return selectedSummary?.details },
     ] as SubListModel
         
     void initPostedByInfo() {
-        
         entity.postedbyid = OsirisContext.env.USERID
         entity.postedbyname = OsirisContext.env.USERNAME
         entity.postedbytitle = OsirisContext.env.JOBTITLE
     }
     
     List getCollectorList() {
-        return userSvc.getCollectorList()
+        // return userSvc.getCollectorList()
+        return svc.getCollectorListByAssignedTo( OsirisContext.env.USERID )
     }
 }
 

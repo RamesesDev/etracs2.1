@@ -63,21 +63,21 @@ class BatchCaptureService
 	}
 	
 	@ProxyMethod
-	public def save( batch ) {
-		if( ! batch.objid ) {
-			batch.objid = 'B' + new UID()
-			batch.schemaname    = SCHEMA_NAME
-			batch.schemaversion = SCHEMA_VERSION
-			em.validate( SCHEMA_NAME, batch )
-			em.create( SCHEMA_NAME, batch )
-			logSvc.log('CREATE', 'BatchCapture', batch.objid )
-		}
-		else {
-			em.validate( SCHEMA_NAME, batch )
-			em.update( SCHEMA_NAME, batch )
-			logSvc.log('UPDATE', 'BatchCapture', batch.objid )
-		}
+	public def create( batch ) {
+		batch.schemaname    = SCHEMA_NAME
+		batch.schemaversion = SCHEMA_VERSION
+		em.validate( SCHEMA_NAME, batch )
+		em.create( SCHEMA_NAME, batch )
+		logSvc.log('CREATE', 'BatchCapture', batch.objid )
 		return batch 
+	}
+	
+	@ProxyMethod
+	public def update( batch ) {
+		em.validate( SCHEMA_NAME, batch )
+		em.update( SCHEMA_NAME, batch )
+		logSvc.log('UPDATE', 'BatchCapture', batch.objid )
+		return batch
 	}
 	
 	@ProxyMethod 
@@ -176,9 +176,9 @@ class BatchCaptureService
 			payoraddress	: item.paidbyaddress,
 			paidby			: item.paidby,
 			paidbyaddress 	: item.paidbyaddress,
-			collectorid		: batch.collector.objid, 
-			collectorname	: batch.collector.name, 
-			collectortitle	: batch.collector.jobtitle, 
+			collectorid		: batch.collectorid ,
+			collectorname	: batch.collectorname, 
+			collectortitle	: batch.collectortitle, 
 			capturedbyid	: batch.encodedbyid,
 			capturedbyname	: batch.encodedby,
 			capturedbytitle	: batch.encodedbytitle,

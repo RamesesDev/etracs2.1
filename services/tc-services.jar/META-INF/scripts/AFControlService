@@ -48,8 +48,13 @@ class AFControlService
 			afcontrol.issuedfrom	= 0
 			afcontrol.issuedto		= 0
 		}
-		afcontrol.txndate		= new Date()
+		afcontrol.txndate			= new Date()
+		afcontrol.assignedtoid 		= afcontrol.collectorid 
+		afcontrol.assignedtoname	= afcontrol.collectorname 
+		afcontrol.assignedtotitle	= afcontrol.collectortitle 
+		
 		validateAFControl( afcontrol )
+		
 		em.create( afcontrol.schemaname, afcontrol )
 		return afcontrol 
 	}
@@ -64,6 +69,13 @@ class AFControlService
 		postToAFInventory( afcontrol )
 		return afcontrol 
 	}	
+	
+	@ProxyMethod 
+	public boolean checkAfControlIsActive( afcontrolid ){
+		def afc = em.read(SCHEMANAME, [objid:afcontrolid])
+		if( ! afc ) throw new Exception('AF Control no longer exists.\nClose the collection form and try again.')
+		return afc.active == 1 || afc.active == true 
+	}
 	
 	@ProxyMethod
 	public void deleteAFControl( afcontrol ) {
@@ -419,28 +431,38 @@ class AFControlService
 	}
 	
 	@ProxyMethod
-	public Map getActiveAFControl( collectorid, afid, mode ) {
-		def params = [collectorid:collectorid, afid:afid, mode:mode]
-		Map afcontrol = em.sqlContext.createNamedQuery('afcontrol:getActiveByCollectorId').setParameters(params).singleResult
+	public Map getActiveAFControl( assignedtoid, afid, mode ) {
+		def params = [assignedtoid:assignedtoid, afid:afid, mode:mode]
+		Map afcontrol = em.sqlContext.createNamedQuery('afcontrol:getActiveByAssignedToId').setParameters(params).singleResult
 		if( afcontrol ) buildSerialNo( afcontrol )
 		return afcontrol 
 	}
 	
 	@ProxyMethod
-	public List getInactiveList( collectorid, afid, mode ) {
-		def params = [collectorid:collectorid, afid:afid, mode:mode]
-		return em.sqlContext.createNamedQuery('afcontrol:getInactiveList').setParameters(params).resultList
+	public List getInactiveList( assignedtoid, afid, mode ) {
+		def params = [assignedtoid:assignedtoid, afid:afid, mode:mode]
+		return em.sqlContext.createNamedQuery('afcontrol:getInactiveListByAssignedToId').setParameters(params).resultList
 	}
 	
 	@ProxyMethod
-	public List getInactiveSerialCaptureList( collectorid  ) {
-		def params = [collectorid:collectorid]
+	public List getOpenAFControlByAssignedTo( assignedtoid, mode ) {
+		mode = ( mode ? mode : '%')
+		def params = [assignedtoid:assignedtoid, mode:mode] 
+		return em.sqlContext.createNamedQuery('afcontrol:getOpenAFControlByAssignedTo')
+						.setParameters(params)
+						.resultList.each{ it._active = it.active == 1 }
+						
+	}
+	
+	@ProxyMethod
+	public List getInactiveSerialCaptureList( assignedtoid   ) {
+		def params = [assignedtoid:assignedtoid]
 		return em.sqlContext.createNamedQuery('afcontrol:getInactiveSerialCaptureList').setParameters(params).resultList
 	}
 	
 	@ProxyMethod
-	public List getAllInactiveList( collectorid ) {
-		return em.sqlContext.createNamedQuery('afcontrol:getAllInactiveList').setParameter('collectorid', collectorid).resultList
+	public List getAllInactiveList( assignedtoid ) {
+		return em.sqlContext.createNamedQuery('afcontrol:getAllInactiveList').setParameter('assignedtoid', assignedtoid).resultList
 	}
 	
 	@ProxyMethod
@@ -452,6 +474,7 @@ class AFControlService
 		deactivateCurrentControl( afcontrol )
 		em.sqlContext.createNamedExecutor('afcontrol:activateControl').setParameter('objid', objid).execute()
 		buildSerialNo( afcontrol)
+		afcontrol._active = true 
 		return afcontrol 
 	}
 	
@@ -504,25 +527,21 @@ class AFControlService
 	}
 	
 	@ProxyMethod
-	public void assignAFControls( afcontrolList, subcollector ) {
-		afcontrolList.each{ afcontrol ->
-			afcontrol.assignedtoid 		= subcollector.objid 
-			afcontrol.assignedtoname 	= subcollector.name 
-			afcontrol.assignedtotitle 	= subcollector.jobtitle 
-			afcontrol.active 			= false 
-			em.update( afcontrol.schemaname, afcontrol )
-		}
+	public void assignAFControls( afcontrol, subcollector ) {
+		afcontrol.assignedtoid 		= subcollector.objid 
+		afcontrol.assignedtoname 	= subcollector.name 
+		afcontrol.assignedtotitle 	= subcollector.jobtitle 
+		afcontrol.active 			= false 
+		em.update( afcontrol.schemaname, afcontrol )
 	}
 	
 	@ProxyMethod
-	public void cancelAFControlAssign( cancelList ) {
-		cancelList.each{ afcontrol ->
-			afcontrol.assignedtoid 		= null 
-			afcontrol.assignedtoname 	= null 
-			afcontrol.assignedtotitle 	= null 
-			afcontrol.active 			= false 
-			em.update( afcontrol.schemaname, afcontrol )
-		}
+	public void cancelAFControlAssign( afcontrol ) {
+		afcontrol.assignedtoid 		= afcontrol.collectorid 
+		afcontrol.assignedtoname 	= afcontrol.collectorname 
+		afcontrol.assignedtotitle 	= afcontrol.collectortitle
+		afcontrol.active 			= false 
+		em.update( afcontrol.schemaname, afcontrol )
 	}
 	
 	void deactivateCurrentControl( afcontrol ) {

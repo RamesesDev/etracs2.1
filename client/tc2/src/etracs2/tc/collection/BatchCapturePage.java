@@ -47,7 +47,7 @@ public class BatchCapturePage extends javax.swing.JPanel {
         xLabel1.setCaption("Collector");
         xLabel1.setCaptionWidth(110);
         xLabel1.setFont(new java.awt.Font("Arial", 1, 11));
-        xLabel1.setName("collector.name");
+        xLabel1.setName("entity.collector.name");
         xLabel1.setPreferredSize(new java.awt.Dimension(250, 19));
         formPanel1.add(xLabel1);
 

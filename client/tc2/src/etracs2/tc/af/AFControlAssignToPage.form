@@ -17,18 +17,11 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="xActionBar1" alignment="0" pref="664" max="32767" attributes="0"/>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="xButton1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="xButton2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="486" max="32767" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="xDataTable1" pref="644" max="32767" attributes="1"/>
-              <EmptySpace max="-2" attributes="0"/>
+          <Component id="xActionBar1" alignment="0" pref="503" max="32767" attributes="0"/>
+          <Group type="102" attributes="0">
+              <EmptySpace min="10" pref="10" max="10" attributes="0"/>
+              <Component id="xDataTable1" pref="483" max="32767" attributes="1"/>
+              <EmptySpace min="10" pref="10" max="10" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -37,12 +30,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="xActionBar1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="xDataTable1" pref="427" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="xButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="xButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
+              <Component id="xDataTable1" pref="334" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -75,26 +63,16 @@
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
             <PropertyBean type="com.rameses.rcp.control.border.XUnderlineBorder"/>
         </Property>
+        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+          <StringArray count="1">
+            <StringItem index="0" value="selectedItem"/>
+          </StringArray>
+        </Property>
         <Property name="dynamic" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="formActions"/>
         <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
           <Insets value="[0, 3, 0, 0]"/>
         </Property>
-      </Properties>
-    </Component>
-    <Component class="com.rameses.rcp.control.XButton" name="xButton1">
-      <Properties>
-        <Property name="mnemonic" type="int" value="97"/>
-        <Property name="text" type="java.lang.String" value="Select All"/>
-        <Property name="name" type="java.lang.String" value="selectAll"/>
-      </Properties>
-    </Component>
-    <Component class="com.rameses.rcp.control.XButton" name="xButton2">
-      <Properties>
-        <Property name="mnemonic" type="int" value="100"/>
-        <Property name="text" type="java.lang.String" value="Deselect All"/>
-        <Property name="caption" type="java.lang.String" value="Deselect All"/>
-        <Property name="name" type="java.lang.String" value="deselectAll"/>
       </Properties>
     </Component>
   </SubComponents>

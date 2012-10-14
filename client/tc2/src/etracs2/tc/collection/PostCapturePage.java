@@ -57,7 +57,7 @@ public class PostCapturePage extends javax.swing.JPanel {
         xDataTable1.setHandler("summaryHandler");
         xDataTable1.setImmediate(true);
         xDataTable1.setName("selectedSummary");
-        xDataTable1.setPreferredSize(new java.awt.Dimension(300, 80));
+        xDataTable1.setPreferredSize(new java.awt.Dimension(400, 80));
         jPanel2.add(xDataTable1, java.awt.BorderLayout.WEST);
 
         xLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 1));

@@ -29,8 +29,6 @@ public class AFControlAssignToPage extends javax.swing.JPanel {
     private void initComponents() {
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
         xActionBar1 = new com.rameses.rcp.control.XActionBar();
-        xButton1 = new com.rameses.rcp.control.XButton();
-        xButton2 = new com.rameses.rcp.control.XButton();
 
         setPreferredSize(new java.awt.Dimension(503, 373));
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
@@ -44,45 +42,27 @@ public class AFControlAssignToPage extends javax.swing.JPanel {
         xDataTable1.setName("selectedItem");
 
         xActionBar1.setBorder(new com.rameses.rcp.control.border.XUnderlineBorder());
+        xActionBar1.setDepends(new String[] {"selectedItem"});
         xActionBar1.setDynamic(true);
         xActionBar1.setName("formActions");
         xActionBar1.setPadding(new java.awt.Insets(0, 3, 0, 0));
-
-        xButton1.setMnemonic('a');
-        xButton1.setText("Select All");
-        xButton1.setName("selectAll");
-
-        xButton2.setMnemonic('d');
-        xButton2.setText("Deselect All");
-        xButton2.setCaption("Deselect All");
-        xButton2.setName("deselectAll");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(xActionBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
+            .add(xActionBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(486, Short.MAX_VALUE))
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(10, 10, 10)
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+                .add(10, 10, 10))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(xActionBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -90,8 +70,6 @@ public class AFControlAssignToPage extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XActionBar xActionBar1;
-    private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     // End of variables declaration//GEN-END:variables
     
