@@ -19,7 +19,7 @@ class JobpositionService
 			if(params._limit) qry.setMaxResults( params._limit );
 
 			def sb = new StringBuffer();
-			def condition = '';
+			def condition = ' 1=1 ';
 			if( params.orgunitid ) {
 				sb.append( ''' orgunitid=$P{orgunitid} ''' );	
 			}	
@@ -30,7 +30,7 @@ class JobpositionService
 			}	
 			
 			if( sb.length() > 0 ) {
-				condition = ' where ' + sb.toString();
+				condition += ' and  ' + sb.toString();
 			}	
 			qry.setVars( [ condition: condition ] );	
 			qry.setParameters( params );

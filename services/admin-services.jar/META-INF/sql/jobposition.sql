@@ -2,7 +2,7 @@
 SELECT jp.*, CONCAT(p.lastname, ', ', p.firstname, ' ',IFNULL(p.`middlename`,'') ) AS assignee 
 FROM jobposition jp
 	LEFT JOIN personnel p ON jp.assigneeid = p.objid  
-${condition} 	
+WHERE ${condition} 	
 ORDER BY p.lastname, p.firstname 
 
 [get-job-permissions]
