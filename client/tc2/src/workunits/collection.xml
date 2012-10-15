@@ -53,6 +53,7 @@ class CollectionController
     
     def txnmode
     def collector
+    def subcollector
     def txndate
     def af 
     def collectiontype
@@ -73,11 +74,16 @@ class CollectionController
     void init( txnmode ) {
         this.txnmode = txnmode
         collector = getCollector()
+        subcollector = getSubCollector()
         preservedTxnDate()
     }
-	
+
+    boolean getAfControlIsActive() {
+        return afcontrolService.checkAfControlIsActive( afcontrol?.objid )
+    }
+    
     def doNext() {
-        if( ! afcontrol ) {
+        if( ! afcontrol || getAfControlIsActive() == false ) {
             getAFControlInfo()
             if( ! afcontrol ) {
                 return 
@@ -111,9 +117,11 @@ class CollectionController
     }
     
     void getAFControlInfo( ) {
-        afcontrol = afcontrolService.getActiveAFControl( collector.objid, af.objid, txnmode ) 
+        def assignedtoid = collector?.objid 
+        if( subcollector ) assignedtoid = subcollector.objid 
+        afcontrol = afcontrolService.getActiveAFControl( assignedtoid , af.objid, txnmode ) 
         if( !afcontrol ) {
-            def afcontrolList = afcontrolService.getInactiveList( collector.objid, af.objid, txnmode )
+            def afcontrolList = afcontrolService.getInactiveList( assignedtoid, af.objid, txnmode )
             if( afcontrolList ) {
                 selectStubToUse( af, afcontrolList )
             }
@@ -137,6 +145,7 @@ class CollectionController
             afid : af.objid,
             mode : txnmode,
             collector: collector,
+            subcollector : subcollector,
             onselectHandler : onselectStubHandler,
             list : afcontrolList,
         ]
@@ -169,6 +178,7 @@ class CollectionController
             openerType     : openerType,
             collectiontype : collectiontype,
             collector      : collector,
+            subcollector   : subcollector,
             txnmode        : txnmode,
             txndate        : txndate,
             backHandler    : backHandler, 
@@ -196,10 +206,27 @@ class CollectionController
     }    
     
     def getCollector(){
-        if( txnmode != CAPTURE_MODE )
-            return userService.getCollector( OsirisContext.env.USERID  )
+        if( txnmode != CAPTURE_MODE ){
+            try {
+                return userService.getCollector( OsirisContext.env.USERID  )
+            }
+            catch( e ) {
+                return null
+            }
+        }
         return collector 
         
+    }
+    
+    def getSubCollector(){
+        if( txnmode != CAPTURE_MODE ) {
+            try {
+                return userService.getSubCollector( OsirisContext.env.USERID  )
+            }catch( e ) {
+                return null
+            }
+        }
+        return subcollector
     }
     
     def getCollectorlist() {
@@ -258,6 +285,7 @@ class CollectionController
             openerType     : openerType,
             collectiontype : collectiontype,
             collector      : collector,
+            subcollector   : subcollector,
             txnmode        : txnmode,
             txndate        : txndate,
             backHandler    : backHandler, 

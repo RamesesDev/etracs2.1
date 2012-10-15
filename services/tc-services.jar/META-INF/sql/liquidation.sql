@@ -232,7 +232,7 @@ ORDER BY NAME
 SELECT  
  p.objid 
 FROM paymentitem p  
-INNER JOIN receipt r ON p.receiptid = r.objid  
+INNER JOIN receiptlist r ON p.receiptid = r.objid  
 WHERE r.remittanceid = $P{remittanceid} 
  AND paytype = 'CHECK'
 

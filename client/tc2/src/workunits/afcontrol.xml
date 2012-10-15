@@ -132,6 +132,7 @@ class AFControlController
                 new Column(name:'qtyreceived', caption:'Qty. Received', type:'integer'),
                 new Column(name:'balance', caption:'Balance', type:'integer'),
                 new Column(name:'mode', caption:'Mode'),
+                new Column(name:'assignedtoname', caption:'Assigned To'),
             ]
         },
         fetchList : {

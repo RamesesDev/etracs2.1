@@ -41,12 +41,6 @@ class RemittanceService {
 	def REMITTED_FORM_SCHEMANAME = "remittance:remittedform";
 	def REMITTANCE_IMPORT_SCHEMA = 'remittance:remittanceimport'
 	
-	def RECEIPT_SCHEMANAME = 'receipt:receipt'
-	def RECEIPT_ITEM_SCHEMA = 'receipt:receiptitem'
-	def RECEIPT_LIST_SCHEMA = 'receipt:receiptlist'
-	def PAYMENT_ITEM_SCHEMA = 'receipt:paymentitem'
-	
-	def CASH_PAYMENTTYPE = "CASH";
 	
 	@ProxyMethod
 	public def getList( searchText, params ) {
@@ -67,7 +61,6 @@ class RemittanceService {
 	}
 	
 	private def getListAll( searchText, params ) {
-		println 'searchText -> ' + searchText
 		if ( !searchText )
 			return getListByQuery( "remittance:getList", [:], params, null )
 			
@@ -177,7 +170,6 @@ class RemittanceService {
 			remittanceno : rem.info.txnno, 
 			remittancedate : rem.info.txndate
 		];
-		em.sqlContext.createNamedExecutor( "remittance:closeReceiptForRemittance" ).setParameters( params ).execute();
 		em.sqlContext.createNamedExecutor( "remittance:closeReceiptListForRemittance" ).setParameters( params ).execute();
 	}
 	
@@ -288,17 +280,6 @@ class RemittanceService {
 	}
 	
 	@ProxyMethod 
-	public def exportReceipts( objid ) {
-		return em.sqlContext.createNamedQuery('remittance:exportReceipt').setParameter('objid', objid)
-				.resultList.each {
-					it.info = em.serializer.read( it.info)
-					it.items = em.serializer.read( it.items)
-					it.payments = em.serializer.read( it.payments)
-					it.extended = em.serializer.read( it.extended) 
-				}
-	}
-	
-	@ProxyMethod 
 	public def exportReceiptLists( objid ) {
 		return em.sqlContext.createNamedQuery('remittance:exportReceiptList').setParameter('objid', objid).resultList 
 	}
@@ -337,12 +318,12 @@ class RemittanceService {
 	public void postImportRemittance( data ) {
 		validateImportRemittance( data ) 
 		
-		em.create(SCHEMANAME, data.remittance )
-		em.create(LISTSCHEMANAME, data.remittance )
-		
 		data.remittance.postedby = env.USERNAME 
 		data.remittance.dtposted = dtsvc.serverDate 
 		em.create( REMITTANCE_IMPORT_SCHEMA, data.remittance)
+		
+		em.create(SCHEMANAME, data.remittance )
+		em.create(LISTSCHEMANAME, data.remittance )
 		
 		data.remittedforms.each { rf ->
 			def importedafc = data.afcontrols.find{ a -> a.objid == rf.afcontrolid  }
@@ -356,31 +337,14 @@ class RemittanceService {
 		
 		postImportedAFControls( data ) 
 		
-		data.receipts.each { receipt ->
-			buildDatePartInfo( receipt )
-			def afc = data.afcontrols.find{ it.origafcontrolid == receipt.info.afcontrolid}
+		data.receiptlists.each { receipt ->
+			def afc = data.afcontrols.find{ it.origafcontrolid == receipt.afcontrolid}
 			if( ! afc ) throw new Exception('Cannot load original AF Control.')
-			receipt.info.afcontrolid = afc.objid 
-			em.create(RECEIPT_SCHEMANAME, receipt)
-			em.create(RECEIPT_LIST_SCHEMA, receipt)
+			receipt.afcontrolid = afc.objid 
 		}
-		
-		data.receiptitems.each{ em.create(RECEIPT_ITEM_SCHEMA, it ) }
-		data.paymentitems.each{ em.create(PAYMENT_ITEM_SCHEMA, it ) }
-		
+		 
+		rctsvc.createImportedReceipt( data )
 		postToRevenue( data.remittance )
-		
-		
-	}
-	
-	void buildDatePartInfo( receipt ) {
-		def txndate = receipt.info.txndate
-		if( txndate instanceof String) txndate = java.sql.Date.valueOf( txndate )
-		def dt = dtsvc.parseDate( txndate, null )
-		receipt.iyear  = dt.year
-		receipt.iqtr   = dt.qtr
-		receipt.imonth = dt.month
-		receipt.iday   = dt.day
 	}
 	
 	// when posting the remittedform, update the corresponding afcontrol information
@@ -416,6 +380,16 @@ class RemittanceService {
 		}
 	}
 	
+	void buildDatePartInfo( receipt ) {
+		def txndate = receipt.info.txndate
+		if( txndate instanceof String) txndate = java.sql.Date.valueOf( txndate )
+		def dt = dtsvc.parseDate( txndate, null )
+		receipt.iyear  = dt.year
+		receipt.iqtr   = dt.qtr
+		receipt.imonth = dt.month
+		receipt.iday   = dt.day
+	}
+	
 	def getOrigAFControlByImportedAFControl( importedafc ) {
 		def afc = em.sqlContext.createNamedQuery('remittance:getAFControlByRemittedForm').setParameters( importedafc ).singleResult 
 		if( ! afc ) throw new Exception("Accountable Form No. ${importedafc.stubno} does not exists or was deleted.")
@@ -425,7 +399,7 @@ class RemittanceService {
 	void validateImportRemittance( data ) {
 		checkDuplicateImportPosting( data.remittance.objid )
 		if( ! data.remittedforms ) throw new Exception('At least one (1) remitted form is required.')
-		if( ! data.receipts ) throw new Exception('At least one (1) receipt is required.')
+		if( ! data.receiptlists ) throw new Exception('At least one (1) receipt is required.')
 		if( ! data.receiptitems ) throw new Exception('At least one (1) receipt item is required.')
 		if( ! data.paymentitems ) throw new Exception('At least one (1) payment item is required.')
 		
@@ -437,8 +411,6 @@ class RemittanceService {
 	void validateMismatchAFControlSeries( data ) {
 		data.afcontrols.each{ importedafc ->
 			def afc = getOrigAFControlByImportedAFControl( importedafc )
-			if( ! afc ) throw new Exception('AF Control with stub no. ' + importedafc.stubno + ' does not exists')
-			
 			def rf = data.remittedforms.find{ it.afcontrolid == importedafc.objid }
 			if( ! rf ) throw new Exception('Remitted Form with stub no. ' + importedafc.stubno + ' does not exists.')
 			
@@ -516,10 +488,6 @@ class RemittanceService {
 	@ProxyMethod
 	public def update( rem ) {
 		em.validate( SCHEMANAME, rem );
-		updateListingItem( rem );			
-	}
-	
-	private void updateListingItem( rem ) {
 		def dt = dtsvc.parseDate( rem.info.txndate, null );
 		em.update( LISTSCHEMANAME, [
 			objid : rem.objid,
@@ -536,6 +504,7 @@ class RemittanceService {
 			totalotherpayment : rem.info.totalotherpayment
 		]);
 	}
+	
 	
 	@ProxyMethod
 	public def fetchOtherPayments( param ){

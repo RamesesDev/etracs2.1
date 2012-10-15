@@ -25,7 +25,6 @@ public class BatchCaptureInitPage extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         formPanel1 = new com.rameses.rcp.util.FormPanel();
-        xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
         xComboBox3 = new com.rameses.rcp.control.XComboBox();
         xDateField2 = new com.rameses.rcp.control.XDateField();
@@ -34,19 +33,8 @@ public class BatchCaptureInitPage extends javax.swing.JPanel {
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Collection Information");
         formPanel1.setBorder(xTitledBorder1);
-        xComboBox1.setCaption("Collector");
-        xComboBox1.setCaptionWidth(110);
-        xComboBox1.setExpression("#{name}");
-        xComboBox1.setImmediate(true);
-        xComboBox1.setItems("collectorlist");
-        xComboBox1.setName("collector");
-        xComboBox1.setPreferredSize(new java.awt.Dimension(250, 22));
-        xComboBox1.setRequired(true);
-        formPanel1.add(xComboBox1);
-
         xComboBox2.setCaption("AF Control");
         xComboBox2.setCaptionWidth(110);
-        xComboBox2.setDepends(new String[] {"collector"});
         xComboBox2.setDynamic(true);
         xComboBox2.setExpression("#{afid}:  #{currentseries}: #{endseries}");
         xComboBox2.setImmediate(true);
@@ -105,7 +93,6 @@ public class BatchCaptureInitPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.control.XButton xButton1;
-    private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
     private com.rameses.rcp.control.XDateField xDateField2;

@@ -63,6 +63,11 @@
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
             <PropertyBean type="com.rameses.rcp.control.border.XUnderlineBorder"/>
         </Property>
+        <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+          <StringArray count="1">
+            <StringItem index="0" value="selectedItem"/>
+          </StringArray>
+        </Property>
         <Property name="dynamic" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="formActions"/>
         <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">

@@ -13,10 +13,10 @@ import com.rameses.rcp.ui.annotations.StyleSheet;
  * @author  jzamora
  */
 @StyleSheet("etracs2/tc/af/AFControlActivatePage.style")
-public class AFControlActivatePage extends javax.swing.JPanel {
+public class AFControlAssignToPage extends javax.swing.JPanel {
     
     /** Creates new form AFControlSelectPage */
-    public AFControlActivatePage() {
+    public AFControlAssignToPage() {
         initComponents();
     }
     
@@ -42,6 +42,7 @@ public class AFControlActivatePage extends javax.swing.JPanel {
         xDataTable1.setName("selectedItem");
 
         xActionBar1.setBorder(new com.rameses.rcp.control.border.XUnderlineBorder());
+        xActionBar1.setDepends(new String[] {"selectedItem"});
         xActionBar1.setDynamic(true);
         xActionBar1.setName("formActions");
         xActionBar1.setPadding(new java.awt.Insets(0, 3, 0, 0));

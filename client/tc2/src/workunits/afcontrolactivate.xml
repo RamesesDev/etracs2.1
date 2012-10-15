@@ -3,7 +3,7 @@
         <invoker folderid="/menu/tc/txn" action="init" caption="Activate AF Control" permission="afcontrol.activate" index="2" />
         <invoker folderid="/txn/tc/txn" action="init" caption="Activate AF Control" permission="afcontrol.activate" index="2" />
         
-        <invoker type="afcontrol:activate" caption="Activate AF Control" target="popup" permission="afcontrol.activate" />
+        <invoker type="afcontrol:activate" action="initFromInvoker" caption="Activate AF Control" target="popup" permission="afcontrol.activate" />
         
         <invoker type="quick_launcher" code="AFC02" action="init" caption="Activate AF Control" permission="afcontrol.activate" />
         
@@ -27,18 +27,23 @@ class AFControlActivateController
     
     def afid = '51'
     def mode = 'ONLINE'
-    def collector
     def onselectHandler 
     def selectedItem
     def list
-    boolean collectormode 
+    def accessedFrom = 'menu' 
     
     void init() {
-        collectormode = checkCollectorMode()
+        list = svc.getOpenAFControlByAssignedTo( OsirisContext.env.USERID, mode )
+    }
+    
+    void initFromInvoker() {
+        init()
+        accessedFrom = 'invoker'
     }
     
     def activate() {
-        if( ! selectedItem ) throw new Exception('Select an accountable form.')        
+        if( ! selectedItem ) throw new Exception('Select an accountable form.')    
+        if( selectedItem.active == 1 ) throw new Exception('Selected Accountable Form is already active. ')
         if( MsgBox.confirm('Activate selected AF Control?') ) {
             def afcontrol = svc.activateAFControl( selectedItem.objid, selectedItem?.mode  ) 
             if( onselectHandler ) {
@@ -46,57 +51,30 @@ class AFControlActivateController
                 //MsgBox.alert('Stub No. ' + selectedItem.stubno + ' has been successsfully activated.')
             }
         }
-        return '_close'
+        if( accessedFrom == 'invoker' ) {
+            return '_close'
+        }
+        return null
     }
     
     def listHandler = [
         getRows    : { return 50 },
         getColumns : { 
             return [
+                new Column(name:'_active', caption:'Active', type:'boolean', maxWidth:80),
                 new Column(name:'afid', caption:'AF No.', maxWidth:80),
+                new Column(name:'mode', caption:'Mode'),
                 new Column(name:'stubno', caption:'Stub No.', maxWidth:120),
                 new Column(name:'startseries', caption:'Start Series', format:'0000000'),
                 new Column(name:'endseries', caption:'End Series', format:'0000000'),
                 new Column(name:'currentseries', caption:'Current Series', format:'0000000'),
                 new Column(name:'balance', caption:'Balance', type:'integer'),
-                new Column(name:'mode', caption:'Mode'),
             ]
         },
         fetchList : {
             return list
         },
     ] as SubListModel
-    
-    def getCollectorList() {
-        return userService.getCollectorList()
-    }
-    
-    void setCollector( collector ) {
-        this.collector = collector 
-        list = []
-        if( collector ) {
-            list = svc.getAllInactiveList( collector.objid )
-        }
-        listHandler.load()
-    }
-    
-    boolean checkCollectorMode() {
-        setCollector( getCollector() )
-        if( collector ) {
-            return true
-        }
-        return false
-    }
-    
-    def getCollector() {
-        try {
-            return userService.getCollector( OsirisContext.env.USERID )
-        }
-        catch( e ) {
-            //user is not a collector
-            return null
-        }
-    }
     
 }
 

@@ -46,9 +46,10 @@ class PostCaptureService
 		//add validation checks
 		entity.totalcount = entity.summaries.sum( {it.icount} )
 		entity.amount = entity.summaries.sum( {it.amount} )
+		if( ! entity.summaries) throw new Exception('There are no unposted captured receipts for this collector.')
 		return entity 
 	}
-	
+		
 	@ProxyMethod
 	public List loadCapturedReceiptSummaries( collectorid, capturedbyid ) {
 		List summaries = [] 
@@ -60,21 +61,20 @@ class PostCaptureService
 							.setParameters( [collectorid:collectorid, capturedbyid:capturedbyid] )
 							.resultList
 		}
-		if( ! summaries ) throw new Exception('There are no capture receipts.')
 		return summaries
 	}
 	
 	@ProxyMethod
-	public List getCapturedReceipts( collectorid, capturedbyid, afid ) {
-		if( ! afid ) return []
+	public List getCapturedReceipts( collectorid, capturedbyid, afcontrolid) {
+		if( ! afcontrolid ) return []
 		if( capturedbyid && collectorid == capturedbyid ) {
 			return em.sqlContext.createNamedQuery('postcapture:getCapturedReceipts')
-						.setParameters([collectorid:collectorid, afid:afid])
+						.setParameters([collectorid:collectorid, afcontrolid:afcontrolid])
 						.resultList
 		}
 		else {
 			return em.sqlContext.createNamedQuery('postcapture:getCapturedReceiptsBySubcollector')
-						.setParameters([collectorid:collectorid, capturedbyid:capturedbyid, afid:afid]).resultList
+						.setParameters([collectorid:collectorid, capturedbyid:capturedbyid, afcontrolid:afcontrolid]).resultList
 		}
 	}
 	
@@ -85,19 +85,31 @@ class PostCaptureService
 		entity.schemaversion = SCHEMAVERSION
 		entity.docstate = POSTED_STATE
 		entity.dtposted = new Date()
-		validate( entity, capturedbyid  )		
+		validate( entity, capturedbyid  )	
+		em.create( entity.schemaname, entity )		
 		if( capturedbyid && capturedbyid == entity.collectorid ) {
-			em.sqlContext.createNamedExecutor('postcapture:postCapturedReceipts').setParameter('collectorid', entity.collectorid).execute()
-			em.sqlContext.createNamedExecutor('postcapture:postCapturedReceiptList').setParameter('collectorid', entity.collectorid).execute()
+			em.sqlContext.createNamedExecutor('postcapture:postCapturedReceiptList')
+					.setParameters([postcaptureid:entity.objid,collectorid:entity.collectorid])
+					.execute()
 		}
 		else {
-			em.sqlContext.createNamedExecutor('postcapture:postCapturedReceiptsBySubcollector')
-						.setParameters([collectorid:entity.collectorid, capturedbyid:capturedbyid]).execute()
 			em.sqlContext.createNamedExecutor('postcapture:postCapturedReceiptListBySubcollector')
-						.setParameters([collectorid:entity.collectorid, capturedbyid:capturedbyid]).execute()
+						.setParameters([postcaptureid:entity.objid,collectorid:entity.collectorid, capturedbyid:capturedbyid])
+						.execute()
 		}
-		em.create( entity.schemaname, entity )
 		return entity 
+	}
+	
+	@ProxyMethod
+	public List getCollectorListByAssignedTo( assignedtoid ) {
+		def collectorIds = em.sqlContext.createNamedQuery('postcapture:getCollectorIdByAssignedTo')
+								.setParameter('assignedtoid', assignedtoid)
+								.resultList 
+		def collectors = []
+		collectorIds.each{
+			collectors.add( userSvc.getCollector(it.collectorid) ) 
+		}
+		return collectors
 	}
 	
 	void validate( entity, capturedbyid ) {

@@ -5,6 +5,7 @@ import com.rameses.rcp.annotations.*
 import com.rameses.osiris2.client.*
 import com.rameses.osiris2.reports.*
 import etracs2.groovy.*
+import java.rmi.server.UID
         
 abstract class AbstractCollectionController
 {
@@ -24,6 +25,7 @@ abstract class AbstractCollectionController
     def afcontrol
     def collectiontype
     def collector
+    def subcollector
     def txnmode
     def txndate
     def openerType
@@ -220,10 +222,11 @@ abstract class AbstractCollectionController
 
     def createEntity() {
         return [
+            objid       : 'RCT' + new UID(),
             docstate    : initState(),
             opener      : openerType,
             voided      : 0,
-            collectorid : collector.objid,
+            collectorid : afcontrol.collectorid,
             info     : [
                 mode             : txnmode,
                 afid             : af.objid,
@@ -235,9 +238,12 @@ abstract class AbstractCollectionController
                 collectiontypeid : collectiontype.objid,
                 collectiontype   : collectiontype.name,
                 payorrequired    : collectiontype.payorrequired,
-                collectorid      : collector.objid,
-                collectorname    : collector.name,
-                collectortitle   : collector.jobtitle,
+                collectorid      : afcontrol.collectorid,
+                collectorname    : afcontrol.collectorname,
+                collectortitle   : afcontrol.collectortitle,
+                capturedbyid     : subcollector?.objid,
+                capturedbyname   : subcollector?.name,
+                capturedbytitle  : subcollector?.jobtitle,
                 amount       : 0.00,
                 totalpayment : 0.00,
                 cash         : 0.00,

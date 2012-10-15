@@ -8,8 +8,10 @@
 		<field name="afid" required="true"/>
 		<field name="collectorid" required="true"/>
 		<field name="collectorname" required="true"/>
+		<field name="collectortitle" required="true"/>
 		<field name="encodedbyid" required="true"/>
 		<field name="encodedby" required="true"/>
+		<field name="encodedbytitle" required="true"/>
 		<field name="startseries" required="true" type="integer" />
 		<field name="series" required="true" type="integer" />
 		<field name="amount" required="true" type="decimal" />

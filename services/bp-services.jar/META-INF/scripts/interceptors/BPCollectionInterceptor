@@ -290,33 +290,35 @@ class BPCollectionInterceptor {
 		} 
 		
 		def bt_items = receipt.items.findAll{ it.systype.equals('BUSINESS_TAX') }
-		if( bt_items ){
-			def isize = bt_items.size()
-			def lastqtr = fqtr( bt_items[isize-1].iqtr )
-			
-			bt_items.unique{ it.acctid }.each{ item ->
-				def btiteminfo = receipt.items.findAll{ it.acctid.equals(item.acctid) && it.systype.equals('BUSINESS_TAX') }
-				def haspartial = btiteminfo[btiteminfo.size()-1].partial
-				def amount = btiteminfo.amount.sum()
-				def nqtr = btiteminfo.size()
-				def acctsuffix 
-				
-				if( receipt.txntype == 'NEW' ) 
-					acctsuffix = ( haspartial ? 'Partial Payment' : 'Full Paid' )
-				else if( nqtr == 4 && !haspartial )  
-					acctsuffix = 'Full Paid' 
-				else if( nqtr == 1 ) 
-					acctsuffix = fqtr(item.iqtr) + " Qtr"
-				else 
-					acctsuffix = "$item.iqtr-$lastqtr Qtr"
-
-				item.accttitle += " $acctsuffix" + ( haspartial ? ' Partial Payment' : '' )
-				item.amount = ( amount ) ? amount : item.amount 
-			}
-			
-			receipt.items.removeAll( receipt.items.findAll{ it.systype.equals('BUSINESS_TAX') } )
-			receipt.items.addAll( bt_items )
+		def isize = bt_items.size()
+		
+		def lastqtr = fqtr( receipt.items[0].iqtr  )
+		if( isize > 0 ) {
+			lastqtr = fqtr( bt_items[isize-1].iqtr )
 		}
+		
+		bt_items.unique{ it.acctid }.each{ item ->
+			def btiteminfo = receipt.items.findAll{ it.acctid.equals(item.acctid) && it.systype.equals('BUSINESS_TAX') }
+			def haspartial = btiteminfo[btiteminfo.size()-1].partial
+			def amount = btiteminfo.amount.sum()
+			def nqtr = btiteminfo.size()
+			def acctsuffix 
+			
+			if( receipt.txntype == 'NEW' ) 
+				acctsuffix = ( haspartial ? 'Partial Payment' : 'Full Paid' )
+			else if( nqtr == 4 && !haspartial )  
+				acctsuffix = 'Full Paid' 
+			else if( nqtr == 1 ) 
+				acctsuffix = fqtr(item.iqtr) + " Qtr"
+			else 
+				acctsuffix = "$item.iqtr-$lastqtr Qtr"
+
+			item.accttitle += " $acctsuffix" + ( haspartial ? ' Partial Payment' : '' )
+			item.amount = ( amount ) ? amount : item.amount 
+		}
+		
+		receipt.items.removeAll( receipt.items.findAll{ it.systype.equals('BUSINESS_TAX') } )
+		receipt.items.addAll( bt_items )
 	}
 	   
 	private void summarizedByAccts( def receipt ){

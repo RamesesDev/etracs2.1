@@ -46,9 +46,8 @@ class ReceiptService
 			updateReceiptInfo( receipt )
 			checkDuplicateSerialNo( receipt.objid, receipt.info.afid, receipt.info.serialno )
 			validate( receipt )
-			em.create( receipt.schemaname, receipt )
 			buildDateBreakdownInfo( receipt )
-			em.create( LIST_SCHEMA, receipt )
+			em.create( LIST_SCHEMA, flatten( receipt ))
 			postReceiptItems( receipt )
 			postPayments( receipt )
 			postAFControl( receipt )
@@ -67,19 +66,34 @@ class ReceiptService
 		checkRemitted( receipt )
 		updatePayorName( receipt ) 
 		validate( receipt )
-		em.update( receipt.schemaname, receipt, { diff ->
-			logService.logB('UPDATE', 'Receipt', receipt.objid, null, diff )
-		} as UpdateChangeHandler )
 		buildDateBreakdownInfo( receipt )
-		em.update( LIST_SCHEMA, receipt )		
+		em.update( LIST_SCHEMA, flatten(receipt ))
 		postReceiptItems( receipt )
 		postPayments( receipt )
 	}
 	
 	@ProxyMethod 
 	public def open( receiptid ) {
-		def receipt = em.read( SCHEMANAME, [objid:receiptid] )
+		def receipt = em.sqlContext.createNamedQuery('receipt:getReceipt').setParameter('objid', receiptid).singleResult 
+		if( ! receipt ) throw new Exception('Cannot open Receipt with ID No. ' + receiptid )
 		
+		receipt.info = em.sqlContext.createNamedQuery('receipt:getReceiptInfo').setParameter('objid', receiptid).singleResult
+		//TODO:
+		//ugly hack : temporary to avoid error in the report
+		receipt.info.txndate = receipt.info.txndate.toString()
+		if( receipt.extended ) {
+			def extended = em.serializer.read(receipt.extended)
+			receipt.putAll(  extended )
+			receipt.info.putAll( extended)
+		}
+		receipt.items = em.sqlContext.createNamedQuery('receipt:getReceiptItems').setParameter('receiptid', receiptid).resultList
+		receipt.items.each{
+			if( it.extended ) it.putAll( em.serializer.read(it.extended) )
+		}
+		receipt.payments = em.sqlContext.createNamedQuery('receipt:getPaymentItems').setParameter('receiptid', receiptid).resultList
+		receipt.payments.each{
+			if( it.extended ) it.putAll( em.serializer.read(it.extended) )
+		}
 		return receipt
 	}
 	
@@ -90,10 +104,10 @@ class ReceiptService
 		if( IsReceiptVoided( receiptid ) ) throw new Exception('Void transaction is not allowed.\nReceipt has already been voided.')
 		
 		def params = [objid:receiptid, voidreason:reason]
-		em.sqlContext.createNamedExecutor('receipt:voidReceipt').setParameters( params ).execute()
+		// em.sqlContext.createNamedExecutor('receipt:voidReceipt').setParameters( params ).execute()
 		em.sqlContext.createNamedExecutor('receipt:voidReceiptList').setParameters( params ).execute()
 		logService.log('VOID', 'Receipt', receiptid)
-		return em.read( SCHEMANAME, [objid:receiptid])
+		return open( receiptid )
 	}
 	
 	@ProxyMethod
@@ -101,7 +115,8 @@ class ReceiptService
 		if( IsSerialType( receiptid) ) throw new Exception('Delete transaction is not allowed for this receipt.')
 		if( IsClosedReceipt( receiptid ) ) throw new Exception('Receipt has already been remitted.')
 		
-		def rct = em.read( SCHEMANAME, [objid:receiptid] )
+		def rct = open(receiptid)
+		
 		//revert afcontrol 
 		def afc = em.read(AFCONTROL_SCHEMA, [objid:rct.info.afcontrolid ])
 		afc.balance += rct.qtyissued 
@@ -124,9 +139,10 @@ class ReceiptService
 	public List getList( searchParam, params ) {
 		if( !searchParam.docstate ) searchParam.docstate = '%'
 		if( !searchParam.collectorid ) searchParam.collectorid = '%'
+		if( !searchParam.capturedbyid ) searchParam.capturedbyid = '%'
+		if( searchParam.collectorid != '%' ) searchParam.capturedbyid = '%'
 		if( ! searchParam.searchText ) return getListByQuery('receipt:getList', searchParam, params)
 		
-		searchParam.collectorid = searchParam.collectorid+'%'
 		searchParam.serialno    = searchParam.searchText
 		searchParam.stubno      = searchParam.searchText
 		searchParam.txndate     = searchParam.searchText
@@ -154,6 +170,15 @@ class ReceiptService
         def daysdiff = dateService.getDaysDiff( checkdate, currdate ) 
         if( daysdiff > 180 ) throw new Exception('Stale check is not allowed.')
     }
+	
+	@ProxyMethod  
+	public void createImportedReceipt( data ) {
+		data.receiptlists.each { receipt ->
+			em.create(LIST_SCHEMA, receipt )
+		}
+		data.receiptitems.each{ em.create(RECEIPTITEM_SCHEMA, it ) }
+		data.paymentitems.each{ em.create(PAYMENTITEM_SCHEMA, it ) }
+	} 
 	
 	@ProxyMethod
 	public def saveBookletCollection( entity ) {
@@ -308,12 +333,12 @@ class ReceiptService
 	}
 	
 	void checkRemitted( receipt ) {
-		def oldrct = em.read(SCHEMANAME, [objid:receipt.objid ] )
-		if( oldrct.state == CLOSED_STATE) throw new Exception('Document has already been remitted.')
+		def rct = em.sqlContext.createNamedQuery('receipt:getState').setParameter('objid', receipt.objid).singleResult
+		if( rct.state == CLOSED_STATE) throw new Exception('Document has already been remitted.')
 	}
 		
 	void updateReceiptInfo( receipt ) {
-		receipt.objid = 'RCT' + (new UID())
+		// receipt.objid = 'RCT' + (new UID())
 		receipt.schemaname = SCHEMANAME
 		receipt.schemaversion = SCHEMAVERSION
 		
@@ -497,9 +522,22 @@ class ReceiptService
 					.resultList
 	}
 	
+	def flatten( receipt ) {
+		def rct = [:]
+		receipt.each{k,v ->
+			if( ! (v instanceof List || v instanceof Map) ) {
+				rct[k] = v 
+			}
+		}
+		rct.putAll( receipt.info )
+		return rct 
+	}
+	
 	@ProxyMethod 
 	public def getIssuedTotal( def searchParam ){ 
 		def params = [ _start:0, _limit:0 ] 
+		if( !searchParam.collectorid ) searchParam.collectorid = '%'
+		if( !searchParam.capturedbyid ) searchParam.capturedbyid = '%'
 		return getListByQuery( "receipt:getIssuedTotal", searchParam, params )[0].amount
 	}
 	
