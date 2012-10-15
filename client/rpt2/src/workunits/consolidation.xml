@@ -399,8 +399,8 @@ public class ConsolidationController
     }
     
     boolean getShowDisapproveAction() {
-        if( consolidation.lgutype?.toLowerCase() != 'city'  ) return false
         if( consolidation.docstate != 'FORAPPROVAL' ) return false
+        if( consolidation.rp.lgutype?.toLowerCase() != 'city'  ) return false
         return true
     }
     
@@ -412,6 +412,7 @@ public class ConsolidationController
     
     boolean getShowApprovedByProvinceAction() {
         def lgutype = consolidation.rp.lgutype?.toLowerCase()
+        if( lgutype == 'city' || lgutype == 'municipality' ) return false 
         if( lgutype == 'municipality' && consolidation.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && consolidation.docstate != 'FORAPPROVAL' ) return false
         return true
@@ -419,9 +420,10 @@ public class ConsolidationController
     
     boolean getShowDisapproveByProvinceAction() {
         def lgutype = consolidation.rp.lgutype?.toLowerCase()
+        if( lgutype == 'city' ) return false 
         if( lgutype == 'municipality' && consolidation.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && consolidation.docstate != 'FORAPPROVAL' ) return false
-        return true
+        return true 
     }
     
     def getTotalareasqm() {
