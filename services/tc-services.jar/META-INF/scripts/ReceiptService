@@ -141,7 +141,8 @@ class ReceiptService
 		if( !searchParam.collectorid ) searchParam.collectorid = '%'
 		if( !searchParam.capturedbyid ) searchParam.capturedbyid = '%'
 		if( searchParam.collectorid != '%' ) searchParam.capturedbyid = '%'
-		if( ! searchParam.searchText ) return getListByQuery('receipt:getList', searchParam, params)
+		
+		if( ! searchParam.searchText ) return getListByQuery('receipt:getList', searchParam, params, 'objid')
 		
 		searchParam.serialno    = searchParam.searchText
 		searchParam.stubno      = searchParam.searchText
@@ -150,15 +151,15 @@ class ReceiptService
 		searchParam.paidby      = searchParam.searchText+'%'
 		
 		def result = []
-		if((result = getListByQuery('receipt:getListBySerialNo', searchParam, params))) return result 
-		if((result = getListByQuery('receipt:getListByStubNo', searchParam, params))) return result 
+		if((result = getListByQuery('receipt:getListBySerialNo', searchParam, params, 'objid'))) return result 
+		if((result = getListByQuery('receipt:getListByStubNo', searchParam, params, 'objid'))) return result 
 		
 		if( searchParam.txndate.matches(/\d{4}-\d{2}-\d{2}/)) {
-			if((result = getListByQuery('receipt:getListByTxnDate', searchParam, params))) 
+			if((result = getListByQuery('receipt:getListByTxnDate', searchParam, params, 'objid'))) 
 				return result 
 		}
-		if((result = getListByQuery('receipt:getListByPayor', searchParam, params))) return result 
-		if((result = getListByQuery('receipt:getListByPaidBy', searchParam, params))) return result 
+		if((result = getListByQuery('receipt:getListByPayor', searchParam, params, 'objid'))) return result 
+		if((result = getListByQuery('receipt:getListByPaidBy', searchParam, params, 'objid'))) return result 
 		return result 
 	}
     
@@ -513,7 +514,7 @@ class ReceiptService
 		em.update(AFCONTROL_SCHEMA, afcontrol)
 	}	
 	
-	List getListByQuery( namedQuery, criteria, params ) {
+	List getListByQuery( namedQuery, criteria, params, pagingKeys ) {
 		if( ! params  ) params = [ _start:0, _limit:25 ]
 		return em.sqlContext.createNamedQuery( namedQuery )
 					.setParameters(criteria)
@@ -538,7 +539,11 @@ class ReceiptService
 		def params = [ _start:0, _limit:0 ] 
 		if( !searchParam.collectorid ) searchParam.collectorid = '%'
 		if( !searchParam.capturedbyid ) searchParam.capturedbyid = '%'
-		return getListByQuery( "receipt:getIssuedTotal", searchParam, params )[0].amount
+		if( searchParam.collectorid != '%' ) searchParam.capturedbyid = '%'
+		def data = em.sqlContext.createNamedQuery("receipt:getIssuedTotal").setParameters( searchParam).singleResult
+		if( data ) 
+			return data.amount
+		return 0.0
 	}
 	
 	
