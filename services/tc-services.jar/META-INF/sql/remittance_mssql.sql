@@ -220,7 +220,7 @@ ORDER BY  rl.afid, rl.serialno, rl.paidby, ri.accttitle
 	
 [getIncomeAccuntSummaryByAllFund] 
 SELECT 
-	MIN(ri.fundname), 
+	ri.fundname, 
 	ri.acctid AS acctid, 
 	ri.accttitle AS acctname, 
 	SUM( ri.amount ) AS amount 
@@ -228,8 +228,8 @@ FROM receiptlist rl, receiptitem ri
 WHERE rl.objid = ri.receiptid 
 	AND rl.remittanceid = $P{remittanceid} 
 	AND rl.voided = 0 
-GROUP BY ri.acctid, ri.accttitle 
-ORDER BY MIN(ri.fundname), ri.accttitle 
+GROUP BY ri.fundname, ri.acctid, ri.accttitle 
+ORDER BY ri.fundname, ri.accttitle 
 
 [getIncomeAccuntSummaryByFund]
 SELECT 
