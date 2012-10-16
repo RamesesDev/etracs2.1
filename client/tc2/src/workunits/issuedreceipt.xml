@@ -44,17 +44,16 @@ class IssuedReceiptController
         getRows    : { return 25 },
         getColumns : {
             return [
-                new Column(name:'mode', caption:'Mode'),
-                new Column(name:'afid', caption:'AF No.'),
-                new Column(name:'stubno', caption:'Stub No.'),
-                new Column(name:'txndate', caption:'Txn Date'),
-                new Column(name:'serialno', caption:'Serial No.'),
-                new Column(name:'collectiontype', caption:'Collection Type'),
-                new Column(name:'payorname', caption:'Payor'),
-                new Column(name:'paidby', caption:'Paid By'),
-                new Column(name:'amount', caption:'Amount', type:'decimal'),
-                new Column(name:'voidreason', caption:'Voided'),
-                new Column(name:'capturedbyname', caption:'Issued By'),
+                new Column(name:'mode', caption:'Mode', minWidth:100),
+                new Column(name:'afid', caption:'AF No.', minWidth:70),
+                new Column(name:'stubno', caption:'Stub No.', minWidth:70),
+                new Column(name:'txndate', caption:'Txn Date', minWidth:90),
+                new Column(name:'serialno', caption:'Serial No.', minWidth:120),
+                new Column(name:'collectiontype', caption:'Collection Type', minWidth:200),
+                new Column(name:'paidby', caption:'Paid By', minWidth:400),
+                new Column(name:'amount', caption:'Amount', type:'decimal', minWidth:100),
+                new Column(name:'voidreason', caption:'Voided', minWidth:100),
+                new Column(name:'capturedbyname', caption:'Issued By', minWidth:400),
             ]
         }, 
         fetchList : { 
