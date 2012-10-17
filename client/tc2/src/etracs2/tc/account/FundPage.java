@@ -86,24 +86,27 @@ public class FundPage extends javax.swing.JPanel {
         formPanel1.setBorder(xTitledBorder3);
         formPanel1.setCaptionWidth(95);
         xLabel1.setCaption("State");
+        xLabel1.setCaptionWidth(110);
         xLabel1.setDepends(new String[] {"selectedItem"});
         xLabel1.setFont(new java.awt.Font("Arial", 1, 11));
         xLabel1.setName("entity.docstate");
         formPanel1.add(xLabel1);
 
         xComboBox1.setCaption("Fund");
+        xComboBox1.setCaptionWidth(110);
         xComboBox1.setDepends(new String[] {"selectedItem"});
         xComboBox1.setImmediate(true);
         xComboBox1.setItems("fundList");
         xComboBox1.setName("entity.fund");
-        xComboBox1.setPreferredSize(new java.awt.Dimension(150, 23));
+        xComboBox1.setPreferredSize(new java.awt.Dimension(0, 23));
         xComboBox1.setRequired(true);
         formPanel1.add(xComboBox1);
 
-        xTextField1.setCaption("Sub Fund");
+        xTextField1.setCaption("Special Account");
+        xTextField1.setCaptionWidth(110);
         xTextField1.setDepends(new String[] {"selectedItem"});
         xTextField1.setName("entity.subfund");
-        xTextField1.setPreferredSize(new java.awt.Dimension(150, 18));
+        xTextField1.setPreferredSize(new java.awt.Dimension(0, 18));
         xTextField1.setRequired(true);
         formPanel1.add(xTextField1);
 
@@ -112,14 +115,14 @@ public class FundPage extends javax.swing.JPanel {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 328, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 383, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(34, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 177, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(166, Short.MAX_VALUE))
+                .addContainerGap(172, Short.MAX_VALUE))
         );
         jPanel2.add(jPanel4, java.awt.BorderLayout.CENTER);
 
