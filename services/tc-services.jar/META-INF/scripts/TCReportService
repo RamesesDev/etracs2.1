@@ -312,7 +312,9 @@ class TCReportService {
 			chart 		 : chart, 
 		]
 		
-		def list = em.sqlContext.createNamedQuery('tcreport:getReportOfCollection2' + chart).setParameters( params ).resultList 
+		def list = em.sqlContext.createNamedQuery('tcreport:getReportOfCollection2' + chart)
+					 .setParameters( params )
+					 .resultList 
 		
 		def title = 'REPORT OF COLLECTION'
 		if( fund ) {
@@ -330,6 +332,26 @@ class TCReportService {
 	@ProxyMethod
 	public Map generateReportOfCollection2( chart, year, qtr, month, day, fund ) {
 		return generateReportOfCollectionByChart(chart, year, qtr, month, day, fund)
+	}
+	
+	@ProxyMethod
+	public Map buildCheckPaymentsReportData( params ) {
+		def list = em.sqlContext.createNamedQuery('tcreport:getCheckPayments' + params.period)
+					 .setParameters( params )
+					 .resultList
+		
+		if( !list ) throw new Exception('No records found.')
+		
+		def checkinfo
+		list.each {
+			checkinfo = em.serializer.read( it.extended )
+			it.putAll(checkinfo)
+		}
+		
+		return [
+			title : 'LIST OF CHECK PAYMENTS',
+			items : list
+		]
 	}
 	
 	
