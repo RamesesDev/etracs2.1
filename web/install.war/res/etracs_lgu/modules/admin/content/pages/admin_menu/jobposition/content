@@ -60,6 +60,17 @@
 			this.edit = function() {
 				return new PopupOpener( "jobposition:edit", {saveHandler:refreshList, objid:this.selectedItem.objid} );
 			}
+			
+			this.removeItem = function() {
+				if( self.selectedItem.assigneeid ) {
+					alert( 'Position cannot be removed if there is an assignee. Please unassign first.' );
+					return;
+				}
+				if( confirm( "You are about to remove this position. Continue?")) {
+					jobpossvc.remove( self.selectedItem );
+					refreshList();
+				}
+			}
 	
 			this.propertyChangeListener = {
 				orgUnit : function(o) { self.listModel.refresh(true); }
@@ -128,11 +139,8 @@ def cols = [
 	"""],
 	
 	[html: """ <a r:context="jobpositionlist" r:name="viewPermissions">Permissions</a> """],
-	[html: """
-		<a r:context="jobpositionlist" r:name="edit">
-			<img src="/res/admin/edit.gif"/>
-		</a>
-	"""],
+	[html: """ <a r:context="jobpositionlist" r:name="edit"><img src="/res/admin/edit.gif"/></a>"""],
+	[html: """ <a r:context="jobpositionlist" r:name="removeItem"><img src="/res/admin/trash.gif"/></a>"""],
 ];
 %>
 @grid( context: "jobpositionlist", model: "listModel", name: "selectedItem", cols: cols )

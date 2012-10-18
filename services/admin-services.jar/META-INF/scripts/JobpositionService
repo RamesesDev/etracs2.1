@@ -19,18 +19,18 @@ class JobpositionService
 			if(params._limit) qry.setMaxResults( params._limit );
 
 			def sb = new StringBuffer();
-			def condition = '';
+			def condition = ' 1=1 ';
 			if( params.orgunitid ) {
 				sb.append( ''' orgunitid=$P{orgunitid} ''' );	
 			}	
 			if( params.searchText ) {
 				params.searchText = "%" + params.searchText + "%";
 				if( sb.length() > 0 ) sb.append( ' and ' );
-				sb.append( ''' code like $P{searchText} or title like $P{searchText} ''' );	
+				sb.append( ''' jp.code like $P{searchText} or jp.title like $P{searchText} or p.lastname like $P{searchText} or p.firstname like $P{searchText} ''' );	
 			}	
 			
 			if( sb.length() > 0 ) {
-				condition = ' where ' + sb.toString();
+				condition += ' and  ' + sb.toString();
 			}	
 			qry.setVars( [ condition: condition ] );	
 			qry.setParameters( params );

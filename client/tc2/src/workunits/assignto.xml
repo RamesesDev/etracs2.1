@@ -1,0 +1,34 @@
+<workunit>
+    <invokers>
+        <invoker type="assignto.create" action="init" caption="Assign Record" target="popup"  />
+    </invokers>
+    <code>
+<![CDATA[        
+
+import com.rameses.rcp.common.*
+import com.rameses.rcp.annotations.*
+import com.rameses.osiris2.client.*
+
+class AssignToController
+{
+    
+    def onselect      //handler 
+    def assignto
+    def items 
+    
+    void init(){}
+    
+    def ok() {
+        if( ! assignto ) throw new Exception('Assign to is required.')
+        if( onselect ) onselect( assignto )
+        return '_close' 
+    }
+    
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.tc.AssignToPage"/>
+    </pages>
+</workunit>

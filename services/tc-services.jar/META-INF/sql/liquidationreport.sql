@@ -16,6 +16,7 @@ SELECT
 FROM remittancelist rml 
 INNER JOIN liquidationlist ll on ll.objid = rml.liquidationid 
 WHERE ll.objid = $P{liquidationid} 
+ORDER BY rml.txnno 
 
 [getRemittedForms]
 SELECT 

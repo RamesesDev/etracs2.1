@@ -28,7 +28,10 @@
 		<field name="suffix"/>
 		<field name="serieslength" type="integer" />
 		<field name="txndate" />
-		<complex name="cancelledseries" ref="cancelledseries" type="list" serializer="default"/>
+		<field name="assignedtoid" />
+		<field name="assignedtoname" />
+		<field name="assignedtotitle" />
+		<complex name="cancelledseries" ref="cancelledseries" type="list" required="false" serializer="default"/>
 	</element>
 	
 	<element name="cancelledseries">

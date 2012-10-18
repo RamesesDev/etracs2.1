@@ -25,6 +25,26 @@ public class BPPermitReportService
 			params: buildReportParameter( bp )
 		]
 	}
+	     
+	@ProxyMethod
+	public def getPermitList( def param ){
+		param.barangay = ( !param.barangay ? '%' : param.barangay.barangayname )
+		def bp = em.sqlContext.createNamedQuery( 'bpreport:getListByYear' )
+			.setParameters( param ).resultList.each{ prmt ->
+				def app = em.sqlContext.createNamedQuery('bpreport:getAppByIdActivePermit').setParameter( 'applicationid', prmt.applicationid ).singleResult
+				if( app ) {
+					prmt.orno = em.serializer.read( app.extended ).payments[0].refno
+					def lobs = ''
+					prmt.lobs = em.serializer.read( prmt.lobs )
+					prmt.lobs.each{ lobs += ( !lobs ? it.name : "|$it.name" ) }
+					prmt.lobs = "($lobs)".toString()
+				}
+		}
+		
+		if( !bp ) throw new Exception( 'No Records found.' )
+		
+		return bp
+	}
 	
 	private void buidReportInfo( def bp, def app ){
 		createBPApplistInfo( bp )
@@ -143,8 +163,8 @@ public class BPPermitReportService
 	}
 	
 	private void createORDetail( def bp, def app ){
-		def c = app.credits[0]
-		def p = app.payments[0]
+		def c = (app.credits ? app.credits[0] : null )
+		def p = (app.payments ? app.payments[0] : null )
 				
 		def or = [orno:'-', ordate:null, amount:null ]	
 		if( c && p  ) {

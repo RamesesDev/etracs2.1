@@ -201,18 +201,19 @@ class BPApplicationService{
 	@ProxyMethod 
 	public def getList(def searchText, def params){
 		if( ! searchText ) 
-			return getListByQuery('bpapplication:getList', [:], params)
+			return getListByQuery('bpapplication:getList', [:], params, 'o.objid')
 		
 		def criteria = [ tradename:searchText +'%', txnno:searchText+'%']
 		def result = []
-		if( (result = getListByQuery('bpapplication:getListByTradename', criteria, params)) ) return result
-		if( (result = getListByQuery('bpapplication:getListByTxnno', criteria, params)) ) return result
+		if( (result = getListByQuery('bpapplication:getListByTradename', criteria, params, 'o.objid')) ) return result
+		if( (result = getListByQuery('bpapplication:getListByTxnno', criteria, params, 'o.objid')) ) return result
 		return result 
 	}
 	
 	def getListByQuery( namedQuery, criteria, params ) {
         if( ! params ) params = [ _start:0, _limit:25]
 		return em.sqlContext.createNamedQuery( namedQuery )
+						.setPagingKeys( pagingKeys )
 						.setParameters( criteria )
 						.setFirstResult( params._start )
 						.setMaxResults( params._limit )
@@ -695,7 +696,7 @@ class BPApplicationService{
 			list.clear();
 			def q = em.sqlContext.createNamedQuery(qry);
 			if( param ) q.setParameter('searchText', param );
-
+			q.setPagingKeys( 'bpa.objid' )
 			list.addAll( q.setMaxResults(10).resultList );
 			return list;
 		}
@@ -718,7 +719,7 @@ class BPApplicationService{
 			list.clear();
 			def q = em.sqlContext.createNamedQuery(qry);
 			if( param ) q.setParameter('searchText', param );
-			
+			q.setPagingKeys( 'bpa.objid' )
 			list.addAll( q.setMaxResults(25).resultList );
 			return list;
 		}

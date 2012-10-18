@@ -79,9 +79,16 @@ public class SubdivisionController
     }
     
     void disapprove() {
-        if( MsgBox.confirm('disapprove subdivision?') ) {
-            subdivision = svc.disapprove( subdivision.objid )
+        if( MsgBox.confirm('Disapprove subdivision?') ) {
+            svc.disapprove( subdivision.objid )
+            reloadSubdivision()
         }
+    }
+    
+    void reloadSubdivision() {
+        open()
+        landListHandler.load()
+        affectedrpuListHandler.load()
     }
     
     void submitToProvince() {
@@ -98,7 +105,8 @@ public class SubdivisionController
     
     void disapproveByProvince() {
         if( MsgBox.confirm('Disapprove subdivision?') ) {
-            subdivision = svc.disapproveByProvince( subdivision.objid )
+            svc.disapproveByProvince( subdivision.objid )
+            reloadSubdivision()
         }
     }
     
@@ -371,6 +379,7 @@ public class SubdivisionController
     boolean getShowApprovedByProvinceAction() {
         def lgutype = subdivision.lgutype?.toLowerCase().trim()
         if( lgutype == 'city' ) return false
+        if( lgutype == 'province' ) return false
         if( lgutype == 'municipality' && subdivision.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && subdivision.docstate != 'FORAPPROVAL' ) return false
         return true
@@ -379,6 +388,7 @@ public class SubdivisionController
     boolean getShowDisapproveByProvinceAction() {
         def lgutype = subdivision.lgutype?.toLowerCase()
         if( lgutype == 'city' ) return false
+        if( lgutype == 'province' ) return false
         if( lgutype == 'municipality' && subdivision.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && subdivision.docstate != 'FORAPPROVAL' ) return false
         return true

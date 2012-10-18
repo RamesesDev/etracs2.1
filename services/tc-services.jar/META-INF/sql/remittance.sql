@@ -354,14 +354,6 @@ WHERE balance = 0
   AND docstate = 'APPROVED' 
   AND collectorid = $P{collectorid} 
 
-[closeReceiptForRemittance]
-UPDATE receipt SET 
-	docstate = 'CLOSED', 
-	remittanceid = $P{remittanceid}, 
-	remittanceno = $P{remittanceno}, 
-	remittancedate = $P{remittancedate} 
-WHERE collectorid = $P{collectorid} 
-  AND docstate = 'OPEN' 
   
 [closeReceiptListForRemittance]
 UPDATE receiptlist SET 
@@ -611,9 +603,6 @@ select * from remittedform where remittanceid = $P{objid}
 
 [exportRevenue]
 select * from revenue where remittanceid = $P{objid}
-
-[exportReceipt]
-select * from receipt where remittanceid = $P{objid}
 
 [exportReceiptList]
 select * from receiptlist  where remittanceid = $P{objid}

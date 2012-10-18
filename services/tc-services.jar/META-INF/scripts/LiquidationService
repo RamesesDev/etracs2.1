@@ -56,9 +56,9 @@ class LiquidationService {
 			liq.docstate = 'CLOSED' 
 			em.validate( SCHEMANAME, liq );
 			em.create( SCHEMANAME, liq );
+			createListingItem( liq );
 			updateCashierInfo( liq )
 			closeMultiCashierRemittance( liq );
-			createListingItem( liq );
 			postLiquidationRcdMulti( liq )
 			return liq;
 		} 
@@ -80,8 +80,8 @@ class LiquidationService {
 			liq.fundsummaries = getFundSummaries( liq.objid );
 			em.validate( SCHEMANAME, liq );
 			em.create( SCHEMANAME, liq );
-			closeRemittance( liq );
 			createListingItem( liq );
+			closeRemittance( liq );
 			postLiquidationRcd( liq )
 			return liq;
 		} 

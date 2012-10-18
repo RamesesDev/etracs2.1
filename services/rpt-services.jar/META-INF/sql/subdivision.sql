@@ -107,6 +107,8 @@ DELETE FROM subdivision WHERE objid = $P{objid}
 [deleteSubdividedLand]
 DELETE FROM subdivisionland WHERE objid = $P{objid} 
 
+[deleteTxnReferecnce]
+DELETE FROM txnreference WHERE refid = $P{refid} 
 
 
 

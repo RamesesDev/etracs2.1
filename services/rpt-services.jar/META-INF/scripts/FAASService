@@ -787,7 +787,6 @@ class FAASService
         
 		checkFaasTxnReference( faas.objid )
 		checkDuplicatePin( txntype, false, faas.fullpin, claimno  )
-		
         faas = open( faas.objid )
         faas.info.claimno = claimno 
         if( txntype == 'TR' ) {
@@ -1347,7 +1346,9 @@ class FAASService
     
     void insertTxnReference( faas ) {
         if( faas.previousfaases )  {
-            def prevfaas = faas.previousfaases[0]
+            //def prevfaas = faas.previousfaases[0]
+			def pfaassize = faas.previousfaases.size 
+			def prevfaas = ( pfaassize > 1 ? faas.previousfaases[pfaassize-1] : faas.previousfaases[0] )
             def msg = 'FAAS ' + prevfaas.tdno + ' is currently referenced by a ' + faas.info.txntype + ' transaction'
             if( faas.info.tdno ) {
                 msg = 'FAAS ' + prevfaas.tdno + ' is currently referenced by FAAS ' + faas.info.tdno + '.' 

@@ -6,10 +6,29 @@ WHERE collectorid = $P{collectorid}
   AND mode = $P{mode} 
   AND active = 1 
   AND balance > 0 
+ORDER BY afid, startseries   
+  
+[getActiveByAssignedToId]
+SELECT * FROM afcontrol 
+WHERE assignedtoid = $P{assignedtoid} 
+  AND afid = $P{afid} 
+  AND docstate = 'APPROVED' 
+  AND mode = $P{mode} 
+  AND active = 1 
+  AND balance > 0   
+ORDER BY afid, startseries   
+  
+[getOpenAFControlByAssignedTo]
+SELECT * FROM afcontrol 
+WHERE assignedtoid = $P{assignedtoid} 
+  AND docstate = 'APPROVED' 
+  AND mode LIKE $P{mode}
+  AND balance > 0     
+ORDER BY afid, startseries   
 
 [getAllInactiveList]
 SELECT * FROM afcontrol 
-WHERE collectorid = $P{collectorid} 
+WHERE assignedtoid = $P{assignedtoid} 
   AND docstate = 'APPROVED' 
   AND active = 0 
   AND balance > 0 
@@ -25,9 +44,19 @@ WHERE collectorid = $P{collectorid}
   AND balance > 0 
 ORDER BY dtissued, stubno   
 
+[getInactiveListByAssignedToId]
+SELECT * FROM afcontrol 
+WHERE assignedtoid = $P{assignedtoid} 
+  AND afid = $P{afid} 
+  AND docstate = 'APPROVED' 
+  AND mode = $P{mode} 
+  AND active = 0 
+  AND balance > 0 
+ORDER BY dtissued, stubno   
+
 [getInactiveSerialCaptureList]
 SELECT * FROM afcontrol 
-WHERE collectorid = $P{collectorid} 
+WHERE assignedtoid = $P{assignedtoid}
   AND docstate = 'APPROVED' 
   AND mode = 'CAPTURE' 
   AND aftype = 'serial' 

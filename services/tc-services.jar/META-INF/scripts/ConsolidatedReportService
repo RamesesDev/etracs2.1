@@ -158,7 +158,7 @@ class ConsolidatedReportService {
 			def makeBlankBalance = { crf ->
 				crf.endingqty = null
 				crf.endingfrom = null
-				crf.endingto = null			
+				crf.endingto = null			 
 			}
 			
 			if( it.beginqty == it.issuedqty && ( it.receivedqty == null || it.receivedqty == 0 ) )
@@ -494,13 +494,13 @@ class ConsolidatedReportService {
 	}
 	
 	private void updateCRAAFbyRem( remid, craaf, rf, afcontrol, txndate ){
-		
+
 		em.sqlContext.createNamedExecutor('consolidatedreport:updateCRAAFbyRemittance')
 				.setParameters(
 					[
 						objid		: craaf.objid,
 						issuedqty	: (craaf.issuedqty ? craaf.issuedqty : 0) + (rf.issuedqty ? rf.issuedqty : 0 ), 
-						issuedfrom	: rf.issuedfrom,
+						issuedfrom	: ( craaf.issuedfrom.equals('-') ? rf.issuedfrom : craaf.issuedfrom ),   
 						issuedto	: rf.issuedto,
 						endingqty	: rf.endingqty,
 						endingfrom	: rf.endingfrom,
