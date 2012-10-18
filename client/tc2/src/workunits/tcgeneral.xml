@@ -105,10 +105,10 @@
         def listHandler = [
             getColumns : {
                 return [
-                    new Column( name:'acct', caption:'Account*', editable:true, type:'lookup', handler:incomeAcctLookup, expression: '#{accttitle}', minWidth:600 ),
+                    new Column( name:'acct', caption:'Account*', editable:true, type:'lookup', handler:incomeAcctLookup, expression: '#{accttitle}', width:600 ),
                     new Column( name:'qty', caption:'Qty', editableWhen:'#{root.allowQtyEdit[item]}', type:'integer', alignment: 'right', minWidth: 30),
-                    new Column( name:'amount', caption:'Amount*', type:'decimal', editableWhen:'#{root.allowAmountEdit[item]}', minWidth:150 ),
-                    new Column( name:'remarks', caption:'Remarks', editable:true, minWidth:300 ),
+                    new Column( name:'amount', caption:'Amount*', type:'decimal', editableWhen:'#{root.allowAmountEdit[item]}', width:150 ),
+                    new Column( name:'remarks', caption:'Remarks', editable:true, width:300 ),
                 ]
             },
             fetchList  : { return entity.items },
