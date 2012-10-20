@@ -95,7 +95,7 @@ public class BankAcctPage extends javax.swing.JPanel {
         xTextField1.setRequired(true);
         formPanel1.add(xTextField1);
 
-        xTextField3.setCaption("Account name");
+        xTextField3.setCaption("Account Name");
         xTextField3.setCaptionWidth(100);
         xTextField3.setDepends(new String[] {"selectedItem"});
         xTextField3.setName("entity.bankacctname");

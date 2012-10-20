@@ -21,3 +21,6 @@ SELECT COUNT(*) AS count FROM fund WHERE fundname = $P{fundname}
 
 [checkReferencedId]
 SELECT * FROM incomeaccount WHERE fundid = $P{fundid}
+
+[getFundsWithBankAccount]
+SELECT * FROM fund WHERE bankacctrequired = 1

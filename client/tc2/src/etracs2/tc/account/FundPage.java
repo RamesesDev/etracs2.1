@@ -39,6 +39,7 @@ public class FundPage extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xComboBox1 = new com.rameses.rcp.control.XComboBox();
         xTextField1 = new com.rameses.rcp.control.XTextField();
+        xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -85,15 +86,17 @@ public class FundPage extends javax.swing.JPanel {
         xTitledBorder3.setTitle("Fund Information");
         formPanel1.setBorder(xTitledBorder3);
         formPanel1.setCaptionWidth(95);
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel1.setCaption("State");
-        xLabel1.setCaptionWidth(110);
-        xLabel1.setDepends(new String[] {"selectedItem"});
+        xLabel1.setCaptionWidth(80);
+        xLabel1.setDepends(new String[] {"selectedItem", "formActions"});
         xLabel1.setFont(new java.awt.Font("Arial", 1, 11));
         xLabel1.setName("entity.docstate");
+        xLabel1.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel1.add(xLabel1);
 
         xComboBox1.setCaption("Fund");
-        xComboBox1.setCaptionWidth(110);
+        xComboBox1.setCaptionWidth(80);
         xComboBox1.setDepends(new String[] {"selectedItem"});
         xComboBox1.setImmediate(true);
         xComboBox1.setItems("fundList");
@@ -102,13 +105,25 @@ public class FundPage extends javax.swing.JPanel {
         xComboBox1.setRequired(true);
         formPanel1.add(xComboBox1);
 
-        xTextField1.setCaption("Special Account");
-        xTextField1.setCaptionWidth(110);
+        xTextField1.setCaption("Sub-Fund");
+        xTextField1.setCaptionWidth(80);
         xTextField1.setDepends(new String[] {"selectedItem"});
         xTextField1.setName("entity.subfund");
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 18));
+        xTextField1.setPreferredSize(new java.awt.Dimension(0, 19));
         xTextField1.setRequired(true);
         formPanel1.add(xTextField1);
+
+        xCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox1.setText("Assign a Back Account to this Fund?");
+        xCheckBox1.setCaption("");
+        xCheckBox1.setCaptionWidth(80);
+        xCheckBox1.setCellPadding(new java.awt.Insets(15, 0, 0, 0));
+        xCheckBox1.setDepends(new String[] {"selectedItem"});
+        xCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox1.setName("entity.bankacctrequired");
+        xCheckBox1.setOpaque(false);
+        xCheckBox1.setPreferredSize(new java.awt.Dimension(0, 15));
+        formPanel1.add(xCheckBox1);
 
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -121,8 +136,8 @@ public class FundPage extends javax.swing.JPanel {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 177, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(172, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 170, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(179, Short.MAX_VALUE))
         );
         jPanel2.add(jPanel4, java.awt.BorderLayout.CENTER);
 
@@ -142,6 +157,7 @@ public class FundPage extends javax.swing.JPanel {
     private javax.swing.JSplitPane jSplitPane1;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XActionTextField xActionTextField1;
+    private com.rameses.rcp.control.XCheckBox xCheckBox1;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XLabel xLabel1;

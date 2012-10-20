@@ -47,7 +47,8 @@ class FundController extends etracs2.groovy.CRUDController
     
     def createEntity() {
         return [
-            docstate        : 'DRAFT'
+            docstate        : 'DRAFT',
+            bankacctrequired  : true,
         ];
     }
     
@@ -59,6 +60,7 @@ class FundController extends etracs2.groovy.CRUDController
                 new Column(name:"fund", caption:"Fund"),
                 new Column(name:"subfund", caption:"Sub Fund"),
                 new Column(name:"fundname", caption:"Fund Name"),
+                new Column(name:"bankacctrequired", caption:"Account Required?", type:'boolean'),
                 new Column(name:"docstate", caption:"State"),
             ];
         },

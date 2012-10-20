@@ -69,7 +69,9 @@ class FundService{
 	
 	@ProxyMethod
 	public def open( objid ){
-		return em.sqlContext.createNamedQuery( 'fund:getById' ).setParameter( 'objid', objid ).singleResult;
+		def fund = em.read(schemaname, [objid:objid])
+		fund.bankacctrequired = fund.bankacctrequired == 1
+		return fund 
 	}
 	
 	@ProxyMethod
@@ -116,6 +118,15 @@ class FundService{
 		return fund;
 	}
 	
+	@ProxyMethod
+	public List getFundsWithBankAccount() {
+		return em.sqlContext.createNamedQuery('fund:getFundsWithBankAccount')
+					.resultList
+					.each{
+						it.bankacctrequired = (it.bankacctrequired == 1 )
+					}
+	}
+	
 	private void validate( fund ){
 		def oldfund = em.read(fund.schemaname, fund);
 		util.validateLastUpdate( fund, oldfund );
@@ -140,5 +151,6 @@ class FundService{
 					.setFirstResult( params._start )
 					.setMaxResults( params._limit )
 					.resultList
+					.each { it.bankacctrequired = (it.bankacctrequired == 1) }
 	}
 }
