@@ -20,6 +20,8 @@ import java.io.*
 import etracs2.groovy.*
 import etracs2.rpt.groovy.*
 import com.rameses.rcp.framework.TaskManager;
+import com.rameses.uploader.*
+import com.rameses.io.FileUtil;
 
 
 public class FAASAttachmentController {
@@ -238,14 +240,9 @@ public class FAASAttachmentController {
         return ext.toLowerCase()
     }
     
-    void copyToCache( file ) {
-        FileTransfer.FileInputSource fis = new FileTransfer.FileInputSource( file )
-        
-        File f = new File( resolveFileName(attachment.filename) );
-        FileTransfer.FileOutputHandler output = new FileTransfer.FileOutputHandler( f );
-        
-        FileTransfer ft = new FileTransfer();
-        ft.transfer( fis, output );
+    void copyToCache( sourceFile ) {
+        File targetFile = new File( resolveFileName(attachment.filename) );
+        FileUtil.copy( sourceFile, targetFile)
     }
     
     void downloadFile( attachment ) {
@@ -296,14 +293,14 @@ class UploadTask extends com.rameses.rcp.common.Task {
             
             attachment.filename  = parent.makeSafeFileName( attachment.objid ) + parent.getFileExtension( parent.file )
             attachment.directory = parent.makeSafeFileName( faas.objid ) 
-
-            FileTransfer.FileInputSource fis = new FileTransfer.FileInputSource( parent.file )
-            DynamicHttpTransfer.Out handler = new DynamicHttpTransfer.Out(app.host , app.context, 'ETRACSFileTransferService', 'uploadAttachment')
-            handler.parameters.put('attachment', attachment )
-
-            FileTransfer ft = new FileTransfer()
-            ft.transfer(fis, handler)
             
+            def uploader = new HttpFileUploader(app.host);
+            uploader.upload([
+                file      : parent.file,
+                filename  : attachment.filename,
+                directory : attachment.directory,
+            ])
+
             parent.svc.uploadComplete( attachment )
             parent.copyToCache( parent.file )
             parent.faasSvc.addAttachment( faas.objid, attachment )

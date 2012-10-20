@@ -7,6 +7,7 @@ etracsplatform/osiris2/*
 etracsplatform/dist/etracs2.zip
 etracsplatform/reports/*
 etracsplatform/web-cache/*
+etracsplatform/http.client/build/*
 
 
 client/*/build

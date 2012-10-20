@@ -48,7 +48,6 @@ public class ETRACSFileTransferService
     public def downloadAttachment( param ) {
         def directory = buildDirectoryPath( param.attachment )
 		def filename  = directory + '/' + param.attachment.filename 
-        
         def file = new File( filename );
         if( ! file.exists() )  throw new Exception("File $param.filename no longer exists.")
         
@@ -60,8 +59,8 @@ public class ETRACSFileTransferService
     }
 	
 	def buildDirectoryPath( attachment ) {
-		def path = var.faas_attachment_path
-        if( ! path ) throw new Exception('FAAS Attachment Path is not set.')
+		def path = System.getProperty('upload_path')
+		if( ! path ) throw new Exception('FAAS Attachment Path is not set.')
 		
         def directory = path + '/' + attachment.directory 
         if( path.endsWith( '/' ) ) {

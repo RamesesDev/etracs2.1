@@ -2,6 +2,9 @@ import com.rameses.annotations.*
 import java.rmi.server.UID
 import com.rameses.eserver.*;
 import com.rameses.common.*;
+import java.util.concurrent.*
+import com.rameses.uploader.HttpFileUploader
+import java.io.*
 
 class FAASService
 {
@@ -1081,35 +1084,62 @@ class FAASService
 			<body>
 		'''
 		html += '<h2>List of Attachments</h2>'
-		html += '<table>'
+		html += '<table width="80%">'
 		
-		def safefaasid = makeSafeFileName( faasid )
-		
-		attachments.each{
-			def thumbfilename = buildThumbnailFileName( it )
-			def imagepage = "http://${var.server_address}/downloads.war/faasattachment.jsp?faasid=${safefaasid}&resid=${thumbfilename}"
-			def deleteicon = "http://${var.server_address}/downloads/images/delete.jpg"
+		def alist = partition(attachments, 4)
+		alist.each{ list ->
 			html += '<tr>'
-			html += '<td><a href="displayAttachment?' + it.objid +'"><img src="' + imagepage + '"></img></a>' 
-			html += '<td valign="top">'
-			html += '  <table>'
-			html += '   <tr>'
-			html += '      <td valign="top"><b>' + it.type + '</b></td>'
-			html += '   </tr>'
-			html += '   <tr>'
-			html += '      <td>' + (it.remarks ? it.remarks :'') + '</td>'
-			html += '   </tr>'
-			html += ' </table>'
-			html += '</td>'
+			list.each{
+				html += buildAttachmentHtml( it )
+			}
 			html += '</tr>'
-			html += '<tr>'
-			html += '      <td><a title="remove" href="removeAttachment?' + it.objid +'">Delete</a></td>' 
-			html += '</tr>'
-			html += '<tr><td><br></td></tr>'
 		}
 		html += '</table>'
 		html += '</body></html>'
 		return html 
+	}
+	
+	def buildAttachmentHtml( attachment) {
+		def html = ''
+		def safefaasid = makeSafeFileName( attachment.faasid )
+		def thumbfilename = buildThumbnailFileName( attachment )
+		def imagepage = "http://${var.server_address}/downloads.war/faasattachment.jsp?faasid=${safefaasid}&resid=${thumbfilename}"
+		def deleteicon = "http://${var.server_address}/downloads/images/delete.jpg"
+		html += '<td>'
+		html += '<table border="1"> '
+		html += '<tr>'
+		html += '<td><a href="displayAttachment?' + attachment.objid +'"><img src="' + imagepage + '"></img></a>' 
+		html += '<td valign="top" width="25%">'
+		html += '  <table>'
+		html += '   <tr>'
+		html += '      <td valign="top"><b>' + attachment.type + '</b></td>'
+		html += '   </tr>'
+		html += '   <tr>'
+		html += '      <td>' + (attachment.remarks ? attachment.remarks :'') + '</td>'
+		html += '   </tr>'
+		html += ' </table>'
+		html += '</td>'
+		html += '</tr>'
+		html += '<tr>'
+		html += '      <td><a title="remove" href="removeAttachment?' + attachment.objid +'">Delete</a></td>' 
+		html += '</tr>'
+		html += '</table>'
+		html += '</td>'
+		return html 
+	}
+	
+	def partition(array, size) {
+		def partitions = []
+		int partitionCount = array.size() / size
+
+		partitionCount.times { partitionNumber ->
+			def start = partitionNumber * size 
+			def end = start + size - 1
+			partitions << array[start..end]    
+		}
+
+		if (array.size() % size) partitions << array[partitionCount * size..-1]
+		return partitions    
 	}
     
 	
@@ -1790,6 +1820,7 @@ class FAASService
     }
     
     void sendToOutbox( faas ) {	
+		println 'pass....'
 		def remote_connection_active = var.remote_connection_active
 		if( !remote_connection_active ) remote_connection_active = 0
 		
@@ -1797,16 +1828,43 @@ class FAASService
 		if( ! remote_connection_debug ) remote_connection_debug = 0
 		
 		if( (faas.info.datacapture == false || TO_BOOLEAN(remote_connection_debug) == true ) && TO_BOOLEAN(remote_connection_active) == true) {
+			def attachments = getAttachments( faas.objid)
 			def attachment = [ 
 				faas		: faas, 
-				attachments	: getAttachments( faas.objid),
+				attachments	: attachments,
 				entity		: entitySvc.open( faas.info.taxpayerid, null  ),
 			]
 			def msg = msgSvc.createMessage( 'faas.receive', attachment )
 			msg.refid = faas.objid 
 			msgSvc.send( msg ) 
+			
+			uploadAttachmentToRemoteServer( attachments )
 		}
     }
+	
+	void uploadAttachmentToRemoteServer( attachments ) {
+		def path = System.getProperty('upload_path')
+		if( ! var.remote_host ) {
+			return 
+		}
+		attachments.each { attachment ->
+			ExecutorService execsvc = Executors.newFixedThreadPool(1)
+			execsvc.submit {
+				println 'Uploading attachment ' + attachment.filename + ' to remote '
+				def filename = path + '/' + attachment.directory + '/' + attachment.filename 
+				def file = new File( filename )
+				def uploader = new HttpFileUploader( var.remote_host );
+				def param = [
+					file      : file,
+					filename  : attachment.filename, 
+					directory : attachment.directory,
+				]
+				uploader.upload( param );
+				attachment.docstate = 'SUBMITTED'
+				em.update('faas:faasattachment', attachment )
+			} as Runnable
+		}
+	}
 	
    
 	void updateFaasListState( faasid, docstate) {
