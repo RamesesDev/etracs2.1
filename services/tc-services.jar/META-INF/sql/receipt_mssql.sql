@@ -50,6 +50,7 @@ WHERE collectorid LIKE $P{collectorid}
 SELECT * FROM receiptlist 
 WHERE collectorid LIKE $P{collectorid}  
   AND ISNULL(capturedbyid,'') LIKE $P{capturedbyid}
+  AND docstate LIKE $P{docstate} 
   AND stubno = $P{stubno} 
 ORDER BY afid, serialno 
 
@@ -57,6 +58,7 @@ ORDER BY afid, serialno
 SELECT * FROM receiptlist 
 WHERE collectorid LIKE $P{collectorid}  
   AND ISNULL(capturedbyid,'') LIKE $P{capturedbyid}
+  AND docstate LIKE $P{docstate} 
   AND txndate = $P{txndate} 
 ORDER BY afid, serialno 
 
@@ -64,6 +66,7 @@ ORDER BY afid, serialno
 SELECT * FROM receiptlist 
 WHERE collectorid LIKE $P{collectorid}  
   AND ISNULL(capturedbyid,'') LIKE $P{capturedbyid}
+  AND docstate LIKE $P{docstate} 
   AND payorname LIKE $P{payorname} 
 ORDER BY afid, serialno 
 
@@ -71,6 +74,7 @@ ORDER BY afid, serialno
 SELECT * FROM receiptlist 
 WHERE collectorid LIKE $P{collectorid}  
   AND ISNULL(capturedbyid,'') LIKE $P{capturedbyid}
+  AND docstate LIKE $P{docstate} 
   AND paidby LIKE $P{paidby} 
 ORDER BY afid, serialno 
 

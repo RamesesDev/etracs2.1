@@ -26,6 +26,7 @@ class IssuedReceiptController
     def collector 
     def formActions
     def total
+    def list = []
     
     void init() {
         collector = getCollector()
@@ -44,29 +45,36 @@ class IssuedReceiptController
         getRows    : { return 25 },
         getColumns : {
             return [
-                new Column(name:'mode', caption:'Mode', minWidth:100),
-                new Column(name:'afid', caption:'AF No.', minWidth:70),
-                new Column(name:'stubno', caption:'Stub No.', minWidth:70),
-                new Column(name:'txndate', caption:'Txn Date', minWidth:90),
-                new Column(name:'serialno', caption:'Serial No.', minWidth:120),
-                new Column(name:'collectiontype', caption:'Collection Type', minWidth:200),
-                new Column(name:'paidby', caption:'Paid By', minWidth:400),
-                new Column(name:'amount', caption:'Amount', type:'decimal', minWidth:100),
-                new Column(name:'voidreason', caption:'Voided', minWidth:100),
-                new Column(name:'capturedbyname', caption:'Issued By', minWidth:400),
+                new Column(name:'mode', caption:'Mode', width:100),
+                new Column(name:'afid', caption:'AF No.', width:70),
+                new Column(name:'stubno', caption:'Stub No.', width:70),
+                new Column(name:'txndate', caption:'Txn Date', width:90),
+                new Column(name:'serialno', caption:'Serial No.', width:120),
+                new Column(name:'collectiontype', caption:'Collection Type', width:200),
+                new Column(name:'paidby', caption:'Paid By', width:400),
+                new Column(name:'amount', caption:'Amount', type:'decimal', width:100),
+                new Column(name:'voidreason', caption:'Voided', width:100),
+                new Column(name:'capturedbyname', caption:'Issued By', width:400),
             ]
         }, 
         fetchList : { 
             def searchParam = buildSearchParam()
             total = svc.getIssuedTotal( searchParam )
-            binding?.refresh('total')
-            return svc.getList( searchParam, it ) 
+            list = svc.getList( searchParam, it ) 
+            binding?.refresh('total|subtotal')
+            return list 
         },
     ] as PageListModel
     
     void search() {
         listHandler.load()
         binding.refresh('total')
+    }
+    
+    def getSubtotal() {
+        if( list ) 
+            return list.amount.sum()
+        return 0.0
     }
     
     def getCollector() {
