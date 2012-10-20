@@ -64,7 +64,7 @@ public class BatchCaptureMultiController
         return 'init' 
     }
     
-    def open() {
+    void open() {
         entity = svc.open( entity.objid )
         collectiontype = entity.collectiontype
         afcontrol = entity.afcontrol 
@@ -146,7 +146,7 @@ public class BatchCaptureMultiController
         entity = [
                 objid           : 'B' + new UID(),
                 docstate        : DRAFT_STATE, 
-                opener          : 'batchcapture', 
+                opener          : 'batchcapturemulti', 
                 collector 	: userSvc.getCollector( afcontrol.collectorid ), 
                 collectorid     : afcontrol.collectorid,
                 collectorname   : afcontrol.collectorname,
