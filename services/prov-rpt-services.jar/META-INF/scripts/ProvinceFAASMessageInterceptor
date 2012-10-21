@@ -16,6 +16,9 @@ class ProvinceFAASMessageInterceptor
 	@Service('MessengerService')
 	def msgSvc
 	
+	@Service('FAASService')
+	def faasSvc
+	
 	def SCHEMA_NAME = 'faas'
     def SCHEMA_VERSION = '1.0'
     def LISTSCHEMA_NAME = 'faas:faaslist'
@@ -39,7 +42,7 @@ class ProvinceFAASMessageInterceptor
 		em.save( LISTSCHEMA_NAME, faas )
 		
 		msg.attachment.attachments.each { attachment -> 
-			em.save('faas:faasattachment', attachment )
+			faasSvc.saveAttachment( attachment )
 		}
 		
 		msgSvc.processedSuccessfully( msg ) 

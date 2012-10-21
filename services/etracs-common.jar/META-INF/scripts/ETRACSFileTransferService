@@ -46,8 +46,11 @@ public class ETRACSFileTransferService
 	
 	@ProxyMethod
     public def downloadAttachment( param ) {
-        def directory = buildDirectoryPath( param.attachment )
-		def filename  = directory + '/' + param.attachment.filename 
+		def filename = param.attachment.absolutefilename 
+		if( ! filename ) {
+			def directory = buildDirectoryPath( param.attachment )
+			filename  = directory + '/' + param.attachment.filename 
+		}
         def file = new File( filename );
         if( ! file.exists() )  throw new Exception("File $param.filename no longer exists.")
         

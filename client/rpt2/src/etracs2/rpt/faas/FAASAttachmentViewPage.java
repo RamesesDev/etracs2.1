@@ -35,9 +35,9 @@ public class FAASAttachmentViewPage extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
+        xActionBar1.setBorder(new com.rameses.rcp.control.border.XUnderlineBorder());
         xActionBar1.setName("viewActions");
         xActionBar1.setPadding(new java.awt.Insets(2, 2, 2, 2));
-        xActionBar1.setUseToolBar(false);
         add(xActionBar1, java.awt.BorderLayout.NORTH);
 
         xImageViewer2.setAdvanced(true);

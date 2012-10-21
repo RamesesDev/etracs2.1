@@ -1,3 +1,7 @@
+/* FAAS Attachment */
+ALTER TABLE lguname_etracs.faasattachment ADD COLUMN absolutefilename varchar(300) NULL;
+
+
 /* SubFund with Required Bank Account fund support */
 ALTER TABLE lguname_etracs.fund ADD COLUMN bankacctrequired INT NULL;
 
