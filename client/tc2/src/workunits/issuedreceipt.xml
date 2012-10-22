@@ -72,8 +72,9 @@ class IssuedReceiptController
     }
     
     def getSubtotal() {
-        if( list ) 
-            return list.amount.sum()
+        def unvoidedReceipts = list.findAll{ it.voided == 0 || it.voided == false }
+        if( unvoidedReceipts ) 
+            return unvoidedReceipts.amount.sum()
         return 0.0
     }
     
