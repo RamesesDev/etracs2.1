@@ -232,7 +232,7 @@
             }
             
             def getApplication(){
-                return applicaiton
+                return application
             }
             
             def generateReport() {
