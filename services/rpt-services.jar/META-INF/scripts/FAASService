@@ -1856,7 +1856,6 @@ class FAASService
     }
     
     void sendToOutbox( faas ) {	
-		println 'pass....'
 		def remote_connection_active = var.remote_connection_active
 		if( !remote_connection_active ) remote_connection_active = 0
 		
@@ -1873,36 +1872,9 @@ class FAASService
 			def msg = msgSvc.createMessage( 'faas.receive', attachment )
 			msg.refid = faas.objid 
 			msgSvc.send( msg ) 
-			
-			uploadAttachmentToRemoteServer( attachments )
 		}
     }
 	
-	void uploadAttachmentToRemoteServer( attachments ) {
-		def path = System.getProperty('upload_path')
-		if( ! var.remote_host ) {
-			return 
-		}
-		attachments.each { attachment ->
-			ExecutorService execsvc = Executors.newFixedThreadPool(1)
-			execsvc.submit {
-				println 'Uploading attachment ' + attachment.filename + ' to remote '
-				def filename = path + '/' + attachment.directory + '/' + attachment.filename 
-				def file = new File( filename )
-				def uploader = new HttpFileUploader( var.remote_host );
-				def param = [
-					file      : file,
-					filename  : attachment.filename, 
-					directory : attachment.directory,
-				]
-				uploader.upload( param );
-				attachment.docstate = 'SUBMITTED'
-				em.update('faas:faasattachment', attachment )
-			} as Runnable
-		}
-	}
-	
-   
 	void updateFaasListState( faasid, docstate) {
         def params = [ objid:faasid, docstate:docstate ]
         em.sqlContext.createNamedExecutor('faas:updateListState').setParameters( params ).execute()
@@ -1912,8 +1884,14 @@ class FAASService
 		//msgSvc.processOutboxMessage( refid )
     }
     
-    void updateAttachmentStates( faas, docstate ) {
+    void updateAttachmentStates( faas, docstate ) { 
         em.sqlContext.createNamedExecutor('faas:updateAttachmentState').setParameters([faasid:faas.objid, docstate:docstate]).execute()
+    }
+	
+	@ProxyMethod  
+	public void updateAttachmentState( attachment, docstate  ) {
+        attachment.docstate = docstate 
+		em.update( 'faas:faasattachment', attachment )
     }
 	
 	boolean TO_BOOLEAN( value ) {

@@ -154,7 +154,7 @@ public class FAASAttachmentController {
         getRows    : {return 50 },
         getColumns : { return [
             new Column(name:'_filename', caption:'File Name'),
-            new Column(name:'type', caption:'Attachment Type', editable:true),
+            new Column(name:'type', caption:'Attachment Type*', editable:true),
             new Column(name:'remarks', caption:'Remarks', editable:true),
             new Column(name:'uploaded', caption:'Uploaded?', type:'boolean'),
         ]},
@@ -260,11 +260,18 @@ public class FAASAttachmentController {
     
     
     void upload() {
+        validateAttachments()
         startTimer()
     }
     
-    void validateFile() {
-        // accept jpg, jpeg, png, bmp extension only
+    void validateAttachments() {
+        newAttachments.each{ 
+            validateExtension( it.file )
+            if( ! it.type ) throw new Exception('Attachment Type for file ' + it._filename + ' is required.')
+        }
+    }
+    
+    void validateExtension( file ) {
         def extn = getFileExtension( file )
         extn = extn.replace('.','')
         if( 'jpg/jpeg/png/bmp/gif/pdf'.indexOf( extn ) < 0 ) {
