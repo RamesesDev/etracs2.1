@@ -141,18 +141,21 @@ public class RPTLedgerController
     
     Map createBillInfo() {
         return [
-            taxpayerid     : ledger.taxpayerid,
-            taxpayername   : ledger.taxpayername,
-            taxpayeraddress: ledger.taxpayeraddress, 
-            ledgerids      : [ledger.objid],
-            advancepayment : false,
-            billdate       : null,
-            billtoyear     : null,
-            billtoqtr      : 4,
-            fullpayment    : true,
-            qtrlypaymentavailed : false, 
-            advancepayment : false,
-            items          : []
+            taxpayerid           : ledger.taxpayerid,
+            taxpayerno           : ledger.taxpayerno,
+            taxpayername         : ledger.taxpayername,
+            taxpayeraddress      : ledger.taxpayeraddress, 
+            administratorname    : ledger.administratorname,
+            administratoraddress : ledger.administratoraddress,
+            ledgerids            : [ledger.objid],
+            advancepayment       : false,
+            billdate             : null,
+            billtoyear           : null,
+            billtoqtr            : 4,
+            fullpayment          : true,
+            qtrlypaymentavailed  : false, 
+            advancepayment       : false,
+            items                : []
         ]
     }
     
