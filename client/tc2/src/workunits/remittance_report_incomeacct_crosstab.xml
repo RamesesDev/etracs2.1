@@ -1,0 +1,81 @@
+<workunit>
+    <invokers>
+        <invoker type="remittance.report" action="view" caption="Remittance Report By Income Account (Crosstab)" index="10"/>
+        
+        <invoker type="formActions" action="close"  immediate="true" caption="Back" mnemonic="c" icon="images/back.png"/>
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+import java.rmi.server.UID;
+
+class RemittanceReportByIncomeAccountCrosstabController {
+
+    @Service("RemittanceReportService")
+    def svc;
+
+    @Service("ReportParameterService")
+    def paramSvc;
+
+    def entity;
+    def fund 
+    def chart = 'NGAS'
+    def fundlist
+
+    def reportdata 
+
+    def report = [
+        getReportName : { return 'remittance/RemittanceByIncomeAccountCrosstab' },
+        getReportData : { return reportdata.items  }, 
+        getParameters : { 
+            def params = paramSvc.getStandardParameter( OsirisContext.env.USERNAME );
+            params.putAll( reportdata.header )
+            return params
+        }
+    ] as ServerReportModel;
+
+    def close() {
+        return '_close';
+    }
+
+    void view() {
+        fundlist = svc.getDistinctFundList( entity.objid )
+        fund = fundlist[0]
+        buildReport()
+    }
+    
+    void setFund( fund ) {
+        this.fund = fund 
+        buildReport()
+    }
+    
+    void setChart( chart ) {
+        this.chart = chart
+        buildReport()
+    }
+    
+    void buildReport() {
+        reportdata = svc.generateGLIncomeAccountCrosstab( entity, chart, fund )
+        report.viewReport();
+    }
+    
+    List getFundList(){
+        return fundlist 
+    }
+    
+    public def getChartList(){
+        return ['NGAS','SRE'];
+    }
+}
+
+]]>        
+        
+    </code>
+    <pages>
+        <page template="etracs2.tc.remittance.report.RemittanceByGLFundPage" />
+    </pages>
+</workunit>

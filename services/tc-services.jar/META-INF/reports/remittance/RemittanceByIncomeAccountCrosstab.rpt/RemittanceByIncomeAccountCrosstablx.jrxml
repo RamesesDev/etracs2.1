@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="RemittanceByFundCrosstab"
+		 name="RemittanceByIncomeAccountCrosstablx"
 		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Landscape"
@@ -58,6 +58,7 @@
 	<parameter name="DATEPOSTED" isForPrompting="false" class="java.util.Date"/>
 	<parameter name="REMITTANCEAMOUNT" isForPrompting="false" class="java.math.BigDecimal"/>
 	<parameter name="AMTINWORDS" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="FUNDNAME" isForPrompting="false" class="java.lang.String"/>
 
 	<field name="txndate" class="java.util.Date"/>
 	<field name="serialno" class="java.lang.String"/>
@@ -139,12 +140,12 @@
 			</band>
 		</background>
 		<title>
-			<band height="75"  isSplitAllowed="true" >
+			<band height="67"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"
 						x="506"
-						y="30"
+						y="15"
 						width="87"
 						height="13"
 						forecolor="#000000"
@@ -156,7 +157,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<text><![CDATA[Remittance Date :]]></text>
 				</staticText>
@@ -164,8 +165,8 @@
 					<reportElement
 						mode="Transparent"
 						x="593"
-						y="30"
-						width="102"
+						y="15"
+						width="122"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -176,7 +177,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{REMITTANCEDATE}]]></textFieldExpression>
 				</textField>
@@ -196,7 +197,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{PARENTLGUNAME}]]></textFieldExpression>
 				</textField>
@@ -216,7 +217,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{LGUNAME}]]></textFieldExpression>
 				</textField>
@@ -236,7 +237,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASUREROFFICENAME}]]></textFieldExpression>
 				</textField>
@@ -264,7 +265,7 @@
 					<reportElement
 						mode="Transparent"
 						x="506"
-						y="18"
+						y="3"
 						width="87"
 						height="13"
 						forecolor="#000000"
@@ -276,7 +277,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<text><![CDATA[Remittance No. :]]></text>
 				</staticText>
@@ -284,8 +285,8 @@
 					<reportElement
 						mode="Transparent"
 						x="593"
-						y="18"
-						width="102"
+						y="3"
+						width="122"
 						height="13"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -296,7 +297,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{REMITTANCENO}]]></textFieldExpression>
 				</textField>
@@ -316,9 +317,49 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="12" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="12" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{REPORTTITLE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="505"
+						y="40"
+						width="53"
+						height="22"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-26"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="12" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[FUND :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="MM/dd/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="558"
+						y="40"
+						width="298"
+						height="22"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-70"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="12" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{FUNDNAME}]]></textFieldExpression>
 				</textField>
 			</band>
 		</title>
@@ -327,13 +368,13 @@
 			</band>
 		</pageHeader>
 		<columnHeader>
-			<band height="18"  isSplitAllowed="true" >
+			<band height="19"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						x="0"
 						y="0"
 						width="48"
-						height="18"
+						height="19"
 						key="staticText-18"
 						stretchType="RelativeToBandHeight"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -342,7 +383,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<text><![CDATA[Txn Date]]></text>
 				</staticText>
@@ -351,7 +392,7 @@
 						x="48"
 						y="0"
 						width="72"
-						height="18"
+						height="19"
 						key="staticText-19"
 						stretchType="RelativeToBandHeight"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -360,7 +401,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<text><![CDATA[Serial No.]]></text>
 				</staticText>
@@ -369,7 +410,7 @@
 						x="120"
 						y="0"
 						width="177"
-						height="18"
+						height="19"
 						key="staticText-20"
 						stretchType="RelativeToBandHeight"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -378,7 +419,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<text><![CDATA[Payor]]></text>
 				</staticText>
@@ -387,7 +428,7 @@
 						x="360"
 						y="0"
 						width="63"
-						height="18"
+						height="19"
 						key="textField-14"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -396,7 +437,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COL1}]]></textFieldExpression>
 				</textField>
@@ -405,7 +446,7 @@
 						x="423"
 						y="0"
 						width="63"
-						height="18"
+						height="19"
 						key="textField-15"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -414,7 +455,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COL2}]]></textFieldExpression>
 				</textField>
@@ -423,7 +464,7 @@
 						x="486"
 						y="0"
 						width="63"
-						height="18"
+						height="19"
 						key="textField-16"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -432,7 +473,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COL3}]]></textFieldExpression>
 				</textField>
@@ -441,7 +482,7 @@
 						x="549"
 						y="0"
 						width="63"
-						height="18"
+						height="19"
 						key="textField-17"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -450,7 +491,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COL4}]]></textFieldExpression>
 				</textField>
@@ -459,7 +500,7 @@
 						x="612"
 						y="0"
 						width="63"
-						height="18"
+						height="19"
 						key="textField-18"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -468,7 +509,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COL5}]]></textFieldExpression>
 				</textField>
@@ -477,7 +518,7 @@
 						x="675"
 						y="0"
 						width="63"
-						height="18"
+						height="19"
 						key="textField-19"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -486,7 +527,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COL6}]]></textFieldExpression>
 				</textField>
@@ -495,7 +536,7 @@
 						x="297"
 						y="0"
 						width="63"
-						height="18"
+						height="19"
 						key="textField-62"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -504,7 +545,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COL0}]]></textFieldExpression>
 				</textField>
@@ -513,7 +554,7 @@
 						x="738"
 						y="0"
 						width="63"
-						height="18"
+						height="19"
 						key="textField-64"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -522,7 +563,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COL7}]]></textFieldExpression>
 				</textField>
@@ -531,7 +572,7 @@
 						x="801"
 						y="0"
 						width="63"
-						height="18"
+						height="19"
 						key="textField-66"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -540,29 +581,29 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COL8}]]></textFieldExpression>
 				</textField>
 			</band>
 		</columnHeader>
 		<detail>
-			<band height="13"  isSplitAllowed="true" >
+			<band height="14"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" pattern="MM-dd-yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
 						y="0"
 						width="48"
-						height="13"
+						height="14"
 						key="textField-25"
 						stretchType="RelativeToBandHeight"/>
-					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.util.Date"><![CDATA[$F{txndate}]]></textFieldExpression>
 				</textField>
@@ -571,16 +612,16 @@
 						x="48"
 						y="0"
 						width="72"
-						height="13"
+						height="14"
 						key="textField-26"
 						stretchType="RelativeToBandHeight"/>
-					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{serialno}]]></textFieldExpression>
 				</textField>
@@ -589,7 +630,7 @@
 						x="120"
 						y="0"
 						width="177"
-						height="13"
+						height="14"
 						key="textField-27"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -598,7 +639,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{paidby}]]></textFieldExpression>
 				</textField>
@@ -607,16 +648,16 @@
 						x="360"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-29"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{col1}]]></textFieldExpression>
 				</textField>
@@ -625,16 +666,16 @@
 						x="423"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-30"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{col2}]]></textFieldExpression>
 				</textField>
@@ -643,16 +684,16 @@
 						x="486"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-31"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{col3}]]></textFieldExpression>
 				</textField>
@@ -661,16 +702,16 @@
 						x="549"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-32"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{col4}]]></textFieldExpression>
 				</textField>
@@ -679,16 +720,16 @@
 						x="612"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-33"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{col5}]]></textFieldExpression>
 				</textField>
@@ -697,16 +738,16 @@
 						x="675"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-34"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{col6}]]></textFieldExpression>
 				</textField>
@@ -715,16 +756,16 @@
 						x="297"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-63"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{col0}]]></textFieldExpression>
 				</textField>
@@ -733,16 +774,16 @@
 						x="738"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-65"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{col7}]]></textFieldExpression>
 				</textField>
@@ -751,16 +792,16 @@
 						x="801"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-67"
 						stretchType="RelativeToBandHeight"/>
-					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="2" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="SansSerif" size="9"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{col8}]]></textFieldExpression>
 				</textField>
@@ -788,7 +829,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
 				</textField>
@@ -808,7 +849,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER} + ""]]></textFieldExpression>
 				</textField>
@@ -828,7 +869,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["GENERATED BY : ETRACS v2.0     PRINTED BY : " + $P{PRINTEDBY} + "  PRINT DATE : "  + (new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format($P{PRINTDATE}) )]]></textFieldExpression>
 				</textField>
@@ -841,7 +882,7 @@
 						x="297"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-41"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -850,7 +891,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCOL0}]]></textFieldExpression>
 				</textField>
@@ -859,7 +900,7 @@
 						x="360"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-42"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -868,7 +909,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCOL1}]]></textFieldExpression>
 				</textField>
@@ -877,7 +918,7 @@
 						x="423"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-43"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -886,7 +927,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCOL2}]]></textFieldExpression>
 				</textField>
@@ -895,7 +936,7 @@
 						x="486"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-44"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -904,7 +945,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCOL3}]]></textFieldExpression>
 				</textField>
@@ -913,7 +954,7 @@
 						x="549"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-45"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -922,7 +963,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCOL4}]]></textFieldExpression>
 				</textField>
@@ -931,7 +972,7 @@
 						x="612"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-46"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -940,7 +981,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCOL5}]]></textFieldExpression>
 				</textField>
@@ -949,7 +990,7 @@
 						x="675"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-47"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -958,7 +999,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCOL6}]]></textFieldExpression>
 				</textField>
@@ -967,16 +1008,16 @@
 						x="0"
 						y="0"
 						width="297"
-						height="13"
+						height="14"
 						key="staticText-21"
 						stretchType="RelativeToBandHeight"/>
-					<box rightPadding="3">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<text><![CDATA[TOTAL]]></text>
 				</staticText>
@@ -996,10 +1037,10 @@
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="458"
-						y="96"
-						width="181"
-						height="12"
+						x="478"
+						y="94"
+						width="223"
+						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-53"
@@ -1009,8 +1050,8 @@
 					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Bottom" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{LIQUIDATINGOFFICER}]]></textFieldExpression>
 				</textField>
@@ -1019,7 +1060,7 @@
 						mode="Transparent"
 						x="457"
 						y="33"
-						width="287"
+						width="382"
 						height="15"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1031,17 +1072,17 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<text><![CDATA[VERIFICATION AND ACKNOWLEDGEMENT]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="458"
+						x="478"
 						y="109"
-						width="181"
-						height="12"
+						width="223"
+						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-54"
@@ -1052,17 +1093,17 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{LIQUIDATINGOFFICERTITLE}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="665"
+						x="717"
 						y="109"
-						width="76"
-						height="11"
+						width="97"
+						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="staticText-23"
@@ -1073,7 +1114,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<text><![CDATA[Date]]></text>
 				</staticText>
@@ -1094,17 +1135,17 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<text><![CDATA[CERTIFICATION]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="20"
-						y="96"
-						width="167"
-						height="12"
+						x="39"
+						y="94"
+						width="223"
+						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-55"
@@ -1114,18 +1155,18 @@
 					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Bottom" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COLLECTORNAME}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="20"
+						x="39"
 						y="109"
-						width="167"
-						height="12"
+						width="223"
+						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-56"
@@ -1136,17 +1177,17 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{COLLECTORTITLE}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
 						mode="Transparent"
-						x="224"
+						x="285"
 						y="109"
-						width="76"
-						height="11"
+						width="97"
+						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="staticText-25"
@@ -1157,17 +1198,17 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="7" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="9" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<text><![CDATA[Date]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="dd-MMM-yy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="224"
-						y="96"
-						width="76"
-						height="13"
+						x="285"
+						y="94"
+						width="97"
+						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-57"
@@ -1177,18 +1218,18 @@
 					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.util.Date"><![CDATA[$P{DATEPOSTED}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="dd-MMM-yy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="665"
-						y="96"
-						width="76"
-						height="12"
+						x="717"
+						y="94"
+						width="97"
+						height="14"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
 						key="textField-58"
@@ -1198,8 +1239,8 @@
 					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
-					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.util.Date"><![CDATA[$P{DATEPOSTED}]]></textFieldExpression>
 				</textField>
@@ -1208,7 +1249,7 @@
 						mode="Transparent"
 						x="19"
 						y="48"
-						width="281"
+						width="391"
 						height="37"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1220,7 +1261,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["           I hereby certify that the foregoing report on collections " 
 + " and deposits and accountability on accountable forms is true and correct "]]></textFieldExpression>
@@ -1269,7 +1310,7 @@
 						mode="Transparent"
 						x="457"
 						y="48"
-						width="288"
+						width="382"
 						height="37"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -1281,7 +1322,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="styled" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="SansSerif" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["         I hereby certify that the foregoing report on collections has been verified and acknowledged receipt of  <style isBold = \"true\">"+$P{AMTINWORDS}.toLowerCase() +" ONLY (Php "+ new DecimalFormat("#,##0.00").format($P{REMITTANCEAMOUNT})+" )</style>"]]></textFieldExpression>
 				</textField>
@@ -1299,7 +1340,7 @@
 						x="738"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-68"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1308,7 +1349,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCOL7}]]></textFieldExpression>
 				</textField>
@@ -1317,7 +1358,7 @@
 						x="801"
 						y="0"
 						width="63"
-						height="13"
+						height="14"
 						key="textField-69"
 						stretchType="RelativeToBandHeight"/>
 					<box leftPadding="1" rightPadding="1">					<topPen lineWidth="0.5" lineStyle="Solid"/>
@@ -1326,7 +1367,7 @@
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{TCOL8}]]></textFieldExpression>
 				</textField>
