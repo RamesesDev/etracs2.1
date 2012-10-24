@@ -3,7 +3,6 @@ SELECT objid, schemaname, schemaversion, entityno, entitytype, entityname, entit
 FROM entity 
 ORDER BY entityname 
 
-
 [getListByNo] 
 SELECT objid, schemaname, schemaversion, entityno, entitytype, entityname, entityaddress, lguname   
 FROM entity 
@@ -25,6 +24,11 @@ SELECT COUNT(*) AS icount FROM entity WHERE objid <> $P{objid} AND entityno = $P
 SELECT * FROM entity 
 WHERE objid <> $P{objid} 
   AND entityname = $P{entityname} AND entityaddress = $P{entityaddress} 
+
+[getEntityInfo]
+SELECT objid, entityno, entitytype, entityname, entityaddress, lguname   
+FROM entity 
+WHERE objid = $P{objid} 
 
 [getContactNo]
 SELECT contactno FROM entity WHERE objid = $P{objid} 

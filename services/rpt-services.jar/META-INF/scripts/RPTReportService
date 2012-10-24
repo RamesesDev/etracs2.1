@@ -109,6 +109,7 @@ class RPTReportService
 		
 		if( notice.items.size() == 1 ) {
 			notice.putAll( notice.items[0] )
+			notice.objid = notice.docno
 		}
 		return notice 
 	}
@@ -116,9 +117,18 @@ class RPTReportService
 	@ProxyMethod 
 	public def openNotice( noticeid ) {
 		def notice = em.read('rptreport:noticeofassessment', [objid:noticeid] )
-		if( notice.items.size() == 1 ) {
-			notice.putAll( notice.items[0] )
+		
+		// for the old records which do not have taxpayer no.
+		if( !notice.taxpayerno ) {
+			def info = em.sqlContext.createNamedQuery('entity:getEntityInfo')
+						 .setParameter('objid', notice.taxpayerid)
+						 .singleResult
+			notice.taxpayerno = info.entityno
 		}
+		
+		if( notice.items.size() == 1 )
+			notice.putAll( notice.items[0] )
+			
 		return notice 
 	}
 	
