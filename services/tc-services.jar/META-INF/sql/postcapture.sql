@@ -60,7 +60,7 @@ WHERE collectorid = $P{collectorid} AND docstate = 'CAPTURED'
 
 [postCapturedReceiptListBySubcollector]
 UPDATE receiptlist SET 
-	docstate = 'OPEN',
+	docstate = 'DELEGATED',
 	postcaptureid = $P{postcaptureid}  
 WHERE collectorid = $P{collectorid} 
   AND capturedbyid = $P{capturedbyid} 
