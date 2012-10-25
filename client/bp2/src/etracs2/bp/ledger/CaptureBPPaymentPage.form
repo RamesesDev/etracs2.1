@@ -148,9 +148,9 @@
                   </Border>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="text" type="java.lang.String" value="#{entity.amtpaid}"/>
                 <Property name="caption" type="java.lang.String" value="Amount"/>
                 <Property name="captionWidth" type="int" value="100"/>
-                <Property name="expression" type="java.lang.String" value="#{entity.formattedamtpaid}"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 16]"/>
                 </Property>
