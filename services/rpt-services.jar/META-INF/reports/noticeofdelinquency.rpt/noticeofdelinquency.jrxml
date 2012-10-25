@@ -52,13 +52,16 @@
 	<field name="txndate" class="java.util.Date"/>
 	<field name="delinquentyrqtr" class="java.lang.String"/>
 	<field name="currentyear" class="java.lang.Integer"/>
+	<field name="taxpayerno" class="java.lang.String"/>
+	<field name="administratorname" class="java.lang.String"/>
+	<field name="administratoraddress" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
 		</background>
 		<title>
-			<band height="538"  isSplitAllowed="true" >
+			<band height="580"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						mode="Transparent"
@@ -162,9 +165,9 @@
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="0"
-						y="127"
-						width="406"
+						x="60"
+						y="138"
+						width="298"
 						height="11"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -174,16 +177,16 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{taxpayername}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
-						x="0"
-						y="138"
-						width="406"
+						x="60"
+						y="149"
+						width="298"
 						height="11"
 						forecolor="#000000"
 						backcolor="#FFFFFF"
@@ -202,7 +205,7 @@
 					<reportElement
 						mode="Transparent"
 						x="407"
-						y="102"
+						y="103"
 						width="97"
 						height="11"
 						forecolor="#000000"
@@ -262,7 +265,7 @@
 					<reportElement
 						mode="Transparent"
 						x="296"
-						y="499"
+						y="537"
 						width="169"
 						height="14"
 						forecolor="#000000"
@@ -281,7 +284,7 @@
 					<reportElement
 						mode="Transparent"
 						x="296"
-						y="512"
+						y="550"
 						width="169"
 						height="14"
 						forecolor="#000000"
@@ -301,7 +304,7 @@
 					<reportElement
 						mode="Transparent"
 						x="296"
-						y="456"
+						y="494"
 						width="169"
 						height="14"
 						forecolor="#000000"
@@ -320,7 +323,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="164"
+						y="202"
 						width="504"
 						height="27"
 						key="staticText-54"/>
@@ -333,7 +336,7 @@
 				<staticText>
 					<reportElement
 						x="66"
-						y="202"
+						y="240"
 						width="81"
 						height="14"
 						key="staticText-55"/>
@@ -346,7 +349,7 @@
 				<staticText>
 					<reportElement
 						x="66"
-						y="217"
+						y="255"
 						width="81"
 						height="14"
 						key="staticText-56"/>
@@ -359,7 +362,7 @@
 				<staticText>
 					<reportElement
 						x="66"
-						y="232"
+						y="270"
 						width="81"
 						height="14"
 						key="staticText-57"/>
@@ -372,7 +375,7 @@
 				<staticText>
 					<reportElement
 						x="66"
-						y="247"
+						y="285"
 						width="81"
 						height="14"
 						key="staticText-58"/>
@@ -385,7 +388,7 @@
 				<staticText>
 					<reportElement
 						x="66"
-						y="262"
+						y="300"
 						width="81"
 						height="14"
 						key="staticText-59"/>
@@ -398,7 +401,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="154"
-						y="202"
+						y="240"
 						width="349"
 						height="14"
 						key="textField-30"/>
@@ -411,7 +414,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="154"
-						y="217"
+						y="255"
 						width="349"
 						height="14"
 						key="textField-31"/>
@@ -424,7 +427,7 @@
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="154"
-						y="232"
+						y="270"
 						width="349"
 						height="14"
 						key="textField-32"/>
@@ -437,7 +440,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="154"
-						y="247"
+						y="285"
 						width="349"
 						height="14"
 						key="textField-33"/>
@@ -450,7 +453,7 @@
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="154"
-						y="262"
+						y="300"
 						width="349"
 						height="14"
 						key="textField-34"/>
@@ -463,7 +466,7 @@
 				<staticText>
 					<reportElement
 						x="148"
-						y="202"
+						y="240"
 						width="7"
 						height="14"
 						key="staticText-60"/>
@@ -476,7 +479,7 @@
 				<staticText>
 					<reportElement
 						x="148"
-						y="217"
+						y="255"
 						width="7"
 						height="14"
 						key="staticText-61"/>
@@ -489,7 +492,7 @@
 				<staticText>
 					<reportElement
 						x="148"
-						y="232"
+						y="270"
 						width="7"
 						height="14"
 						key="staticText-62"/>
@@ -502,7 +505,7 @@
 				<staticText>
 					<reportElement
 						x="148"
-						y="247"
+						y="285"
 						width="7"
 						height="14"
 						key="staticText-63"/>
@@ -515,7 +518,7 @@
 				<staticText>
 					<reportElement
 						x="148"
-						y="262"
+						y="300"
 						width="7"
 						height="14"
 						key="staticText-64"/>
@@ -528,7 +531,7 @@
 				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="291"
+						y="329"
 						width="504"
 						height="38"
 						key="textField-35"/>
@@ -536,12 +539,12 @@
 					<textElement isStyledText="true">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["        In the attached Real Property Tax billing, the total delinquency of the above property from year <style isBold=\"true\" isUnderline=\"true\"> " + $F{delinquentyrqtr} + " </style>amounting to <style isBold=\"true\" isUnderline=\"true\">Php " + (new DecimalFormat("#,##0.00").format($F{delinquentamount})) + " </style> and for the current year <style isBold=\"true\" isUnderline=\"true\">" + $F{currentyear} + "</style>, the total tax amount of <style isBold=\"true\" isUnderline=\"true\"> Php " + (new DecimalFormat("#,##0.00").format($F{currentamount})) + "</style>."]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["        In the attached Real Property Tax billing, the total delinquency of the above property from year <style isBold='true' isUnderline='true'> " + $F{delinquentyrqtr} + " </style> amounting to <style isBold='true' isUnderline='true'>Php " + (new DecimalFormat("#,##0.00").format($F{delinquentamount})) + " </style> and for the current year <style isBold='true' isUnderline='true'>" + $F{currentyear} + "</style>, the total tax amount of <style isBold='true' isUnderline='true'> Php " + (new DecimalFormat("#,##0.00").format($F{currentamount})) + "</style>."]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
 						x="66"
-						y="340"
+						y="378"
 						width="195"
 						height="14"
 						key="staticText-65"/>
@@ -554,7 +557,7 @@
 				<staticText>
 					<reportElement
 						x="277"
-						y="340"
+						y="378"
 						width="34"
 						height="14"
 						key="staticText-66"/>
@@ -567,7 +570,7 @@
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="311"
-						y="340"
+						y="378"
 						width="90"
 						height="14"
 						key="textField-36"/>
@@ -585,7 +588,7 @@
 				<staticText>
 					<reportElement
 						x="0"
-						y="366"
+						y="404"
 						width="504"
 						height="45"
 						key="staticText-67"/>
@@ -595,6 +598,110 @@
 					</textElement>
 				<text><![CDATA[        In case any of the above stated taxes have been paid, please furnish our office with the official receipt(s) as proof that such taxes have already been settled. If no settlement of the above stated real property taxes is made after fifteen (15) days from receipt of this notice, the remedies provided for under the law for the collection of the delinquent tax shall be applied to enforce the collection.]]></text>
 				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="127"
+						width="58"
+						height="11"
+						key="staticText-68"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[Taxpayer No. :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="138"
+						width="58"
+						height="11"
+						key="staticText-69"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[Taxpayer       :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="149"
+						width="58"
+						height="11"
+						key="staticText-70"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[Address         :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="165"
+						width="58"
+						height="11"
+						key="staticText-71"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[Administrator :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="176"
+						width="58"
+						height="11"
+						key="staticText-72"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[Address         :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="60"
+						y="165"
+						width="298"
+						height="11"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{administratorname}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="60"
+						y="176"
+						width="298"
+						height="11"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{administratoraddress}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="60"
+						y="127"
+						width="298"
+						height="11"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{taxpayerno}]]></textFieldExpression>
+				</textField>
 			</band>
 		</title>
 		<pageHeader>

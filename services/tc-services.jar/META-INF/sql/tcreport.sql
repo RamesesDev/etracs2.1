@@ -301,8 +301,47 @@ WHERE r.liquidationtimestamp LIKE $P{txntimestamp}
 ORDER BY p.acctcode, a.acctcode, r.collectorname, r.remittanceno, r.serialno 
 
 
+[getCheckPaymentsYearly]
+SELECT 
+	r.collectorname, r.serialno, r.txndate, r.paidby, i.extended 
+FROM paymentitem i 
+INNER JOIN receiptlist r ON r.objid=i.receiptid 
+INNER JOIN remittancelist rl ON rl.objid=r.remittanceid 
+INNER JOIN liquidationlist l ON l.objid=rl.liquidationid 
+WHERE i.paytype='CHECK' 
+	AND r.iyear = $P{iyear} 
+	AND r.collectorid LIKE $P{collectorid} 
+	AND r.paidby LIKE $P{paidby} 
+	AND r.voided = 0 
+ORDER BY r.txndate, r.paidby 
 
 
+[getCheckPaymentsMonthly]
+SELECT 
+	r.collectorname, r.serialno, r.txndate, r.paidby, i.extended 
+FROM paymentitem i 
+INNER JOIN receiptlist r ON r.objid=i.receiptid 
+inner JOIN remittancelist rl ON rl.objid=r.remittanceid 
+INNER JOIN liquidationlist l ON l.objid=rl.liquidationid 
+WHERE i.paytype='CHECK' 
+	AND r.iyear = $P{iyear} 
+	AND r.imonth = $P{imonth} 
+	AND r.collectorid LIKE $P{collectorid} 
+	AND r.paidby LIKE $P{paidby} 
+	AND r.voided = 0 
+ORDER BY r.txndate, r.paidby 
 
 
-
+[getCheckPaymentsDateRanged]
+SELECT 
+	r.collectorname, r.serialno, r.txndate, r.paidby, i.extended 
+FROM paymentitem i 
+INNER JOIN receiptlist r ON r.objid=i.receiptid 
+INNER JOIN remittancelist rl ON rl.objid=r.remittanceid 
+INNER JOIN liquidationlist l ON l.objid=rl.liquidationid 
+WHERE i.paytype='CHECK' 
+	AND r.txndate BETWEEN $P{dtfrom} AND $P{dtto} 
+	AND r.collectorid LIKE $P{collectorid} 
+	AND r.paidby LIKE $P{paidby} 
+	AND r.voided = 0 
+ORDER BY r.txndate, r.paidby 

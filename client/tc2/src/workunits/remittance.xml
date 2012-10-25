@@ -79,7 +79,10 @@
                 if( collectionSummaries ) {
                     remittanceAmount = collectionSummaries.amount.sum()
                 }
+                
                 return 'init';
+                
+              
             }
             
             def summaryHandler = [

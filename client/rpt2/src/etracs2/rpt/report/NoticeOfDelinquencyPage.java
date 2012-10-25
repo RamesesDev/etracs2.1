@@ -28,14 +28,16 @@ public class NoticeOfDelinquencyPage extends javax.swing.JPanel {
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
+        xLabel7 = new com.rameses.rcp.control.XLabel();
+        xLabel8 = new com.rameses.rcp.control.XLabel();
         xLabel3 = new com.rameses.rcp.control.XLabel();
         xLabel4 = new com.rameses.rcp.control.XLabel();
         xLabel5 = new com.rameses.rcp.control.XLabel();
         xLabel6 = new com.rameses.rcp.control.XLabel();
         xSeparator1 = new com.rameses.rcp.control.XSeparator();
-        xLabel7 = new com.rameses.rcp.control.XLabel();
-        xLabel8 = new com.rameses.rcp.control.XLabel();
-        xLabel9 = new com.rameses.rcp.control.XLabel();
+        xLabel12 = new com.rameses.rcp.control.XLabel();
+        xLabel13 = new com.rameses.rcp.control.XLabel();
+        xLabel14 = new com.rameses.rcp.control.XLabel();
         xLabel10 = new com.rameses.rcp.control.XLabel();
         xLabel11 = new com.rameses.rcp.control.XLabel();
 
@@ -55,9 +57,23 @@ public class NoticeOfDelinquencyPage extends javax.swing.JPanel {
         xLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel2.setCaption("Address");
         xLabel2.setFont(new java.awt.Font("Arial", 1, 11));
-        xLabel2.setName("notice.address");
+        xLabel2.setName("notice.taxpayeraddress");
         xLabel2.setPreferredSize(new java.awt.Dimension(0, 19));
         formPanel1.add(xLabel2);
+
+        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel7.setCaption("Administrator");
+        xLabel7.setFont(new java.awt.Font("Arial", 1, 11));
+        xLabel7.setName("notice.administratorname");
+        xLabel7.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel1.add(xLabel7);
+
+        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel8.setCaption("Address");
+        xLabel8.setFont(new java.awt.Font("Arial", 1, 11));
+        xLabel8.setName("notice.administratoraddress");
+        xLabel8.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel1.add(xLabel8);
 
         xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel3.setCaption("TD No.");
@@ -100,29 +116,29 @@ public class NoticeOfDelinquencyPage extends javax.swing.JPanel {
         );
         formPanel1.add(xSeparator1);
 
-        xLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel7.setCaption("Delinquent Tax");
-        xLabel7.setCaptionWidth(100);
-        xLabel7.setFont(new java.awt.Font("Arial", 1, 11));
-        xLabel7.setName("delinquentamount");
-        xLabel7.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel1.add(xLabel7);
+        xLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel12.setCaption("Delinquent Tax");
+        xLabel12.setCaptionWidth(100);
+        xLabel12.setFont(new java.awt.Font("Arial", 1, 11));
+        xLabel12.setName("delinquentamount");
+        xLabel12.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel1.add(xLabel12);
 
-        xLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel8.setCaption("Current Tax");
-        xLabel8.setCaptionWidth(100);
-        xLabel8.setFont(new java.awt.Font("Arial", 1, 11));
-        xLabel8.setName("currentamount");
-        xLabel8.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel1.add(xLabel8);
+        xLabel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel13.setCaption("Current Tax");
+        xLabel13.setCaptionWidth(100);
+        xLabel13.setFont(new java.awt.Font("Arial", 1, 11));
+        xLabel13.setName("currentamount");
+        xLabel13.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel1.add(xLabel13);
 
-        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        xLabel9.setCaption("Delinquent Total");
-        xLabel9.setCaptionWidth(100);
-        xLabel9.setFont(new java.awt.Font("Arial", 1, 11));
-        xLabel9.setName("total");
-        xLabel9.setPreferredSize(new java.awt.Dimension(0, 19));
-        formPanel1.add(xLabel9);
+        xLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel14.setCaption("Delinquent Total");
+        xLabel14.setCaptionWidth(100);
+        xLabel14.setFont(new java.awt.Font("Arial", 1, 11));
+        xLabel14.setName("total");
+        xLabel14.setPreferredSize(new java.awt.Dimension(0, 19));
+        formPanel1.add(xLabel14);
 
         xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         xLabel10.setCaption("From ");
@@ -148,15 +164,15 @@ public class NoticeOfDelinquencyPage extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .add(10, 10, 10)
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 450, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .add(47, 47, 47))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(xActionBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 312, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(111, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 353, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(43, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -167,6 +183,9 @@ public class NoticeOfDelinquencyPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
+    private com.rameses.rcp.control.XLabel xLabel12;
+    private com.rameses.rcp.control.XLabel xLabel13;
+    private com.rameses.rcp.control.XLabel xLabel14;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
@@ -174,7 +193,6 @@ public class NoticeOfDelinquencyPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
-    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XSeparator xSeparator1;
     // End of variables declaration//GEN-END:variables
     

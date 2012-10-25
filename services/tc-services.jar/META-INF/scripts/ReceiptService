@@ -32,6 +32,7 @@ class ReceiptService
 	def PAYMENTITEM_SCHEMA = 'receipt:paymentitem'
 	def AFCONTROL_SCHEMA = 'afcontrol:afcontrol'
 	
+	def DELEGATED_STATE   = 'DELEGATED'
 	def OPEN_STATE   = 'OPEN'
 	def CLOSED_STATE = 'CLOSED' 
 	def CASH_PAYMENT = 'CASH'

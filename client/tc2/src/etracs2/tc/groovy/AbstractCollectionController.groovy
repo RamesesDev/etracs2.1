@@ -12,6 +12,7 @@ abstract class AbstractCollectionController
     def ONLINE_MODE = 'ONLINE'
     def OFFLINE_MONE = 'OFFLINE'
     def CAPTURE_MODE = 'CAPTURE'
+    def DELEGATED_STATE = 'DELEGATED'
     def OPEN_STATE = 'OPEN'
     def CAPTURED_STATE = 'CAPTURED'
     
@@ -258,6 +259,8 @@ abstract class AbstractCollectionController
     def initState() {
         if( txnmode == CAPTURE_MODE)
             return CAPTURED_STATE
+        if( subcollector ) return DELEGATED_STATE;
+
         return OPEN_STATE
     }
     

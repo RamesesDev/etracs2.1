@@ -1,0 +1,23 @@
+"year" [ true == true ] {
+    enabled:false;
+}
+
+"year" [ period == 'Yearly' ] {
+    enabled:true;
+}
+
+"year2|month" [ true == true ] {
+    enabled:false;
+}
+
+"year2|month" [ period == 'Monthly' ] {
+    enabled:true;
+}
+
+"datefrom|dateto" [ true == true ] {
+    enabled:false;
+}
+
+"datefrom|dateto" [ period == 'DateRanged' ] {
+    enabled:true;
+}

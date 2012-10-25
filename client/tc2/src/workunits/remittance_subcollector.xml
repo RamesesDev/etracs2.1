@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    
+    <invokers>
+        <invoker folderid="/menu/tc/coll" action="create" caption="Remit" permission="remittance_subcollector.create" index="20" />
+        <invoker folderid="/txn/tc/coll" action="create" caption="Remit" permission="remittance_subcollector.create" index="20" />
+        
+        <invoker type="home.action" action="create" caption="Remit" permission="remittance_subcollector.create" index="110" icon="images/folder.png" target="window"/>
+        
+        <invoker type="formActions" action="close"  immediate="true" caption="Close" mnemonic="c" icon="images/cancel.png"/>
+        <invoker type="formActions" action="submit" shortcut="ctrl S" visibleWhen="#{mode == 'init'}" caption="Submit" mnemonic="s" icon="images/doc-submit.png" permission="remittance_subcollector.submit"/>
+        
+    </invokers>
+    
+    <code lang="groovy">
+        <![CDATA[
+        import com.rameses.rcp.common.*;
+        import com.rameses.rcp.annotations.*;
+        import com.rameses.osiris2.client.*;
+        import java.text.DecimalFormat;
+        import java.io.*
+        import javax.swing.JFileChooser;
+        import com.rameses.util.*
+        
+        public class RemittanceSubCollectorController {
+        
+            @Service('RemittanceSubCollectorService')
+            def svc;
+            
+            @Service('ETRACSUserService')
+            def usersvc;
+            
+            @Service("DateService")
+            def dtsvc;
+            
+            def entity;
+            
+            @Caller
+            def caller;
+            
+            @Binding
+            def binding;
+            
+            def mode;
+            
+            def numformat = new DecimalFormat("#,##0.00");
+            
+            def collector;
+            
+            def reports;
+            def remCollector
+            def collectionSummaries 
+            def remittanceAmount;
+            
+            def create() {
+                collector = usersvc.getSubCollector( OsirisContext.env.USERID );
+                mode = 'init';
+                entity = [
+                    collectorid : collector.objid,
+                    collectorname : collector.formalname,
+                    collectortitle : collector.jobtitle,
+                    txndate : dtsvc.getServerDate(),
+                    amount : 0.00,
+                    totalcash : 0.00,
+                    totalotherpayment : 0.00
+                ];
+            }
+            
+            def summaryHandler = [
+                getColumns : { return [
+                    new Column(name:'afid', caption:'AF No.', width:50 ),
+                    new Column(name:'stubno', caption:'Stub No.', width:80 ),
+                    new Column(name:'fromserialno', caption:'From', width:120 ),
+                    new Column(name:'toserialno', caption:'To', width:120 ),
+                    new Column(name:'amount', caption:'Amount', type:'decimal', format:'#,##0.00'),
+                ]},
+                fetchList  : { return collectionSummaries }
+            ] as SubListModel 
+            
+           
+            def submit() {
+                if (! MsgBox.confirm( "Submit remittance to $remCollector.collectorname?" ) )
+                    return null;
+                entity.remittanceofficerid = remCollector.collectorid
+                entity.remittanceofficername = remCollector.collectorname
+                entity.remittanceofficertitle = remCollector.collectortitle
+                entity.amount = remittanceAmount;
+                entity.collectionSummaries = collectionSummaries;
+                mode = 'main';     
+                entity = svc.save( entity );
+                if (caller)
+                    caller.binding.refresh();
+                
+                binding.refresh();
+            }
+           
+            def close() {
+                return '_close';
+            }
+            
+            List getCollectorlist() {
+                return svc.getParentCollector( OsirisContext.env.USERID )
+            }
+            
+           void setRemCollector( remCollector ) {
+                this.remCollector = remCollector;
+                collectionSummaries = svc.getOpenCollectionSummaries( remCollector.collectorid, OsirisContext.env.USERID ) 
+                remittanceAmount = 0.0
+                if( collectionSummaries ) {
+                    remittanceAmount = collectionSummaries.amount.sum()
+                }
+                summaryHandler.load()
+                binding.refresh();
+           }
+
+        }
+        
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.tc.remittance.subcollector.RemittancePage" />    
+    </pages>
+</workunit>

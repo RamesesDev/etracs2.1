@@ -1,0 +1,132 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/report/tc" action="init" caption="Check Payment Listing" target="window" index="12" />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" shortcut="ctrl + C" icon="images/cancel.png" />
+        <invoker type="formActions" action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png" />
+        <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" shortcut="ctrl + V" icon="images/doc-view.png" />
+        
+        <invoker type="previewActions" action="back" caption="Back" mnemonic="b" shortcut="ctrl + B" icon="images/back.png" />
+    </invokers>
+    <code>
+        <![CDATA[
+            
+            import com.rameses.rcp.common.*
+            import com.rameses.rcp.annotations.*
+            import com.rameses.osiris2.client.*
+            import com.rameses.osiris2.reports.*
+            
+            class CheckPaymentsController
+            {
+                @Service('ReportParameterService')
+                def svcParams
+                
+                @Service('TCReportService')
+                def svc
+                
+                @Service('DateService')
+                def dateSvc
+                
+                @Service('ETRACSUserService')
+                def userSvc
+                
+                def year
+                def year2
+                def month
+                def datefrom
+                def dateto
+                def collector
+                def paidby
+                
+                def period
+                def reportdata
+                def formattedperiod
+                
+                def report = [
+                    getReportName : { return 'treasury/checkpayments' },
+                    getReportData : { return reportdata.items },
+                    getParameters : {
+                        def params = svcParams.getStandardParameter( OsirisContext.env.USERNAME )
+                        params.TITLE  = reportdata.title
+                        params.PERIOD = formattedperiod
+                        return params
+                    }
+                ] as ServerReportModel
+                
+                void init() {
+                    def parsedate = dateSvc.parseCurrentDate()
+                    year   = parsedate.year
+                    year2  = parsedate.year
+                    month  = svc.getMonth( parsedate.month )
+                    period = 'Monthly'
+                }
+                
+                def preview() {
+                    validateDate()
+                    generateReport()
+                    return 'preview'
+                }
+                
+                void print() {
+                    validateDate()
+                    generateReport()
+                    ReportUtil.print( report.report, true )
+                }
+                
+                def back() {
+                    return 'default'
+                }
+                
+                void validateDate() {
+                    if( period == 'DateRanged' && datefrom > dateto )
+                        throw new Exception('Date From must not be greater than Date To.')
+                }
+                
+                void generateReport() {
+                    def map = getParam()
+                    reportdata = svc.buildCheckPaymentsReportData( map )
+                    report.viewReport()
+                }
+                
+                def getParam() {
+                    def map = [:]
+                    if( period == 'Yearly' ) {
+                        map.iyear = year
+                        formattedperiod = year + ''
+                    }
+                    else if( period == 'Monthly' ) {
+                        map = [iyear: year2, imonth: month?.month]
+                        formattedperiod = month?.name + ' ' + year2
+                    }
+                    else {
+                        map = [dtfrom: datefrom, dtto: dateto]
+                        
+                        def dtparse = new java.text.SimpleDateFormat("yyyy-MM-dd")
+                        def dtformat = new java.text.SimpleDateFormat("MMM dd, yyyy")
+                        def dt1 = dtparse.parse(datefrom)
+                        def dt2 = dtparse.parse(dateto)
+                        formattedperiod = dtformat.format(dt1) + ' - ' + dtformat.format(dt2)
+                    }
+                        
+                    map.collectorid = ( collector ? collector.objid : '%' )
+                    map.paidby      = ( paidby ? paidby + '%' : '%' )
+                    map.period      = period
+                    
+                    return map
+                }
+                
+                List getMonthlist() {
+                    return svc.getMonthList( null )
+                }
+                
+                List getCollectorlist() {
+                    return userSvc.getCollectorList()
+                }
+            }
+        ]]>
+    </code>
+    <pages>
+        <page template="etracs2.tc.report.CheckPaymentsInitPage" />
+        <page name="preview" template="etracs2.common.PreviewPage" />
+    </pages>
+</workunit>
