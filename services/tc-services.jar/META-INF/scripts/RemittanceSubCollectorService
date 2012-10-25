@@ -111,7 +111,7 @@ class RemittanceSubCollectorService {
 			rem.totalcash = rem.totalcash + reminfo.totalcash
 			rem.totalotherpayment = rem.totalotherpayment + reminfo.totalotherpayment;
 		}
-		
+		if( rem.amount <=0 ) throw new Exception('There are no open receipts for remittance.')
 	}
 	
 	void checkUnpostedCapturedCollections( collectorid, afcontrolid ) { 

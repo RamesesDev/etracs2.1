@@ -24,7 +24,7 @@ AND afcontrolid = $P{afcontrolid}
 [closeReceiptListForRemittance]
 UPDATE receiptlist SET 
 	docstate = 'OPEN', 
-	sc_remittancid = $P{remittanceid}
+	sc_remittanceid = $P{remittanceid}
 WHERE afcontrolid = $P{afcontrolid} 
   AND docstate = 'DELEGATED' 
   

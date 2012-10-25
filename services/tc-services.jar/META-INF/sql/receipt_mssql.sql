@@ -78,6 +78,15 @@ WHERE collectorid LIKE $P{collectorid}
   AND paidby LIKE $P{paidby} 
 ORDER BY afid, serialno 
 
+	
+[getSubcollectorOpenIssuances]
+SELECT * FROM receiptlist 
+WHERE capturedbyid = $P{subcollectorid}
+   AND docstate LIKE 'DELEGATED' 
+ORDER BY afid, serialno 
+
+
+
 [getState]
 SELECT docstate FROM receiptlist WHERE objid = $P{objid}
 
@@ -122,4 +131,9 @@ WHERE collectorid LIKE $P{collectorid}
    AND docstate = $P{docstate} 
    AND voided = 0 
 
+[getTotalSubcollectorIssuances]
+SELECT SUM(amount) as total FROM receiptlist 
+WHERE capturedbyid LIKE $P{subcollectorid}  
+   AND docstate = 'DELEGATED'
+   AND voided = 0 
 

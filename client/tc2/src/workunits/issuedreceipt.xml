@@ -30,7 +30,14 @@ class IssuedReceiptController
     
     void init() {
         collector = getCollector()
-        total = svc.getIssuedTotal( buildSearchParam() )
+        total = getTotalCollection()
+    }
+    
+    def getTotalCollection() {
+        if( collector )
+            return svc.getIssuedTotal( buildSearchParam() )
+        else 
+            return svc.getTotalSubcollectorIssuances( OsirisContext.env.USERID)
     }
     
     void setSelectedItem( item ) {
@@ -59,8 +66,13 @@ class IssuedReceiptController
         }, 
         fetchList : { 
             def searchParam = buildSearchParam()
-            total = svc.getIssuedTotal( searchParam )
-            list = svc.getList( searchParam, it ) 
+            total = getTotalCollection()
+            if( collector ) {
+                list = svc.getList( searchParam, it ) 
+            }
+            else {
+                list = svc.getSubcollectorOpenIssuances( OsirisContext.env.USERID ) 
+            }
             binding?.refresh('total|subtotal')
             return list 
         },

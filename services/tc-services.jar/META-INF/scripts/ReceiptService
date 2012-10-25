@@ -164,6 +164,13 @@ class ReceiptService
 		return result 
 	}
     
+	@ProxyMethod
+	public List getSubcollectorOpenIssuances( subcollectorid ) {
+		return em.sqlContext.createNamedQuery('receipt:getSubcollectorOpenIssuances')
+							.setParameter('subcollectorid', subcollectorid)
+							.resultList
+	}
+	
     @ProxyMethod
     public void validateCheckDate( checkdate ) {
         def currdate = dateService.serverDate 
@@ -547,5 +554,11 @@ class ReceiptService
 		return 0.0
 	}
 	
-	
+	@ProxyMethod
+	public def getTotalSubcollectorIssuances( subcollectorid ) {
+		return em.sqlContext.createNamedQuery('receipt:getTotalSubcollectorIssuances')
+						.setParameter('subcollectorid', subcollectorid)
+						.singleResult
+						.total
+	}
 }
