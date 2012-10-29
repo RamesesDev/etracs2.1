@@ -349,8 +349,9 @@ class TCReportService {
 		}
 		
 		return [
-			title : 'LIST OF CHECK PAYMENTS',
-			items : list
+			title 	 : 'LIST OF CHECK PAYMENTS',
+			items 	 : list,
+			totalamt : list.amount.sum()
 		]
 	}
 	
