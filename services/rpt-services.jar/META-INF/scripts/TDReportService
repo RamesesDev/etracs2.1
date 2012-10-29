@@ -360,12 +360,12 @@ class TDReportService
 			else {
 				data << [
 					classification		: rpu.classname,
-					machine				: it.machinename,
+					machine				: mu.machinename,
 					actualuse			: mu.actualuse.actualusename,
-					depreciation		: it.depreciation,
-					marketvalue			: it.marketvalue,
-					assesslevel			: it.assesslevel,
-					assessedvalue		: it.assessedvalue,
+					depreciation		: mu.depreciation,
+					marketvalue			: mu.marketvalue,
+					assesslevel			: mu.assesslevel,
+					assessedvalue		: mu.assessedvalue,
 					actualuseid			: mu.actualuse.actualuseid,
 					marketvalue			: mu.marketvalue,
 					basemarketvalue		: mu.basemarketvalue,
@@ -373,8 +373,6 @@ class TDReportService
 					assessedvalue		: mu.assessedvalue,
 					area				: 0.00,
 				];
-				
-				data.add( item );
 			}
 		}
     	
