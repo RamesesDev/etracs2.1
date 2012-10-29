@@ -246,7 +246,22 @@ class SubdivisionService
     
     @ProxyMethod
     public List getSubdividedLands( subdivisionid ) {
-        return em.sqlContext.createNamedQuery('subdivision:getSubdividedLands').setParameter('subdivisionid', subdivisionid ).resultList 
+        return em.sqlContext.createNamedQuery('subdivision:getSubdividedLands')
+					.setParameter('subdivisionid', subdivisionid )
+					.resultList
+					.each{ 
+						it.itemno = it.itemno.toString()
+						if( it.rp ) {
+							it.rp = em.serializer.read( it.rp )
+						}
+						if( it.rpu ) {
+							it.rpu = em.serializer.read( it.rpu )
+						}
+						if( it.extended ) {
+							it.putAll( em.serializer.read(it.extended) )
+						}
+					} 
+		
     }
     
     @ProxyMethod
