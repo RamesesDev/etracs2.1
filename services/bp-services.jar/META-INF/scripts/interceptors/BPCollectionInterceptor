@@ -267,8 +267,8 @@ class BPCollectionInterceptor {
 	
 	private void removePenaltyRcptItems( receipt ){
 		receipt.items.each{
-			it.amount -= it.surcharge
-			it.amount -= it.interest
+			if( it.surcharge > 0.0 ) it.amount -= it.surcharge
+			if( it.interest > 0.0 ) it.amount -= it.interest
 		}
 	}
 	
