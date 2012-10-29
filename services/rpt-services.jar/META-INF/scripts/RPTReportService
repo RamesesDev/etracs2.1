@@ -280,7 +280,7 @@ class RPTReportService
 			periodtype = 'MONTH' 
 		}
 		
-		def params = [ lguindex:var.lgu_index ]
+		def params = [ lguindex:var.lgu_index +'%']
 		params.currenttimestamp		= calculateCurrentTimeStamp( year, qtr, month )
 		params.endingtimestamp 		= calculateEndingTimeStamp( year, qtr, month )
 		
