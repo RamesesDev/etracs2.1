@@ -349,6 +349,7 @@ class BPLedgerService {
 				app.taxfees = em.serializer.read( app.taxfees );
 				app.lobs = em.serializer.read( app.lobs );
 				app.receivables = em.serializer.read( app.receivables ).each{ app.amount += it.amount; app.amtpaid += it.amtpaid; };
+				sortReceivables( app)
 				app.credits = em.serializer.read( app.credits );
 				
 				app.surcharge_paid = app.credits.surcharge.sum()
@@ -360,6 +361,14 @@ class BPLedgerService {
 				
 			 };
 	}	
+	
+	void sortReceivables( app ){
+		app.receivables = app.receivables.sort{ a, b ->
+			def aa = a.iqtr + '-' + (a.lobname ? '2-' + a.lobname : '1-a')
+			def bb = b.iqtr + '-' + (b.lobname ? '2-' + b.lobname : '1-a')
+			return aa <=> bb 
+		}
+	}
 	
 	@ProxyMethod     
 	public def getBPLedgerData( businessid ){
