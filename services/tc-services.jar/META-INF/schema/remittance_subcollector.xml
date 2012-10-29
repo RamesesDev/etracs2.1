@@ -1,0 +1,26 @@
+<schema>
+	
+	<element name="remittance_subcollector" tablename="remittance_subcollector">
+		<field name="objid" primary="true" />
+		<field name="schemaname" required="true" />
+		<field name="schemaversion" required="true" />
+		<field name="docstate" required="true" />
+		<field name="txnno" />
+		<field name="txndate" />
+		<field name="collectorname" />
+		<field name="amount" />
+		<field name="collectorid" />
+		<field name="collectortitle" />
+		<field name="totalcash" />
+		<field name="totalotherpayment" />
+		<field name="remittanceid" />
+		<field name="remittanceno" />
+		<field name="remittancedate" />
+		<field name="remittanceofficerid" />
+		<field name="remittanceofficername" />
+		<field name="remittanceofficertitle" />
+		<complex name="info" serializer="default" required="false"/>
+	</element>
+	
+</schema>
+

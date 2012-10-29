@@ -1,3 +1,17 @@
+/* FAAS Attachment */
+ALTER TABLE lguname_etracs..faasattachment ADD absolutefilename varchar(300) NULL
+go
+
+
+
+/* SubFund with Required Bank Account fund support */
+ALTER TABLE lguname_etracs..fund ADD bankacctrequired INT NULL
+go
+
+UPDATE lguname_etracs..fund SET bankacctrequired = 1 
+go 
+
+
 ALTER TABLE lguname_etracs..receiptlist ADD totalpayment DECIMAL(16,2)
 go
 ALTER TABLE lguname_etracs..receiptlist ADD remarks VARCHAR(200)

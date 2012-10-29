@@ -34,6 +34,9 @@ public class IssuedReceiptPage extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        jPanel1 = new javax.swing.JPanel();
+        formPanel1 = new com.rameses.rcp.util.FormPanel();
+        xNumberField2 = new com.rameses.rcp.control.XNumberField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -56,7 +59,8 @@ public class IssuedReceiptPage extends javax.swing.JPanel {
         xActionTextField1.setName("searchText");
         xActionTextField1.setPreferredSize(new java.awt.Dimension(250, 19));
 
-        xLabel1.setText("Total:");
+        xLabel1.setText("Total Collection :");
+        xLabel1.setFont(new java.awt.Font("Arial", 1, 11));
 
         xNumberField1.setFieldType(BigDecimal.class);
         xNumberField1.setFont(new java.awt.Font("Tahoma", 1, 14));
@@ -71,7 +75,7 @@ public class IssuedReceiptPage extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .add(xActionTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 225, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 160, Short.MAX_VALUE)
                 .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(xNumberField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 123, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -91,6 +95,28 @@ public class IssuedReceiptPage extends javax.swing.JPanel {
         xDataTable1.setName("selectedItem");
         jPanel4.add(xDataTable1, java.awt.BorderLayout.CENTER);
 
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        formPanel1.setCaptionBorder(null);
+        formPanel1.setCaptionFont(new java.awt.Font("Arial", 1, 11));
+        formPanel1.setCaptionPadding(new java.awt.Insets(0, 0, 0, 0));
+        formPanel1.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        formPanel1.setPadding(new java.awt.Insets(5, 0, 5, 5));
+        xNumberField2.setCaption("Total for the Listed Items");
+        xNumberField2.setCaptionWidth(155);
+        xNumberField2.setFieldType(BigDecimal.class);
+        xNumberField2.setFont(new java.awt.Font("Tahoma", 1, 14));
+        xNumberField2.setForeground(new java.awt.Color(204, 0, 0));
+        xNumberField2.setName("subtotal");
+        xNumberField2.setPattern("#,##0.00");
+        xNumberField2.setPreferredSize(new java.awt.Dimension(130, 22));
+        xNumberField2.setReadonly(true);
+        formPanel1.add(xNumberField2);
+
+        jPanel1.add(formPanel1, java.awt.BorderLayout.EAST);
+
+        jPanel4.add(jPanel1, java.awt.BorderLayout.SOUTH);
+
         jPanel3.add(jPanel4, java.awt.BorderLayout.CENTER);
 
         add(jPanel3, java.awt.BorderLayout.CENTER);
@@ -99,6 +125,8 @@ public class IssuedReceiptPage extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.rameses.rcp.util.FormPanel formPanel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -107,6 +135,7 @@ public class IssuedReceiptPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XNumberField xNumberField1;
+    private com.rameses.rcp.control.XNumberField xNumberField2;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -26,10 +26,18 @@ class IssuedReceiptController
     def collector 
     def formActions
     def total
+    def list = []
     
     void init() {
         collector = getCollector()
-        total = svc.getIssuedTotal( buildSearchParam() )
+        total = getTotalCollection()
+    }
+    
+    def getTotalCollection() {
+        if( collector )
+            return svc.getIssuedTotal( buildSearchParam() )
+        else 
+            return svc.getTotalSubcollectorIssuances( OsirisContext.env.USERID)
     }
     
     void setSelectedItem( item ) {
@@ -44,30 +52,42 @@ class IssuedReceiptController
         getRows    : { return 25 },
         getColumns : {
             return [
-                new Column(name:'mode', caption:'Mode'),
-                new Column(name:'afid', caption:'AF No.'),
-                new Column(name:'stubno', caption:'Stub No.'),
-                new Column(name:'txndate', caption:'Txn Date'),
-                new Column(name:'serialno', caption:'Serial No.'),
-                new Column(name:'collectiontype', caption:'Collection Type'),
-                new Column(name:'payorname', caption:'Payor'),
-                new Column(name:'paidby', caption:'Paid By'),
-                new Column(name:'amount', caption:'Amount', type:'decimal'),
-                new Column(name:'voidreason', caption:'Voided'),
-                new Column(name:'capturedbyname', caption:'Issued By'),
+                new Column(name:'mode', caption:'Mode', width:100),
+                new Column(name:'afid', caption:'AF No.', width:70),
+                new Column(name:'stubno', caption:'Stub No.', width:70),
+                new Column(name:'txndate', caption:'Txn Date', width:90),
+                new Column(name:'serialno', caption:'Serial No.', width:120),
+                new Column(name:'collectiontype', caption:'Collection Type', width:200),
+                new Column(name:'paidby', caption:'Paid By', width:400),
+                new Column(name:'amount', caption:'Amount', type:'decimal', width:100),
+                new Column(name:'voidreason', caption:'Voided', width:100),
+                new Column(name:'capturedbyname', caption:'Issued By', width:400),
             ]
         }, 
         fetchList : { 
             def searchParam = buildSearchParam()
-            total = svc.getIssuedTotal( searchParam )
-            binding?.refresh('total')
-            return svc.getList( searchParam, it ) 
+            total = getTotalCollection()
+            if( collector ) {
+                list = svc.getList( searchParam, it ) 
+            }
+            else {
+                list = svc.getSubcollectorOpenIssuances( OsirisContext.env.USERID ) 
+            }
+            binding?.refresh('total|subtotal')
+            return list 
         },
     ] as PageListModel
     
     void search() {
         listHandler.load()
         binding.refresh('total')
+    }
+    
+    def getSubtotal() {
+        def unvoidedReceipts = list.findAll{ it.voided == 0 || it.voided == false }
+        if( unvoidedReceipts ) 
+            return unvoidedReceipts.amount.sum()
+        return 0.0
     }
     
     def getCollector() {

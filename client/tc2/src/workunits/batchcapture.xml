@@ -64,7 +64,7 @@ public class BatchCaptureController
         return 'init' 
     }
     
-    def open() {
+    void open() {
         entity = svc.open( entity.objid )
         collectiontype = entity.collectiontype
         afcontrol = entity.afcontrol 

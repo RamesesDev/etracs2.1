@@ -2,7 +2,11 @@ import com.rameses.annotations.*
 import com.rameses.common.*
 import com.rameses.invoker.client.DynamicHttpTransfer
 import com.rameses.io.FileTransfer
+import java.util.concurrent.*
+import com.rameses.uploader.HttpFileUploader
 import java.io.*
+import com.rameses.sql.*
+import java.sql.*
 
 
 class FAASAttachmentTask
@@ -15,54 +19,109 @@ class FAASAttachmentTask
     
     @Service('Var')
     def var
+	
+	@Service('FAASService')
+	def faasSvc 
+	
+	@Service('RecoveryTask')
+	def recoverySvc
     
     @ProxyMethod
 	public def deliverAttachment( task ) {
-        def attachmentList = em.sqlContext.createNamedQuery('faas:getAttachmentForTransmittal').resultList
-        attachmentList.each { attachment -> 
-            try {
-                uploadAttachment( attachment )
-				invokerSvc.invokeRemoteService( 'ETRACSFileTransferService', 'uploadComplete', [attachment] as Object[])
-            }
-            catch( e ) {
-                //log encountered error, just ignore and redeliver attachment 
-                println 'Delivery of attachment error -> ' + e.message 
-				updateFaasAttachmentStatus( attachment, 'ERROR', e.message)
-            }
-        }
+		def attachments = em.sqlContext.createNamedQuery('faas:getAttachmentForTransmittal').setMaxResults(2).resultList
+		uploadAttachmentsToRemote( attachments )
+		recoverySvc.recoverError( null )
         return true 
 	}
-    
-    def uploadAttachment( attachment ) {
-        def sourceDir = var.faas_attachment_path
+	
+	void uploadAttachmentsToRemote( attachments ) {
+		def path = System.getProperty('upload_path')
+		if( ! var.remote_host ) {
+			return 
+		}
+		
+		def remote_host = var.remote_host  
+		
+		attachments.each { attachment ->
+			try {
+				println 'Uploading attachment ' + attachment.filename + ' to remote '
+				def filename = path + '/' + attachment.directory + '/' + attachment.filename 
+				def file = new File( filename )
+				def uploader = new HttpFileUploader( remote_host );
+				def param = [
+					file      : file,
+					filename  : attachment.filename, 
+					directory : attachment.directory,
+				]
+				uploader.upload( param );
+				attachment._submitted = true 
+			}
+			catch( Throwable e ){
+				attachment._submitted = false 
+				println 'Uploader Error -> '+ e.message  
+			}
+		}
+		println 'Done uploading ' + attachments.size() + ' attachments...'
+		attachments.each{
+			if( it._submitted )  {
+				faasSvc.updateAttachmentState( it, 'SUBMITTED' )
+			}
+		}
+	}
+	
+    def uploadAttachmentsToRemote2( attachments ) {
+		if( ! var.remote_host ) {
+			return 
+		}
+		def remote_host = var.remote_host  
+		
+		
+        def sourceDir = System.getProperty('upload_path')
 		if( ! sourceDir ) {
 			throw new Exception('FAAS Attachment Path is not set.')
 		}
         if( ! sourceDir.endsWith('/') ) {
             sourceDir += '/'
         }
-        sourceDir += attachment.directory + '/'
-        def file = new File( sourceDir + attachment.filename )
         
-        if( ! file.exists() ) {
-            //file might be deleted or moved
-            //change status and log message 
-            updateFaasAttachmentStatus( attachment, 'ERROR', 'Attachment File ' + file.absolutePath + ' does not exists.')
-        }
-        else {
-            //transfer file 
-            def remotehost        = var.remote_host
-            def remotecontext     = var.remote_context
-            FileTransfer.FileInputSource fis = new FileTransfer.FileInputSource( file )
-            DynamicHttpTransfer.Out handler = new DynamicHttpTransfer.Out(remotehost , remotecontext, 'ETRACSFileTransferService', 'uploadAttachment')
-            handler.parameters.put('attachment', attachment )
-            FileTransfer ft = new FileTransfer();
-            ft.transfer(fis, handler);
-            
-            //successfully uploaded, update status 
-            updateFaasAttachmentStatus( attachment, 'SUBMITTED', 'Successfully uploaded.')        
-            println 'Attachment successfully uploaded to ' + remotehost + '.' 
-        }
+		
+		attachments.each { attachment ->
+			try {
+				sourceDir += attachment.directory + '/'
+				def file = new File( sourceDir + attachment.filename )
+				
+				if( ! file.exists() ) {
+					//file might be deleted or moved
+					//change status and log message 
+					updateFaasAttachmentStatus( attachment, 'ERROR', 'Attachment File ' + file.absolutePath + ' does not exists.')
+				}
+				else {
+					println 'Uploading attachment -> ' + attachment.filename
+					//transfer file 
+					def remotehost        = var.remote_host
+					def remotecontext     = var.remote_context
+					FileTransfer.FileInputSource fis = new FileTransfer.FileInputSource( file )
+					DynamicHttpTransfer.Out handler = new DynamicHttpTransfer.Out(remotehost , remotecontext, 'ETRACSFileTransferService', 'uploadAttachment')
+					handler.parameters.put('attachment', attachment )
+					FileTransfer ft = new FileTransfer();
+					ft.transfer(fis, handler);
+					
+					//successfully uploaded, update status 
+					attachment._submitted = true 
+					println 'Attachment successfully uploaded to ' + remotehost + '.' 
+				}
+			}
+			catch( Throwable t ) {
+				println 'Error uploading attachment -> ' + t.message
+				attachment._submitted = false 
+			}
+		}
+		attachments.each{
+			println '_submitted -> ' + it._submitted
+			if( it._submitted )  {
+				faasSvc.updateAttachmentState( it, 'SUBMITTED' )
+			}
+		}
 
     }
     

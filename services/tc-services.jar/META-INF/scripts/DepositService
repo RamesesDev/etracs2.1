@@ -164,7 +164,7 @@ class DepositService
 			cashfundsummaries.each {
 				list.add([
 					cashier		: deposit.depositedbyname,
-					depositref  : it.bankaccount.bankcode + ' - Cash Deposit D/S _______________ ',
+					depositref  : it.bankaccount.bankcode + ' - Cash D/S: Account ' + it.bankaccount.acctno,
 					depositamt  : it.cash ,
 				])
 			}
@@ -175,7 +175,7 @@ class DepositService
 			checkfundsummaries.each {
 				list.add([
 					cashier		: deposit.depositedbyname,
-					depositref  : it.bankaccount.bankcode + ' - Check Deposit D/S _______________ ',
+					depositref  : it.bankaccount.bankcode + ' - Check D/S: Account ' + it.bankaccount.acctno ,
 					depositamt  : it.noncash ,
 				])
 			}

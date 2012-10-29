@@ -26,7 +26,7 @@ class BankAcctController extends etracs2.groovy.CRUDController
     def svc;
     
     @Service('FundService')
-    def fundsvc;
+    def fundSvc
     
     def getService() { return svc; }
     def getCreateFocusComponent() { return "entity.acctno"; }
@@ -65,8 +65,7 @@ class BankAcctController extends etracs2.groovy.CRUDController
     }
     
     def getFunds() {
-        def data = svc.getFund();
-        return data.fundname;
+        return fundSvc.getFundsWithBankAccount().fundname 
     }
     
     def getLookupBank() {

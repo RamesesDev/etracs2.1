@@ -1,0 +1,7 @@
+".*" [true == true ]{
+    enabled:true;
+}
+
+"viewAttachment|deleteAttachment" [selectedItem == null]{
+    enabled:false;
+}

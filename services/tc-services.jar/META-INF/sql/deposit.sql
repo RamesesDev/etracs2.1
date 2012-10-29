@@ -79,16 +79,17 @@ GROUP BY ri.fundid, ri.fundname
 
 [getOpenFundTotalsByCashier]
 SELECT 
-	lr.fundid, 
-	lr.fundname, 
+	CASE WHEN f.bankacctrequired = 1 THEN lr.fundid ELSE f.fund END AS fundid, 
+	CASE WHEN f.bankacctrequired = 1 THEN lr.fundname ELSE f.fund END AS fundname, 
 	SUM( lr.amount ) AS amount,  
 	0.0 AS amtdeposited 
 FROM liquidationrcd lr 
+	INNER JOIN fund f ON lr.fundid = f.objid 
 	INNER JOIN liquidationlist l ON lr.liquidationid = l.objid 
 WHERE lr.docstate = 'OPEN'  
   AND lr.cashierid = $P{cashierid} 
-GROUP BY lr.fundid, lr.fundname 
-ORDER BY lr.fundname 
+GROUP BY CASE WHEN f.bankacctrequired = 1 THEN lr.fundid ELSE f.fund END,
+	     CASE WHEN f.bankacctrequired = 1 THEN lr.fundname ELSE f.fund END
 
 
 [getOpenNonCashPayments]
@@ -238,7 +239,7 @@ FROM deposit d
 	INNER JOIN fund f on ri.fundid = f.objid  
 WHERE d.objid = $P{depositid} 
   AND rct.voided = 0    
-  AND f.fundname LIKE $P{fundname} 
+  AND CASE WHEN f.bankacctrequired = 1 THEN  f.fundname ELSE f.fund END LIKE $P{fundname}  LIKE $P{fundname} 
 GROUP BY rct.afid, CASE WHEN af.aftype = 'nonserial' THEN ri.fundname ELSE ia.groupid END   
 ORDER BY rct.afid, ri.fundname , ia.groupid  
 
@@ -248,10 +249,10 @@ ORDER BY rct.afid, ri.fundname , ia.groupid
 
 
 [getFundList] 
-SELECT distinct fundname FROM fund o  
+SELECT distinct fundname FROM fund o   WHERE bankacctrequired = 1
 
 [getFundIdList]
-SELECT objid AS fundid, fundname  FROM fund 
+SELECT objid AS fundid, fundname  FROM fund WHERE bankacctrequired = 1
 
 [getBankAccountByFund]
 SELECT objid FROM bankaccount WHERE fundid = $P{fundid}  

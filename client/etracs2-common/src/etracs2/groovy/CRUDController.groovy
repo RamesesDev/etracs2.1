@@ -72,10 +72,13 @@ abstract class CRUDController {
     
     void approve(){
         if( MsgBox.confirm( "Are you sure you want to approve?" ) ){
-            selectedItem.putAll( svc.approve( selectedItem?.objid ) );
+            def result = svc.approve( selectedItem?.objid );
+            if( entity ) entity.putAll( result );
+            selectedItem.putAll( result );
             mode = "view";
         }
         listHandler.refresh();
+        binding.refresh("entity.*");
         binding.focus( "selectedItem" );
     }
     

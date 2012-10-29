@@ -6,13 +6,23 @@
         <br>
         <br>
         <h2>Conditions</h2>
-        <% for( cond in rule.conditions ) { %>
-            ${cond.displaytext}<br>
-        <%}%>
+        <% 
+            for( cond in rule.conditions ) {
+                def displaytext = cond.displaytext 
+                displaytext = displaytext.replace('<', '&lt;').replace('>', '&gt;')
+                println "$displaytext <br>"
+            }
+        %>
         <br>
         <h2>Actions</h2>
          <% for( action in rule.actions ) { %>
-            ${action.displaytext}<br>
+            <%
+
+            def displaytext = action.displaytext 
+            displaytext = displaytext.replace('<', '&lt;').replace('>', '&gt;')
+            println "$displaytext <br>"
+
+            %>
             <%if (action.ranges) {%> 
                 <table border="1">
                     <tr>

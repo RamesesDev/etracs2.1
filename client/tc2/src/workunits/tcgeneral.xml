@@ -95,15 +95,20 @@
             if( item.acct?.amounttype == 'FIXUNIT' ) return false
             return true
         } as Map
+        
+        def allowQtyEdit = { item ->
+            return ( item.acct?.amounttype == 'FIXUNIT' )
+        } as Map
     
         def incomeAcctLookup = InvokerUtil.lookupOpener( 'incomeacct:lookup', [:] )
 
         def listHandler = [
             getColumns : {
                 return [
-                    new Column( name:'acct', caption:'Account*', editable:true, type:'lookup', handler:incomeAcctLookup, expression: '#{accttitle}' ),
-                    new Column( name:'amount', caption:'Amount*', type:'decimal', editableWhen:'#{root.allowAmountEdit[item]}' ),
-                    new Column( name:'remarks', caption:'Remarks', editable:true ),
+                    new Column( name:'acct', caption:'Account*', editable:true, type:'lookup', handler:incomeAcctLookup, expression: '#{accttitle}', width:600 ),
+                    new Column( name:'qty', caption:'Qty', editableWhen:'#{root.allowQtyEdit[item]}', type:'integer', alignment: 'right', minWidth: 30),
+                    new Column( name:'amount', caption:'Amount*', type:'decimal', editableWhen:'#{root.allowAmountEdit[item]}', width:150 ),
+                    new Column( name:'remarks', caption:'Remarks', editable:true, width:300 ),
                 ]
             },
             fetchList  : { return entity.items },
@@ -126,11 +131,11 @@
             onColumnUpdate : { item, colName ->
                 if( colName =='acct' )  {
                     updateIncomeAcctInfo( item )
-                    if( item.acct?.amounttype == 'FIXUNIT') {
-                        def unitcount = MsgBox.prompt('Enter Quantity:')
-                        unitcount = parseInt( unitcount )
-                        item.amount = item.acct.defaultvalue * unitcount 
-                    }
+                }
+                else if( colName == 'qty' ) {
+                    if( item.qty <= 0 ) item.qty = 1
+                    item.amount = item.acct.defaultvalue * item.qty 
+                    updateItemInfo()
                 }
                 else if( colName == 'amount' && listItem?.state != 0 ) {
                     updateItemInfo()
@@ -175,6 +180,10 @@
             item.fundid = item.acct?.fundid
             item.fundname = item.acct?.fundname
             item.amount = item.acct?.defaultvalue
+            
+            if( item.acct?.amounttype == 'FIXUNIT' ) {
+                item.qty = 1
+            }
         }
 
         void required( name, value ) {
@@ -204,13 +213,14 @@
          void setCollectionGroup( cg ) {
             def items = colgroupSvc.getIncomeAccounts( cg )
             if( items ) {
-                items.each { 
-                    println "account: $it"
-                    def rctitem = [:]
-                    rctitem.acct = it
-                    updateIncomeAcctInfo( rctitem )
-                    rctitem.amount = rctitem.amount ? rctitem.amount : 0.00 
-                    entity.items.add( rctitem )
+                items.each { it ->
+                    if( !entity.items.find{ ri-> ri.acctid == it.objid } ) {
+                        def rctitem = [:]
+                        rctitem.acct = it
+                        updateIncomeAcctInfo( rctitem )
+                        rctitem.amount = rctitem.amount ? rctitem.amount : 0.00 
+                        entity.items.add( rctitem )
+                    }
                 }
             }
             updateItemInfo()

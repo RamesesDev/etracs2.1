@@ -350,7 +350,7 @@ class RPTReceiptService
 	
     @ProxyMethod
     public Map open( receiptid ) {
-        def receipt = em.read('receipt', [objid:receiptid])
+        def receipt = receiptSvc.open( receiptid )
 		if( ! receipt ) throw new Exception('Cannot open Receipt with ID No. ' + receiptid + '.')
         receipt._items = loadRPTPayments( receiptid, receipt.opener  ).each(){
 			if( receipt.opener == 'tc:real_property' ) {

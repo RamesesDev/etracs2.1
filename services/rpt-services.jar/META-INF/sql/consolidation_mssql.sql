@@ -43,7 +43,6 @@ FROM rptledger rl, consolidationland cl
 WHERE rl.faasid = cl.landfaasid  
 AND cl.consolidationid = $P{consolidationid} 
 
-
 [getMinLastYearPaidByConsolidation]  
 SELECT MIN(lastyearpaid) as minlastyearpaid 
 FROM rptledger rl 

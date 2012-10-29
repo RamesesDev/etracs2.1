@@ -118,7 +118,9 @@
                         new Column( name:"amtpaid", caption:"Amount Paid" )
                     ];
                 },
-                fetchList : {  return application?.receivables; }
+                fetchList : {  
+                    return application?.receivables;                 
+                }
             ] as SubListModel;
             
             def paymentHandler = [
@@ -225,14 +227,6 @@
                 if( !application ) return 
                 reportname = 'bp/bpledger'
                 generateReport()
-            }
-            
-            void setApplication( application ){
-                this.application = application
-            }
-            
-            def getApplication(){
-                return applicaiton
             }
             
             def generateReport() {

@@ -210,10 +210,9 @@ class BPApplicationService{
 		return result 
 	}
 	
-	def getListByQuery( namedQuery, criteria, params ) {
+	def getListByQuery( namedQuery, criteria, params, pagingKeys ) {
         if( ! params ) params = [ _start:0, _limit:25]
 		return em.sqlContext.createNamedQuery( namedQuery )
-						.setPagingKeys( pagingKeys )
 						.setParameters( criteria )
 						.setFirstResult( params._start )
 						.setMaxResults( params._limit )
