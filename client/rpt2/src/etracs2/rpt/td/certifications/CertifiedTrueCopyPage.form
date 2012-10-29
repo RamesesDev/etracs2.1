@@ -238,8 +238,8 @@
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="jPanel6" alignment="0" pref="405" max="32767" attributes="0"/>
-                                  <Component id="formPanel1" alignment="0" pref="405" max="32767" attributes="0"/>
+                                  <Component id="jPanel6" alignment="0" pref="414" max="32767" attributes="0"/>
+                                  <Component id="formPanel1" alignment="0" pref="414" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -250,7 +250,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="formPanel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jPanel6" pref="193" max="32767" attributes="0"/>
+                              <Component id="jPanel6" pref="200" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
