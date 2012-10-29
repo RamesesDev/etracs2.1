@@ -269,12 +269,12 @@ public class ConsolidationController
     def affectedrpuListHandler = [
         getRows    : { return 50 },
         getColumns : { return [
-            new Column( name:'rputype', caption:'Type', maxWidth:60 ),
-            new Column( name:'prevfullpin', caption:'PIN', maxWidth:150),
-            new Column( name:'prevtdno', caption:'TD No.', maxWidth:120),
-            new Column( name:'newtdno', caption:'New TD No.', maxWidth:120, editable:true),
-            new Column( name:'newsuffix', caption:'New Suffix', type:'integer', format:'0000', maxWidth:120, editable:true),
-            new Column( name:'memoranda', caption:'Memoranda*', editable:true),
+            new Column( name:'rputype', caption:'Type', width:70 ),
+            new Column( name:'prevfullpin', caption:'PIN', width:180),
+            new Column( name:'prevtdno', caption:'TD No.', width:150),
+            new Column( name:'newtdno', caption:'New TD No.', width:150, editable:true),
+            new Column( name:'newsuffix', caption:'New Suffix', type:'integer', format:'0000', width:120, editable:true),
+            new Column( name:'memoranda', caption:'Memoranda*', editable:true, width:300),
         ]},
         validate  : { li -> validateAffectedRpu( li.item ) },
         onColumnUpdate : {item, colname ->  checkDuplicateSuffix( colname, item ) },
