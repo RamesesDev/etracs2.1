@@ -19,20 +19,25 @@ class FAASAnnotationInterceptor
 	@Service('Var')
 	def var 
 	
+	@Service('ETRACSUtilService')
+	def utilSvc
+	
 	
 	/*==============================================================
 	** LOCAL INTERCEPTORS 
 	==============================================================*/
 	@After(pattern='FAASAnnotationService.approve') 
 	public void interceptApprove( evt ) {
-		def annotation = evt.result 
-		def attachment = [ 
-			annotation : evt.result 
-		]
-		def msg = msgSvc.createMessage( 'faasannotation.post', attachment )
-		msg.refid = annotation.objid 
-		updateReceiverInfo( msg, annotation )
-		msgSvc.send( msg ) 
+		if( utilSvc.toBoolean(var.remote_connection_active, false) ) {
+			def annotation = evt.result 
+			def attachment = [ 
+				annotation : evt.result 
+			]
+			def msg = msgSvc.createMessage( 'faasannotation.post', attachment )
+			msg.refid = annotation.objid 
+			updateReceiverInfo( msg, annotation )
+			msgSvc.send( msg ) 
+		}
 	}
 	
 	void updateReceiverInfo( msg, annotation ) {
