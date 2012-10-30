@@ -234,7 +234,7 @@ class FAASService
 								annotated		: false, 
                             ],
             rp            : [lgutype: var.lgu_type?.toLowerCase(), attributes:[], autonumber:var.pin_autonumber, pintype:var.pin_type?.toLowerCase()],
-            rpu           : [ry:ry, classid:'RES', classcode:'RES', classname:'RES',suffix:0,info:[:], taxable:true, totalareasqm:0.0, totalareaha:0.0],
+            rpu           : [ry:ry, classid:'RES', classcode:'RES', classname:'RESIDENTIAL',suffix:0,info:[:], taxable:true, totalareasqm:0.0, totalareaha:0.0],
             previousfaases: [],
             lgutype       : var.lgu_type,
 			lguid		  : var.lgu_index,
