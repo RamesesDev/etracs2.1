@@ -2,6 +2,9 @@ import com.rameses.annotations.*
 import java.rmi.server.UID
 import com.rameses.eserver.*;
 import com.rameses.common.*;
+import java.util.concurrent.*
+import com.rameses.uploader.HttpFileUploader
+import java.io.*
 
 class FAASService
 {
@@ -75,6 +78,9 @@ class FAASService
     def MACH_TYPE = 'mach'
     def PLANTTREE_TYPE = 'planttree'
     def MISC_TYPE = 'misc' 
+	
+	def UPLOAD_PATH = 'upload_path'
+	
     
 	@ProxyMethod
 	public List getFilterList() {
@@ -1036,16 +1042,49 @@ class FAASService
     ** Attachment Support 
     -----------------------------------------------------------------------*/
     @ProxyMethod 
-    public void addAttachment( faasid, attachment ) {
-        attachment.faasid   = faasid 
-        attachment.docstate = 'INTERIM' 
+    public def addAttachment( faasid, attachment ) {
+		attachment.faasid   = faasid 
+        attachment.docstate = 'UPLOADED' 
+		attachment.absolutefilename = buildAbsoluteFileName(attachment )
         em.validate('faas:faasattachment', attachment )
         em.create('faas:faasattachment', attachment )
+		return attachment 
     }
-    
+	
+	@ProxyMethod 
+    public def saveAttachment( attachment ) {
+		attachment.absolutefilename = buildAbsoluteFileName(attachment )
+        em.save('faas:faasattachment', attachment )
+		return attachment 
+    }
+	
+	
+    def buildAbsoluteFileName( attachment ) {
+		def filename = getUploadPath() 
+		if( attachment.directory )
+			filename += attachment.directory + '/' 
+		filename += attachment.filename 
+		return filename 
+	}
+	
+	// return a "/" terminated path 
+	def getUploadPath() {
+		def upload_path = System.getProperty(UPLOAD_PATH)
+		
+		if( ! upload_path ) 
+			throw new Exception('The upload_path property is not set in app.conf.')
+        
+		upload_path = upload_path.replaceAll('\\\\', '/')
+		
+		if( ! upload_path.endsWith('/') ) 
+			upload_path += '/'
+			
+		return upload_path
+	}
+	
     @ProxyMethod
-    public void removeAttachment( faasid, attachment )  {
-        em.delete( 'faas:faasattachment', [objid:attachment] )
+    public void removeAttachment( faasid, attachmentid )  {
+        em.delete( 'faas:faasattachment', [objid:attachmentid] )
     }
     
     @ProxyMethod
@@ -1081,35 +1120,62 @@ class FAASService
 			<body>
 		'''
 		html += '<h2>List of Attachments</h2>'
-		html += '<table>'
+		html += '<table width="80%">'
 		
-		def safefaasid = makeSafeFileName( faasid )
-		
-		attachments.each{
-			def thumbfilename = buildThumbnailFileName( it )
-			def imagepage = "http://${var.server_address}/downloads.war/faasattachment.jsp?faasid=${safefaasid}&resid=${thumbfilename}"
-			def deleteicon = "http://${var.server_address}/downloads/images/delete.jpg"
+		def alist = partition(attachments, 4)
+		alist.each{ list ->
 			html += '<tr>'
-			html += '<td><a href="displayAttachment?' + it.objid +'"><img src="' + imagepage + '"></img></a>' 
-			html += '<td valign="top">'
-			html += '  <table>'
-			html += '   <tr>'
-			html += '      <td valign="top"><b>' + it.type + '</b></td>'
-			html += '   </tr>'
-			html += '   <tr>'
-			html += '      <td>' + (it.remarks ? it.remarks :'') + '</td>'
-			html += '   </tr>'
-			html += ' </table>'
-			html += '</td>'
+			list.each{
+				html += buildAttachmentHtml( it )
+			}
 			html += '</tr>'
-			html += '<tr>'
-			html += '      <td><a title="remove" href="removeAttachment?' + it.objid +'">Delete</a></td>' 
-			html += '</tr>'
-			html += '<tr><td><br></td></tr>'
 		}
 		html += '</table>'
 		html += '</body></html>'
 		return html 
+	}
+	
+	def buildAttachmentHtml( attachment) {
+		def html = ''
+		def safefaasid = makeSafeFileName( attachment.faasid )
+		def thumbfilename = buildThumbnailFileName( attachment )
+		def imagepage = "http://${var.server_address}/downloads.war/faasattachment.jsp?faasid=${safefaasid}&resid=${thumbfilename}"
+		def deleteicon = "http://${var.server_address}/downloads/images/delete.jpg"
+		html += '<td>'
+		html += '<table> '
+		html += '<tr>'
+		html += '<td><a href="displayAttachment?' + attachment.objid +'"><img src="' + imagepage + '"></img></a>' 
+		html += '<td valign="top" width="25%">'
+		html += '  <table>'
+		html += '   <tr>'
+		html += '      <td valign="top"><b>' + attachment.type + '</b></td>'
+		html += '   </tr>'
+		html += '   <tr>'
+		html += '      <td>' + (attachment.remarks ? attachment.remarks :'') + '</td>'
+		html += '   </tr>'
+		html += ' </table>'
+		html += '</td>'
+		html += '</tr>'
+		html += '<tr>'
+		html += '      <td><a title="remove" href="removeAttachment?' + attachment.objid +'">Delete</a></td>' 
+		html += '</tr>'
+		html += '</table>'
+		html += '</td>'
+		return html 
+	}
+	
+	def partition(array, size) {
+		def partitions = []
+		int partitionCount = array.size() / size
+
+		partitionCount.times { partitionNumber ->
+			def start = partitionNumber * size 
+			def end = start + size - 1
+			partitions << array[start..end]    
+		}
+
+		if (array.size() % size) partitions << array[partitionCount * size..-1]
+		return partitions    
 	}
     
 	
@@ -1797,9 +1863,10 @@ class FAASService
 		if( ! remote_connection_debug ) remote_connection_debug = 0
 		
 		if( (faas.info.datacapture == false || TO_BOOLEAN(remote_connection_debug) == true ) && TO_BOOLEAN(remote_connection_active) == true) {
+			def attachments = getAttachments( faas.objid)
 			def attachment = [ 
 				faas		: faas, 
-				attachments	: getAttachments( faas.objid),
+				attachments	: attachments,
 				entity		: entitySvc.open( faas.info.taxpayerid, null  ),
 			]
 			def msg = msgSvc.createMessage( 'faas.receive', attachment )
@@ -1808,7 +1875,6 @@ class FAASService
 		}
     }
 	
-   
 	void updateFaasListState( faasid, docstate) {
         def params = [ objid:faasid, docstate:docstate ]
         em.sqlContext.createNamedExecutor('faas:updateListState').setParameters( params ).execute()
@@ -1818,8 +1884,14 @@ class FAASService
 		//msgSvc.processOutboxMessage( refid )
     }
     
-    void updateAttachmentStates( faas, docstate ) {
+    void updateAttachmentStates( faas, docstate ) { 
         em.sqlContext.createNamedExecutor('faas:updateAttachmentState').setParameters([faasid:faas.objid, docstate:docstate]).execute()
+    }
+	
+	@ProxyMethod  
+	public void updateAttachmentState( attachment, docstate  ) {
+        attachment.docstate = docstate 
+		em.update( 'faas:faasattachment', attachment )
     }
 	
 	boolean TO_BOOLEAN( value ) {

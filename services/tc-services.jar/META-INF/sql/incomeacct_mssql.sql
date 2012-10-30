@@ -67,6 +67,7 @@ WHERE ic.docstate = 'APPROVED'
 GROUP BY p2.acctcode, p2.accttitle, p1.acctcode, p1.accttitle, p.acctcode, p.accttitle, ic.acctno, ic.accttitle
 
 
+#-- this sql statement should use the system DS
 [getAccttitleAtRule]
 SELECT ruletext  
 FROM [rule] 

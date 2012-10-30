@@ -32,7 +32,7 @@ SELECT * FROM paymentitem WHERE receiptid = $P{receiptid}
 [getList]
 SELECT * FROM receiptlist 
 WHERE collectorid LIKE $P{collectorid}  
-   AND capturedbyid LIKE $P{capturedbyid}
+   AND IFNULL(capturedbyid,'') LIKE $P{capturedbyid}
    AND docstate LIKE $P{docstate} 
 ORDER BY afid, serialno 
 
@@ -42,37 +42,48 @@ SELECT * FROM receiptlist
 [getListBySerialNo]
 SELECT * FROM receiptlist 
 WHERE collectorid LIKE $P{collectorid}  
-  AND capturedbyid LIKE $P{capturedbyid}
+  AND IFNULL(capturedbyid,'') LIKE $P{capturedbyid}
   AND docstate LIKE $P{docstate} 
   AND serialno = $P{serialno} 
   
 [getListByStubNo]
 SELECT * FROM receiptlist 
 WHERE collectorid LIKE $P{collectorid}  
-  AND capturedbyid LIKE $P{capturedbyid}
+  AND IFNULL(capturedbyid,'') LIKE $P{capturedbyid}
+  AND docstate LIKE $P{docstate} 
   AND stubno = $P{stubno} 
 ORDER BY afid, serialno 
 
 [getListByTxnDate]
 SELECT * FROM receiptlist 
 WHERE collectorid LIKE $P{collectorid}  
-  AND capturedbyid LIKE $P{capturedbyid}
+  AND IFNULL(capturedbyid,'') LIKE $P{capturedbyid}
+  AND docstate LIKE $P{docstate} 
   AND txndate = $P{txndate} 
 ORDER BY afid, serialno 
 
 [getListByPayor]
 SELECT * FROM receiptlist 
 WHERE collectorid LIKE $P{collectorid}  
-  AND capturedbyid LIKE $P{capturedbyid}
+  AND IFNULL(capturedbyid,'') LIKE $P{capturedbyid}
   AND payorname LIKE $P{payorname} 
+  AND docstate LIKE $P{docstate} 
 ORDER BY afid, serialno 
 
 [getListByPaidBy]
 SELECT * FROM receiptlist 
 WHERE collectorid LIKE $P{collectorid}  
-  AND capturedbyid LIKE $P{capturedbyid}
+  AND IFNULL(capturedbyid,'') LIKE $P{capturedbyid}
   AND paidby LIKE $P{paidby} 
+  AND docstate LIKE $P{docstate} 
 ORDER BY afid, serialno 
+
+[getSubcollectorOpenIssuances]
+SELECT * FROM receiptlist 
+WHERE capturedbyid = $P{subcollectorid}
+   AND docstate LIKE 'DELEGATED' 
+ORDER BY afid, serialno 
+
 
 [getState]
 SELECT docstate FROM receiptlist WHERE objid = $P{objid}
@@ -114,8 +125,13 @@ DELETE FROM paymentitem WHERE receiptid = $P{receiptid}
 [getIssuedTotal]
 SELECT SUM(amount) as amount FROM receiptlist 
 WHERE collectorid LIKE $P{collectorid}  
-   AND capturedbyid LIKE $P{capturedbyid}
+   AND IFNULL(capturedbyid,'') LIKE $P{capturedbyid}
    AND docstate = $P{docstate} 
    AND voided = 0 
 
 
+[getTotalSubcollectorIssuances]
+SELECT SUM(amount) as total FROM receiptlist 
+WHERE capturedbyid LIKE $P{subcollectorid}  
+   AND docstate = 'DELEGATED'
+   AND voided = 0 

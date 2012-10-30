@@ -151,9 +151,7 @@ class RemittanceReportService {
 	@ProxyMethod
 	public def generateReportByFundDetailedCrosstab( entity) {
 		def remittanceid = entity.objid 
-		def fundlist = em.sqlContext.createNamedQuery('remittance:getDistinctFundAccount')
-							.setParameter('remittanceid', remittanceid )
-							.resultList 
+		def fundlist = getDistinctFundList( remittanceid )
 		
 		def colindex = 0
 		def columnsql = ''
@@ -308,6 +306,71 @@ class RemittanceReportService {
 		]
 	}
 	
+	
+	
+	@ProxyMethod
+	public List getDistinctFundList( objid ) {
+		return em.sqlContext.createNamedQuery('remittance:getDistinctFundAccount')
+					.setParameter('remittanceid', objid)
+					.resultList
+	}
+	
+	@ProxyMethod
+	public def generateGLIncomeAccountCrosstab( entity, chart, fund ) {
+		if( ! chart ) chart = 'NGAS' 
+		def remittanceid = entity.objid 
+		def acctlist = getDistinctIncomeAccount( remittanceid, chart, fund )
+		
+		def colindex = 0
+		def columnsql = ''
+		acctlist.each { acct  ->
+			columnsql += " SUM( CASE WHEN ri.acctid = '$acct.acctid' AND rl.voided = 0 THEN ri.amount ELSE NULL END )  AS col${colindex}, \n"
+			colindex++
+		}
+		columnsql += " SUM( CASE WHEN rl.voided = 0 THEN ri.amount ELSE NULL END ) AS col${colindex}, \n"
+		columnsql += " SUM( CASE WHEN rl.voided = 0 THEN ri.amount ELSE 0 END ) AS amount, \n"
+			
+		def qry = em.sqlContext.createNamedQuery('remittance:getReportByIncomeAccountCrosstab' + chart)
+		println '='*50
+		println columnsql
+		def params = [remittanceid:remittanceid, fundid:fund.fundid ]
+		println params 
+		def items = qry.setVars([columnsql:columnsql]).setParameters(params).resultList
+		
+		def header = [:]
+		colindex = 0
+		acctlist.collect{ acct ->
+			header[ 'COL' + colindex ] = acct.accttitle
+			colindex++
+		}
+		
+		header[ 'COL' + colindex ] = 'TOTAL'
+		//
+		//additional params
+		def amount = ( items ? items.amount.sum() : 0.0)
+		
+		header.REPORTTITLE 	= 'SUMMARY OF COLLECTIONS '
+		header.CHART		= chart 
+		header.FUNDNAME     = fund.fundname 
+		header.REMITTANCENO = entity.info.txnno
+		header.REMITTANCEDATE = entity.info.txndate
+		header.REMITTANCEAMOUNT = amount
+		header.COLLECTORNAME = entity.info.collectorname
+		header.COLLECTORTITLE = entity.info.collectortitle
+		header.LIQUIDATINGOFFICER = entity.info.liquidatingofficername
+		header.LIQUIDATINGOFFICERTITLE = entity.info.liquidatingofficertitle
+		header.DATEPOSTED = dtsvc.parse('yyyy-MM-dd', entity.info.txndate )
+		
+		header.AMTINWORDS = numbSvc.convertDouble( amount )
+		
+		return [ header:header, items:items]
+	}
+	
+	List getDistinctIncomeAccount( remittanceid, chart, fund ) {
+		return em.sqlContext.createNamedQuery('remittance:getDistinctGLIncomeAccount' + chart)
+						.setParameters([remittanceid:remittanceid, fundid:fund.fundid])
+						.resultList
+	}
 	
 	private def getSerialReceiptDetailsByFund( rem, fund ) {
 		def query = {

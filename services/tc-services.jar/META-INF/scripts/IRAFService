@@ -440,6 +440,9 @@ class IRAFService
 						collectorid: iraf.info.rivrequestedbyid,
 						collectorname: iraf.info.rivrequestedby,
 						collectortitle: iraf.info.rivrequestedbytitle,
+						assignedtoid: iraf.info.rivrequestedbyid,
+						assignedtoname: iraf.info.rivrequestedby,
+						assignedtotitle: iraf.info.rivrequestedbytitle,
 						prefix: afinventorycredit.prefix,
 						suffix: afinventorycredit.suffix,
 						stubno: afinventorycredit.stubno,
@@ -456,7 +459,8 @@ class IRAFService
 						issuedfrom: 0,
 						issuedto: 0,
 						serieslength: afinventorycredit.aflength,
-						cancelledseries: []
+						cancelledseries: [],
+						
 					];
 					
 					addCancelledSeriesInAFControl( afinventory, afcontrol  )

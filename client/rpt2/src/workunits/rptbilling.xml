@@ -50,6 +50,7 @@ public class RPTBillingController  {
         parsedate = dateSvc.parseCurrentDate()
         bill = [
             taxpayerid     : null,
+            taxpayerno     : null,
             taxpayername   : null,
             taxpayeraddress: null,
             ledgerids      : [],
@@ -75,6 +76,7 @@ public class RPTBillingController  {
     void setTaxpayer( entity ) {
         this.taxpayer           = entity 
         bill.taxpayerid         = entity?.objid
+        bill.taxpayerno         = entity?.entityno
         bill.taxpayername       = entity?.entityname
         bill.taxpayeraddress    = entity?.entityaddress
         binding.refresh('bill.taxpayer.*')

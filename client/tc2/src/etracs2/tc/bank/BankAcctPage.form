@@ -190,7 +190,7 @@
                     </Component>
                     <Component class="com.rameses.rcp.control.XTextField" name="xTextField3">
                       <Properties>
-                        <Property name="caption" type="java.lang.String" value="Account name"/>
+                        <Property name="caption" type="java.lang.String" value="Account Name"/>
                         <Property name="captionWidth" type="int" value="100"/>
                         <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
                           <StringArray count="1">

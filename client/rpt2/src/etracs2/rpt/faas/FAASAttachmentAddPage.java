@@ -27,46 +27,14 @@ public class FAASAttachmentAddPage extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        formPanel1 = new com.rameses.rcp.util.FormPanel();
-        xTextField1 = new com.rameses.rcp.control.XTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        xTextArea1 = new com.rameses.rcp.control.XTextArea();
-        xFileBrowser1 = new com.rameses.rcp.control.XFileBrowser();
         xButton2 = new com.rameses.rcp.control.XButton();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xButton1 = new com.rameses.rcp.control.XButton();
         xLabel2 = new com.rameses.rcp.control.XLabel();
+        xDataTable1 = new com.rameses.rcp.control.XDataTable();
+        xButton3 = new com.rameses.rcp.control.XButton();
 
-        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
-        xTitledBorder1.setTitle("Attachment Information");
-        formPanel1.setBorder(xTitledBorder1);
-        xTextField1.setCaption("Attachment Type");
-        xTextField1.setCaptionWidth(110);
-        xTextField1.setName("attachment.type");
-        xTextField1.setPreferredSize(new java.awt.Dimension(0, 19));
-        xTextField1.setRequired(true);
-        formPanel1.add(xTextField1);
-
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(0, 120));
-        xTextArea1.setColumns(20);
-        xTextArea1.setLineWrap(true);
-        xTextArea1.setRows(5);
-        xTextArea1.setWrapStyleWord(true);
-        xTextArea1.setCaption("Remarks");
-        xTextArea1.setCaptionWidth(110);
-        xTextArea1.setName("attachment.remarks");
-        xTextArea1.setPreferredSize(new java.awt.Dimension(0, 100));
-        jScrollPane1.setViewportView(xTextArea1);
-
-        formPanel1.add(jScrollPane1);
-
-        xFileBrowser1.setCaption("File to Upload");
-        xFileBrowser1.setCaptionWidth(110);
-        xFileBrowser1.setName("file");
-        xFileBrowser1.setPreferredSize(new java.awt.Dimension(0, 19));
-        xFileBrowser1.setRequired(true);
-        formPanel1.add(xFileBrowser1);
-
+        xButton2.setMnemonic('u');
         xButton2.setText("Upload");
         xButton2.setName("upload");
 
@@ -74,6 +42,7 @@ public class FAASAttachmentAddPage extends javax.swing.JPanel {
         xLabel1.setFont(new java.awt.Font("Arial", 1, 14));
         xLabel1.setName("msg");
 
+        xButton1.setMnemonic('c');
         xButton1.setText("Cancel");
         xButton1.setImmediate(true);
         xButton1.setName("doCancel");
@@ -81,22 +50,35 @@ public class FAASAttachmentAddPage extends javax.swing.JPanel {
         xLabel2.setFont(new java.awt.Font("Arial", 0, 18));
         xLabel2.setName("caption");
 
+        com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
+        xTitledBorder1.setTitle("List of New Attachments");
+        xDataTable1.setBorder(xTitledBorder1);
+        xDataTable1.setHandler("filelistHandler");
+        xDataTable1.setName("selectedFile");
+        xDataTable1.setShowRowHeader(true);
+
+        xButton3.setMnemonic('a');
+        xButton3.setText("Add Files");
+        xButton3.setName("addFiles");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(xLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 513, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 373, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                    .add(layout.createSequentialGroup()
+                        .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 385, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(xButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE))
-                .add(55, 55, 55))
+                        .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 65, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, xDataTable1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, xLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 606, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(94, 94, 94))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -104,28 +86,26 @@ public class FAASAttachmentAddPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(xLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(xDataTable1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 292, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(xButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(xLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.util.FormPanel formPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
-    private com.rameses.rcp.control.XFileBrowser xFileBrowser1;
+    private com.rameses.rcp.control.XButton xButton3;
+    private com.rameses.rcp.control.XDataTable xDataTable1;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
-    private com.rameses.rcp.control.XTextArea xTextArea1;
-    private com.rameses.rcp.control.XTextField xTextField1;
     // End of variables declaration//GEN-END:variables
     
 }

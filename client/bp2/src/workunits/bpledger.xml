@@ -118,7 +118,9 @@
                         new Column( name:"amtpaid", caption:"Amount Paid" )
                     ];
                 },
-                fetchList : {  return application?.receivables; }
+                fetchList : {  
+                    return application?.receivables;                 
+                }
             ] as SubListModel;
             
             def paymentHandler = [
@@ -227,14 +229,7 @@
                 generateReport()
             }
             
-            void setApplication( application ){
-                this.application = application
-            }
-            
-            def getApplication(){
-                return application
-            }
-            
+
             def generateReport() {
                 entity.info = [
                     applicationid : application.objid,

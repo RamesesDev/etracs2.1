@@ -459,13 +459,82 @@ ORDER BY rl.afid, rl.serialno
  
 [getDistinctFundAccount]
  SELECT DISTINCT 
-	ia.fundid, 
-	ia.fundname 
+	ri.fundid, 
+	ri.fundname 
 FROM receiptlist rl  
 	INNER JOIN receiptitem ri ON rl.objid = ri.receiptid 
-	INNER JOIN incomeaccount ia ON ri.acctid = ia.objid  
 WHERE rl.remittanceid = $P{remittanceid} AND rl.voided = 0 
-ORDER BY ia.fundname  
+ORDER BY ri.fundname  
+
+[getDistinctGLIncomeAccountNGAS]
+SELECT DISTINCT 
+	a.acctcode as glcode, 
+	a.accttitle as gltitle,
+	ri.acctid,
+	ri.accttitle
+FROM receiptlist rl  
+	INNER JOIN receiptitem ri ON rl.objid = ri.receiptid 
+	INNER JOIN incomeaccount ia ON ri.acctid = ia.objid 
+	LEFT JOIN account a ON ia.ngasid = a.objid 
+WHERE rl.remittanceid = $P{remittanceid}
+  AND rl.voided = 0 
+  AND ri.fundid = $P{fundid}
+  AND ( a.charttype = 'NGAS' OR a.charttype IS NULL)
+ORDER BY a.acctcode, ri.accttitle
+
+[getDistinctGLIncomeAccountSRE]
+SELECT DISTINCT 
+	a.acctcode as glcode, 
+	a.accttitle as gltitle,
+	ri.acctid,
+	ri.accttitle
+FROM receiptlist rl  
+	INNER JOIN receiptitem ri ON rl.objid = ri.receiptid 
+	INNER JOIN incomeaccount ia ON ri.acctid = ia.objid 
+	LEFT JOIN account a ON ia.sreid = a.objid 
+WHERE rl.remittanceid = $P{remittanceid}
+  AND rl.voided = 0 
+  AND ri.fundid = $P{fundid}
+  AND ( a.charttype = 'SRE' OR a.charttype IS NULL)
+ORDER BY a.acctcode, ri.accttitle
+
+[getReportByIncomeAccountCrosstabNGAS]
+SELECT 
+	rl.afid, 
+	rl.serialno, 
+	CASE WHEN rl.voided = 0 THEN rl.paidby ELSE '*** VOIDED ***' END AS paidby, 
+	rl.txndate, 
+	${columnsql}
+	rl.voided
+FROM receiptlist rl  
+	INNER JOIN receiptitem ri ON rl.objid = ri.receiptid 
+	INNER JOIN incomeaccount ia ON ri.acctid = ia.objid 
+	LEFT JOIN account a ON ia.ngasid = a.objid 
+WHERE rl.remittanceid = $P{remittanceid}
+  AND ri.fundid = $P{fundid}
+  AND ( a.charttype = 'NGAS' OR a.charttype IS NULL)
+GROUP BY rl.afid, rl.serialno, rl.voided, rl.txndate, rl.paidby
+ORDER BY rl.afid, rl.serialno 
+
+[getReportByIncomeAccountCrosstabSRE]
+SELECT 
+	rl.afid, 
+	rl.serialno, 
+	CASE WHEN rl.voided = 0 THEN rl.paidby ELSE '*** VOIDED ***' END AS paidby, 
+	rl.txndate, 
+	${columnsql}
+	rl.voided
+FROM receiptlist rl  
+	INNER JOIN receiptitem ri ON rl.objid = ri.receiptid 
+	INNER JOIN incomeaccount ia ON ri.acctid = ia.objid 
+	LEFT JOIN account a ON ia.sreid = a.objid 
+WHERE rl.remittanceid = $P{remittanceid}
+  AND ri.fundid = $P{fundid}
+  AND ( a.charttype = 'SRE' OR a.charttype IS NULL)
+GROUP BY rl.afid, rl.serialno, rl.voided, rl.txndate, rl.paidby
+ORDER BY rl.afid, rl.serialno 
+
+
 
 [getReportByFundDetailCrosstab]
 SELECT 

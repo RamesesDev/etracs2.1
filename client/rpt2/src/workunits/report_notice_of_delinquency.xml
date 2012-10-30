@@ -23,9 +23,18 @@ class NoticeOfDelinquecyReportController
     def bill 
     def notice
     
+    def delinquentamount
+    def currentamount
+    def total
+       
     void init(){
         if( ! bill) throw new Exception( "A selected ledger is required." )
         notice = svc.generateNoticeOfDelinquency( bill )
+        
+        def df = new java.text.DecimalFormat("#,##0.00")
+        delinquentamount = df.format( notice.delinquentamount )
+        currentamount    = df.format( notice.currentamount )
+        total            = df.format( notice.total )
     }
     
     def save() {

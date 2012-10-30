@@ -1,0 +1,158 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import java.rmi.server.UID;
+import java.text.DecimalFormat;
+
+class RemittanceSubCollectorService {
+
+	@PersistenceContext("main")
+	def em;
+	
+	@Service('Var')
+	def var
+	
+	@Service("RemittanceService")
+	def remsvc;
+	
+	@Service("SequenceService")
+	def seqsvc;
+	
+	@Service("DateService")
+	def dtsvc;
+	
+	@Service("ReceiptService")
+	def rctsvc;
+	
+	@Service("AFControlService")
+	def afctrlsvc;
+	
+	@Service("LogService")
+	def logsvc;
+	
+	@Service("HTMLService")
+	def htmlsvc;
+	
+	@Service("ETRACSUserService")
+	def userSvc;
+	
+	@Env
+	def env
+	
+	def SCHEMANAME = "remittance_subcollector:remittance_subcollector";
+	def SCHEMAVERSION = "1.0";
+	
+	
+	@ProxyMethod
+	public def save( rem ) {
+		createRemittance( rem );
+		
+		rem.objid = 'SCREM' + new UID();
+		rem.schemaname = SCHEMANAME;
+		rem.schemaversion = SCHEMAVERSION;
+		rem.docstate = 'CLOSED';
+		rem.txnno = generateRemNo( rem.collectorid );
+		em.validate( SCHEMANAME, rem );
+		em.create( SCHEMANAME, rem );
+		closeReceipts( rem );
+		return rem;
+	}
+
+	private void checkReceipts( collectorid ) {
+	
+		
+	}
+	
+	private void closeReceipts( rem ) {
+		for( o in rem.collectionSummaries ) {
+			def params = [
+				afcontrolid : o.afcontrolid,
+				remittanceid : rem.objid
+			];
+			em.sqlContext.createNamedExecutor( "remittancesubcollector:closeReceiptListForRemittance" ).setParameters( params ).execute();
+		}
+	}
+	
+	
+	private def generateRemNo( collectorid ) {
+		def dt = dtsvc.getServerDate();
+		def cal = Calendar.instance;
+		cal.time = dt;
+		def yr = cal.get(Calendar.YEAR);
+		
+		def key = 'SCREM-' + yr
+		
+		def userTxnCode = userSvc.getUserTxnCode(collectorid ) 
+		if( userTxnCode ) {
+			key = userTxnCode + '-' + yr 
+		}
+		
+		def remprefix = var.remittance_no_prefix
+		if( remprefix != null && remprefix.trim().length() > 0 ) {
+			key = remprefix + '-' + key 
+		}
+		
+		def series = seqsvc.getNextFormattedSeries( key );
+		return key + '-' + series;
+	}
+
+	private def createRemittance( rem ) {
+		def amount = 0.00;
+		def totalcash = 0.00;
+		def totalotherpayment = 0.00;
+		for( o in rem.collectionSummaries) {
+		
+			def list = em.sqlContext.createNamedQuery( "remittancesubcollector:getUnremittedReceipts" ).setParameter( "afcontrolid", o.afcontrolid ).resultList;
+			if( !list )  throw new Exception( "There are no unremitted receipts." );
+		
+			checkUnpostedCapturedCollections( rem.collectorid, o.afcontrolid );
+			
+			def reminfo = em.sqlContext.createNamedQuery( "remittancesubcollector:getRemittanceInfo" ).setParameter( "afcontrolid", o.afcontrolid ).singleResult;
+			rem.amount = rem.amount + reminfo.totalamount;
+			rem.totalcash = rem.totalcash + reminfo.totalcash
+			rem.totalotherpayment = rem.totalotherpayment + reminfo.totalotherpayment;
+		}
+		if( rem.amount <=0 ) throw new Exception('There are no open receipts for remittance.')
+	}
+	
+	void checkUnpostedCapturedCollections( collectorid, afcontrolid ) { 
+		def unpostedCaptures = em.sqlContext.createNamedQuery('remittance:getUnpostedBatchCaptureCollections')
+								.setParameter('collectorid', collectorid)
+								.resultList
+		if( unpostedCaptures ) {
+			throw new Exception('There are still unposted batch captures.\nOpen and post the batch captured records before remittance.')
+		}
+		
+		def unpostedItems = em.sqlContext.createNamedQuery('remittancesubcollector:getUnpostedCaptureReceipts')
+								.setParameter('afcontrolid', afcontrolid)
+								.resultList
+		if( unpostedItems ) {
+			throw new Exception('There are still unposted captured receipts.\nKindly perform the post capture transaction before remittance.')
+		}
+
+	}
+	
+		
+	@ProxyMethod
+	public def getOpenCollectionSummaries( collectorid, assignedtoid ){
+		def list = [];
+		def aflist = em.sqlContext.createNamedQuery("remittancesubcollector:getAFControlId")
+						.setParameter("collectorid", collectorid)
+						.setParameter("assignedtoid", assignedtoid)
+						.resultList;
+		for(o in aflist) {
+			def rlist = em.sqlContext.createNamedQuery( "remittancesubcollector:getOpenCollectionSummaries" ).setParameter( "afcontrolid",o.objid ).resultList; 
+			if( rlist )
+				list.addAll( rlist);
+		}
+		return list;
+	}
+	
+	@ProxyMethod
+	public def getParentCollector( collectorid ) {
+		return em.sqlContext.createNamedQuery("remittancesubcollector:getParentCollector").setParameter("assignedtoid", collectorid).resultList;
+	}
+	
+	
+	
+	
+}

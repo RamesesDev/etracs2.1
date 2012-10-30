@@ -47,6 +47,7 @@ class NoticeReportController
     void setTaxpayer( taxpayer ) {
         this.taxpayer = taxpayer 
         notice.taxpayerid       = taxpayer?.objid
+        notice.taxpayerno       = taxpayer?.entityno
         notice.taxpayername     = taxpayer?.entityname
         notice.taxpayeraddress  = taxpayer?.entityaddress
     }
@@ -77,16 +78,25 @@ class NoticeReportController
         report.viewReport()
         ReportUtil.print( report.report, true )
     }
-
-    def report =[
-        getReportName : { 
-            if( notice.items.size() == 1 )
-                return "noticebytd" 
-            return "notice" 
-        },
+    
+    def reportNoticeByTd = [
+        getReportName : { return 'noticebytd' },
         getReportData : { return notice },
-        getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ); }
-    ] as ServerReportModel;
+        getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ) }
+    ] as ServerReportModel
+    
+    def reportNotice = [
+        getReportName : { return 'notice' },
+        getReportData : { return notice },
+        getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ) }
+    ] as ServerReportModel
+    
+    def getReport() {
+        if( notice.items.size() == 1 )
+            return reportNoticeByTd
+        else
+            return reportNotice
+    }
     
     def getLookupTaxpayer() {
         return InvokerUtil.lookupOpener( 'entity.lookup', [:] )
