@@ -648,7 +648,6 @@
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[240, 19]"/>
                     </Property>
-                    <Property name="required" type="boolean" value="true"/>
                   </Properties>
                 </Component>
                 <Component class="com.rameses.rcp.control.XDateField" name="xDateField6">
@@ -659,7 +658,6 @@
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[120, 19]"/>
                     </Property>
-                    <Property name="required" type="boolean" value="true"/>
                   </Properties>
                 </Component>
               </SubComponents>

@@ -573,7 +573,6 @@ class SubdivisionService
     void validateInfo( subdivision ) {
         required( 'Mother TD No.', subdivision.motherfaasid )
         required( 'Issue Date', subdivision.issuedate )
-        required( 'Memoranda', subdivision.memoranda )
         if( subdivision.effectivityyear <= 0) throw new Exception('Effectivity Year is invalid.')
         if( subdivision.subdivisioncount <= 1) throw new Exception('Subdivision count must be greater than one.')
     }
