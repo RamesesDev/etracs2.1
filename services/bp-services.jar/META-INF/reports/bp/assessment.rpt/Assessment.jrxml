@@ -54,6 +54,7 @@
 	<field name="signatories" class="java.lang.Object"/>
 	<field name="barcodeurl" class="java.lang.String"/>
 	<field name="barcode" class="java.lang.String"/>
+	<field name="taxpayerno" class="java.lang.String"/>
 
 	<variable name="LIST" class="java.lang.Object" resetType="Report" calculation="Nothing">
 		<variableExpression><![CDATA[$F{regfees} + ""]]></variableExpression>
@@ -667,7 +668,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tradename}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tradename} + " - " + $F{taxpayerno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
