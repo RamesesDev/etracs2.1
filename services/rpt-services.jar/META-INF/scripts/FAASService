@@ -929,6 +929,7 @@ class FAASService
 		else if( txntype == 'SD' && rptsetting.allowsubdivisionwithbalance )         return true
 		else if( txntype == 'CS' && rptsetting.allowconsolidationwithbalance )       return true
 		else if( txntype == 'CC' && rptsetting.allowreclasswithbalance )             return true
+		else if( txntype == 'RE' && rptsetting.allowreassessmentwithbalance )        return true
 		
 		return false;
 	}

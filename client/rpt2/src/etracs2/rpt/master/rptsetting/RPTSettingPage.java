@@ -66,6 +66,7 @@ public class RPTSettingPage extends javax.swing.JPanel {
         xCheckBox5 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox6 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox7 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox8 = new com.rameses.rcp.control.XCheckBox();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -406,6 +407,15 @@ public class RPTSettingPage extends javax.swing.JPanel {
         xCheckBox7.setUncheckValue(0);
         formPanel1.add(xCheckBox7);
 
+        xCheckBox8.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox8.setText("<html>Allow <b>Reassessment</b> for properties with balance</html>");
+        xCheckBox8.setCheckValue(1);
+        xCheckBox8.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox8.setName("entity.allowreassessmentwithbalance");
+        xCheckBox8.setShowCaption(false);
+        xCheckBox8.setUncheckValue(0);
+        formPanel1.add(xCheckBox8);
+
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -477,6 +487,7 @@ public class RPTSettingPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XCheckBox xCheckBox5;
     private com.rameses.rcp.control.XCheckBox xCheckBox6;
     private com.rameses.rcp.control.XCheckBox xCheckBox7;
+    private com.rameses.rcp.control.XCheckBox xCheckBox8;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XList xList1;
