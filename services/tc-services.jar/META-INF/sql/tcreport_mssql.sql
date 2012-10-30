@@ -308,7 +308,7 @@ ORDER BY p.acctcode, a.acctcode, r.collectorname, r.remittanceno, r.serialno
 
 [getCheckPaymentsYearly]
 SELECT 
-	r.collectorname, r.serialno, r.txndate, r.paidby, i.extended 
+	r.collectorname, r.serialno, r.txndate, r.paidby, i.amount, i.extended 
 FROM paymentitem i 
 INNER JOIN receiptlist r ON r.objid=i.receiptid 
 INNER JOIN remittancelist rl ON rl.objid=r.remittanceid 
@@ -323,7 +323,7 @@ ORDER BY r.txndate, r.paidby
 
 [getCheckPaymentsMonthly]
 SELECT 
-	r.collectorname, r.serialno, r.txndate, r.paidby, i.extended 
+	r.collectorname, r.serialno, r.txndate, r.paidby, i.amount, i.extended 
 FROM paymentitem i 
 INNER JOIN receiptlist r ON r.objid=i.receiptid 
 inner JOIN remittancelist rl ON rl.objid=r.remittanceid 
@@ -339,7 +339,7 @@ ORDER BY r.txndate, r.paidby
 
 [getCheckPaymentsDateRanged]
 SELECT 
-	r.collectorname, r.serialno, r.txndate, r.paidby, i.extended 
+	r.collectorname, r.serialno, r.txndate, r.paidby, i.amount, i.extended 
 FROM paymentitem i 
 INNER JOIN receiptlist r ON r.objid=i.receiptid 
 INNER JOIN remittancelist rl ON rl.objid=r.remittanceid 
