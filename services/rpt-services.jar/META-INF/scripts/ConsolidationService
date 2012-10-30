@@ -170,7 +170,7 @@ class ConsolidationService
 			faasSvc.delete( arpu.newfaasid )
 		}
 		
-		consolidation.docstate = FORAPPROVAL_STATE
+		consolidation.docstate = DRAFT_STATE
         em.update(consolidation.schemaname, consolidation )
 		
         return consolidation
