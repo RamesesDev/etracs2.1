@@ -80,13 +80,13 @@ class TDReportService
 			}
 		}
 		
-		if( faas.info.txntype == 'MC' ) {
-			//for migrated data, claimno might be null
-			if( !faas.claimno ) {
-				def result = em.sqlContext.createQuery('select claimno from faaslist where objid=?').setParameter(1, faas.objid).singleResult
-				faas.claimno = result.claimno
-			}
-			td.fullpin += ' M' + faas.claimno
+		//for migrated data, claimno might be null
+		if( !faas.claimno ) {
+			def result = em.sqlContext.createQuery('select claimno from faaslist where objid=?').setParameter(1, faas.objid).singleResult
+			faas.claimno = result.claimno
+		}
+		if( faas.claimno != null && faas.claimno != '-' ) {
+			td.fullpin += ' M' + (faas.claimno == '0' ? '1' : faas.claimno)
 		}
     	
 		if( faas.rpu.rputype == 'land' ) {
@@ -146,8 +146,16 @@ class TDReportService
 			buildOldFormatData( td, faas, setting )
 		}
 		
+		buildCancelNote( td )
+		
 		return td;
     }
+	
+	void buildCancelNote( td ) {
+		if( ! td.cancelnote ) {
+			td.cancelnote = 'CANCELLED BY TD NO(S). ' + td.cancelledbytdnos + ' DATED ' + td.canceldate 
+		}
+	}
 	
 	private void concatHousenoStreetPurok( def td ){
 		

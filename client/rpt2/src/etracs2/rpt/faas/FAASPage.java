@@ -34,8 +34,8 @@ public class FAASPage extends javax.swing.JPanel {
         formPanel1 = new com.rameses.rcp.util.FormPanel();
         xLabel1 = new com.rameses.rcp.control.XLabel();
         xLabel2 = new com.rameses.rcp.control.XLabel();
-        xLabel9 = new com.rameses.rcp.control.XLabel();
-        xLabel10 = new com.rameses.rcp.control.XLabel();
+        xLabel16 = new com.rameses.rcp.control.XLabel();
+        xLabel17 = new com.rameses.rcp.control.XLabel();
         xActionBar2 = new com.rameses.rcp.control.XActionBar();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -132,6 +132,8 @@ public class FAASPage extends javax.swing.JPanel {
         xCheckBox1 = new com.rameses.rcp.control.XCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         xTextArea1 = new com.rameses.rcp.control.XTextArea();
+        formPanel3 = new com.rameses.rcp.util.FormPanel();
+        xTextField21 = new com.rameses.rcp.control.XTextField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -165,23 +167,23 @@ public class FAASPage extends javax.swing.JPanel {
         xLabel2.setPreferredSize(new java.awt.Dimension(150, 19));
         formPanel1.add(xLabel2);
 
-        xLabel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel9.setForeground(new java.awt.Color(204, 0, 0));
-        xLabel9.setCaption("Cancel Reason");
-        xLabel9.setCaptionWidth(90);
-        xLabel9.setFont(new java.awt.Font("Arial", 1, 11));
-        xLabel9.setName("faas.info.cancelreason");
-        xLabel9.setPreferredSize(new java.awt.Dimension(50, 19));
-        formPanel1.add(xLabel9);
+        xLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel16.setForeground(new java.awt.Color(204, 0, 0));
+        xLabel16.setCaption("Cancel Reason");
+        xLabel16.setCaptionWidth(90);
+        xLabel16.setFont(new java.awt.Font("Arial", 1, 11));
+        xLabel16.setName("faas.info.cancelreason");
+        xLabel16.setPreferredSize(new java.awt.Dimension(50, 19));
+        formPanel1.add(xLabel16);
 
-        xLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        xLabel10.setForeground(new java.awt.Color(204, 0, 0));
-        xLabel10.setCaption("Date Cancelled");
-        xLabel10.setCaptionWidth(90);
-        xLabel10.setFont(new java.awt.Font("Arial", 1, 11));
-        xLabel10.setName("faas.info.canceldate");
-        xLabel10.setPreferredSize(new java.awt.Dimension(80, 19));
-        formPanel1.add(xLabel10);
+        xLabel17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        xLabel17.setForeground(new java.awt.Color(204, 0, 0));
+        xLabel17.setCaption("Date Cancelled");
+        xLabel17.setCaptionWidth(90);
+        xLabel17.setFont(new java.awt.Font("Arial", 1, 11));
+        xLabel17.setName("faas.info.canceldate");
+        xLabel17.setPreferredSize(new java.awt.Dimension(80, 19));
+        formPanel1.add(xLabel17);
 
         jPanel1.add(formPanel1, java.awt.BorderLayout.CENTER);
 
@@ -728,7 +730,20 @@ public class FAASPage extends javax.swing.JPanel {
         jScrollPane1.setViewportView(xTextArea1);
 
         jPanel3.add(jScrollPane1);
-        jScrollPane1.setBounds(8, 440, 800, 70);
+        jScrollPane1.setBounds(8, 440, 800, 64);
+
+        formPanel3.setCellpadding(new java.awt.Insets(0, 0, 0, 10));
+        formPanel3.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        xTextField21.setCaption("Cancelled TD Notes");
+        xTextField21.setCaptionWidth(110);
+        xTextField21.setFont(new java.awt.Font("Arial", 1, 11));
+        xTextField21.setForeground(new java.awt.Color(204, 0, 0));
+        xTextField21.setName("faas.cancelnote");
+        xTextField21.setPreferredSize(new java.awt.Dimension(686, 19));
+        formPanel3.add(xTextField21);
+
+        jPanel3.add(formPanel3);
+        formPanel3.setBounds(4, 505, 812, 34);
 
         jPanel2.add(jPanel3, java.awt.BorderLayout.CENTER);
 
@@ -740,6 +755,7 @@ public class FAASPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.util.FormPanel formPanel1;
     private com.rameses.rcp.util.FormPanel formPanel2;
+    private com.rameses.rcp.util.FormPanel formPanel3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -803,8 +819,9 @@ public class FAASPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XDateField xDateField4;
     private com.rameses.rcp.control.XDateField xDateField5;
     private com.rameses.rcp.control.XLabel xLabel1;
-    private com.rameses.rcp.control.XLabel xLabel10;
     private com.rameses.rcp.control.XLabel xLabel11;
+    private com.rameses.rcp.control.XLabel xLabel16;
+    private com.rameses.rcp.control.XLabel xLabel17;
     private com.rameses.rcp.control.XLabel xLabel2;
     private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XLabel xLabel4;
@@ -812,7 +829,6 @@ public class FAASPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XLabel xLabel6;
     private com.rameses.rcp.control.XLabel xLabel7;
     private com.rameses.rcp.control.XLabel xLabel8;
-    private com.rameses.rcp.control.XLabel xLabel9;
     private com.rameses.rcp.control.XLookupField xLookupField1;
     private com.rameses.rcp.control.XLookupField xLookupField2;
     private com.rameses.rcp.control.XLookupField xLookupField3;
@@ -835,6 +851,7 @@ public class FAASPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XTextField xTextField19;
     private com.rameses.rcp.control.XTextField xTextField2;
     private com.rameses.rcp.control.XTextField xTextField20;
+    private com.rameses.rcp.control.XTextField xTextField21;
     private com.rameses.rcp.control.XTextField xTextField3;
     private com.rameses.rcp.control.XTextField xTextField4;
     private com.rameses.rcp.control.XTextField xTextField5;

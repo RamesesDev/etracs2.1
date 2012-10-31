@@ -1530,6 +1530,7 @@ class FAASService
                 prevfaas.info.cancelreason  = faas.info.txntype 
                 prevfaas.info.canceldate    = faas.info.issuedate 
                 prevfaas.info.cancelledbytdnos = faas.info.tdno 
+				prevfaas.info.cancelnote     = faas.cancelnote 
                 em.update( prevfaas.schemaname, prevfaas )
                 def previnfo = [objid:prevfaas.objid, docstate:CANCELLED_STATE, cancelreason:faas.info.txntype, canceldate:faas.info.issuedate, cancelledbytdnos:faas.info.tdno ]
                 em.sqlContext.createNamedExecutor('faas:updateListCancelInfo').setParameters( previnfo  ).execute() 
