@@ -47,8 +47,9 @@
                     getReportData : { return reportdata.items },
                     getParameters : {
                         def params = svcParams.getStandardParameter( OsirisContext.env.USERNAME )
-                        params.TITLE  = reportdata.title
-                        params.PERIOD = formattedperiod
+                        params.TITLE    = reportdata.title
+                        params.PERIOD   = formattedperiod
+                        params.TOTALAMT = reportdata.totalamt
                         return params
                     }
                 ] as ServerReportModel
