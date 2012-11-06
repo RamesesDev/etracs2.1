@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc/txn" action="init" caption="Issued Receipt" permission="receipt.viewissued" />
-        <invoker type="home.action" action="init" caption="Issued Receipts" permission="receipt.viewissued" index="104" icon="images/folder.png" target="window"/>
+        <invoker folderid="/menu/tc/txn" action="init" caption="Issued Receipt" role="COLLECTOR" permission="receipt.viewissued" />
+        <invoker type="home.action" action="init" caption="Issued Receipts" role="COLLECTOR" permission="receipt.viewissued" index="104" icon="images/folder.png" target="window"/>
     </invokers>
     <code>
 <![CDATA[

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="rptledger:formActions" action="init" caption="Notice of Delinquency" index="102" icon="images/doc-view.png" target="window" visibleWhen="#{ledger.docstate == 'APPROVED'}" permission="rptledger.noticeofdelinquency"/>
+        <invoker type="rptledger:formActions" action="init" caption="Notice of Delinquency" index="102" icon="images/doc-view.png" target="window" visibleWhen="#{ledger.docstate == 'APPROVED'}" role="LANDTAX" permission="rptledger.noticeofdelinquency"/>
         <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" icon="images/cancel.png" />
         <invoker type="formActions" action="save" caption="Save" shortcut="ctrl S" mnemonic="s" icon="images/doc-save.png" />
     </invokers>

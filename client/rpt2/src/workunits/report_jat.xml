@@ -1,8 +1,8 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/assessor"  action="init" caption="Journal of Assessment Transaction" permission="rptreport.jat" index="5" />
-        <invoker type="rptreport"       action="init" opener="jat" caption="Journal of Assessment Transaction" target="window" permission="rptreport.jat" index="5" />
-        <invoker type="rptreport.jat"   action="init" caption="Journal of Assessment Transaction" permission="rptreport.jat" />
+        <invoker folderid="/report/assessor"  action="init" caption="Journal of Assessment Transaction" role="ASSESSOR_REPORTS" permission="rptreport.jat" index="5" />
+        <invoker type="rptreport"       action="init" opener="jat" caption="Journal of Assessment Transaction" target="window" role="ASSESSOR_REPORTS" permission="rptreport.jat" index="5" />
+        <invoker type="rptreport.jat"   action="init" caption="Journal of Assessment Transaction" role="ASSESSOR_REPORTS" permission="rptreport.jat" />
         
         <invoker type="formActions"     action="_close" caption="Back" mnemonic="b" shortcut="ctrl + B" icon="images/back.png" immediate="true"/>
         <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png"/>

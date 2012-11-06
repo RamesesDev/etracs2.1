@@ -6,12 +6,12 @@
 -->
 <workunit>
     <invokers>
-        <invoker type="collection" caption="CTC-Individual" afid="0016" appcode="ctc_individual" permission="collection_ctc_individual.create"/>
-        <invoker type="tc:ctc_individual" action="init" caption="CTC-Individual" afid="0016" permission="collection_ctc_individual.create"/>
+        <invoker type="collection" caption="CTC-Individual" afid="0016" appcode="ctc_individual" />
+        <invoker type="tc:ctc_individual" action="init" caption="CTC-Individual" afid="0016" />
         
         <invoker type="initActions" action="back" caption="Back" mnemonic="b"  immediate="true" icon="images/back.png"/>
         
-        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" permission="collection_ctc_individual.create"  icon="images/doc-new.png"/>
+        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}"  icon="images/doc-new.png"/>
         <invoker type="formActions" action="_init" caption="Back" mnemonic="b"  immediate="true" visibleWhen="#{mode == 'create'}" icon="images/back.png"/>
         <invoker type="formActions" action="create" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" icon="images/save.png"/>
         <invoker type="formActions" action="update" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'edit'}"  icon="images/save.png"/>

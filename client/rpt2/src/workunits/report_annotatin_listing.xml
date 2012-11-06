@@ -1,8 +1,8 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/assessor"  action="init" caption="FAAS Annotation Listing" permission="rptreport.annotationlisting" index="11" />
-        <invoker type="rptreport"       action="init" opener="annotationlisting" caption="FAAS Annotation Listing" target="window" permission="rptreport.jat" index="11" />
-        <invoker type="rptreport.annotationlisting"   action="init" caption="FAAS Annotation Listing" permission="rptreport.jat" />
+        <invoker folderid="/report/assessor"  action="init" caption="FAAS Annotation Listing" role="ASSESSOR_REPORTS" permission="rptreport.annotationlisting" index="11" />
+        <invoker type="rptreport"       action="init" opener="annotationlisting" caption="FAAS Annotation Listing" target="window" role="ASSESSOR_REPORTS" permission="rptreport.jat" index="11" />
+        <invoker type="rptreport.annotationlisting"   action="init" caption="FAAS Annotation Listing" role="ASSESSOR_REPORTS" permission="rptreport.jat" />
         
         <invoker type="formActions"     action="_close" caption="Close" mnemonic="c" shortcut="ctrl + W" icon="images/cancel.png"/>
         <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png"/>

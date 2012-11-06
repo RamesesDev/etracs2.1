@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/txn/rpt/titleupdate" caption="FAAS Title Update List" index="2" target="window" permission="titleupdate.view"/>
+        <invoker folderid="/txn/rpt/titleupdate" caption="FAAS Title Update List" index="2" target="window" role="APPRAISER" permission="titleupdate.view"/>
         
         <invoker type="formActions" caption="Close" action="_close" icon="images/cancel.png" mnemonic="c" index="-1"/>
     </invokers>

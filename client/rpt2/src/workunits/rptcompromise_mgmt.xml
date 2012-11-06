@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="menu/mgmt" caption="Compromise Agreements" mnemonic="c" permission="rptcompromise.view" index="500"/>
-        <invoker folderid="/txn/rpt" caption="Compromise Agreements" mnemonic="c" permission="rptcompromise.view" index="500"/>
-        <invoker type="quick_launcher" code="RCA00" caption="Compromise Agreements" mnemonic="c" permission="rptcompromise.view" />
+        <invoker folderid="menu/mgmt" caption="Compromise Agreements" mnemonic="c" role="LANDTAX" permission="rptcompromise.view" index="500"/>
+        <invoker folderid="/txn/rpt" caption="Compromise Agreements" mnemonic="c" role="LANDTAX" permission="rptcompromise.view" index="500"/>
+        <invoker type="quick_launcher" code="RCA00" caption="Compromise Agreements" mnemonic="c" role="LANDTAX" permission="rptcompromise.view" />
         
         <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
-        <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="rptcompromise.create" />
-        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="rptcompromise.open"/>
+        <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" role="LANDTAX" permission="rptcompromise.create" />
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" role="LANDTAX" permission="rptcompromise.open"/>
     </invokers>
     <code lang="groovy">
 <![CDATA[

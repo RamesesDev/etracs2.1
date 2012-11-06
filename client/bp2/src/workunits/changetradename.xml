@@ -2,13 +2,13 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/bp/txn" action="createTradename" caption="Change Tradename" permission="bpadmin.changetradename" index="254"  target="window" />
-        <invoker folderid="/txn/bp/txn" action="createTradename" caption="Change Tradename" permission="bpadmin.changetradename" index="254"  target="window" />
-        <invoker type="bptransaction" action="createTradename" caption="Change Tradename" permission="bpadmin.changetradename" index="254"  target="window" />
+        <invoker folderid="/menu/bp/txn" action="createTradename" caption="Change Tradename" role="LICENSING" permission="bpadmin.changetradename" index="254"  target="window" />
+        <invoker folderid="/txn/bp/txn" action="createTradename" caption="Change Tradename" role="LICENSING" permission="bpadmin.changetradename" index="254"  target="window" />
+        <invoker type="bptransaction" action="createTradename" caption="Change Tradename" role="LICENSING" permission="bpadmin.changetradename" index="254"  target="window" />
         <invoker type="bptransaction.createTradename" action="createTradename" caption="Change Tradename" target="window" />
         
         <invoker type="formActions" action="close" immediate="true" caption="Close" icon="images/cancel.png"/>
-        <invoker type="formActions" action="createTradename" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n"  permission="bpadmin.changetradename" icon="images/doc-new.png"/>
+        <invoker type="formActions" action="createTradename" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n"  icon="images/doc-new.png"/>
         <invoker type="formActions" action="back" shortcut="ctrl B" visibleWhen="#{mode == 'edit' &amp;&amp; entity.docstate == null}" immediate="true" caption="Back" mnemonic="b" icon="images/back.png"/>
         <invoker type="formActions" action="next" shortcut="ctrl N" visibleWhen="#{mode == 'init'}" immediate="true" caption="Next" mnemonic="n" icon="images/next.png"/>
         <invoker type="formActions" action="save" shortcut="ctrl S" visibleWhen="#{mode != 'init' &amp;&amp; mode != 'view' &amp;&amp; entity.docstate != 'SUBMITTED' &amp;&amp; entity.docstate != 'APPROVED'}" caption="Save" mnemonic="s" icon="images/save.png"/>

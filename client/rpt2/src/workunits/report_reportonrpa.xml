@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/assessor" action="init" caption="Report on Real Property Assessment" permission="rptreport.reportonrpa" index="9" />
-        <invoker type="rptreport"               action="init" opener="reportrpa" caption="Report on Real Property Assessment" target="window" permission="rptreport.comparativemv" index="6" />
+        <invoker folderid="/report/assessor" action="init" caption="Report on Real Property Assessment" role="ASSESSOR_REPORTS" permission="rptreport.reportonrpa" index="9" />
+        <invoker type="rptreport"               action="init" opener="reportrpa" caption="Report on Real Property Assessment" target="window" role="ASSESSOR_REPORTS" permission="rptreport.comparativemv" index="6" />
         <invoker type="rptreport.reportrpa" action="init"     caption="Report on Real Property Assessment" />
         
         <invoker type="formActions"     action="_close" caption="Back" mnemonic="b" shortcut="ctrl + B" icon="images/back.png" immediate="true"/>

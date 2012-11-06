@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="menu/tc/txn" action="init" caption="Import Remittnace" permission="remittance.import" index="101"/>
-        <invoker folderid="txn/tc/txn" action="init" caption="Import Remittance" permission="remittance.import" index="101" />        
+        <invoker folderid="menu/tc/txn" action="init" caption="Import Remittnace" role="COLLECTOR" permission="remittance.import" index="101"/>
+        <invoker folderid="txn/tc/txn" action="init" caption="Import Remittance" role="COLLECTOR" permission="remittance.import" index="101" />        
         
         <invoker type="initActions" action="_close"  immediate="true" caption="Close" mnemonic="c" icon="images/cancel.png"/>
         <invoker type="initActions" action="next" shortcut="ctrl N" caption="Next" mnemonic="n" icon="images/next.png"/>

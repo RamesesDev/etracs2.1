@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="menu/mgmt" caption="Transmittals" mnemonic="t" permission="rpt_transmittal_mgmt.view" index="300"/>
-        <invoker folderid="/txn/rpt" caption="Transmittals" mnemonic="t" permission="rpt_transmittal_mgmt.view" index="300"/>
-        <invoker type="quick_launcher" code="RPTTR" caption="Transmittals" mnemonic="f" permission="rpt_transmittal_mgmt.view" />
+        <invoker folderid="menu/mgmt" caption="Transmittals" mnemonic="t" role="APPRAISER" permission="rpt_transmittal_mgmt.view" index="300"/>
+        <invoker folderid="/txn/rpt" caption="Transmittals" mnemonic="t" role="APPRAISER" permission="rpt_transmittal_mgmt.view" index="300"/>
+        <invoker type="quick_launcher" code="RPTTR" caption="Transmittals" mnemonic="f" role="APPRAISER" permission="rpt_transmittal_mgmt.view" />
         
-        <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="faastransmittal.create" target="window"/>
-        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="rpt_transmittal.open" target="window"/>
+        <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" role="APPRAISER" permission="faastransmittal.create" target="window"/>
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" role="APPRAISER"  permission="rpt_transmittal.open" target="window"/>
     </invokers>
     <code lang="groovy">
 <![CDATA[

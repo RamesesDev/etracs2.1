@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/assessor" action="init" caption="Comparative Data on Number of RPUs" permission="rptreport.comparativerpucount" index="6" />
-        <invoker type="rptreport"               action="init" opener="comparativerpucount" caption="Comparative Data on Number of RPUs" target="window" permission="rptreport.comparativerpucount" index="6" />
+        <invoker folderid="/report/assessor" action="init" caption="Comparative Data on Number of RPUs" role="ASSESSOR_REPORTS" permission="rptreport.comparativerpucount" index="6" />
+        <invoker type="rptreport"               action="init" opener="comparativerpucount" caption="Comparative Data on Number of RPUs" target="window" role="ASSESSOR_REPORTS" permission="rptreport.comparativerpucount" index="6" />
         <invoker type="rptreport.comparativerpucount" action="init"               caption="Comparative Data on Number of RPUs" />
         
         <invoker type="formActions"     action="_close" caption="Back" mnemonic="b" shortcut="ctrl + B" icon="images/back.png" immediate="true"/>

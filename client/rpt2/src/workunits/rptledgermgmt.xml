@@ -5,13 +5,13 @@
 -->
 <workunit>
     <invokers>
-        <invoker folderid="/menu/mgmt" caption="RPT Ledger Management" mnemonic="f" permission="rptledger.view" index="200" />
-        <invoker folderid="/txn/landtax" caption="RPT Ledger Management" mnemonic="f" permission="rptledger.view" index="200" />
+        <invoker folderid="/menu/mgmt" caption="RPT Ledger Management" mnemonic="f" role="LANDTAX" permission="rptledger.view" index="200" />
+        <invoker folderid="/txn/landtax" caption="RPT Ledger Management" mnemonic="f" role="LANDTAX" permission="rptledger.view" index="200" />
         
-        <invoker type="quick_launcher" code="RL01" caption="RPT Ledger Management " mnemonic="f" permission="rptledger.view"/>
-        <invoker type="home.action" caption="RPT Ledger Management" index="552" target="window" icon="images/folder.png" permission="rptledger.view" />
+        <invoker type="quick_launcher" code="RL01" caption="RPT Ledger Management " mnemonic="f" role="LANDTAX" permission="rptledger.view"/>
+        <invoker type="home.action" caption="RPT Ledger Management" index="552" target="window" icon="images/folder.png" role="LANDTAX" permission="rptledger.view" />
         
-        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="rptledger.open"/>
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" role="LANDTAX" permission="rptledger.open"/>
     </invokers>
     <code lang="groovy">
 <![CDATA[

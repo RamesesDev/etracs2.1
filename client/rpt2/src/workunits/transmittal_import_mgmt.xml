@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="menu/mgmt" caption="Imported Transmittals" mnemonic="i" permission="rpt_transmittal_import_mgmt.view" index="310"/>
-        <invoker folderid="/txn/rpt" caption="Imported Transmittals" mnemonic="i" permission="rpt_transmittal_import_mgmt.view" index="310"/>
-        <invoker type="quick_launcher" code="IRPTT" caption="Imported Transmittals" mnemonic="i" permission="rpt_transmittal_import_mgmt.view" />
+        <invoker folderid="menu/mgmt" caption="Imported Transmittals" mnemonic="i" role="APPRAISER" permission="rpt_transmittal_import_mgmt.view" index="310"/>
+        <invoker folderid="/txn/rpt" caption="Imported Transmittals" mnemonic="i" role="APPRAISER" permission="rpt_transmittal_import_mgmt.view" index="310"/>
+        <invoker type="quick_launcher" code="IRPTT" caption="Imported Transmittals" mnemonic="i" role="APPRAISER" permission="rpt_transmittal_import_mgmt.view" />
         
-        <invoker type="formActions" action="create" shortcut="ctrl i" immediate="true" caption="Import" mnemonic="i" icon="images/doc-new.png" permission="rpt_transmittal_import.create" target="window"/>
-        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="rpt_transmittal_import.open" target="window"/>
+        <invoker type="formActions" action="create" shortcut="ctrl i" immediate="true" caption="Import" mnemonic="i" icon="images/doc-new.png" role="APPRAISER" permission="rpt_transmittal_import.create" target="window"/>
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" role="APPRAISER" permission="rpt_transmittal_import.open" target="window"/>
     </invokers>
     <code lang="groovy">
 <![CDATA[

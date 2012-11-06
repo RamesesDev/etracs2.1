@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" action="init" caption="Land with Improvements" target="window" index="7" permission="withimproveland.open" />
-        <invoker type="withimproveland.view"  caption="Land with Improvements" index="7" action="doPreview" permission="withimproveland.view" />
+        <invoker type="rptcertifications" action="init" caption="Land with Improvements" target="window" index="7" role="APPRAISER" permission="withimproveland.open" />
+        <invoker type="withimproveland.view"  caption="Land with Improvements" index="7" action="doPreview" role="APPRAISER" permission="withimproveland.view" />
         
-        <invoker folderid="/menu/rpt/cert" action="init" caption="Land with Improvements" target="window" index="2" permission="withimproveland.create" />
-        <invoker folderid="/txn/rpt/cert"  action="init" caption="Land with Improvements" target="window" index="2" permission="withimproveland.create" />
-        <invoker type="quick_launcher" code="RCWI2"  action="init" caption="Land with Improvements" target="window" index="2" permission="withimproveland.create" />
+        <invoker folderid="/menu/rpt/cert" action="init" caption="Land with Improvements" target="window" index="2" role="APPRAISER" permission="withimproveland.create" />
+        <invoker folderid="/txn/rpt/cert"  action="init" caption="Land with Improvements" target="window" index="2" role="APPRAISER" permission="withimproveland.create" />
+        <invoker type="quick_launcher" code="RCWI2"  action="init" caption="Land with Improvements" target="window" index="2" role="APPRAISER" permission="withimproveland.create" />
         
         <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />
         <invoker type="formActions" action="doPreview"  caption="Preview"   shourtcut="v" mnemonic="v"  index="2"  visibleWhen="#{mode == 'certified'}" icon="images/doc-view.png" />
-        <invoker type="formActions" action="doSave"     caption="Save"      shourtcut="s" mnemonic="s"  index="3"  visibleWhen="#{mode == '_default'}" icon="images/save.png" permission="withimproveland.create" />
+        <invoker type="formActions" action="doSave"     caption="Save"      shourtcut="s" mnemonic="s"  index="3"  visibleWhen="#{mode == '_default'}" icon="images/save.png" />
         
         <!-- print preview -->
         <invoker type="formActions" action="doClose"  caption="Close"  shortcut="ctrl c" mnemonic="c"  index="0" visibleWhen="#{mode != '_default'}" icon="images/cancel.png" />

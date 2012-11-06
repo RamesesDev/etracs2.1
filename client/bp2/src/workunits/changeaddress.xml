@@ -2,9 +2,9 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/bp/txn" action="createBPAddress" caption="Change Business Address" permission="bpadmin.changebusinessaddress" index="251" target="window" />
-        <invoker folderid="/txn/bp/txn" action="createBPAddress" caption="Change Business Address" permission="bpadmin.changebusinessaddress" index="251" target="window" />
-        <invoker type="bptransaction" action="createBPAddress" caption="Change Business Address" permission="bpadmin.changebusinessaddress" index="251" target="window" />
+        <invoker folderid="/menu/bp/txn" action="createBPAddress" caption="Change Business Address" role="LICENSING" permission="bpadmin.changebusinessaddress" index="251" target="window" />
+        <invoker folderid="/txn/bp/txn" action="createBPAddress" caption="Change Business Address" role="LICENSING" permission="bpadmin.changebusinessaddress" index="251" target="window" />
+        <invoker type="bptransaction" action="createBPAddress" caption="Change Business Address" role="LICENSING" permission="bpadmin.changebusinessaddress" index="251" target="window" />
         <invoker type="bptransaction.createBPAddress" action="createBPAddress" caption="Change Business Address" target="window" />
         
         <invoker type="formActions" action="close" immediate="true" caption="Close" icon="images/cancel.png"/>

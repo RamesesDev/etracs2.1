@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/txn/rpt/titleupdate" action="create" caption="Title Update" index="0" permission="titleupdate.create"/>
-        <invoker type="faastitleupdate:formActions" action="create" caption="New" index="0" target="window" icon="images/doc-new.png" permission="titleupdate.create"/>
-        <invoker type="faastitleupdate:formActions" action="open" caption="Open" index="0" target="window" icon="images/open.png" permission="titleupdate.open"/>
+        <invoker folderid="/txn/rpt/titleupdate" action="create" caption="Title Update" index="0" role="APPRAISER" permission="titleupdate.create"/>
+        <invoker type="faastitleupdate:formActions" action="create" caption="New" index="0" target="window" icon="images/doc-new.png" role="APPRAISER" permission="titleupdate.create"/>
+        <invoker type="faastitleupdate:formActions" action="open" caption="Open" index="0" target="window" icon="images/open.png" role="APPRAISER" permission="titleupdate.open"/>
         
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" immediate="true" visibleWhen="#{mode=='view'}" icon="images/cancel.png"/>
-        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{mode=='view' and entity.state != 'APPROVED'}" icon="images/edit.png" permission="titleupdate.edit"/>
+        <invoker type="formActions" action="edit" caption="Edit" mnemonic="e" visibleWhen="#{mode=='view' and entity.state != 'APPROVED'}" icon="images/edit.png" role="APPRAISER" permission="titleupdate.edit"/>
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" visibleWhen="#{mode!='view'}" icon="images/save.png"/>
         <invoker type="formActions" action="cancel" caption="Cancel" mnemonic="c" visibleWhen="#{mode!='view'}" icon="images/cancel.png" immediate="true"/>
-        <invoker type="formActions" action="approve" caption="Approve" mnemonic="c" visibleWhen="#{mode=='view' and entity!=null and entity.state=='DRAFT'}" icon="images/doc-approve.png" permission="titleupdate.approve"/>
+        <invoker type="formActions" action="approve" caption="Approve" mnemonic="c" visibleWhen="#{mode=='view' and entity!=null and entity.state=='DRAFT'}" icon="images/doc-approve.png" role="APPROVER" permission="titleupdate.approve"/>
     </invokers>
     
     <code lang="groovy">

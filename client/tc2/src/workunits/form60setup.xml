@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc/master" action="init" caption="Form 60 Setup" permission="form60.setup"/>
-        <invoker folderid="/txn/tc/master" action="init" caption="Form 60 Setup" permission="form60.setup" index="45"/>
+        <invoker folderid="/menu/tc/master" action="init" caption="Form 60 Setup" role="MASTER_ENCODER" permission="form60.setup"/>
+        <invoker folderid="/txn/tc/master" action="init" caption="Form 60 Setup" role="MASTER_ENCODER" permission="form60.setup" index="45"/>
     </invokers>
     <code lang="groovy">
 

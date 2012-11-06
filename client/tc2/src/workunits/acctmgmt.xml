@@ -1,8 +1,8 @@
 <workunit>
     <invokers>
-        <invoker type="tc.master" action="init" caption="Chart of Account" permission="account.view" icon="images/folder.png" target="window" index="1"/>
-        <invoker folderid="/menu/tc/master" action="init" caption="Chart of Account" permission="account.view" index="1"/>
-        <invoker folderid="/txn/tc/master" action="init" caption="Chart of Account" permission="account.view" index="10"/>
+        <invoker type="tc.master" action="init" caption="Chart of Account" role="MASTER_ENCODER" permission="account.view" icon="images/folder.png" target="window" index="1"/>
+        <invoker folderid="/menu/tc/master" action="init" caption="Chart of Account" role="MASTER_ENCODER" permission="account.view" index="1"/>
+        <invoker folderid="/txn/tc/master" action="init" caption="Chart of Account" role="MASTER_ENCODER" permission="account.view" index="10"/>
         
         <invoker type="quick_launcher" code="CHART" action="init" caption="Chart of Account" permission="account.view" index="1"/>
 

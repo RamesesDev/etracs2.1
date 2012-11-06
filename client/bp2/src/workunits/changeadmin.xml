@@ -2,9 +2,9 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/bp/txn" action="createBPAdmin" caption="Change Administrator" permission="bpadmin.changeadministrator" index="252"  target="window" />
-        <invoker folderid="/txn/bp/txn" action="createBPAdmin" caption="Change Administrator" permission="bpadmin.changeadministrator" index="252"  target="window" />
-        <invoker type="bptransaction" action="createBPAdmin" caption="Change Administrator" permission="bpadmin.changeadministrator" index="252"  target="window" />
+        <invoker folderid="/menu/bp/txn" action="createBPAdmin" caption="Change Administrator" role="LICENSING" permission="bpadmin.changeadministrator" index="252"  target="window" />
+        <invoker folderid="/txn/bp/txn" action="createBPAdmin" caption="Change Administrator" role="LICENSING" permission="bpadmin.changeadministrator" index="252"  target="window" />
+        <invoker type="bptransaction" action="createBPAdmin" caption="Change Administrator" role="LICENSING" permission="bpadmin.changeadministrator" index="252"  target="window" />
         <invoker type="bptransaction.createBPAdmin" action="createBPAdmin" caption="Change Administrator" target="window" />
         
         <invoker type="formActions" action="close" immediate="true" caption="Close" icon="images/cancel.png"/>

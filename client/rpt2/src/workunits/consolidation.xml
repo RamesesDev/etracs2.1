@@ -6,30 +6,30 @@
 -->
 <workunit>
     <invokers>
-        <invoker folderid="/menu/rpt/faas" action="initConsolidation" caption="Consolidation" target="window" permission="consolidation.view" index="30"/>
-        <invoker folderid="/txn/rpt/txn" action="initConsolidation" caption="Consolidation" target="window" permission="consolidation.view" index="30"/>
-        <invoker type="rpttransaction" action="initConsolidation" caption="Consolidation" target="window" permission="consolidation.view" index="30"/>
-        <invoker type="quick_launcher" code="CS01" action="initConsolidation" caption="Consolidation" target="window" permission="consolidation.view" index="302"/>
+        <invoker folderid="/menu/rpt/faas" action="initConsolidation" caption="Consolidation" target="window" role="APPRAISER" permission="consolidation.view" index="30"/>
+        <invoker folderid="/txn/rpt/txn" action="initConsolidation" caption="Consolidation" target="window" role="APPRAISER" permission="consolidation.view" index="30"/>
+        <invoker type="rpttransaction" action="initConsolidation" caption="Consolidation" target="window" role="APPRAISER" permission="consolidation.view" index="30"/>
+        <invoker type="quick_launcher" code="CS01" action="initConsolidation" caption="Consolidation" target="window" role="APPRAISER" permission="consolidation.view" index="302"/>
         <invoker type="rpttransaction.initConsolidation" action="initConsolidation" caption="Consolidation" target="window" />
         
-        <invoker type="consolidation.create" action="initConsolidation" caption="New" mnemonic="n" shortcut="ctrl N" target="window" icon="images/doc-new.png" permission="consolidation.view" />
-        <invoker type="consolidation.open" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" target="window" icon="images/open.png" permission="consolidation.view" />
+        <invoker type="consolidation.create" action="initConsolidation" caption="New" mnemonic="n" shortcut="ctrl N" target="window" icon="images/doc-new.png" role="APPRAISER" permission="consolidation.view" />
+        <invoker type="consolidation.open" action="open" caption="Open" mnemonic="o" shortcut="ctrl O" target="window" icon="images/open.png" role="APPRAISER" permission="consolidation.view" />
         
-        <invoker type="formActions" action="update" shortcut="ctrl S" visibleWhen="#{consolidation.docstate == 'DRAFT' or consolidation.docstate == 'FORAPPROVAL'}" caption="Save" mnemonic="s" icon="images/save.png" permission="consolidation.update" />
-        <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{consolidation.docstate == 'DRAFT' or consolidation.docstate == 'FORAPPROVAL'}" caption="Edit Consolidated FAAS" mnemonic="e" icon="images/edit.png" permission="consolidation.edit" />
-        <invoker type="formActions" action="submit" shortcut="ctrl M" visibleWhen="#{consolidation.docstate == 'DRAFT'}" caption="Submit For Approval" mnemonic="m" icon="images/doc-submit.png" permission="consolidation.submit" />
-        <invoker type="formActions" action="remove" shortcut="ctrl D" visibleWhen="#{consolidation.docstate == 'DRAFT' }" immediate="true" caption="Delete" mnemonic="d" icon="images/cancel.png" permission="consolidation.remove" />
-        <invoker type="formActions" action="disapprove" visibleWhen="#{showDisapproveAction == true}" caption="Disapprove" icon="images/disapprove.png" permission="consolidation.disapprove" />
-        <invoker type="formActions" action="approve" shortcut="ctrl A" visibleWhen="#{showApproveAction == true}" caption="Approve" mnemonic="a" icon="images/approve.png" permission="consolidation.approve" />
-        <invoker type="formActions" action="submitToProvince" shortcut="ctrl M" visibleWhen="#{showSubmitToProvinceAction == true}" caption="Submit To Province" mnemonic="m" icon="images/doc-submit.png" permission="consolidation.submitToProvince" />
-        <invoker type="formActions" action="disapproveByProvince" visibleWhen="#{showDisapproveByProvinceAction == true}" caption="Disapprove" icon="images/disapprove.png" permission="consolidation.disapproveByProvince" />
-        <invoker type="formActions" action="approveByProvince" shortcut="ctrl A" visibleWhen="#{showApprovedByProvinceAction == true}" caption="Approve" mnemonic="a" icon="images/approve.png" permission="consolidation.approveByProvince" />
+        <invoker type="formActions" action="update" shortcut="ctrl S" visibleWhen="#{consolidation.docstate == 'DRAFT' or consolidation.docstate == 'FORAPPROVAL'}" caption="Save" mnemonic="s" icon="images/save.png" />
+        <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{consolidation.docstate == 'DRAFT' or consolidation.docstate == 'FORAPPROVAL'}" caption="Edit Consolidated FAAS" mnemonic="e" icon="images/edit.png" />
+        <invoker type="formActions" action="submit" shortcut="ctrl M" visibleWhen="#{consolidation.docstate == 'DRAFT'}" caption="Submit For Approval" mnemonic="m" icon="images/doc-submit.png" role="APPRAISER" permission="consolidation.submit" />
+        <invoker type="formActions" action="remove" shortcut="ctrl D" visibleWhen="#{consolidation.docstate == 'DRAFT' }" immediate="true" caption="Delete" mnemonic="d" icon="images/cancel.png" />
+        <invoker type="formActions" action="disapprove" visibleWhen="#{showDisapproveAction == true}" caption="Disapprove" icon="images/disapprove.png" role="CITY_ASSESSOR" permission="consolidation.disapprove" />
+        <invoker type="formActions" action="approve" shortcut="ctrl A" visibleWhen="#{showApproveAction == true}" caption="Approve" mnemonic="a" icon="images/approve.png" role="CITY_ASSESSOR" permission="consolidation.approve" />
+        <invoker type="formActions" action="submitToProvince" shortcut="ctrl M" visibleWhen="#{showSubmitToProvinceAction == true}" caption="Submit To Province" mnemonic="m" icon="images/doc-submit.png" role="MUNICIPAL_ASSESSOR" permission="consolidation.submitToProvince" />
+        <invoker type="formActions" action="disapproveByProvince" visibleWhen="#{showDisapproveByProvinceAction == true}" caption="Disapprove" icon="images/disapprove.png" role="PROVINCIAL_ASSESSOR" permission="consolidation.disapproveByProvince" />
+        <invoker type="formActions" action="approveByProvince" shortcut="ctrl A" visibleWhen="#{showApprovedByProvinceAction == true}" caption="Approve" mnemonic="a" icon="images/approve.png" role="PROVINCIAL_ASSESSOR" permission="consolidation.approveByProvince" />
         <invoker type="formActions" action="viewTaxdeclaration" shortcut="ctrl V" visibleWhen="#{showViewTDAction == true}" caption="View Tax Declarations" mnemonic="a" icon="images/doc-view.png"/>
         
-        <invoker type="realpropertyActions" action="validateRealProperty" caption="Next" mnemonic="n" icon="images/next.png" permission="consolidation.view" />
+        <invoker type="realpropertyActions" action="validateRealProperty" caption="Next" mnemonic="n" icon="images/next.png" />
         
         <invoker type="landActions" action="backToPinPage" caption="Back" mnemonic="b" icon="images/back.png" />
-        <invoker type="landActions" action="updateLand" caption="Next" mnemonic="n" icon="images/next.png" permission="consolidation.updateland" />
+        <invoker type="landActions" action="updateLand" caption="Next" mnemonic="n" icon="images/next.png" />
         
     </invokers>
     <code lang="groovy">

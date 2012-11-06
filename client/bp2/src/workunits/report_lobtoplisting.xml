@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/bp" action="init" caption="Top Business Listing" target="window" index="4" permission="bpreport.lobtoplisting" />
-        <invoker type="bpreport"         action="init" opener="topbusinesslisting" caption="Top Business Listing" target="window" index="4" permission="bpreport.lobtoplisting" />
+        <invoker folderid="/report/bp" action="init" caption="Top Business Listing" target="window" index="4" role="BP_REPORTS" permission="bpreport.lobtoplisting" />
+        <invoker type="bpreport"         action="init" opener="topbusinesslisting" caption="Top Business Listing" target="window" index="4" role="BP_REPORTS" permission="bpreport.lobtoplisting" />
         <invoker type="bpreport.topbusinesslisting"    action="init" caption="Top Business Listing" target="window" />
         
         <invoker type="formActions"     action="_close" caption="Back" mnemonic="b" shortcut="ctrl + B" icon="images/back.png"/>

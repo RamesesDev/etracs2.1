@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="treasurymgmt.actions" action="init" caption="Collection Summary" permission="treasurymgmt_collection.view"/>
+        <invoker type="treasurymgmt.actions" action="init" caption="Collection Summary" />
     </invokers>
     <code>
         

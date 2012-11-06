@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" action="init" caption="Ownership" target="window" index="5" permission="ownership.open" />
-        <invoker type="noencumbrance.view"  caption="Ownership" index="6" action="doPreview" permission="ownership.view"/>
+        <invoker type="rptcertifications" action="init" caption="Ownership" target="window" index="5" role="APPRAISER" permission="ownership.open" />
+        <invoker type="noencumbrance.view"  caption="Ownership" index="6" action="doPreview" role="APPRAISER" permission="ownership.view"/>
         
-        <invoker folderid="/menu/rpt/cert" action="init" caption="Ownership" target="window" index="60" permission="ownership.create" />
-        <invoker folderid="/txn/rpt/cert" action="init" caption="Ownership" target="window" index="60" permission="ownership.create" />
-        <invoker type="quick_launcher" code="RCOW" action="init" caption="Ownership" target="window" index="60" permission="ownership.create" />
+        <invoker folderid="/menu/rpt/cert" action="init" caption="Ownership" target="window" index="60" role="APPRAISER" permission="ownership.create" />
+        <invoker folderid="/txn/rpt/cert" action="init" caption="Ownership" target="window" index="60" role="APPRAISER"  permission="ownership.create" />
+        <invoker type="quick_launcher" code="RCOW" action="init" caption="Ownership" target="window" index="60" role="APPRAISER"  permission="ownership.create" />
         
        <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />
         <invoker type="formActions" action="doPreview"  caption="Preview"   shourtcut="v" mnemonic="v"  index="2"  visibleWhen="#{mode == 'certified'}" icon="images/doc-view.png" />
-        <invoker type="formActions" action="doSave"     caption="Save"      shourtcut="s" mnemonic="s"  index="3"  visibleWhen="#{mode == '_default'}" icon="images/save.png" permission="ownership.create"/>
+        <invoker type="formActions" action="doSave"     caption="Save"      shourtcut="s" mnemonic="s"  index="3"  visibleWhen="#{mode == '_default'}" icon="images/save.png"/>
         
         <!-- print preview -->
         <invoker type="formActions" action="doClose"  caption="Close"  shortcut="ctrl c" mnemonic="c"  index="0" visibleWhen="#{mode != '_default'}" icon="images/cancel.png" />

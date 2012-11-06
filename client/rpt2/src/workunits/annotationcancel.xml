@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="cancelannotation.init" action="init" caption="Cancel Annotation" target="window" permission="cancelannotation.create" />
-        <invoker type="cancelannotation.open" action="open" caption="Cancel Annotation Information"  target="window" permission="cancelannotation.view" />
+        <invoker type="cancelannotation.init" action="init" caption="Cancel Annotation" target="window" role="APPRAISER" permission="cancelannotation.create" />
+        <invoker type="cancelannotation.open" action="open" caption="Cancel Annotation Information"  target="window" role="APPRAISER" permission="cancelannotation.view" />
         
         <invoker type="formActions" action="_close"         caption="Close"                 shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
         <invoker type="formActions" action="save"           caption="Save"                  shortcut="ctrl S"   mnemonic="s"  visibleWhen="#{entity.docstate == 'DRAFT' or entity.docstate == 'FORAPPROVAL'}"  icon="images/save.png" />
-        <invoker type="formActions" action="remove"         caption="Delete"                shortcut="ctrl D"   mnemonic="d"  visibleWhen="#{showDelete == true}" immediate="true"   icon="images/doc-delete.png" permission="cancelannotation.delete"/>
-        <invoker type="formActions" action="submit"         caption="Submit For Approval"   shortcut="ctrl M"   mnemonic="m"  visibleWhen="#{entity.docstate == 'DRAFT' and entity.objid != null}"   icon="images/doc-submit.png" permission="cancelannotation.submit"/>
-        <invoker type="formActions" action="approve"        caption="Approve"               shortcut="ctrl A"   mnemonic="a"  visibleWhen="#{entity.docstate == 'FORAPPROVAL'}"   icon="images/approve.png" permission="cancelannotation.approve"/>
+        <invoker type="formActions" action="remove"         caption="Delete"                shortcut="ctrl D"   mnemonic="d"  visibleWhen="#{showDelete == true}" immediate="true"   icon="images/doc-delete.png" />
+        <invoker type="formActions" action="submit"         caption="Submit For Approval"   shortcut="ctrl M"   mnemonic="m"  visibleWhen="#{entity.docstate == 'DRAFT' and entity.objid != null}"   icon="images/doc-submit.png" />
+        <invoker type="formActions" action="approve"        caption="Approve"               shortcut="ctrl A"   mnemonic="a"  visibleWhen="#{entity.docstate == 'FORAPPROVAL'}"   icon="images/approve.png" role="APPROVER" permission="cancelannotation.approve"/>
     </invokers>
     
     <code lang="groovy">

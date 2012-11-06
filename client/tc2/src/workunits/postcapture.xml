@@ -1,14 +1,13 @@
 <workunit>
     <invokers>
-        <invoker folderid="menu/tc/coll" action="init" caption="Post Captured Receipt" permission="postcapturereceipt.create" index="15"/>
-        <invoker folderid="txn/tc/coll" action="init" caption="Post Captured Receipt" permission="postcapturereceipt.create" index="15"/>
+        <invoker folderid="menu/tc/coll" action="init" caption="Post Captured Receipt" role="COLLECTOR" permission="postcapturereceipt.create" index="15"/>
+        <invoker folderid="txn/tc/coll" action="init" caption="Post Captured Receipt" role="COLLECTOR" permission="postcapturereceipt.create" index="15"/>
+        <invoker type="quick_launcher" code="POSTCAPTURE01" action="init" caption="Post Captured Receipt" role="COLLECTOR" permission="postcapturereceipt.create" />
+        <invoker type="home.action" action="init" caption="Post Captured Receipt" role="COLLECTOR" permission="postcapturereceipt.create" index="112" icon="images/folder.png" target="window" />
         
-        <invoker type="quick_launcher" code="POSTCAPTURE01" action="init" caption="Post Captured Receipt" permission="postcapturereceipt.create" />
-        
-        <invoker type="home.action" action="init" caption="Post Captured Receipt" permission="postcapturereceipt.create" index="112" icon="images/folder.png" target="window" />
-        <invoker type="postcapture.create" action="init" caption="Post Captured Receipt" permission="postcapturereceipt.create" index="112" icon="images/doc-new.png" target="window" />
+        <invoker type="postcapture.create" action="init" caption="Post Captured Receipt" index="112" icon="images/doc-new.png" target="window" />
         <invoker type="initActions" action="doNext" caption="Next" mnemonic="n" icon="images/next.png"/>
-        <invoker type="mainActions" action="post" caption="Post" mnemonic="p" permission="postcapturereceipt.post" icon="images/doc-submit.png"/>
+        <invoker type="mainActions" action="post" caption="Post" mnemonic="p" icon="images/doc-submit.png"/>
     </invokers>
     <code>
 <![CDATA[        

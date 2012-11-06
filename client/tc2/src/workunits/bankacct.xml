@@ -1,17 +1,17 @@
 <workunit>
     <invokers>
-        <invoker type="tc.master" action="init" caption="Bank Account" permission="bankacct.view" target="window" icon="images/folder.png" index="11"/>
-        <invoker folderid="/menu/tc/master" action="init" caption="Bank Account" permission="bankacct.view" target="window" index="5"/>
-        <invoker folderid="/txn/tc/master" action="init" caption="Bank Account" permission="bankacct.view" target="window" index="35"/>
+        <invoker type="tc.master" action="init" caption="Bank Account" role="MASTER_ENCODER" permission="bankacct.view" target="window" icon="images/folder.png" index="11"/>
+        <invoker folderid="/menu/tc/master" action="init" caption="Bank Account" role="MASTER_ENCODER" permission="bankacct.view" target="window" index="5"/>
+        <invoker folderid="/txn/tc/master" action="init" caption="Bank Account" role="MASTER_ENCODER" permission="bankacct.view" target="window" index="35"/>
         
-        <invoker type="quick_launcher" code="BANKACCT" action="init" caption="Bank Account" permission="bankacct.view" index="5"/>
+        <invoker type="quick_launcher" code="BANKACCT" action="init" caption="Bank Account" role="MASTER_ENCODER" permission="bankacct.view" index="5"/>
         
-        <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"  permission="bankacct.create" />
-        <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Edit" mnemonic="e" icon="images/edit.png"  permission="bankacct.edit" />
+        <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"  role="MASTER_ENCODER" permission="bankacct.create" />
+        <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Edit" mnemonic="e" icon="images/edit.png"  role="MASTER_ENCODER" permission="bankacct.edit" />
         <invoker type="formActions" action="save" shortcut="ctrl S" visibleWhen="#{mode != 'view'}" caption="Save" mnemonic="s" icon="images/save.png"/>
         <invoker type="formActions" action="cancel" visibleWhen="#{mode != 'view'}"  immediate="true" caption="Cancel" mnemonic="c" icon="images/doc-cancel.png"/>
-        <invoker type="formActions" action="delete" shortcut="ctrl D" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Delete" mnemonic="d" icon="images/doc-delete.png"  permission="bankacct.delete" />
-        <invoker type="formActions" action="approve" shortcut="ctrl V" visibleWhen="#{mode == 'view' and entity.objid != null and selectedItem.docstate == 'DRAFT'}" immediate="true" caption="Approve" mnemonic="v" icon="images/doc-approve.png"  permission="bankacct.approve" />
+        <invoker type="formActions" action="delete" shortcut="ctrl D" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Delete" mnemonic="d" icon="images/doc-delete.png"  role="MASTER_ENCODER" permission="bankacct.delete" />
+        <invoker type="formActions" action="approve" shortcut="ctrl V" visibleWhen="#{mode == 'view' and entity.objid != null and selectedItem.docstate == 'DRAFT'}" immediate="true" caption="Approve" mnemonic="v" icon="images/doc-approve.png"  role="MASTER_ENCODER" permission="bankacct.approve" />
     </invokers>
     <code>
         <![CDATA[

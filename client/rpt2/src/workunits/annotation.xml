@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rpttransaction" action="initAnnotation" caption="Annotations" target="window" index="353" permission="other.create" />
-        <invoker folderid="/menu/rpt/faas" action="initAnnotation" caption="Annotation" target="window" index="40" permission="other.create" />
-        <invoker folderid="/txn/rpt/txn" action="initAnnotation" caption="Annotations" target="window" index="353" permission="other.create" />
-        <invoker type="quick_laucher" code="FA01" action="initAnnotation" caption="Annotations" target="window" index="353" permission="other.create" />
+        <invoker type="rpttransaction" action="initAnnotation" caption="Annotation" target="window" index="353" role="APPRAISER" permission="annotation.create" />
+        <invoker folderid="/menu/rpt/faas" action="initAnnotation" caption="Annotation" target="window" index="40" role="APPRAISER" permission="annotation.create" />
+        <invoker folderid="/txn/rpt/txn" action="initAnnotation" caption="Annotation" target="window" index="353" role="APPRAISER" permission="annotation.create" />
+        <invoker type="quick_laucher" code="FA01" action="initAnnotation" caption="Annotations" target="window" index="353" role="APPRAISER" permission="annotation.create" />
         
-        <!-- 
-        <invoker type="xrpttransaction" action="initMortgage" caption="Mortgage Annotation" target="window" index="351" permission="mortgage.create" />
-        <invoker type="xrpttransaction" action="initBailBond" caption="BailBond Annotation" target="window" index="352" permission="bailbond.create" />
-        <invoker type="xquick_laucher" code="FA01" action="initMortgage" caption="Mortgage Annotation" target="window" index="351" permission="mortgage.create" />
-        <invoker type="xquick_laucher" code="FA02" action="initBailBond" caption="BailBond Annotation" target="window" index="352" permission="bailbond.create" />
-        -->
-        
-        <invoker type="xrpttransaction.initMortgage" action="initMortgage" caption="Mortgage Annotation" target="window" />
-        <invoker type="xrpttransaction.initBailBond" action="initBailBond" caption="BailBond Annotation" target="window" />
         <invoker type="rpttransaction.initAnnotation" action="initAnnotation" caption="Annotation" target="window" />
         
         <invoker type="mortgage.open" action="openMortgage"         caption="Mortgage Information"  target="window"/>
@@ -24,9 +15,9 @@
         <invoker type="formActions" action="_close"         caption="Close"                 shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
         <invoker type="formActions" action="save"           caption="Save"                  shortcut="ctrl S"   mnemonic="s"  visibleWhen="#{mode != 'view' and entity.docstate != 'APPROVED' and entity.docstate != 'CANCELLED'}"  icon="images/save.png" />
         <invoker type="formActions" action="edit"           caption="Edit"                  shortcut="ctrl E"   mnemonic="e"  visibleWhen="#{mode == 'view' and entity.docstate != 'APPROVED' and entity.docstate != 'CANCELLED'}"  icon="images/edit.png" />
-        <invoker type="formActions" action="remove"         caption="Delete"                shortcut="ctrl D"   mnemonic="d"  visibleWhen="#{mode == 'view' and showDelete == true}" immediate="true"   icon="images/doc-delete.png" permission="annotation.delete" />
-        <invoker type="formActions" action="submit"         caption="Submit For Approval"   shortcut="ctrl M"   mnemonic="m"  visibleWhen="#{mode == 'view' and entity.docstate == 'DRAFT' and entity.objid != null}"   icon="images/doc-submit.png" permission="annotation.submit" />
-        <invoker type="formActions" action="approve"        caption="Approve"               shortcut="ctrl A"   mnemonic="a"  visibleWhen="#{mode == 'view' and entity.docstate == 'FORAPPROVAL'}"   icon="images/approve.png" permission="annotation.approve" />
+        <invoker type="formActions" action="remove"         caption="Delete"                shortcut="ctrl D"   mnemonic="d"  visibleWhen="#{mode == 'view' and showDelete == true}" immediate="true"   icon="images/doc-delete.png" />
+        <invoker type="formActions" action="submit"         caption="Submit For Approval"   shortcut="ctrl M"   mnemonic="m"  visibleWhen="#{mode == 'view' and entity.docstate == 'DRAFT' and entity.objid != null}"   icon="images/doc-submit.png" />
+        <invoker type="formActions" action="approve"        caption="Approve"               shortcut="ctrl A"   mnemonic="a"  visibleWhen="#{mode == 'view' and entity.docstate == 'FORAPPROVAL'}"   icon="images/approve.png" role="APPROVER" permission="annotation.approve" />
     </invokers>
     
     <code lang="groovy">

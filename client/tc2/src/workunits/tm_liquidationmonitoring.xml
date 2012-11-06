@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="treasurymgmt.actions" action="init" caption="Undeposited Liquidation Monitoring" permission="treasurymgmt_liquidation.view" index="10" />
+        <invoker type="treasurymgmt.actions" action="init" caption="Undeposited Liquidation Monitoring" index="10" />
     </invokers>
     <code>
         

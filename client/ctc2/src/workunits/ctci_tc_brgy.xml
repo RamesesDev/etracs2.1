@@ -6,21 +6,21 @@
 -->
 <workunit>
     <invokers>
-        <invoker type="collection" caption="CTC-Individual (Barangay)" afid="0016" appcode="ctc_individual_brgy" permission="collection_ctc_individual_brgy.create"/>
-        <invoker type="tc:ctc_individual_brgy" action="initBarangay" caption="CTC-Individual (Barangay)" afid="0016" permission="collection_ctc_individual_brgy.create"/>
+        <invoker type="collection" caption="CTC-Individual (Barangay)" afid="0016" appcode="ctc_individual_brgy" />
+        <invoker type="tc:ctc_individual_brgy" action="initBarangay" caption="CTC-Individual (Barangay)" afid="0016" />
         
         <invoker type="initActions" action="back" caption="Back" mnemonic="b"  immediate="true" icon="images/back.png"/>
         
-        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" permission="collection_ctc_individual_brgy.create"  icon="images/doc-new.png"/>
+        <invoker type="formActions" action="doNew" caption="New" mnemonic="n" shortcut="ctrl N" visibleWhen="#{mode == 'view' and txnmode != null}" icon="images/doc-new.png"/>
         <invoker type="formActions" action="_init" caption="Back" mnemonic="b"  immediate="true" visibleWhen="#{mode == 'create'}" icon="images/back.png"/>
         <invoker type="formActions" action="create" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" icon="images/save.png"/>
         <invoker type="formActions" action="update" caption="Save" mnemonic="s" shortcut="ctrl S" visibleWhen="#{mode == 'edit'}"  icon="images/save.png"/>
-        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" permission="collection_ctc_individual_brgy.print"/>
-        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view'}" permission="collection_ctc_individual_brgy.void" icon="images/void.png"/>
+        <invoker type="formActions" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" visibleWhen="#{mode == 'view'}" />
+        <invoker type="formActions" action="doVoid" caption="Void" mnemonic="v" visibleWhen="#{mode == 'view'}"  icon="images/void.png"/>
         
-        <invoker type="receipt.actions:tc:ctc_individual_brgy" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup" permission="collection_ctc_individual_brgy.edit" icon="images/edit.png"/>
-        <invoker type="receipt.actions:tc:ctc_individual_brgy" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" permission="collection_ctc_individual_brgy.print"/>
-        <invoker type="receipt.actions:tc:ctc_individual_brgy" action="doVoid" caption="Void" mnemonic="v" permission="collection_ctc_individual_brgy.void" icon="images/doc-void.png"/>
+        <invoker type="receipt.actions:tc:ctc_individual_brgy" action="edit" caption="Edit" mnemonic="e" shortcut="ctrl E" target="popup"  icon="images/edit.png"/>
+        <invoker type="receipt.actions:tc:ctc_individual_brgy" action="doPrint" caption="Print" mnemonic="p" shortcut="ctrl P" />
+        <invoker type="receipt.actions:tc:ctc_individual_brgy" action="doVoid" caption="Void" mnemonic="v"  icon="images/doc-void.png"/>
         
         <invoker type="inquiry:tc:ctc_individual_brgy" action="initInquiry" caption="Inquiry" />
     </invokers>

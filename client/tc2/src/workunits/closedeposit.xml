@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="closedeposit" action="initClose" caption="Close Deposit" target="popup" permission="deposit.close"/>
+        <invoker type="closedeposit" action="initClose" caption="Close Deposit" target="popup" />
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" icon="images/save.png"/>
     </invokers>
     <code>

@@ -2,12 +2,12 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/mgmt" caption="Post Capture Receipt Management" permission="postcapturereceipt.viewlist"/>
-        <invoker folderid="/txn/tc" caption="Posted Capture Receipts" permission="postcapturereceipt.viewlist" index="5" />
+        <invoker folderid="/menu/mgmt" caption="Post Capture Receipt Management" role="COLLECTOR" permission="postcapturereceipt.viewlist"/>
+        <invoker folderid="/txn/tc" caption="Posted Capture Receipts" role="COLLECTOR" permission="postcapturereceipt.viewlist" index="5" />
         
-        <invoker type="quick_launcher" code="POSTCAPTURE00" caption="Post Captures" permission="postcapturereceipt.viewlist"/>
+        <invoker type="quick_launcher" code="POSTCAPTURE00" caption="Post Captures" role="COLLECTOR" permission="postcapturereceipt.viewlist"/>
         
-        <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="postcapturereceipt.create"/>
+        <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" role="COLLECTOR" permission="postcapturereceipt.create"/>
     </invokers>
     
     <code lang="groovy">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcompromise.capturepayment" action="init" caption="Compromise Agreement : Capture Payment" permissionx="rptcompromise.capturepayment" target="popup" />
+        <invoker type="rptcompromise.capturepayment" action="init" caption="Compromise Agreement : Capture Payment" target="popup" />
     </invokers>
     <code lang="groovy">
 <![CDATA[

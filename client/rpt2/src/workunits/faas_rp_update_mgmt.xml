@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/txn/rpt/rpupdate" caption="Real Property Update List" index="2" target="window" permission="realpropertyupdate.view"/>
+        <invoker folderid="/txn/rpt/rpupdate" caption="Real Property Update List" index="2" target="window" role="APPRAISER" permission="realpropertyupdate.view"/>
         
         <invoker type="formActions" caption="Close" action="_close" icon="images/cancel.png" mnemonic="c" index="-1"/>
     </invokers>

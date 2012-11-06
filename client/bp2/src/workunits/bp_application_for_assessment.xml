@@ -7,15 +7,15 @@
         <invoker type="bp.APPROVED" action="init" caption="Business Application" target="window"/>
         
         <invoker type="formActions" action="_close" caption="Close" icon="images/cancel.png" />
-        <invoker type="formActions" action="cancelAssessment" caption="Cancel Assessment" visibleWhen="#{application.docstate != 'APPROVED' and application.docstate != 'RETIRED'}" mnemonic="c" shortcut="ctrl C" icon="images/doc-disapprove.png" permission="bplicensing.cancelassessment"/>
-        <invoker type="formActions" action="assess" caption="Assess" visibleWhen="#{application.docstate == 'FOR_ASSESSMENT'}" mnemonic="a" shortcut="ctrl A" icon="images/assess.png" permission="bplicensing.assess"/>
-        <invoker type="formActions" action="reassess" caption="Re-Assess" visibleWhen="#{application.docstate == 'FOR_REVIEW' or application.docstate == 'FOR_APPROVAL'}" mnemonic="r" shortcut="ctrl R" icon="images/assess.png" permission="bplicensing.reassess"/>
-        <invoker type="formActions" action="submit" caption="Submit For Approval" visibleWhen="#{application.docstate == 'FOR_REVIEW'}" mnemonic="s" shortcut="ctrl S" icon="images/doc-submit.png" permission="bplicensing.submitforreview"/>
-        <invoker type="formActions" action="disapprove" caption="Disapprove" visibleWhen="#{application.docstate == 'FOR_APPROVAL'}" mnemonic="d" shortcut="ctrl D" icon="images/doc-disapprove.png" permission="bplicensing.disapprove"/>
-        <invoker type="formActions" action="approve" caption="Approve" visibleWhen="#{application.docstate == 'FOR_APPROVAL'}" mnemonic="a" shortcut="ctrl A" icon="images/doc-approve.png" permission="bplicensing.approve"/>
+        <invoker type="formActions" action="cancelAssessment" caption="Cancel Assessment" visibleWhen="#{application.docstate != 'APPROVED' and application.docstate != 'RETIRED'}" mnemonic="c" shortcut="ctrl C" icon="images/doc-disapprove.png" />
+        <invoker type="formActions" action="assess" caption="Assess" visibleWhen="#{application.docstate == 'FOR_ASSESSMENT'}" mnemonic="a" shortcut="ctrl A" icon="images/assess.png" />
+        <invoker type="formActions" action="reassess" caption="Re-Assess" visibleWhen="#{application.docstate == 'FOR_REVIEW' or application.docstate == 'FOR_APPROVAL'}" mnemonic="r" shortcut="ctrl R" icon="images/assess.png" />
+        <invoker type="formActions" action="submit" caption="Submit For Approval" visibleWhen="#{application.docstate == 'FOR_REVIEW'}" mnemonic="s" shortcut="ctrl S" icon="images/doc-submit.png" role="LICENSING" permission="bplicensing.submitforreview"/>
+        <invoker type="formActions" action="disapprove" caption="Disapprove" visibleWhen="#{application.docstate == 'FOR_APPROVAL'}" mnemonic="d" shortcut="ctrl D" icon="images/doc-disapprove.png" role="LICENSING" permission="bplicensing.disapprove"/>
+        <invoker type="formActions" action="approve" caption="Approve" visibleWhen="#{application.docstate == 'FOR_APPROVAL'}" mnemonic="a" shortcut="ctrl A" icon="images/doc-approve.png" role="LICENSING" permission="bplicensing.approve"/>
         
-        <invoker type="formActions" action="viewAssessment"     mnemonic="v" shortcut="ctrl V" caption="View Assessment" visibleWhen="#{application.docstate != 'FOR_ASSESSMENT'}" icon="images/doc-view.png" permission="bplicensing.viewassessment"/>
-        <invoker type="formActions" action="previewApplication" mnemonic="p" shortcut="ctrl P" caption="View Application" icon="images/doc-view.png" permission="bplicensing.viewapplication"/>
+        <invoker type="formActions" action="viewAssessment"     mnemonic="v" shortcut="ctrl V" caption="View Assessment" visibleWhen="#{application.docstate != 'FOR_ASSESSMENT'}" icon="images/doc-view.png" />
+        <invoker type="formActions" action="previewApplication" mnemonic="p" shortcut="ctrl P" caption="View Application" icon="images/doc-view.png" />
     </invokers>
     
     <code>

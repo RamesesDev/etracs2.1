@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
    <invokers>
-       <invoker type="cancelfaas.create" action="initCreate" caption="New Cancel FAAS" permission="cancelfaas.create"/>
-       <invoker type="cancelfaas.open" action="initOpen" caption="View Cancel FAAS" permission="cancelfaas.open"/>
+       <invoker type="cancelfaas.create" action="initCreate" caption="New Cancel FAAS" />
+       <invoker type="cancelfaas.open" action="initOpen" caption="View Cancel FAAS" />
        
-       <invoker type="quick_launcher" code="CF01" target="window" action="initCreate" caption="New Cancel FAAS" permission="cancelfaas.create"/>
-       <invoker folderid="/menu/rpt/faas" index="95" target="window" action="initCreate" caption="Cancel FAAS" permission="cancelfaas.create"/>
-       <invoker folderid="/txn/rpt/txn" index="95" target="window" action="initCreate" caption="Cancel FAAS" permission="cancelfaas.create"/>
+       <invoker type="quick_launcher" code="CF01" target="window" action="initCreate" caption="New Cancel FAAS" role="APPRAISER" permission="cancelfaas.create"/>
+       <invoker folderid="/menu/rpt/faas" index="95" target="window" action="initCreate" caption="Cancel FAAS" role="APPRAISER" permission="cancelfaas.create"/>
+       <invoker folderid="/txn/rpt/txn" index="95" target="window" action="initCreate" caption="Cancel FAAS" role="APPRAISER" permission="cancelfaas.create"/>
        
        <invoker type="formActions" action="_close"         caption="Close"                 shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
        <invoker type="formActions" action="save"           caption="Save"                  shortcut="ctrl S"   mnemonic="s"  visibleWhen="#{entity.docstate != 'APPROVED' and mode != 'view'}"  icon="images/save.png" />
-       <invoker type="formActions" action="edit"           caption="Edit"                  shortcut="ctrl E"   mnemonic="e"  visibleWhen="#{entity.docstate != 'APPROVED' and mode == 'view'}"  icon="images/save.png" permission="cancelfaas.edit" />
-       <invoker type="formActions" action="submit"         caption="Submit For Approval"   shortcut="ctrl M"   mnemonic="m"  visibleWhen="#{entity.docstate == 'DRAFT' and mode == 'view'}"   icon="images/doc-submit.png" permission="cancelfaas.submit" />
-       <invoker type="formActions" action="approve"        caption="Approve"               shortcut="ctrl A"                 visibleWhen="#{entity.docstate == 'FORAPPROVAL' and mode == 'view'}"   icon="images/approve.png" permission="cancelfaas.approve" />
-       <invoker type="formActions" action="remove"         caption="Delete"                shortcut="ctrl D"   mnemonic="d"  visibleWhen="#{entity.docstate != 'APPROVED' and mode == 'view'}" immediate="true"   icon="images/doc-delete.png" permission="cancelfaas.delete" />
+       <invoker type="formActions" action="edit"           caption="Edit"                  shortcut="ctrl E"   mnemonic="e"  visibleWhen="#{entity.docstate != 'APPROVED' and mode == 'view'}"  icon="images/save.png" />
+       <invoker type="formActions" action="submit"         caption="Submit For Approval"   shortcut="ctrl M"   mnemonic="m"  visibleWhen="#{entity.docstate == 'DRAFT' and mode == 'view'}"   icon="images/doc-submit.png"  />
+       <invoker type="formActions" action="approve"        caption="Approve"               shortcut="ctrl A"                 visibleWhen="#{entity.docstate == 'FORAPPROVAL' and mode == 'view'}"   icon="images/approve.png" role="APPROVER" permission="cancelfaas.approve" />
+       <invoker type="formActions" action="remove"         caption="Delete"                shortcut="ctrl D"   mnemonic="d"  visibleWhen="#{entity.docstate != 'APPROVED' and mode == 'view'}" immediate="true"   icon="images/doc-delete.png" />
        
    </invokers> 
     <code lang="groovy">

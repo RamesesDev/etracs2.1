@@ -1,17 +1,17 @@
 <workunit>
     <invokers>
-        <invoker type="tc.master" action="init" caption="Income Accounts" permission="incomeacct.viewlist" icon="images/folder.png" target="window" index="3"/>
-        <invoker folderid="/menu/tc/master" action="init" caption="Income Accounts" permission="incomeacct.viewlist" target="window"/>
-        <invoker folderid="/txn/tc/master" action="init" caption="Income Accounts" permission="incomeacct.viewlist" target="window" index="15"/>
+        <invoker type="tc.master" action="init" caption="Income Accounts" role="MASTER_ENCODER" permission="incomeacct.viewlist" icon="images/folder.png" target="window" index="3"/>
+        <invoker folderid="/menu/tc/master" action="init" caption="Income Accounts" role="MASTER_ENCODER" permission="incomeacct.viewlist" target="window"/>
+        <invoker folderid="/txn/tc/master" action="init" caption="Income Accounts" role="MASTER_ENCODER" permission="incomeacct.viewlist" target="window" index="15"/>
         
-        <invoker type="quick_launcher" code="ACCT" action="init" caption="Income Accounts" permission="incomeacct.viewlist"/>
+        <invoker type="quick_launcher" code="ACCT" action="init" caption="Income Accounts" role="MASTER_ENCODER" permission="incomeacct.viewlist"/>
         
-        <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"  permission="incomeacct.create"/>
-        <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Edit" mnemonic="e" icon="images/edit.png" permission="incomeacct.edit"/>
+        <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"  role="MASTER_ENCODER" permission="incomeacct.create"/>
+        <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Edit" mnemonic="e" icon="images/edit.png" role="MASTER_ENCODER" permission="incomeacct.edit"/>
         <invoker type="formActions" action="save" shortcut="ctrl S" visibleWhen="#{mode != 'view'}" caption="Save" mnemonic="s" icon="images/save.png"/>
         <invoker type="formActions" action="cancel" visibleWhen="#{mode != 'view'}"  immediate="true" caption="Cancel" mnemonic="c" icon="images/doc-cancel.png"/>
-        <invoker type="formActions" action="delete" shortcut="ctrl D" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Delete" mnemonic="d" icon="images/doc-delete.png" permission="incomeacct.delete" />
-        <invoker type="formActions" action="approve" shortcut="ctrl A" visibleWhen="#{mode == 'view' and selectedItem.objid != null and selectedItem.docstate == 'DRAFT'}" immediate="true" caption="Approve" mnemonic="a" icon="images/doc-approve.png" permission="incomeacct.approve"/>
+        <invoker type="formActions" action="delete" shortcut="ctrl D" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Delete" mnemonic="d" icon="images/doc-delete.png" role="MASTER_ENCODER" permission="incomeacct.delete" />
+        <invoker type="formActions" action="approve" shortcut="ctrl A" visibleWhen="#{mode == 'view' and selectedItem.objid != null and selectedItem.docstate == 'DRAFT'}" immediate="true" caption="Approve" mnemonic="a" icon="images/doc-approve.png" role="MASTER_ENCODER" permission="incomeacct.approve"/>
     </invokers>
     <code>
 <![CDATA[

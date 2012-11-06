@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/mgmt" action="init" caption="Manage Entity Mapping" index="21" permission="entity.mapping" />
+        <invoker folderid="/menu/mgmt" action="init" caption="Manage Entity Mapping" index="21" role="ENTITY_ENCODER" permission="entity.mapping" />
         
         <invoker type="formActions" action="_close" caption="Close"  shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png" visibleWhen="${mode=='view' and showClose}"/>
         <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and selectedItem.objid != null}" immediate="true" caption="Edit" mnemonic="e" icon="images/doc-edit.png" />

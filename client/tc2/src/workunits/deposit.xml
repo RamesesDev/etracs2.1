@@ -1,23 +1,23 @@
 <workunit>
     <invokers>
-        <invoker type="home.action" caption="Deposit" permission="deposit.create" icon="images/folder.png" target="window" index="131"/>
+        <invoker type="home.action" caption="Deposit" role="CASHIER" permission="deposit.create" icon="images/folder.png" target="window" index="131"/>
         
-        <invoker folderid="/menu/tc/coll" caption="Deposit" permission="deposit.create" target="window" index="30"/>
-        <invoker folderid="/txn/tc/coll" caption="Deposit" permission="deposit.create" target="window" index="30"/>
+        <invoker folderid="/menu/tc/coll" caption="Deposit" role="CASHIER" permission="deposit.create" target="window" index="30"/>
+        <invoker folderid="/txn/tc/coll" caption="Deposit" role="CASHIER" permission="deposit.create" target="window" index="30"/>
         
-        <invoker type="quick_launcher" code="DEP01" caption="Deposit" permission="deposit.create" target="window" index="131"/>
+        <invoker type="quick_launcher" code="DEP01" caption="Deposit" role="CASHIER" permission="deposit.create" target="window" index="131"/>
         
         <invoker type="initActions" action="doNext" caption="Next" mnemonic="n" shortcut="ctrl N" icon="images/next.png" index="0" />
         <invoker type="initActions" action="_close" immediate="true" caption="Cancel" mnemonic="c" icon="images/doc-cancel.png" />
         <invoker type="mainActions" action="_close" caption="Close" mnemonic="c" shortcut="ctrl W" icon="images/cancel.png"/>
         <invoker type="mainActions" action="deposit" caption="Deposit" mnemonic="d" shortcut="ctrl D" icon="images/cash.png"/>
-        <invoker type="viewActions" action="closeDeposit" caption="Close Deposit" mnemonic="d" shortcut="ctrl D" icon="images/doc-cancel.png" visibleWhen="#{entity.docstate == 'OPEN'}" permission="deposit.close" />        
+        <invoker type="viewActions" action="closeDeposit" caption="Close Deposit" mnemonic="d" shortcut="ctrl D" icon="images/doc-cancel.png" visibleWhen="#{entity.docstate == 'OPEN'}" />        
         <invoker type="viewActions" action="previewFundSummary" caption="Preview Fund Summary" mnemonic="f" icon="images/doc-view.png" shortcut="ctrl f" visibleWhen="#{entity.docstate == 'OPEN'}"  />       
         
-        <invoker type="noncashActions" action="addNonCashPayments" caption="Add Non-Cash Payment" mnemonic="n" shortcut="ctrl a" visibleWhen="#{selectedSummary != null}" permission="deposit.addnoncash" />
-        <invoker type="noncashActions" action="addExternalPayment" caption="Add External Non-Cash Payment" mnemonic="e" shortcut="ctrl e" visibleWhen="#{selectedSummary != null}" permission="deposit.addexternalnoncash"/>
+        <invoker type="noncashActions" action="addNonCashPayments" caption="Add Non-Cash Payment" mnemonic="n" shortcut="ctrl a" visibleWhen="#{selectedSummary != null}"  />
+        <invoker type="noncashActions" action="addExternalPayment" caption="Add External Non-Cash Payment" mnemonic="e" shortcut="ctrl e" visibleWhen="#{selectedSummary != null}" />
         
-        <invoker type="deposit.view" action="doView" caption="View" mnemonic="v" shortcut="ctrl V" permission="deposit.view"/>
+        <invoker type="deposit.view" action="doView" caption="View" mnemonic="v" shortcut="ctrl V" />
         
         <invoker type="reportActions" action="backToMain" caption="Back" mnemonic="b" icon="images/back.png" />
     </invokers>

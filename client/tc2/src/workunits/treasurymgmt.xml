@@ -1,9 +1,9 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/mgmt" action="init" caption="Treasury Management" permission="treasurymgmt.view" index="50"/>
-        <invoker folderid="/txn/tc" action="init" caption="Treasury Management" permission="treasurymgmt.view" index="25"/>
+        <invoker folderid="/menu/mgmt" action="init" caption="Treasury Management" role="TREASURER" permission="treasurymgmt.view" index="50"/>
+        <invoker folderid="/txn/tc" action="init" caption="Treasury Management" role="TREASURER" permission="treasurymgmt.view" index="25"/>
         
-        <invoker type="quick_launcher" code="TRMGMT" action="init" caption="Treasury Management" permission="treasurymgmt.view"/>
+        <invoker type="quick_launcher" code="TRMGMT" action="init" caption="Treasury Management" role="TREASURER" permission="treasurymgmt.view"/>
         
         <invoker type="formActions" action="back" caption="Back" mnemonic="b" immediate="true" icon="images/back.png"/>
     </invokers>

@@ -5,13 +5,13 @@
 -->
 <workunit>
     <invokers>
-        <invoker folderid="/menu/mgmt" caption="Consolidation Management" mnemonic="c" permission="consolidationmgt.view" index="120"/>
-        <invoker folderid="/txn/rpt" caption="Consolidation Management" mnemonic="c" permission="consolidationmgt.view" index="120"/>
-        <invoker type="quick_launcher" code="CS00" caption="Consolidation Management" mnemonic="c" permission="consolidationmgt.view" />
-        <invoker type="home.action" caption="Consolidation Management" mnemonic="c" permission="consolidationmgt.view" index="4" icon="images/folder.png" target="window"  />
+        <invoker folderid="/menu/mgmt" caption="Consolidation Management" mnemonic="c" role="APPRAISER" permission="consolidationmgt.view" index="120"/>
+        <invoker folderid="/txn/rpt" caption="Consolidation Management" mnemonic="c" role="APPRAISER" permission="consolidationmgt.view" index="120"/>
+        <invoker type="quick_launcher" code="CS00" caption="Consolidation Management" mnemonic="c" role="APPRAISER" permission="consolidationmgt.view" />
+        <invoker type="home.action" caption="Consolidation Management" mnemonic="c" role="APPRAISER" permission="consolidationmgt.view" index="4" icon="images/folder.png" target="window"  />
         
-        <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="consolidationmgt.create" />
-        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission='consolidationmgt.view' />
+        <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" role="APPRAISER" permission="consolidationmgt.create" />
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" role="APPRAISER" permission='consolidationmgt.view' />
     </invokers>
     <code lang="groovy">
 <![CDATA[

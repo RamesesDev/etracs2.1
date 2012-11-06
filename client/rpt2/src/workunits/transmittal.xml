@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rpt_transmittal.create" action="init" caption="Transmittal (New)" permission="rpt_transmittal.create"/>
-        <invoker type="rpt_transmittal.open" action="open" caption="Transmittal" permission="rpt_transmittal.open"/>
+        <invoker type="rpt_transmittal.create" action="init" caption="Transmittal (New)" role="APPRAISER" permission="rpt_transmittal.create"/>
+        <invoker type="rpt_transmittal.open" action="open" caption="Transmittal" role="APPRAISER" permission="rpt_transmittal.open"/>
         
-        <invoker folderid="/menu/rpt/faas" action="init"  caption="Transmittal" mnemonic="t" permission="rpt_transmittal.create" index="300"/>
-        <invoker type="quick_launcher" action="init" code="FATR" caption="Transmittal" mnemonic="t" permission="rpt_transmittal.create" />
+        <invoker folderid="/menu/rpt/faas" action="init"  caption="Transmittal" mnemonic="t" role="APPRAISER" permission="rpt_transmittal.create" index="300"/>
+        <invoker type="quick_launcher" action="init" code="FATR" caption="Transmittal" mnemonic="t" role="APPRAISER" permission="rpt_transmittal.create" />
         
         <invoker type="formActions" action="_close"  caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
         <invoker type="formActions" action="create" shortcut="ctrl s" caption="Save" mnemonic="s" icon="images/doc-save.png" visibleWhen="#{mode=='create'}"/>
@@ -13,7 +13,7 @@
         <invoker type="formActions" action="preview" caption="Preview" mnemonic="v" icon="images/doc-view.png" permission="rpt_transmittal.print" visibleWhen="#{mode!='create'}"/>
         <invoker type="formActions" action="print" shortcut="ctrl P" caption="Print" mnemonic="p" icon="images/doc-view.png" permission="rpt_transmittal.print" visibleWhen="#{mode!='create'}"/>
         -->
-        <invoker type="formActions" action="export" shortcut="ctrl E" caption="Export Transmittal" mnemonic="e" permission="rpt_transmittal.export" visibleWhen="#{mode!='create'}"/>
+        <invoker type="formActions" action="export" shortcut="ctrl E" caption="Export Transmittal" mnemonic="e" role="APPRAISER" permission="rpt_transmittal.export" visibleWhen="#{mode!='create'}"/>
     </invokers>
     
     <code lang="groovy">

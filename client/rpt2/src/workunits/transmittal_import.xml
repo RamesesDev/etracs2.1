@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rpt_transmittal_import.create" action="init" caption="Import Transmittal (New)" permission="rpt_transmittal_import.create"/>
-        <invoker type="rpt_transmittal_import.open" action="open" caption="Imported Transmittal" permission="rpt_transmittal_import.open"/>
+        <invoker type="rpt_transmittal_import.create" action="init" caption="Import Transmittal (New)" role="APPRAISER" permission="rpt_transmittal_import.create"/>
+        <invoker type="rpt_transmittal_import.open" action="open" caption="Imported Transmittal" role="APPRAISER" permission="rpt_transmittal_import.open"/>
         
-        <invoker folderid="/menu/rpt/faas" action="init"  caption="Import Transmittal" mnemonic="i" permission="rpt_transmittal_import.create" index="400"/>
-        <invoker type="quick_launcher" action="init" code="IRPT" caption="Import Transmittal" mnemonic="i" permission="rpt_transmittal_import.create" />
+        <invoker folderid="/menu/rpt/faas" action="init"  caption="Import Transmittal" mnemonic="i" role="APPRAISER" permission="rpt_transmittal_import.create" index="400"/>
+        <invoker type="quick_launcher" action="init" code="IRPT" caption="Import Transmittal" mnemonic="i" role="APPRAISER" permission="rpt_transmittal_import.create" />
         
         <invoker type="initActions" action="_close"  immediate="true" caption="Close" mnemonic="c" icon="images/cancel.png"/>
         <invoker type="initActions" action="next" shortcut="ctrl N" caption="Next" mnemonic="n" icon="images/next.png"/>

@@ -2,16 +2,16 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/rpt/master" action="init" caption="Materials" index="7" permission="materials.view" />
-        <invoker folderid="/txn/rpt/master" action="init" caption="Materials" index="7" permission="materials.view" />
-        <invoker type="quick_launcher" code="MAT01" action="init" caption="Materials" index="7" permission="materials.view" />
-        <invoker type="rpt.master" action="init" caption="Materials" index="5" permission="materials.view" />
+        <invoker folderid="/menu/rpt/master" action="init" caption="Materials" index="7" role="MASTER_ENCODER" permission="materials.view" />
+        <invoker folderid="/txn/rpt/master" action="init" caption="Materials" index="7" role="MASTER_ENCODER" permission="materials.view" />
+        <invoker type="quick_launcher" code="MAT01" action="init" caption="Materials" index="7" role="MASTER_ENCODER" permission="materials.view" />
+        <invoker type="rpt.master" action="init" caption="Materials" index="5" role="MASTER_ENCODER" permission="materials.view" />
         
-        <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="materials.create" />
-        <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null }" immediate="true" caption="Edit" mnemonic="e" icon="images/doc-edit.png" permission="materials.edit" />
+        <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" role="MASTER_ENCODER" permission="materials.create" />
+        <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null }" immediate="true" caption="Edit" mnemonic="e" icon="images/doc-edit.png" role="MASTER_ENCODER" permission="materials.edit" />
         <invoker type="formActions" action="save" shortcut="ctrl S" visibleWhen="#{mode != 'view'}" caption="Save" mnemonic="s" icon="images/doc-save.png"/>
         <invoker type="formActions" action="cancel" visibleWhen="#{mode != 'view'}"  immediate="true" caption="Cancel" mnemonic="c" icon="images/doc-cancel.png"/>
-        <invoker type="formActions" action="delete" shortcut="ctrl D" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Delete" mnemonic="d" icon="images/doc-delete.png" permission="materials.delete"/>
+        <invoker type="formActions" action="delete" shortcut="ctrl D" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Delete" mnemonic="d" icon="images/doc-delete.png" role="MASTER_ENCODER" permission="materials.delete"/>
     </invokers>
         
     <code lang="groovy">

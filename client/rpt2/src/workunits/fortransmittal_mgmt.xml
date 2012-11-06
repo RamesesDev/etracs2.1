@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="menu/mgmt" caption="For Transmittals" mnemonic="f" permission="fortransmittalmgmt.view" index="400"/>
-        <invoker folderid="/txn/rpt" caption="For Transmittals" mnemonic="t" permission="fortransmittalmgmt.view" index="400"/>
-        <invoker type="quick_launcher" code="FTR00" caption="For Transmittals" mnemonic="f" permission="fortransmittalmgmt.view" />
+        <invoker folderid="menu/mgmt" caption="For Transmittals" mnemonic="f" role="APPRAISER" permission="fortransmittalmgmt.view" index="400"/>
+        <invoker folderid="/txn/rpt" caption="For Transmittals" mnemonic="t" role="APPRAISER" permission="fortransmittalmgmt.view" index="400"/>
+        <invoker type="quick_launcher" code="FTR00" caption="For Transmittals" mnemonic="f" role="APPRAISER" permission="fortransmittalmgmt.view" />
         
         <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
     </invokers>

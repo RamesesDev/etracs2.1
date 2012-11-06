@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc/coll" action="init" caption="Realty Tax Batch Collection"  permission="rptreceipt.batch" index="100"/>
+        <invoker folderid="/menu/tc/coll" action="init" caption="Realty Tax Batch Collection"  role="COLLECTOR" permission="rptreceipt.batch" index="100"/>
         
         <invoker type="initActions" action="_close" caption="Close" mnemonic="c" immediate="true" icon="images/cancel.png" />
         <invoker type="initActions" action="next" caption="Next" mnemonic="n" icon="images/next.png" />

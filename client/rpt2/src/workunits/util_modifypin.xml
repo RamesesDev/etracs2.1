@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/menu/rpt/util" action="init" caption="Modify PIN" target="popup" index="10" permission="rptutil.modifypin" />
+        <invoker folderid="/menu/rpt/util" action="init" caption="Modify PIN" target="popup" index="10" role="APPRAISER" permission="rptutil.modifypin" />
     </invokers>
     
     <code lang="groovy">

@@ -1,7 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/bp" action="init" caption="Business Permit Listing" target="window" index="4" permission="bpreport.bppermitlisting" />
-        <invoker type="bpreport"         action="init" opener="bppermitlisting" caption="Business Permit Listing" target="window" index="4" permission="bpreport.bppermitlisting" />
+        <invoker folderid="/report/bp" action="init" caption="Business Permit Listing" target="window" index="4" role="BP_REPORTS" permission="bpreport.bppermitlisting" />
+        <invoker type="bpreport"         action="init" opener="bppermitlisting" caption="Business Permit Listing" target="window" index="4" role="BP_REPORTS" permission="bpreport.bppermitlisting" />
         <invoker type="bpreport.bppermitlisting"    action="init" caption="Business Permit Listing" target="window" />
         
         <invoker type="formActions"     action="_close" caption="Back" mnemonic="b" shortcut="ctrl + B" icon="images/back.png"/>

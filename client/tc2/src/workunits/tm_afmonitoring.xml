@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="treasurymgmt.actions" caption="Accountable Form Monitoring" permission="treasurymgmt_afmonitoring.view"/>
+        <invoker type="treasurymgmt.actions" caption="Accountable Form Monitoring" />
     </invokers>
     <code>
         

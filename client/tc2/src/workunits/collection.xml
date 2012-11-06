@@ -1,20 +1,20 @@
 <workunit>
     <invokers>
-        <invoker folderid="menu/tc/coll" action="initOnline" caption="Online Collection" permission="collection.create_online" index="1"/>
-        <invoker folderid="menu/tc/coll" action="initOffline" caption="Offline Collection" permission="collection.create_offline" index="2"/>
-        <invoker folderid="menu/tc/coll" action="initCapture" caption="Capture Collection" permission="collection.create_capture" index="3"/>
+        <invoker folderid="menu/tc/coll" action="initOnline" caption="Online Collection" role="COLLECTOR" permission="collection.create_online" index="1"/>
+        <invoker folderid="menu/tc/coll" action="initOffline" caption="Offline Collection" role="COLLECTOR" permission="collection.create_offline" index="2"/>
+        <invoker folderid="menu/tc/coll" action="initCapture" caption="Capture Collection" role="COLLECTOR" permission="collection.create_capture" index="3"/>
         
-        <invoker folderid="txn/tc/coll" action="initOnline" caption="Online Collection" permission="collection.create_online" index="1" />
-        <invoker folderid="txn/tc/coll" action="initOffline" caption="Offline Collection" permission="collection.create_offline" index="2"/>
-        <invoker folderid="txn/tc/coll" action="initCapture" caption="Capture Collection" permission="collection.create_capture" index="3" />
+        <invoker folderid="txn/tc/coll" action="initOnline" caption="Online Collection" role="COLLECTOR" permission="collection.create_online" index="1" />
+        <invoker folderid="txn/tc/coll" action="initOffline" caption="Offline Collection" role="COLLECTOR" permission="collection.create_offline" index="2"/>
+        <invoker folderid="txn/tc/coll" action="initCapture" caption="Capture Collection" role="COLLECTOR" permission="collection.create_capture" index="3" />
         
-        <invoker type="quick_launcher" code="RCT01" action="initOnline" caption="Online Collection" permission="collection.create_online"/>
-        <invoker type="quick_launcher" code="RCT02" action="initOffline" caption="Offline Collection" permission="collection.create_offline"/>
-        <invoker type="quick_launcher" code="RCT03" action="initCapture" caption="Capture Collection" permission="collection.create_capture"/>
+        <invoker type="quick_launcher" code="RCT01" action="initOnline" caption="Online Collection" role="COLLECTOR" permission="collection.create_online"/>
+        <invoker type="quick_launcher" code="RCT02" action="initOffline" caption="Offline Collection" role="COLLECTOR" permission="collection.create_offline"/>
+        <invoker type="quick_launcher" code="RCT03" action="initCapture" caption="Capture Collection" role="COLLECTOR" permission="collection.create_capture"/>
         
-        <invoker type="home.action" action="initOnline" caption="Online Collection" permission="collection.create_online" index="101" icon="images/folder.png" target="window"/>
-        <invoker type="home.action" action="initOffline" caption="Offline Collection" permission="collection.create_offline" index="102" icon="images/folder.png" target="window"/>
-        <invoker type="home.action" action="initCapture" caption="Capture Collection" permission="collection.create_capture" index="103" icon="images/folder.png" target="window"/>
+        <invoker type="home.action" action="initOnline" caption="Online Collection" role="COLLECTOR" permission="collection.create_online" index="101" icon="images/folder.png" target="window"/>
+        <invoker type="home.action" action="initOffline" caption="Offline Collection" role="COLLECTOR" permission="collection.create_offline" index="102" icon="images/folder.png" target="window"/>
+        <invoker type="home.action" action="initCapture" caption="Capture Collection" role="COLLECTOR" permission="collection.create_capture" index="103" icon="images/folder.png" target="window"/>
     </invokers>
     <code>
     <![CDATA[

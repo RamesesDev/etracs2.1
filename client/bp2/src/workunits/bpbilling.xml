@@ -2,9 +2,9 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/bp/txn" action="view" caption="Business Billing" permission="bpbilling.generate"/>
-        <invoker folderid="/txn/bp/collection" action="view" caption="Business Billing" permission="bpbilling.generate"/>
-        <invoker type="home.action" action="view" caption="Business Billing" index="70" target="window" icon="images/folder.png" permission="bpbilling.generate"/>
+        <invoker folderid="/menu/bp/txn" action="view" caption="Business Billing" role="COLLECTOR" permission="bpbilling.generate"/>
+        <invoker folderid="/txn/bp/collection" action="view" caption="Business Billing" role="COLLECTOR" permission="bpbilling.generate"/>
+        <invoker type="home.action" action="view" caption="Business Billing" index="70" target="window" icon="images/folder.png" role="COLLECTOR" permission="bpbilling.generate"/>
 
         <invoker type="formActions" action="back" immediate="true" caption="Back" mnemonic="b" visibleWhen="#{mode == 'view'}" icon="images/back.png"/>
         <invoker type="formActions" action="_close" immediate="true" caption="Close" mnemonic="c" visibleWhen="#{mode != 'view'}" icon="images/cancel.png"/>

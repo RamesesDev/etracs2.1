@@ -2,13 +2,13 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/tc/coll" action="create" caption="Remit" permission="remittance_subcollector.create" index="20" />
-        <invoker folderid="/txn/tc/coll" action="create" caption="Remit" permission="remittance_subcollector.create" index="20" />
+        <invoker folderid="/menu/tc/coll" action="create" caption="Remit" role="SUBCOLLECTOR" permission="remittance_subcollector.create" index="20" />
+        <invoker folderid="/txn/tc/coll" action="create" caption="Remit" role="SUBCOLLECTOR" permission="remittance_subcollector.create" index="20" />
         
-        <invoker type="home.action" action="create" caption="Remit" permission="remittance_subcollector.create" index="110" icon="images/folder.png" target="window"/>
+        <invoker type="home.action" action="create" caption="Remit" role="SUBCOLLECTOR" permission="remittance_subcollector.create" index="110" icon="images/folder.png" target="window"/>
         
         <invoker type="formActions" action="close"  immediate="true" caption="Close" mnemonic="c" icon="images/cancel.png"/>
-        <invoker type="formActions" action="submit" shortcut="ctrl S" visibleWhen="#{mode == 'init'}" caption="Submit" mnemonic="s" icon="images/doc-submit.png" permission="remittance_subcollector.submit"/>
+        <invoker type="formActions" action="submit" shortcut="ctrl S" visibleWhen="#{mode == 'init'}" caption="Submit" mnemonic="s" icon="images/doc-submit.png" />
         
     </invokers>
     

@@ -5,15 +5,15 @@
 -->
 <workunit>
     <invokers>
-        <invoker folderid="/menu/mgmt" caption="Subdivision Management" mnemonic="s" permission="subdivisionmgt.view" index="110"/>
-        <invoker folderid="/txn/rpt" caption="Subdivision Management" mnemonic="s" permission="subdivisionmgt.view" index="110"/>
+        <invoker folderid="/menu/mgmt" caption="Subdivision Management" mnemonic="s" role="APPRAISER" permission="subdivisionmgt.view" index="110"/>
+        <invoker folderid="/txn/rpt" caption="Subdivision Management" mnemonic="s" role="APPRAISER" permission="subdivisionmgt.view" index="110"/>
         
-        <invoker type="home.action" caption="Subdivision Management" mnemonic="s" permission="subdivisionmgt.view" index="3" icon="images/folder.png" target="window" />
+        <invoker type="home.action" caption="Subdivision Management" mnemonic="s" role="APPRAISER" permission="subdivisionmgt.view" index="3" icon="images/folder.png" target="window" />
         
         <!-- 
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="subdivisionmgt.create" />
         -->
-        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" permission="subdivisionmgt.open" />
+        <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" role="APPRAISER" permission="subdivisionmgt.open" />
     </invokers>
     <code lang="groovy">
 <![CDATA[

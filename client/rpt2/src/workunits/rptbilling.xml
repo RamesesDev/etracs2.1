@@ -6,15 +6,15 @@
 -->
 <workunit>
     <invokers>
-        <invoker folderid="/menu/rpt/landtax" action="init"  caption="RPT Billing"  permission="rptbilling.generate"/>
-        <invoker folderid="/txn/landtax" action="init"  caption="RPT Billing"  permission="rptbilling.generate"/>
+        <invoker folderid="/menu/rpt/landtax" action="init"  caption="RPT Billing"  role="LANDTAX" permission="rptbilling.generate"/>
+        <invoker folderid="/txn/landtax" action="init"  caption="RPT Billing"  role="LANDTAX" permission="rptbilling.generate"/>
         
-        <invoker type="quick_launcher" code="RPTBILL" action="init"  caption="RPT Billing"  permission="rptbilling.generate"/>
-        <invoker type="home.action"      action="init"  caption="RPT Billing"  target="window" index="551" icon="images/bill.png" permission="rptbilling.generate" />
+        <invoker type="quick_launcher" code="RPTBILL" action="init"  caption="RPT Billing"  role="LANDTAX" permission="rptbilling.generate"/>
+        <invoker type="home.action"      action="init"  caption="RPT Billing"  target="window" index="551" icon="images/bill.png" role="LANDTAX" permission="rptbilling.generate" />
 
         <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W" mnemonic="c" icon="images/cancel.png" immediate="true" />
-        <invoker type="formActions" action="printBill" caption="Print" shortcut="ctrl P" mnemonic="p" permission="rptbilling.printbill"/>
-        <invoker type="formActions" action="previewBill" caption="Preview" shortcut="ctrl v" mnemonic="v" icon="images/doc-view.png" permission="rptbilling.previewbill"/>
+        <invoker type="formActions" action="printBill" caption="Print" shortcut="ctrl P" mnemonic="p" role="LANDTAX" permission="rptbilling.printbill"/>
+        <invoker type="formActions" action="previewBill" caption="Preview" shortcut="ctrl v" mnemonic="v" icon="images/doc-view.png" role="LANDTAX" permission="rptbilling.previewbill"/>
         
         <invoker type="previewActions" action="backMain" caption="Back" mnemonic="b" icon="images/back.png"/>
     </invokers>

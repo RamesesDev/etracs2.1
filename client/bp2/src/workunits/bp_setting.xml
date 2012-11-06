@@ -1,8 +1,8 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/bp/master" action="init" caption="BP Settings" permission="bpadmin.setting" index="100"/>
-        <invoker folderid="/txn/bp/master" action="init" caption="BP Settings" permission="bpadmin.setting" index="100"/>
-        <invoker type="bp.master" action="init" caption="BP Settings" permission="bpadmin.setting" index="100"/>
+        <invoker folderid="/menu/bp/master" action="init" caption="BP Settings" role="MASTER_ENCODER" permission="bpadmin.setting" index="100"/>
+        <invoker folderid="/txn/bp/master" action="init" caption="BP Settings" role="MASTER_ENCODER" permission="bpadmin.setting" index="100"/>
+        <invoker type="bp.master" action="init" caption="BP Settings" index="100"/>
         <invoker type="formActions" action="save" caption="Save" mnemonic="s" shortcut="ctrl S" icon="images/save.png"/>
     </invokers>
     <code>

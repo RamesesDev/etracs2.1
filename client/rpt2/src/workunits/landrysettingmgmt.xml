@@ -2,7 +2,7 @@
 <workunit>
     <invokers>
         <invoker type="rysettingmgmt.type" caption="Land" />
-        <invoker folderid="/txn/rpt/ry" caption="Land" target="window" permission="rysetting.view"/>
+        <invoker folderid="/txn/rpt/ry" caption="Land" target="window" role="MASTER_ENCODER" permission="rysetting.view"/>
         <invoker type="quick_launcher" code="GRY00" target="window" caption="Land Revision Setting" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" />

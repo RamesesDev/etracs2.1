@@ -6,7 +6,7 @@
 <workunit>
     <invokers>
         <invoker type="rysettingmgmt.type" caption="Machinery" index="30" />
-        <invoker folderid="/txn/rpt/ry" caption="Machinery" target="window" permission="rysetting.view" index="30"/>
+        <invoker folderid="/txn/rpt/ry" caption="Machinery" target="window" role="MASTER_ENCODER" permission="rysetting.view" index="30"/>
         <invoker type="quick_launcher" code="GRY02" caption="Machinery Revision Setting" index="30" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" />
