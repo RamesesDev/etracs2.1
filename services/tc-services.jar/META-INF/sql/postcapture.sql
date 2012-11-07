@@ -73,3 +73,10 @@ SELECT DISTINCT collectorid
 FROM batchcapture b 
 WHERE encodedbyid = $P{assignedtoid}	
    OR collectorid = $P{assignedtoid}
+
+union
+
+SELECT DISTINCT collectorid 
+FROM receiptlist 
+WHERE mode = 'CAPTURE' and docstate='CAPTURED'
+   and collectorid = $P{assignedtoid}   
