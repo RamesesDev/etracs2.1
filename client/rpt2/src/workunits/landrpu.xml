@@ -273,14 +273,14 @@ public class LandRPUController
         clearPlantTotals()
         
         rpu.info.landdetails.each {
-            rpu.totalbmv     += it.basemarketvalue 
-            rpu.totalmv      += it.marketvalue 
-            rpu.totalav      += it.assessedvalue
+            rpu.totalbmv     += ( it.taxable ? it.basemarketvalue  : 0.0 )
+            rpu.totalmv      += ( it.taxable ? it.marketvalue : 0.0 )
+            rpu.totalav      += ( it.taxable ? it.assessedvalue : 0.0 )
 
-            rpu.info.landtotal.basemarketvalue  += it.basemarketvalue
-            rpu.info.landtotal.adjustment       += it.adjustment
-            rpu.info.landtotal.marketvalue      += it.marketvalue
-            rpu.info.landtotal.assessedvalue    += it.assessedvalue
+            rpu.info.landtotal.basemarketvalue  += ( it.taxable ? it.basemarketvalue : 0.0 )
+            rpu.info.landtotal.adjustment       += ( it.taxable ? it.adjustment : 0.0 )
+            rpu.info.landtotal.marketvalue      += ( it.taxable ? it.marketvalue : 0.0 )
+            rpu.info.landtotal.assessedvalue    += ( it.taxable ? it.assessedvalue : 0.0 )
             rpu.info.landtotal.areasqm          += it.areasqm
             rpu.info.landtotal.areaha           += it.areaha
 

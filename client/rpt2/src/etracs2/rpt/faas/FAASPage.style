@@ -37,3 +37,8 @@
 "faas.*|appraiser|recommender|approver|taxpayer|administrator" [allowEdit == false] {
     enabled:false;
 }
+
+"faas.cancelnote" [faas.info.datacapture == true ] {
+    enabled:false;
+}
+

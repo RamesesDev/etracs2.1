@@ -345,14 +345,12 @@ public class SubdivisionPage extends javax.swing.JPanel {
         xActionTextField5.setCellPadding(new java.awt.Insets(0, 0, 0, 5));
         xActionTextField5.setName("subdivision.recommendedby");
         xActionTextField5.setPreferredSize(new java.awt.Dimension(240, 19));
-        xActionTextField5.setRequired(true);
         formPanel10.add(xActionTextField5);
 
         xDateField6.setCaption("Date");
         xDateField6.setCaptionWidth(50);
         xDateField6.setName("subdivision.dtrecommended");
         xDateField6.setPreferredSize(new java.awt.Dimension(120, 19));
-        xDateField6.setRequired(true);
         formPanel10.add(xDateField6);
 
         formPanel3.add(formPanel10);

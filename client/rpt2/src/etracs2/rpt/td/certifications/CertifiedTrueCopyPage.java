@@ -226,7 +226,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
         xDateField3.setDepends(new String[] {"selectedItem", "entity.tdno"});
         xDateField3.setName("entity.faasinfo.issuedate");
         jPanel6.add(xDateField3);
-        xDateField3.setBounds(100, 30, 100, 18);
+        xDateField3.setBounds(100, 30, 100, 19);
 
         xLabel3.setText("Effectivity :");
         jPanel6.add(xLabel3);
@@ -236,7 +236,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
         xTextField1.setDepends(new String[] {"selectedItem", "entity.tdno"});
         xTextField1.setName("entity.faasinfo.effectivityyear");
         jPanel6.add(xTextField1);
-        xTextField1.setBounds(310, 30, 60, 18);
+        xTextField1.setBounds(310, 30, 60, 19);
 
         xLabel4.setText("-");
         jPanel6.add(xLabel4);
@@ -246,7 +246,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
         xTextField9.setDepends(new String[] {"selectedItem", "entity.tdno"});
         xTextField9.setName("entity.faasinfo.effectivityqtr");
         jPanel6.add(xTextField9);
-        xTextField9.setBounds(380, 30, 60, 18);
+        xTextField9.setBounds(380, 30, 60, 19);
 
         xLabel5.setText("Taxpayer :");
         jPanel6.add(xLabel5);
@@ -256,7 +256,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
         xTextField10.setDepends(new String[] {"selectedItem", "entity.tdno"});
         xTextField10.setName("entity.faasinfo.taxpayername");
         jPanel6.add(xTextField10);
-        xTextField10.setBounds(100, 50, 340, 18);
+        xTextField10.setBounds(100, 50, 340, 19);
 
         xLabel6.setExpression("Address :");
         jPanel6.add(xLabel6);
@@ -266,7 +266,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
         xTextField11.setDepends(new String[] {"selectedItem", "entity.tdno"});
         xTextField11.setName("entity.faasinfo.taxpayeraddress");
         jPanel6.add(xTextField11);
-        xTextField11.setBounds(100, 70, 340, 18);
+        xTextField11.setBounds(100, 70, 340, 19);
 
         xLabel7.setText("PIN :");
         jPanel6.add(xLabel7);
@@ -276,7 +276,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
         xTextField12.setDepends(new String[] {"selectedItem", "entity.tdno"});
         xTextField12.setName("entity.faasinfo.pin");
         jPanel6.add(xTextField12);
-        xTextField12.setBounds(100, 90, 200, 18);
+        xTextField12.setBounds(100, 90, 200, 19);
 
         xLabel8.setText("Classification :");
         jPanel6.add(xLabel8);
@@ -286,7 +286,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
         xTextField13.setDepends(new String[] {"selectedItem", "entity.tdno"});
         xTextField13.setName("entity.faasinfo.classcode");
         jPanel6.add(xTextField13);
-        xTextField13.setBounds(350, 110, 90, 18);
+        xTextField13.setBounds(350, 110, 90, 19);
 
         xLabel9.setExpression("Cadastral Lot :");
         jPanel6.add(xLabel9);
@@ -296,7 +296,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
         xTextField14.setDepends(new String[] {"selectedItem", "entity.tdno"});
         xTextField14.setName("entity.faasinfo.cadastrallotno");
         jPanel6.add(xTextField14);
-        xTextField14.setBounds(100, 110, 130, 18);
+        xTextField14.setBounds(100, 110, 130, 19);
 
         xLabel11.setText("Barangay :");
         jPanel6.add(xLabel11);
@@ -306,7 +306,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
         xTextField15.setDepends(new String[] {"selectedItem", "entity.tdno"});
         xTextField15.setName("entity.faasinfo.barangay");
         jPanel6.add(xTextField15);
-        xTextField15.setBounds(100, 130, 130, 18);
+        xTextField15.setBounds(100, 130, 130, 19);
 
         xNumberField3.setEditable(false);
         xNumberField3.setDepends(new String[] {"selectedItem", "entity.tdno"});
@@ -314,7 +314,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
         xNumberField3.setName("entity.faasinfo.mv");
         xNumberField3.setPattern("#,##0.00");
         jPanel6.add(xNumberField3);
-        xNumberField3.setBounds(350, 130, 90, 18);
+        xNumberField3.setBounds(350, 130, 90, 19);
 
         xLabel12.setText("Market Value :");
         jPanel6.add(xLabel12);
@@ -324,7 +324,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
         xTextField16.setDepends(new String[] {"selectedItem", "entity.tdno"});
         xTextField16.setName("entity.faasinfo.surveryno");
         jPanel6.add(xTextField16);
-        xTextField16.setBounds(100, 150, 130, 18);
+        xTextField16.setBounds(100, 150, 130, 19);
 
         xLabel13.setText("Survey No. :");
         jPanel6.add(xLabel13);
@@ -340,7 +340,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
         xNumberField4.setName("entity.faasinfo.av");
         xNumberField4.setPattern("#,##0.00");
         jPanel6.add(xNumberField4);
-        xNumberField4.setBounds(350, 150, 90, 18);
+        xNumberField4.setBounds(350, 150, 90, 19);
 
         org.jdesktop.layout.GroupLayout jPanel5Layout = new org.jdesktop.layout.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -349,8 +349,8 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -358,7 +358,7 @@ public class CertifiedTrueCopyPage extends javax.swing.JPanel {
             .add(jPanel5Layout.createSequentialGroup()
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                .add(jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

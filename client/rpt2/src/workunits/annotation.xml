@@ -97,6 +97,7 @@ public class AnnotationController {
         else {
             entity = svc.initOther( faas.objid  )
         }
+        entity.memoranda = null
         return doctype 
     }
     

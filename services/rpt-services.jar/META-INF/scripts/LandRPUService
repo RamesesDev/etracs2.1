@@ -351,19 +351,18 @@ class LandRPUService
         landdetail.assessedvalue    = 0.0
         
         //calculate assessment 
-        if( landdetail.taxable ) {
-            landdetail.basemarketvalue = numberSvc.round( landdetail.area * landdetail.unitvalue )
-            landdetail.landvalueadjustment = calculateLandValueAdjustment( landdetail )
-            landdetail.actualuseadjustment = calculateActualUseAdjustment( landdetail )
-            landdetail.adjustment = numberSvc.round( landdetail.landvalueadjustment + landdetail.actualuseadjustment )
-            landdetail.marketvalue = numberSvc.round( landdetail.basemarketvalue + landdetail.adjustment )
-			if( rptsetting && IS_TRUE( rptsetting.roundadjmarketvalue ) ) {
-				//landdetail.marketvalue = numberSvc.roundA( landdetail.marketvalue, 0 ) 
-				landdetail.marketvalue = numberSvc.roundToTen(landdetail.marketvalue)
-			}
-            landdetail.assesslevel = determineAssessLevel( landdetail )
-            landdetail.assessedvalue = numberSvc.roundToTen(landdetail.marketvalue * landdetail.assesslevel / 100.0 )
-        }
+		landdetail.basemarketvalue = numberSvc.round( landdetail.area * landdetail.unitvalue )
+		landdetail.landvalueadjustment = calculateLandValueAdjustment( landdetail )
+		landdetail.actualuseadjustment = calculateActualUseAdjustment( landdetail )
+		landdetail.adjustment = numberSvc.round( landdetail.landvalueadjustment + landdetail.actualuseadjustment )
+		landdetail.marketvalue = numberSvc.round( landdetail.basemarketvalue + landdetail.adjustment )
+		if( rptsetting && IS_TRUE( rptsetting.roundadjmarketvalue ) ) {
+			//landdetail.marketvalue = numberSvc.roundA( landdetail.marketvalue, 0 ) 
+			landdetail.marketvalue = numberSvc.roundToTen(landdetail.marketvalue)
+		}
+		landdetail.assesslevel = determineAssessLevel( landdetail )
+		landdetail.assessedvalue = numberSvc.roundToTen(landdetail.marketvalue * landdetail.assesslevel / 100.0 )
+
         return landdetail 
     }
     

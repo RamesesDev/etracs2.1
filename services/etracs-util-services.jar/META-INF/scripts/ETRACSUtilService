@@ -42,7 +42,7 @@ public class ETRACSUtilService
 	public boolean toBoolean( value, defaultvalue ) {
 		if( value == null ) return defaultvalue
 		if( value instanceof Boolean ) return value 
-		return '1/y/yes/true/t'.indexOf( value.toString().toLowerCase() ) >= 0
+		return '1/y/yes/true/t'.indexOf( value.toString().trim().toLowerCase() ) >= 0
 	}
 	
 	@ProxyMethod
