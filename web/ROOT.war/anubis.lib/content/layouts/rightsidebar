@@ -1,0 +1,6 @@
+<table width="100%" height="100%" class="rightsidebar-layout">
+	<tr>
+		<td class="content" valign="top">${_content}</td>
+		<td class="sidebar" valign="top">${_sidebar}</td>
+	</tr>
+</table>

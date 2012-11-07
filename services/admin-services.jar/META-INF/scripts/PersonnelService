@@ -9,8 +9,8 @@ class PersonnelService {
 	def dateSvc;
 	
 	@ProxyMethod
-	public def getPositions(def objid) {
-		return em.sqlContext.createNamedQuery( "personnel:getPersonnelPositions" ).setParameter( "objid", objid ).resultList;
+	public def getPositions(def map) {
+		return em.sqlContext.createNamedQuery( "personnel:getPersonnelPositions" ).setParameter( "objid", map.objid ).resultList;
 	}
 	
 	@ProxyMethod
@@ -57,11 +57,8 @@ class PersonnelService {
 	
 	@ProxyMethod
 	public def read(def o) {
-		print "entering service";
 		o =  em.read( "personnel", o );
 		if(o.birthdate) o.birthdate =  dateSvc.format("yyyy-MM-dd", o.birthdate );
-		def txncode = em.read( "personnel:txncode", [personnelid: o.objid] )?.txncode;
-		if(txncode) o.txncode = txncode;
 		return o; 
 	}
 

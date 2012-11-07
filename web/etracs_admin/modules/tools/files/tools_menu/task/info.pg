@@ -1,0 +1,4 @@
+{
+	fragment: 	true,
+	layout:		'popup-layout',
+}

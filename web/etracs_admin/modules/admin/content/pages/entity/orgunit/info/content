@@ -1,0 +1,84 @@
+<script>
+
+	\$put( "${PAGE.context}", 
+		new function() {
+			var svc = Service.lookup("admin/OrgunitService");
+			this.saveHandler;
+			var self = this;
+			
+			this.orgunit = {};
+			this.mode = "create";
+	
+			this.saveCreate = function() {
+				svc.create( this.orgunit );
+				this.saveHandler();
+				return "_close";
+			}
+
+			this.cancelCreate = function() {
+				if( confirm("Discard changes?")) {
+					return "_close";
+				}
+			}
+
+			this.edit = function() {
+				this.mode = "edit";
+			}
+			
+			this.saveEdit = function() {
+				svc.update(this.orgunit);
+				this.saveHandler();
+				this.mode = "read";
+			}
+
+			this.cancelEdit = function() {
+				if( confirm("Discard changes?")) {
+					this.mode = "read";
+				}
+			}
+	
+			this.propertyChangeListener = {
+				'orgunit.code' : function(v) {
+					if(v) {
+						self.orgunit.code = v.formatCode();
+						self._controller.refresh();
+					}
+				}	
+			}
+		}
+	);
+</script>
+
+<style>
+	.label {
+		font-weight: bolder;
+		width: 100px;
+		vertical-align:top;
+		padding:1px;
+	}
+	
+</style>
+
+<table cellpadding="0" cellspacing="1">
+	<tr>
+		<td class="label">Type</td>
+		<td>
+			<label r:context="${PAGE.context}" r:name="orgunit.orgtype"  />
+		</td>
+	</tr>
+	<tr>
+		<td class="label">Code</td>
+		<td>
+			<input type="text" r:context="${PAGE.context}" r:name="orgunit.code" r:required="true" r:caption="Code" r:visibleWhen="#{mode!='read'}" />
+			<label r:context="${PAGE.context}" r:name="orgunit.code" r:visibleWhen="#{mode=='read'}" />
+		</td>
+	</tr>	
+	<tr>
+		<td class="label">Title</td>
+		<td>
+			<input type="text" r:context="${PAGE.context}" r:name="orgunit.title" r:required="true" r:caption="Title" r:visibleWhen="#{mode!='read'}" style="width:300px"/>
+			<label r:context="${PAGE.context}" r:name="orgunit.title" r:visibleWhen="#{mode=='read'}" />
+		</td>
+	</tr>	
+</table>	
+

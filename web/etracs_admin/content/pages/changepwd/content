@@ -1,0 +1,56 @@
+<script>
+	\$put( "pwdinfo",
+		new function() {
+			var svc = Service.lookup( "user-service/UserAccountService" );
+			var sessSvc = Service.lookup( "user-service/SessionService" );
+			
+			this.uid;
+			this.oldpassword;
+			this.newpassword;
+			this.confirmpassword;
+			
+			this.onload = function() {
+				var info = ${com.rameses.anubis.JsonUtil.toString( SESSION.userPrincipal )};
+				this.uid = info.username;
+			}
+			
+			this.submit = function() {
+				if(this.oldpassword== this.newpassword) {
+					alert('New password must not be the same as the old password');
+					return;
+				}
+				if(this.newpassword!= this.confirmpassword) {
+					alert('New password must match confirm password');
+					return;
+				}
+				var cred = {username:this.uid, oldpassword: this.oldpassword, newpassword: this.newpassword};
+				svc.changePassword(cred);
+				alert("Password successfully changed!");
+				this.oldpassword = null;
+				this.newpassword = null;
+				this.confirmpassword = null;
+			}
+		}
+	);	
+</script>
+
+<h2>Change Password</h2>
+<table>
+	<tr>
+		<td>Old Password:</td>
+		<td><input type="password" r:context="pwdinfo" r:name="oldpassword"/></td>
+	</tr>
+	<tr>
+		<td>New Password:</td>
+		<td><input type="password" r:context="pwdinfo" r:name="newpassword"/></td>
+	</tr>
+	<tr>
+		<td>Confirm Password:</td>
+		<td><input type="password" r:context="pwdinfo" r:name="confirmpassword"/></td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><input type="submit" r:context="pwdinfo" r:name="submit"/></td>
+	</tr>
+	
+</table>

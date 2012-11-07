@@ -1,0 +1,5 @@
+{
+	'app.host': 	'${app.host}',
+	'app.context':	'${app.context}',
+	'handler':		'script',
+}

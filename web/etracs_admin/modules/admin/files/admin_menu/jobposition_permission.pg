@@ -1,0 +1,6 @@
+{
+	href:		'/admin/entity/jobposition/permissions',
+	sortorder:	10,
+	secured:	true,
+	fragment:	true
+}

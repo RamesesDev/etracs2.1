@@ -82,7 +82,7 @@
  INNER JOIN jobposition j ON j.assigneeid = p.objid
  WHERE p.objid = $P{objid}
    AND j.objid IN (
-    SELECT jobid FROM jobposition_tag WHERE tagid = $P{tagid}
+    SELECT jobpositionid FROM jobposition_role WHERE sysrole = $P{tagid}
    )
  ORDER BY name
  
@@ -101,13 +101,12 @@
  FROM personnel p
  INNER JOIN jobposition j ON j.assigneeid = p.objid
  WHERE j.objid IN (
-          SELECT jobid FROM jobposition_tag WHERE tagid = $P{tagid}
+          SELECT jobpositionid FROM jobposition_role WHERE sysrole = $P{tagid}
        )
  ORDER BY name
 
 
 [getPersonnelInfo]
 SELECT * 
-FROM personnel p 
-	LEFT JOIN personnel_txncode t ON p.objid = t.personnelid  
+FROM personnel p  
 WHERE p.objid = $P{objid}	 

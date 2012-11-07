@@ -1,0 +1,135 @@
+<%
+	def JOBPOSITION = ANUBIS.getFileInfo( '/'+MODULE.name+'/entity/jobposition/info.pg' );
+%>
+
+
+<script>
+	@register( JOBPOSITION.path )
+	
+	\$put( "$PAGE.context", 
+		new function() {
+			var svc = Service.lookup( "admin/OrgunitService" );
+			var jobpossvc = Service.lookup( "admin/JobpositionService" );
+	
+			var self = this;
+	
+			this.selectedItem;
+			this.orgUnits;
+			this.orgUnit;
+			this.searchText;
+	
+			this.onload = function() {
+				this.orgUnits = svc.getUserOrgunits({});
+			}	
+
+			this.listModel = {
+				rows: 10,
+				fetchList: function(o) {
+					o.orgunitid = null;
+					o.searchText = null;
+					if(self.orgUnit) o.orgunitid = self.orgUnit.objid;
+					if(self.searchText) o.searchText = self.searchText;
+					return jobpossvc.getList( o );
+				}
+			}
+	
+			var refreshList = function() {
+				self.listModel.refresh(true);	
+			}
+	
+
+			this.addNew = function() {
+				var j = {};
+				if( this.orgUnit ) j = {orgunitid: this.orgUnit.objid, orgunitcode: this.orgUnit.code };	
+				return new PopupOpener( "${JOBPOSITION.name}", {saveHandler:refreshList, jobposition : j }, {title:"Add Job Position"} );
+			}
+
+			this.edit = function() {
+				return new PopupOpener( "${JOBPOSITION.name}", {saveHandler:refreshList, objid:this.selectedItem.objid, mode:'read'}, {title:"Edit Job Position"} );
+			}
+			
+			this.removeItem = function() {
+				if( self.selectedItem.assigneeid ) {
+					alert( 'Position cannot be removed if there is an assignee. Please unassign first.' );
+					return;
+				}
+				if( confirm( "You are about to remove this position. Continue?")) {
+					jobpossvc.remove( self.selectedItem );
+					refreshList();
+				}
+			}
+	
+			this.propertyChangeListener = {
+				orgUnit : function(o) { self.listModel.load(); }
+			}
+	
+			this.selectAssignee = function() {
+				var h = function(x) {
+					jobpossvc.assign( {objid: self.selectedItem.objid, assigneeid: x.objid } );
+					refreshList();
+				}
+				return new PopupOpener( "admin:personnel-lookup" , {selectHandler: h});
+			}
+	
+			this.removeAssignee = function() {
+				if( confirm( "You are about to remove this assigned position. Continue?") ) {
+					jobpossvc.unassign( {objid: self.selectedItem.objid  } );
+					refreshList();
+				}
+			}
+			
+			
+			this.doSearch = function() {
+				self.listModel.load();
+			}
+			this.reset = function() {
+				this.searchText = null;	
+				self.listModel.load();
+			}
+			
+			this.viewPermissions = function() {
+				return new PopupOpener( 'jobposition-permissions' , {jobposition : this.selectedItem } );
+			}
+		}
+	);
+</script>
+
+<table r:context="$PAGE.context" r:model="listModel" r:name="selectedItem" r:varName="item" width="100%" class="grid" cellpadding="0" cellspacing="0"> 
+	<thead>
+		<tr>
+			<td>Org</td>
+			<td>Code</td>
+			<td>Title</td>
+			<td>Assignee</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>#{item.orgunitid}</td>
+			<td>#{item.code}</td>
+			<td>#{item.title}</td>
+			<td>
+				<div r:context="${PAGE.context}" r:visibleWhen="#{item.assignee == null}">
+					<i>Vacant</i>
+					<a r:context="${PAGE.context}" r:name="selectAssignee">[Assign]</a>
+				</div>
+				<div r:context="${PAGE.context}" r:visibleWhen="#{item.assignee != null}">
+					#{item.assignee}
+					<a r:context="${PAGE.context}" r:name="removeAssignee"> [Unassign]</a>
+				</div>
+			</td>
+			<td>
+				<a r:context="${PAGE.context}" r:name="viewPermissions"><img src="/res/admin/key.png"/></a>
+			</td>
+			<td>
+				<a r:context="${PAGE.context}" r:name="edit"><img src="/res/admin/edit.gif"/></a>
+			</td>
+			<td>
+				<a r:context="${PAGE.context}" r:name="removeItem"><img src="/res/admin/trash.gif"/></a>
+			</td>	
+		</tr>
+	</tbody>
+</table>

@@ -1,0 +1,72 @@
+<script>
+	\$put( 
+		"${PAGE.context}", 
+		new function() {
+			var svc = Service.lookup( "admin/TerminalService" );
+
+			var self = this;
+
+			this.selectedItem;
+
+			this.listModel = {
+				rows: 15,
+				fetchList: function(o) {
+					return svc.getList( o );	
+				}
+			}
+
+			var reloadList = function() {
+				self.listModel.refresh(true);	
+			}
+
+			this.addNew = function() {
+				MsgBox.prompt(
+					"Enter the no. of terminal keys to generate", 
+					function(text) {
+						var size = parseInt(text);
+						if( isNaN(size) ) return;
+						svc.allocate( {size: size} );	
+						reloadList();
+					}
+				);
+			}
+			
+			this.unassign = function() {
+				if( !this.selectedItem ) return;
+				MsgBox.confirm(
+					"You are about to unassign this terminal. Continue?",
+					function(){
+						svc.unregister( self.selectedItem );
+						reloadList();
+					}
+				);
+			}
+
+		}
+	);
+</script>
+
+
+<table r:context="${PAGE.context}" r:model="listModel" r:name="selectedItem" r:varName="item" width="100%" class="grid" cellpadding="0" cellspacing="0"> 
+	<thead>
+		<tr>
+			<td>Terminal ID</td>
+			<td>Mac Address</td>
+			<td>Date Registered</td>
+			<td>Registered By</td>
+			<td>&nbsp;</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>#{item.terminalid}</td>	
+			<td>#{item.macaddress}</td>	
+			<td>#{item.dtregistered}</td>	
+			<td>#{item.registeredby}</td>	
+			<td>
+				<a r:context="terminal" r:name="unassign" r:visibleWhen="#{!!item.macaddress}">Unassign</a>
+			</td>	
+		</tr>
+	</tbody>
+</table>
+

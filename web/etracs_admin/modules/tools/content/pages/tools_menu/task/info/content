@@ -1,0 +1,39 @@
+<script type="text/javascript">
+	\$put(
+		"taskinfo",
+		new function()
+		{
+			this.task = {servicetype:"script"}
+			this.saveHandler;
+			this.mode = 'create';
+			this.restart;
+			
+			this.save = function() {
+				if( this.restart ) this.task.currentdate = null;
+				this.saveHandler( this.task );
+				return "_close";
+			}
+		}
+	);
+</script>
+
+<%
+def fields = [
+	[ type:"text", name:"task.id", required:"true", caption:"Task ID",],
+	[ type:"text", name:"task.description", caption:"Description", size:40],
+	[ type:"text", name:"task.service", required:"true", caption:"Service Name", size:40],
+	[ type:"text", name:"task.method", required:"true", caption:"Method", size:40],
+	[ type:"text", name:"task.servicetype", required:"true", caption:"Service Type"],
+	[ type:"textarea", name:"task.parameters", caption:"Parameters"],
+	[ type:"text", name:"task.apphost", required:"true", caption:"App Host"],
+	[ type:"text", name:"task.appcontext", required:"true", caption:"App Context"],
+	[ type:"text", name:"task.allowedhost", caption:"Allowed Host"],
+	[ type:"date", name:"task.startdate", required:"true", caption:"Start Date"],
+	[ type:"date", name:"task.enddate", caption:"End Date", options:"{maxYear : (new Date()).getFullYear() + 3}"],
+	[ type:"checkbox", name:"restart", caption:"Restart Task"],
+	[ type:"text", name:"task.interval", required:"true", caption:"Interval",],
+];
+%>
+
+@form( context: "taskinfo", fields: fields )
+

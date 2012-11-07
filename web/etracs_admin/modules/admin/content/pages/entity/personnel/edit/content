@@ -1,0 +1,91 @@
+<% 
+   def UID = "PERSNL" + new java.rmi.server.UID(); 
+%> 
+ 
+<script src="/js/ext/datetime.js"></script>
+
+<script>
+	\$put( 
+		"${PAGE.context}", 
+		new function() 
+		{
+			var svc = Service.lookup( "admin/PersonnelService");
+			
+			this.mode = "create";
+			
+			this.info =  { objid: '${UID}' };
+			this.saveHandler;
+	
+			this.saveCreate = function() {
+				svc.create( this.info );	
+				this.saveHandler();
+				return "_close";
+			}
+			
+			this.cancelCreate = function() {
+				if( confirm( "Discard Changes?")) {
+					return "_close";
+				}
+			}
+			
+			this.saveEdit = function() {
+				svc.update( this.info );	
+				this.saveHandler();
+				return "_close";
+			}
+			
+			this.cancelEdit = function() {
+				if( confirm( "Discard Changes?")) {
+					return "_close";
+				}
+			}
+			
+			
+		}
+	);
+</script>
+<style>
+	.label {
+		font-weight:bolder;
+		vertical-align:top;
+		width: 120px;
+	}
+</style>
+<table cellpadding="0" cellspacing="1">
+	<tr>
+		<td class="label">Staff No</td>
+		<td><input type="text" r:context="${PAGE.context}" r:name="info.staffno" r:required="true" r:caption="Staff No" /></td>
+	</tr>
+	<tr>
+		<td class="label">Last Name</td>
+		<td><input type="text" r:context="${PAGE.context}" r:name="info.lastname" r:required="true" r:caption="Lastname" style="width:240px;" r:textcase="upper"/></td>
+	</tr>
+	<tr>
+		<td class="label">First Name</td>
+		<td><input type="text" r:context="${PAGE.context}" r:name="info.firstname" r:required="true" r:caption="Firstname" style="width:240px;" r:textcase="upper"/></td>
+	</tr>
+	<tr>
+		<td class="label">Middle Name</td>
+		<td><input type="text" r:context="${PAGE.context}" r:name="info.middlename" r:caption="Middlename" style="width:240px;"  textcase="upper" r:textcase="upper"/></td>
+	</tr>
+	<tr>
+		<td class="label">Birthdate</td>
+		<td><span r:type="datetime" r:context="${PAGE.context}" r:name="info.birthdate" r:options="{mode:'date'}"></span></td>
+	</tr>
+	<tr>
+		<td class="label">Gender</td>
+		<td>
+			<input type="radio" r:context="${PAGE.context}" r:name="info.gender" value="M" r:required="true" r:caption="Gender"/>Male
+			&nbsp;
+			<input type="radio" r:context="${PAGE.context}" r:name="info.gender" value="F"/>Female
+		</td>
+	</tr>
+	<tr>
+		<td class="label">Email</td>
+		<td><input type="text" r:context="${PAGE.context}" r:name="info.email" r:caption="Email" style="width:250px"/></td>
+	</tr>
+	<tr>
+		<td class="label">Txn Code</td>
+		<td><input type="text" r:context="${PAGE.context}" r:name="info.txncode"  style="width:50px"/></td>
+	</tr>
+</table>

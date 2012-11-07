@@ -1,0 +1,6 @@
+{
+	href:		'/admin/entity/jobposition/list',
+	sortorder:	4,
+	secured:	true,
+	fragment:	true
+}

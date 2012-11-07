@@ -1,0 +1,63 @@
+<script>
+	\$put( 
+		"${PAGE.context}",
+		new function() {
+			var svc = Service.lookup( "admin/UserAccountService" );
+			this.useraccount;
+			this.saveHandler;
+			this.confirmpwd;
+			this.save = function() {
+				if( this.confirmpwd != this.useraccount.pwd) {
+					alert('Confirm password must match password specified');
+					return;
+				}
+				svc.createLoginAccount( this.useraccount );
+				if(this.saveHandler)this.saveHandler();
+				return "_close";
+			}
+			
+			this.cancel = function() {
+				if( confirm( "Discard changes?")) {
+					return "_close";
+				}
+			}
+		}
+	);
+</script>
+
+<table cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+		<td class="label">Name:</td>
+		<td>
+			<label r:context="${PAGE.context}">
+				#{useraccount.lastname}, #{useraccount.firstname} 
+			</label>	
+		</td>
+	</tr>
+	<tr>
+		<td class="label">Email:</td>
+		<td>
+			<input type="text" r:context="${PAGE.context}" r:name="useraccount.email"/>
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="label">User ID:</td>
+		<td>
+			<input type="text" r:context="${PAGE.context}" r:name="useraccount.uid" r:required="true" r:caption="User ID"/>
+		</td>
+	</tr>
+	<tr>
+		<td class="label">Password:</td>
+		<td>
+			<input type="password" r:context="${PAGE.context}" r:name="useraccount.pwd"  r:required="true" r:caption="Password"/>
+		</td>
+	</tr>
+	<tr>
+		<td class="label">Confirm Pwd:</td>
+		<td>
+			<input type="password" r:context="${PAGE.context}" r:name="confirmpwd"/>
+		</td>
+	</tr>
+	
+</table>

@@ -16,7 +16,8 @@
 		<complex name="contactinfo" serializer="default" type="list" ref="contactinfo"/>
 		<complex name="primaryaddress" serializer="default"  ref="address"/>
 		<complex name="secondaryaddress" serializer="default"  ref="address" required="false"/>
-		<complex name="spouseinfo" serializer="default"  ref="spouseinfo" required="false"/>		
+		<complex name="spouseinfo" serializer="default"  ref="spouseinfo" required="false"/>
+		<field name="txncode"/>		
     </element>
 
 	<element name="spouseinfo">
@@ -42,9 +43,5 @@
 		<field name="zipcode"/>
 	</element>
 	
-	<element name="txncode"  tablename="personnel_txncode">
-		<field name="personnelid" primary="true" />
-		<field name="txncode"/>
-	</element>
 	
 </schema>

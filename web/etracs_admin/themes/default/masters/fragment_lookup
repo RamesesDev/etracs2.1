@@ -1,0 +1,7 @@
+<div class="dialog-content dialog-body-area">
+	${_content}
+</div>
+<div class="dialog-content dialog-buttons-area">
+	<button r:context="$PAGE.context" r:name="select">Select</button>
+	<button r:context="$PAGE.context" r:name="_close">Cancel</button>
+</div>

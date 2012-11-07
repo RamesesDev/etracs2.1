@@ -1,0 +1,33 @@
+
+<div style="border:1px solid lightgrey;padding:10px;" r:context="${PAGE.context}" r:visibleWhen="#{show_search != true}">
+	<table width="100%">
+		<tr>
+			<td>
+				<b>Search Criteria: &nbsp;&nbsp;</b>
+				<label r:context="${PAGE.context}" r:visibleWhen="#{qry.staffno}">Staff no like '#{qry.staffno}'.</label>
+				<label r:context="${PAGE.context}" r:visibleWhen="#{qry.lastname}">Last name like '#{qry.lastname}'.</label>
+				<label r:context="${PAGE.context}" r:visibleWhen="#{qry.firstname}">First name like '#{qry.firstname}'.</label>
+			</td>
+			<td rowspan="2" valign="top" align="right">
+				<a r:context="${PAGE.context}" r:name="toggleSearch">Show Search</a> 
+			</td>
+		</tr>
+	</table>
+</div>	
+<div style="border:1px solid lightgrey;padding:10px;" r:context="${PAGE.context}" r:visibleWhen="#{show_search == true}">
+	<table width="100%">
+		<tr>
+			<td><input type="text" r:context="${PAGE.context}" r:name="qry.staffno" textcase="upper" r:hint="Enter Staff no"/></td>
+			<td><input type="text" r:context="${PAGE.context}" r:name="qry.lastname" textcase="upper"  r:hint="Enter Lastname"/></td>
+			<td><input type="text" r:context="${PAGE.context}" r:name="qry.firstname" textcase="upper"  r:hint="Enter Firstname"/></td>
+			<td rowspan="2" valign="top">
+				<button r:context="${PAGE.context}" r:name="reloadList" r:immediate="true">Go</button>
+				<button r:context="${PAGE.context}" r:name="reset" r:immediate="true">Undo</button>
+			</td>
+			<td rowspan="2" valign="top" align="right">
+				<a r:context="${PAGE.context}" r:name="toggleSearch">Hide</a> 
+			</td>
+		</tr>
+		
+	</table>
+</div>

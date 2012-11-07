@@ -2,65 +2,50 @@ import com.rameses.annotations.*;
 import com.rameses.util.*;
 
 
-public class DesktopLoginInterceptor
-{
+public class DesktopLoginInterceptor {
+
 	@Env
 	def env;
 	
 	@PersistenceContext("main")
 	def em;
 	
-	@Service("JobPermissionService")
-	def jobpermSvc;
-	
 	@Service("OrgunitService")
 	def orgSvc;
 	
+	@Service("JobPositionService")
+	def jobSvc;
 	
 	@Before(pattern="LoginService.login.*", eval="env.CLIENTTYPE=='desktop'")
-	public void validateTerminal( evt ) 
-	{
+	public void validateTerminal( evt ) {
 		if(!env.TERMINALID) return;
-		
 		def term = em.read( "terminal", [terminalid: env.TERMINALID] );
 		if(!term || term.macaddress != env.MACADDRESS)
 			throw new Warning("INVALID_MACHINE_REGISTERED");
-
 	}
 	
 	@After(pattern="LoginService.login.*", eval="env.CLIENTTYPE=='desktop'")
-	public void loadProfile( evt )
-	{
+	public void loadProfile( evt ) {
+	
 		def profile = evt.result;
 
 		//set env value
 		env.userid = profile.objid;
 		env.sessionid = profile.sessionid;
 		
-		def perms = [];
 		def jobtitle;
 		def client = orgSvc.readByCode( env.CLIENTCODE );
 		
-		if( client ) {
-			def job = jobpermSvc.getUserJobposition([:]);
-			if( job ) {
-				if( job.permissions && job.orgunitid == client.objid ) {
-					perms.addAll(job.permissions);
-					jobtitle = job.title;
-				}
-				
-				job.others.each {
-					if( it.objid == job.objid ) return;
-					if( it.orgunitid != client.objid ) return;
-					
-					def j = jobpermSvc.getUserJobposition([jobid: it.objid]);
-					if( j.permissions ) {
-						perms.addAll(j.permissions);
-						if( !jobtitle ) jobtitle = j.title;
-					}
-				};
-			}
+		//retrieve sys role permissions
+		def permissionMap = [:];
+		def _perms = jobSvc.getUserPermissions( [assigneeid: profile.objid ] );
+		_perms.each {
+			def srole = it.sysrole;
+			def domain  = it.domain;
+			if(domain) srole = domain + "." + srole;
+			permissionMap.put( srole, (it.excluded?it.excluded:"") + ((it.excluded && it.disallowed)?"|":"") + (it.disallowed?it.disallowed:""));
 		}
+		permissionMap.ALLOWED = "system.*";
 		
 		profile.env = [
 			userid              : profile.objid,
@@ -75,11 +60,15 @@ public class DesktopLoginInterceptor
 			USERFORMALNAME      : profile.firstname + (profile.middlename? ' ' + profile.middlename : '') + ' ' + profile.lastname,
 			JOBTITLE			: jobtitle,
 			CLIENT				: client,
+			ROLES				: permissionMap
 		];
 		
 		//load permissions
-		profile.permissions = perms;
+		/*
+		profile.permissions = [];
+		profile.permissions.add(".*");
 		profile.permissions.add("system.*");
+		*/
 	}
 	
 }

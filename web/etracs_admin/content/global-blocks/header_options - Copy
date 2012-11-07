@@ -1,0 +1,66 @@
+<%
+import com.rameses.anubis.web.*;
+
+def job = [:];
+try 
+{
+	def anubisSess = anubisContext.session;
+	def request = anubisContext.request;
+
+	//sessionid is in "<sess-id>!!<user-id>" pattern
+	def idarr = CookieUtil.getCookie( "SESSIONID", request ).value.split('!!');
+	anubisSess.env.putAll([sessionid: idarr[0], userid: idarr[1]]);
+	
+	def svc = SERVICE.lookup("user-service/JobPermissionService");
+	job = svc.getUserJobposition(PARAMS);
+%>
+
+	<script type="text/javascript">
+		\$register({id:"#jobmenu", context:"job_menu"});
+		
+		\$put(
+			"job_menu",
+			new function() {
+				var jobMenu;						
+				this.showJobs = function() {
+					if( !jobMenu ) {
+						jobMenu = new DropdownOpener( '#jobmenu' );
+						jobMenu.options = {
+							styleClass: 'dropdownmenu',
+							handleClassOnOpen: 'expanded',
+							position: 'bottom-left'
+						};
+					}
+					return jobMenu;
+				}
+			}
+		);
+	</script>
+
+
+	<a r:context="job_menu" r:name="showJobs" class="job-title">
+		${job.title}
+		<%
+		if( job.others ) println "&nbsp;&nbsp;&#9660;";
+		%>
+	</a>
+	<div id="jobmenu" style="display:none">
+		<table cellpadding="0" cellspacing="0" width="150">
+			<% job.others.each { item -> %>
+				<tr>
+				  <td>
+					<a href="?jobid=${item.objid}">
+						${item.title}
+					</a>
+				  </td>
+				</tr>
+			<% } %>
+		</table>
+	</div>
+
+<%
+}
+catch(e) {
+	//do nothing
+}
+%>

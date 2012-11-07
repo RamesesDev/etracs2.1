@@ -8,6 +8,6 @@ from (
 order by p.lastname, p.firstname, p.staffno 
 
 [getPersonnelPositions]
-select code, title, role, objid  
+select code, title, objid  
 from jobposition 
 where assigneeid=$P{objid}

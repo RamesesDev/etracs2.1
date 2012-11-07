@@ -1,12 +1,11 @@
 <schema>
 
 	<element name="role" tablename="role" >
-		<field name="name" primary="true"/>
+		<field name="role" primary="true"/>
+		<field name="domain" primary="true"/>
+		<field name="sysrole"/>
 		<field name="description" />
-		<field name="roleclass" />
-		<complex name="included" serializer="default" />
-		<field name="system"/>
+		<field name="excluded" />
     </element>
-
 	
 </schema>

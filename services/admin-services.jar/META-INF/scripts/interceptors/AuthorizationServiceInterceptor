@@ -4,26 +4,21 @@ import com.rameses.annotations.*;
 public class AuthorizationServiceInterceptor 
 {
 	
-	@Service("JobPermissionService")
-	def svc;
 	
 	@Env
 	def env;
 
 	@After(pattern="AuthorizationService.checkPermission.*") 
-	public void afterCheckPermission( evt ) 
-	{
+	public void afterCheckPermission( evt )  {
 		def params = evt.args[0];
-		
-		//SESSIONID is in "<sess-id>!!<user-id>" pattern
+		print "check permissions for " + params;
+	
+		/*
+		def params = evt.args[0];
 		def idarr = env.SESSIONID.split('!!');
-		
 		env.putAll([sessionid: idarr[0], userid: idarr[1]]);
-		
 		def result = svc.getUserJobposition( [jobid: params.jobid] );
-		
 		evt.result.allowed = false;
-		
 		if( result.permissions ) {
 			for( it in result.permissions ) {
 				if( it.matches(params.key) ) {
@@ -32,6 +27,7 @@ public class AuthorizationServiceInterceptor
 				}
 			}
 		}
+		*/
 	}
 	
 }

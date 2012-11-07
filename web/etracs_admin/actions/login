@@ -1,0 +1,23 @@
+import com.rameses.util.*;
+
+
+String target = PARAMS.target;
+
+if(!target || target=='null') target = PROJECT.login_redirect;
+if(!target || target=='null') target = "/";
+
+try {
+	def svc = SERVICE.lookup('user-service/AuthenticationService');
+	def result = svc.authenticate( PARAMS );
+	
+	SESSION.session.createSession( [sessionid: result.SESSIONID] );
+	return target;
+}
+catch(e) {
+	def oe = ExceptionManager.getOriginal(e);
+	System.out.println("LOGIN ERROR: " + oe.message);
+	
+	target = java.net.URLEncoder.encode( target );
+	return "/retrylogin?target=${target}";
+}
+

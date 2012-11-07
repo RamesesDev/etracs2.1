@@ -1,0 +1,3 @@
+
+<button r:context="${PAGE.context}" r:visibleWhen="#{mode=='read'}" r:name="viewPermissions">Permissions</button>
+

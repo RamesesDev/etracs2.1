@@ -1,0 +1,18 @@
+<% def search = ANUBIS.getBlock("search"); %>
+<table width="100%" height="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td>${_actions}</td>
+		<td align="right">${_search}</td>
+		
+	</tr>
+	<tr>
+		<td valign="top" colspan="2">${_content}</td>
+	</tr>
+	<tr>
+		<td valign="top"  colspan="2">
+			<a r:context="$PAGE.context" r:name="listModel.movePrev">Prev</a>
+			&nbsp;&nbsp;
+			<a r:context="$PAGE.context" r:name="listModel.moveNext">Next</a>
+		</td>
+	</tr>
+</table>

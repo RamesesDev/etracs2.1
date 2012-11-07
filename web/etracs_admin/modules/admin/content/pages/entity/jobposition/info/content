@@ -1,0 +1,108 @@
+<script>
+	\$put(  
+		"${PAGE.context}",
+		
+		new function() {	
+		
+			var svc = Service.lookup("admin/JobpositionService");
+			var orgSvc = Service.lookup( "admin/OrgunitService" );
+			
+			this.mode = "create";
+			this.jobposition;
+			this.saveHandler;
+			this.objid;
+			this.orgUnits;
+			var self = this;
+			
+			this.onload = function() {
+				this.orgUnits = orgSvc.getUserOrgunits({});
+				if(this.mode=="read") {
+					this.jobposition = svc.read( {objid: this.objid} );
+					this.selectedOrgUnit = this.orgUnits.find( function(x) { return x.objid == self.jobposition.orgunitid }   );
+				}
+				if( this.mode == "create" ) {
+					this.jobposition.objid = "JOBP-${new java.rmi.server.UID()}";
+				}
+			}
+			
+			this.saveCreate = function() {
+				svc.create(this.jobposition);
+				if(this.saveHandler) this.saveHandler();
+				return "_close";
+			}
+			
+			this.cancelCreate = function() {
+				if( confirm( "Discard changes?")) {
+					return "_close";
+				}
+			}
+			this.edit = function() {
+				this.mode = "edit";
+			}
+			
+			this.saveEdit = function() {
+				svc.update(this.jobposition);
+				if(this.saveHandler) this.saveHandler();
+				return "_close";
+			}
+			
+			this.cancelEdit = function() {
+				if( confirm( "Discard changes?")) {
+					this.mode = "read";
+				}
+			}
+			
+			this.viewPermissions = function() {
+				return new PopupOpener("jobposition-permissions", {jobposition : this.jobposition });
+			}
+		}
+	)
+</script>
+
+<style>
+	.label {
+		font-weight: bolder;
+		width: 120px;
+		vertical-align:top;
+	}
+</style>
+
+<table cellpadding="0" cellspacing="0"> 
+	<tr>
+		<td class="label">Code:</td>
+		<td>
+			<label r:context="$PAGE.context" r:name="jobposition.code" r:visibleWhen="#{mode=='read'}"/>
+			<input type="text" r:context="$PAGE.context" r:name="jobposition.code" r:required="true" r:caption="Code"  r:visibleWhen="#{mode!='read'}"/>
+		</td>
+	</tr>
+	<tr>
+		<td class="label">Title:</td>
+		<td>
+			<label r:context="$PAGE.context" r:name="jobposition.title"  r:visibleWhen="#{mode=='read'}"/>
+			<input type="text" r:context="$PAGE.context" r:name="jobposition.title" r:required="true" r:caption="Title" size="50"  r:visibleWhen="#{mode!='read'}"/>
+		</td>
+	</tr>
+	<tr>
+		<td class="label">Org Unit:</td>
+		<td>
+			<label r:context="$PAGE.context" r:name="jobposition.orgunitid" r:visibleWhen="#{mode=='read'}"/>
+			<select r:context="$PAGE.context" r:name="jobposition.orgunitid" r:required="true" r:caption="Org Unit" r:items="orgUnits" 
+				r:allowNull="true" r:itemLabel="code" r:itemKey="objid" r:visibleWhen="#{mode!='read'}"></select>
+		</td>
+	</tr>
+	<tr>
+		<td class="label" valign="top">Job Status:</td>
+		<td valign="top">
+			<label r:context="$PAGE.context" r:visibleWhen="#{mode=='read'}">#{jobposition.jobstatus=='R' ? 'Regular' : 'Delegated'}</label>
+		
+			<input type="radio" r:context="$PAGE.context" r:name="jobposition.jobstatus" value="R" r:visibleWhen="#{mode!='read'}" />
+			<label r:context="$PAGE.context" r:visibleWhen="#{mode!='read'}">Regular</label>
+			<br>
+			<input type="radio" r:context="$PAGE.context" r:name="jobposition.jobstatus" value="D"  r:visibleWhen="#{mode!='read'}">
+			<label r:context="$PAGE.context" r:visibleWhen="#{mode!='read'}">Delegated</label>
+		</td>
+	</tr>
+	
+</table>
+
+

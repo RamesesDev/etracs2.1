@@ -1,0 +1,9 @@
+{
+	title: 		'Terminals',
+	context:	'terminal',
+	fragment: 	true,
+	sortorder:	8,
+	secured:	true,
+	layout:		'common/pagelist',
+	master:		'fragment_document'
+}

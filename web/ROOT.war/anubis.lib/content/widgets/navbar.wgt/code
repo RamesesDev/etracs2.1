@@ -1,0 +1,14 @@
+<%
+   def folderid = OPTIONS.folderid ? OPTIONS.folderid : '/';	
+   def allItems = ANUBIS.getFolder(folderid).allowedChildren;
+   def items = allItems - allItems.findAll{ it.hidden }
+   def style = OPTIONS.style ? OPTIONS.style : 'horizontal'
+   def result = ANUBIS.getTemplate('navbar/'+style, items, null, OPTIONS );
+   
+   if( !result ) {
+		result = ANUBIS.getTemplate('navbar/horizontal', items, null, OPTIONS );
+   }
+%>
+${result}
+			
+		

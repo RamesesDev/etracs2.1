@@ -1,0 +1,91 @@
+<% def context="lgu"; %>
+
+<h2>LGU Information</h2>
+
+<%
+
+def fields = [
+	[type: "label", caption: "Index No.", value:"#{entity.indexno}"],
+	[type: "label", caption: "Name", value:"#{entity.lguname}"],
+];
+
+%>
+@form( context: context, fields: fields )
+
+
+<table width="100%">
+	<tr>
+		<td valign="top">
+			<table>
+				<tr>
+					<td>
+						<h3>
+							<span r:type="label" r:context="${context}">#{entity.lgutype == 'PROVINCE'? 'Municipality' : 'District'} Information</span>
+						</h3>
+					</td>
+					<td>
+						<button r:context="${context}" r:name="addDistrict">+Add</button>
+					</td>
+				</tr>
+			</table>
+			<%
+			
+			def cols = [
+				[name: "indexno", caption: "Index No.", width:"100px"],
+				[name: "lguname", caption: "Name"],
+				[width: "10px", html: """
+					<a r:context="${context}" r:name="editDistrict" title="Edit">
+						<img src="/res/admin/edit.gif"/>
+					</a>
+				"""],
+				[width: "10px", html: """
+					<a r:context="${context}" r:name="removeDistrict" title="Remove">
+						<img src="/res/admin/trash.gif"/>
+					</a>
+				"""],
+			];
+			
+			%>
+			@grid( context: context, model: 'districtModel', name: 'selectedDistrict', cols: cols )
+		</td>
+		<td valign="top">
+			<table>
+				<tr>
+					<td><h3>Barangay Information</h3></td>
+					<td>
+						<button r:context="${context}" r:name="addBarangay" r:visibleWhen="#{selectedDistrict}" r:depends="selectedDistrict">+Add</button>
+					</td>
+				</tr>
+			</table>
+			<%
+
+			cols = [
+				[caption: "Index No.", name: "indexno", width:"100px"],
+				[caption: "Name", name: "lguname"],
+				[caption: "Has Org?", html: """
+					<label r:context="${context}" r:visibleWhen="#{!!item.orgunit}">
+						<img src="/res/admin/checked.png"/>
+					</label>
+					<label r:context="${context}" r:visibleWhen="#{!item.orgunit}">
+						<img src="/res/admin/unchecked.png"/>
+					</label>
+				"""],
+				[html: """
+					<a r:context="${context}" r:name="editBarangay" title="Edit">
+						<img src="/res/admin/edit.gif"/>
+					</a>
+				"""],
+				[html: """
+					<a r:context="${context}" r:name="removeBarangay" title="Remove">
+						<img src="/res/admin/trash.gif"/>
+					</a>
+				"""],
+			];
+
+			%>
+			@grid( context: context, model: 'barangayModel', name: 'selectedBarangay', cols: cols )
+			
+		</td>
+	</tr>
+</table>
+

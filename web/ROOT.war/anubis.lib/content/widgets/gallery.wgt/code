@@ -1,0 +1,10 @@
+<%
+	def id = OPTIONS.id;
+	if(!id.startsWith("/")) id = "/"+id;
+	def allItems = ANUBIS.getFolder( id ).allowedChildren; 
+	def items = allItems - allItems.findAll{ it.hidden }
+	def xclass = (OPTIONS.class) ? OPTIONS.class : id;
+	def style = (OPTIONS.style) ? OPTIONS.style: 'vertical';
+%>
+
+${ANUBIS.getTemplate('gallery/'+style, items, null, OPTIONS )}

@@ -1,0 +1,63 @@
+<% def context="edit_item" %>
+
+<script>
+	\$put(
+		'edit_item',
+		new function() 
+		{
+			this.entity = {};
+			this.saveHandler;
+			this.lgutype;
+			
+			this.save = function() {
+				if( this.saveHandler )
+					this.saveHandler( this.entity );
+				return '_close';
+			}
+			
+			this.registerOrgunit = function() {
+				var svc = Service.lookup( "admin/OrgunitService" );
+				var lgu = {
+					objid: this.entity.objid,
+					code: this.entity.indexno,
+					title: this.entity.formalname,
+					orgtype: "BARANGAY",
+					reftype: "BARANGAY",
+					refid: this.entity.objid
+				}
+				svc.create(lgu);
+				this.entity.orgunit = lgu.objid;
+			}
+			
+			this.unregisterOrgunit = function() {
+				if( confirm('You are about to unregister this from the orgunit. Proceed?') ) {
+					var svc = Service.lookup( "admin/OrgunitService" );
+					svc.remove({objid: this.entity.objid});
+					this.entity.orgunit = null;
+				}
+			}
+		}
+	);
+</script>
+
+<ui:context name="edit_item">
+	<div r:type="label" r:context="${context}">
+		<h3>Edit #{lgutype}</h3>
+	</div>
+	<%
+	def fields = [
+		[type:"label", caption:"Index No.", value: "#{entity.indexno}"],
+		[type:"text", caption:"Name", name: "entity.lguname", required: true, size:"30"],
+	];
+	%>
+	@form( context: context, fields: fields )
+
+	<% if( PARAMS.lgutype == "Barangay" ) { %>
+		<br>
+		<a r:context="${context}" r:name="registerOrgunit" r:visibleWhen="#{!entity.orgunit}">Register Orgunt</a>
+		<a r:context="${context}" r:name="unregisterOrgunit" r:visibleWhen="#{entity.orgunit}">Unregister Orgunit</a>
+	<% } %>
+</ui:context>
+
+
+

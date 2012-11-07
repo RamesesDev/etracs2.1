@@ -1,0 +1,9 @@
+{
+	href:		'/admin/entity/personnel/list',
+	sortorder:	5,
+	secured:	true,
+	fragment:	true,
+	domain: 'hr',
+	role: 'admin',
+	permission: 'createPersonnel'
+}

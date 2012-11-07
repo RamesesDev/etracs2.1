@@ -1,40 +1,35 @@
 [list]
-SELECT jp.*, p.lastname + ', ' + p.firstname + ' '  + ISNULL(p.middlename,'') AS assignee 
-FROM jobposition jp
-	LEFT JOIN personnel p ON jp.assigneeid = p.objid  
-WHERE ${condition} 	
-ORDER BY p.lastname, p.firstname 
+select jp.*, p.lastname + ',' + p.firstname as assignee 
+from ( 
+  select * 
+  from jobposition  
+  ${condition} 
+) jp 
+left join personnel p on jp.assigneeid = p.objid  
+order by jp.code 
+
+[unassigned-list]
+select jp.*  
+from ( 
+  select * 
+  from jobposition  
+  ${condition} 
+) jp 
+where jp.assigneeid is null 
+order by jp.code 
 
 
-[get-job-permissions]
- select 
-	j.excluded, r.included
- from 
-  jobposition j
- inner join role r on r.name = j.role
- where j.objid = $P{jobid}
+[roles]
+select jpr.*, ur.excluded from jobposition_role jpr inner join role ur on jpr.role = ur.role where jpr.jobpositionid = $P{jobpositionid}
 
-[role-permission]
-select jp.excluded, r.included, jp.objid, r.name, r.roleclass  
-from jobposition jp 
-inner join role r on jp.role=r.name 
-where jp.objid = $P{jobpositionid} 
+[remove-roles]
+delete from jobposition_role where jobpositionid = $P{jobpositionid}
 
-[user-job-position-list]
-select jp.objid,jp.code,jp.title,jp.orgunitid,jp.roleclass,jp.role, jp.excluded, r.included, jp.jobstatus 
-from jobposition jp 
-inner join role r on jp.role=r.name 
-where jp.assigneeid=$P{userid} 
-order by jp.jobstatus desc
+[role-permissions-byuser]
+select  jpr.sysrole, r.excluded, jpr.disallowed, jpr.domain  
+from jobposition_role jpr 
+inner join jobposition jp on jpr.jobpositionid=jp.objid 
+inner join role r on jpr.role = r.role 
+where jp.assigneeid = $P{assigneeid}
 
-[get-tags]
- select jt.jobid, jt.tagid
- from jobposition_tag jt 
- where jt.jobid = $P{jobid}
- 
-[remove-tags]
- delete from jobposition_tag where jobid = $P{jobid}
 
- 
- 
- 

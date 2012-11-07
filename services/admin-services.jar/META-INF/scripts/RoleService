@@ -5,21 +5,17 @@ class RoleService {
 	@PersistenceContext("main")
 	def em;
 
-	@Service("RoleclassService")
-	def roleclassSvc;
-	
-	@Service("PermissionService")
-	def permSvc;
-	
+	@Service("SysRoleService")
+	def sysRoleSvc;
 	
 	@ProxyMethod
 	public def getList(def params) {
 		def sql = "role:list";
-		if( params?.roleclass ) sql = "role:list-by-roleclass";
-		//if( params.exclude_system ) sql += "-exclude-system";
+		if( params?.sysrole ) sql = "role:list-by-sysrole";
+		else if( params?.domain ) sql = "role:list-by-domain";
 		
 		def qry = em.sqlContext.createNamedQuery( sql );
-		qry.setPagingKeys("name");
+		qry.setPagingKeys("role");
 		
 		if(params) {
 			if(params._start) qry.setFirstResult( params._start );
@@ -29,10 +25,6 @@ class RoleService {
 		return qry.resultList;
 	}
 	
-	@ProxyMethod
-	public def create(def o) {
-		return em.create( "role", o );
-	}
 	
 	@ProxyMethod
 	public def read(def o) {
@@ -40,7 +32,20 @@ class RoleService {
 	}
 
 	@ProxyMethod
+	public def create(def o) {
+		if(!o.permissions) o.permissions = [];
+		def disallowed = o.permissions.findAll{ !it.allowed }*.key;
+		o.system = 0;
+		if(disallowed) o.excluded = disallowed.join("|");
+		return em.create( "role", o );
+	}
+
+	@ProxyMethod
 	public def update(def o) {
+		if(!o.permissions) o.permissions = [];
+		def disallowed = o.permissions.findAll{ !it.allowed }*.key;
+		o.excluded = disallowed.join("|");
+		o.remove( "permissions" );
 		return em.update( "role", o );
 	}
 	
@@ -50,44 +55,38 @@ class RoleService {
 	}
 	
 	@ProxyMethod
-	public def getRolesByClass(def params) {
-		def qry = em.sqlContext.createNamedQuery( "role:list-by-roleclass" );
-		if(params) {
-			qry.setParameters( params );
-		}
-		return qry.resultList;
+	public def getDomainList() {
+		return sysRoleSvc.getDomainList([:])*.domain;
+	}
+
+	@ProxyMethod
+	public def getSysRoles(def o) {
+		return sysRoleSvc.getList(o)*.name;
 	}
 	
-
-	/*
 	@ProxyMethod
-	public def getAllPermissions(def rolename) {
-		def role = em.read( "role", [name: rolename] );
-		def m = [:];
-		m.modules = roleclassSvc.getModulePermissions( role.roleclass, null );
-		m.included = ( !role.included ) ? [] : role.included;
-		
-		def allperms = [];
-		m.modules.each{ mod ->
-			mod.rows.each{ row ->
-				mod.cols.each{ col -> 
-					allperms.add("${mod.modulename}:${row}.${col}".toString()) 
-				}
+	public def getPermissions(def o) {
+		def permissions =  sysRoleSvc.getPermissions(o);
+		permissions.each { 
+			if( o.excluded && it.key.matches(o.excluded) ) 
+				it.allowed = false;
+			else
+				it.allowed = true; 
+		};
+		return permissions;
+	}
+
+	@ProxyMethod
+	public def getLimitedPermissions(def role) {
+		def permissions = sysRoleSvc.getPermissions(role);
+		def list = [];
+		permissions.each {
+			if( !role.excluded || !it.key.matches(role.excluded) ) {		
+				it.allowed = true; 
+				list.add( it );
 			}
-		}
-		
-		m.included = permSvc.filterIncludes( allperms, m.included );
-		
-		return m;
-	}
-	*/
-	
-	@ProxyMethod
-	public def updatePermissions(def r) {
-		def role = em.read( "role", r );
-		role.included = r.included;
-		em.update( "role", role );	
+		};
+		return list;
 	}
 	
-
 }

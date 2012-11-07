@@ -1,0 +1,194 @@
+<%
+	def ifNull = { o,v->
+		return (o) ? o : v; 
+	}
+	def svc = SERVICE.lookup( "admin/PersonnelService" );
+	def info = svc.read( [objid: PARAMS.objid] );
+	def positions = svc.getPositions( [objid: PARAMS.objid] ); 
+	
+	svc = SERVICE.lookup("admin/UserAccountService");
+	def useracct = svc.getAccount( [objid:PARAMS.objid] );
+	
+	def USERACCT = ANUBIS.getFileInfo( "/"+MODULE.name+"/entity/personnel/useraccount.pg" );
+	def PWD = ANUBIS.getFileInfo( "/"+MODULE.name+"/entity/personnel/userpassword.pg" );
+	def PERSONNEL_EDIT = ANUBIS.getFileInfo( "/" + MODULE.name + "/entity/personnel/edit.pg" );
+	def LOOKUP_JOBPOSITION = ANUBIS.getFileInfo( "/" + MODULE.name + "/entity/jobposition/lookup.pg" );
+%>
+
+<script>
+	@register( USERACCT.path )
+	@register( PWD.path )
+	@register( PERSONNEL_EDIT.path )
+	
+	\$put( "$PAGE.context",
+		new function() {
+		
+			var self = this;
+			var handler = function() {
+				self._controller.reload();		
+			}
+		
+			this.edit = function() {
+				var info = ${com.rameses.anubis.JsonUtil.toString(  info )};
+				return new PopupOpener( "${PERSONNEL_EDIT.name}", { saveHandler: handler, info: info, mode:'edit' });
+			}
+			
+			this.createAccount = function() {
+				var usr = {
+					objid: '${info.objid}',
+					lastname: '${info.lastname}',
+					firstname: '${info.firstname}',
+					middlename: '${info.middlename}',
+					usertype: 'personnel',
+					email:	'${info.email}',
+				}
+				return new PopupOpener( "${USERACCT.name}", {saveHandler: handler, useraccount: usr} ); 	
+			}
+			
+			
+			<%if(useracct){%>
+			this.removeAccount = function() {
+				if( confirm("Your about to remove login account of user. Continue?")) {
+					var svc = Service.lookup("admin/UserAccountService");
+					svc.remove( {objid: '${info.objid}' } );
+					handler();
+				}
+			}
+			
+			this.changePassword = function() {
+				var usr = { username: '${useracct.uid}' };
+				return new PopupOpener( "${PWD.name}", { useraccount: usr} ); 
+			}
+			<%}%>
+			
+			this.selectedJobPosition;
+			this.viewPermissions = function() {
+				return new PopupOpener( "jobposition-permissions", {jobposition: this.selectedJobPosition} );
+			}
+			
+			this.assignPosition = function() {
+				return new PopupOpener( "${LOOKUP_JOBPOSITION.name}", {assigneeid: "${info.objid}", selectHandler: handler  } );
+			}
+			
+			this.removeAssignee = function() {
+				if( confirm( "You are about to remove this assigned position. Continue?") ) {
+					var jobpossvc = Service.lookup( "admin/JobpositionService" );
+					jobpossvc.unassign( {objid: self.selectedJobPosition.objid  } );
+					handler();
+				}
+			}
+			
+		}
+	);	
+</script>
+
+<style>
+	.label {
+		font-weight: bolder;
+		width: 150px;
+	}
+	h1{
+		background-color: lightgrey;
+		font-size:15px;
+		padding: 2px;
+	}
+</style>
+
+
+
+<h1>Personal Info</h1>
+<table cellpadding="0" cellspacing="1" width="60%">
+	<tr>
+		<td class="label">Staff No</td>
+		<td>${info.staffno}</td>
+		<td rowspan="7" valign="top" align="right">
+			<a r:context="$PAGE.context" r:name="edit">Edit</a>
+		</td>
+	</tr>
+	<tr>
+		<td class="label">Last Name</td>
+		<td>${info.lastname}</td>
+	</tr>
+	<tr>
+		<td class="label">First Name</td>
+		<td>${info.firstname}</td>
+	</tr>
+	<tr>
+		<td class="label">Middle Name</td>
+		<td>${ ifNull(info.middlename,'-')}</td>
+	</tr>
+	<tr>
+		<td class="label">Birthdate</td>
+		<td>${ifNull(info.birthdate,'-')}</td>
+	</tr>
+	<tr>
+		<td class="label">Gender</td>
+		<td>${(info.gender=='M')?'Male':'Female'}</td>
+	</tr>
+	<tr>
+		<td class="label">Email</td>
+		<td>${ifNull(info.email,'-')}</td>
+	</tr>
+	<tr>
+		<td class="label">Txn Code</td>
+		<td>${ifNull(info.txncode,'-')}</td>
+	</tr>
+	
+</table>
+<br>
+
+<h1>User Account</h1>
+<%if( useracct) {%>
+	<table cellpadding="0" cellspacing="1"  width="60%">
+		<tr>
+			<td class="label">User Account</td>
+			<td>${useracct.uid}</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+				<a r:context="${PAGE.context}" r:name="changePassword">Change Password</a>
+				&nbsp;
+				<a r:context="${PAGE.context}" r:name="removeAccount">Remove Account</a>
+			</td>
+		</tr>
+	</table>
+	
+<%}%>
+<%if( !useracct) {%>
+	<font color="red"><i>There is no user account defined yet.</i></font>
+	<a r:context="${PAGE.context}" r:name="createAccount"> Create an account</a>
+<%}%>
+
+
+<br>
+<h1>Job Positions</h1>
+<a r:context="${PAGE.context}" r:name="assignPosition">Assign Position</a>
+<%if( positions ) {%>
+	<table cellpadding="0" cellspacing="1" width="80%" class="grid">
+		<thead>
+			<tr>
+				<td width="40">Code</td>
+				<td>Title</td>
+				<td width="10"></td>
+				<td width="10"></td>
+			</tr>
+		</thead>
+		<tbody>
+			<%positions.each{%>
+				<tr>
+					<td>${it.code}</td>
+					<td>${it.title}</td>
+					<td>
+						<a r:context="${PAGE.context}" r:name="viewPermissions" r:params="{selectedJobPosition:{ objid:'${it.objid}', code:'${it.code}', title:'${it.title}'}}">
+							<img src="/res/admin/key.png"/>
+						</a>
+					</td>
+					<td><a r:context="${PAGE.context}" r:name="removeAssignee" r:params="{selectedJobPosition:{ objid:'${it.objid}', code:'${it.code}', title:'${it.title}'}}">Unassign</a></td>
+				</tr>
+			<%}%>
+		</tbody>
+	</table>
+<%}%>
+<%if( !positions) {%>
+	<font color="red"><i>There are no job positions defined</i></font>
+<%}%>

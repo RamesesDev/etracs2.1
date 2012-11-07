@@ -1,0 +1,9 @@
+{
+	title: 		'Org Units',
+	context:	'orgunit-list',
+	fragment: 	true,
+	sortorder:	3,
+	secured:	true,
+	layout:		'common/pagelist',
+	master:		'fragment_document'
+}

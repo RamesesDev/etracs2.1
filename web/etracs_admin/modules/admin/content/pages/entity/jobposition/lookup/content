@@ -1,0 +1,79 @@
+<script>
+	
+	
+	\$put( "$PAGE.context", 
+		new function() {
+			var svc = Service.lookup( "admin/OrgunitService" );
+			var jobpossvc = Service.lookup( "admin/JobpositionService" );
+	
+			var self = this;
+	
+			this.selectedItem;
+			this.orgUnits;
+			this.orgUnit;
+			this.searchText;
+			this.selectHandler;
+			this.assigneedid;
+	
+			this.onload = function() {
+				this.orgUnits = svc.getUserOrgunits({});
+			}	
+
+			this.listModel = {
+				rows: 10,
+				fetchList: function(o) {
+					o.orgunitid = null;
+					o.searchText = null;
+					o.unassigned = true;
+					if(self.orgUnit) o.orgunitid = self.orgUnit.objid;
+					if(self.searchText) o.searchText = self.searchText;
+					return jobpossvc.getList( o );
+				}
+			}
+	
+			this.propertyChangeListener = {
+				orgUnit : function(o) { self.listModel.load(); }
+			}
+	
+			this.doSearch = function() {
+				self.listModel.load();
+			}
+			this.reset = function() {
+				this.searchText = null;	
+				self.listModel.load();
+			}
+			
+			this.select = function() {
+				if( confirm("You are about to assign this position. Continue?")) {
+					jobpossvc.assign( {objid: self.selectedItem.objid, assigneeid: self.assigneeid } );
+					if(self.selectHandler) self.selectHandler();
+					return "_close";
+				}
+			}
+		}
+	);
+</script>
+
+<style>
+	.grid .selected {
+		background-color: orange;
+		color:white;
+	}
+</style>
+
+<table r:context="$PAGE.context" r:model="listModel" r:name="selectedItem" r:varName="item" width="100%" class="grid" cellpadding="0" cellspacing="0"> 
+	<thead>
+		<tr>
+			<td>Org</td>
+			<td>Code</td>
+			<td>Title</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>#{item.orgunitid}</td>
+			<td>#{item.code}</td>
+			<td>#{item.title}</td>
+		</tr>
+	</tbody>
+</table>

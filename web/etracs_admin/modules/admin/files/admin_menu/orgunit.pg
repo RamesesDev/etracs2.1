@@ -1,0 +1,6 @@
+{
+	href:		'/admin/entity/orgunit/list',
+	sortorder:	3,
+	secured:	true,
+	fragment:	true
+}

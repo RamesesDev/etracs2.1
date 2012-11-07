@@ -18,7 +18,8 @@ class OrgunitService {
 	
 	@ProxyMethod
 	public def create(def o) {
-		if( !o.objid ) o.objid = "OU" + new java.rmi.server.UID();
+		//force the code as objid. 
+		o.objid = o.code;
 		return em.create( "orgunit", o );
 	}
 	

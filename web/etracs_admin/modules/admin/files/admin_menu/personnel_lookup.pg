@@ -1,0 +1,6 @@
+{
+	href:		'/admin/entity/personnel/lookup',
+	sortorder:	10,
+	secured:	true,
+	fragment:	true
+}

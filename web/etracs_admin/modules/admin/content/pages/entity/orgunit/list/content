@@ -1,0 +1,97 @@
+<% 
+	def ORGUNIT = ANUBIS.getFileInfo( "/"+ MODULE.name + "/entity/orgunit/info.pg" );
+%>
+
+<script>
+	@register( ORGUNIT.path );
+	
+	
+	\$put( 
+		"${PAGE.context}", 
+		new function() {
+			var svc = Service.lookup( "admin/OrgunitService" );
+	
+			var self = this;
+	
+			this.selectedItem;
+			this.orgTypes;
+			
+			this.orgType;
+	
+			this.onload = function() {
+				this.orgTypes = svc.getOrgtypes();
+				if(this.orgTypes && this.orgTypes.length > 0 ) {
+					this.orgType = this.orgTypes[0];
+				}
+			}
+	
+			this.listModel = {
+				rows: 10,
+				fetchList: function(o) {
+					o.orgtype = self.orgType.name;
+					return svc.getList( o );	
+				}
+			}
+	
+			var refreshList = function() {
+				self.listModel.refresh(true);	
+			}
+	
+			this.addNew = function() {
+				var params = {saveHandler:refreshList, orgunit : {orgtype: this.orgType.name }};
+				return new PopupOpener( "${ORGUNIT.name}", params, {title: "Add Org Unit"} );
+			}
+
+			this.open = function() {
+				var params = {saveHandler:refreshList, orgunit:this.selectedItem, mode:"read" };
+				return new PopupOpener( "${ORGUNIT.name}", params, {title: "View Org Unit"} );
+			}
+	
+			this.propertyChangeListener = {
+				orgType : function(o) { self.listModel.load(); }
+			}
+			
+			this.isSystemOrgType = function() {
+				return this.orgType && this.orgType.system==1;
+			}
+			
+			this.removeItem = function() {
+				if( confirm("You are about to remove this role. Continue?") ) {
+					svc.remove( this.selectedItem );
+					refreshList();
+				}	
+			}
+		}
+	);
+</script>
+
+
+
+<table r:context="${PAGE.context}" r:model="listModel" r:name="selectedItem" r:varName="item" width="100%" class="grid" cellpadding="0" cellspacing="0"> 
+	<thead>
+		<tr>
+			<td width="20%">Code</td>
+			<td>Title</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>#{item.code}</td>
+			<td>#{item.title}</td>
+			<td align="center">
+				<a r:context="${PAGE.context}" r:name="open" r:visibleWhen="#{!isSystemOrgType()}">
+					<img src="/res/admin/edit.gif"/>
+				</a>
+			</td>
+			<td align="center">
+				<a r:context="${PAGE.context}" r:name="removeItem" r:visibleWhen="#{!isSystemOrgType()}">
+					<img src="/res/admin/trash.gif"/>
+				</a>
+			</td>	
+		</tr>
+	</tbody>
+</table>
+
+

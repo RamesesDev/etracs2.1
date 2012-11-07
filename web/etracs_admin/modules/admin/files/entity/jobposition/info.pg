@@ -1,0 +1,10 @@
+{
+	title: 		'Job Position',
+	context:	'jobposition',
+	fragment: 	true,
+	sortorder:	4,
+	secured:	true,
+	hidden:		true,
+	layout:		'common/popup_form',
+	options:	{width:500, height:400}
+}

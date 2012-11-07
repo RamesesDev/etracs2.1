@@ -1,0 +1,180 @@
+<!--
+
+@author:		jaycverg
+@description:	renders form elements with caption
+
+-->
+<%
+import com.rameses.anubis.*;
+
+
+def context 	= OPTIONS.context ? OPTIONS.context : "";
+def fields		= OPTIONS.fields ? OPTIONS.fields : [];
+
+def buildCommonAttrs = { f, attrs ->
+	attrs << " r:context='${context}'";
+	
+	if( f.name ) 		attrs << " r:name='${f.remove('name')}'";
+	if( f.caption ) 	attrs << " r:caption='${f.remove('caption')}'";
+	if( f.visibleWhen)	attrs << " r:visibleWhen='${f.remove('visibleWhen')}'";
+	if( f.datatype )	attrs << " r:datatype='${f.remove('datatype')}'";
+	if( f.depends )		attrs << " r:depends='${f.remove('depends')}'";
+	if( f.required )	attrs << " r:required='${f.remove('required')}'";
+};
+
+def buildExtAttrs = { f, attrs ->
+	f.each{ k,v-> attrs << " $k='$v'" };
+};
+
+def handlers = [
+	"text" : { field ->
+		def attrs = new StringBuilder();
+		attrs << " type='text'";
+		
+		def f = new LinkedHashMap(field);
+		buildCommonAttrs( f, attrs );
+		if( f.textcase ) 			attrs << " r:textcase='${f.remove('textcase')}'";
+		if( f.suggestName ) 		attrs << " r:suggestName='${f.remove('suggestName')}'";
+		if( f.suggestExpression ) 	attrs << " r:suggestExpression='${f.remove('suggestExpression')}'";
+		if( f.suggest ) 			attrs << " r:suggest='${f.remove('suggest')}'";
+		
+		buildExtAttrs( f, attrs );
+		
+		println "<input ${attrs}/>";
+	},
+	
+	"password" : { field ->
+		def attrs = new StringBuilder();
+		attrs << " type='password'";
+		
+		def f = new LinkedHashMap(field);
+		buildCommonAttrs( f, attrs );
+		buildExtAttrs( f, attrs );
+		
+		println "<input ${attrs}/>";
+	},
+	
+	"label": { field ->
+		//this wraps the value with an html label tag
+		if( field.value ) 
+		{
+			if( field.value.contains("#{") ) 
+			{
+				println "<label r:context=\"${context}\">${field.value}</label>";
+			}
+			else
+			{
+				println "<label>${field.value}</label>";
+			}
+		}
+		//this just writes the html text
+		else if( field.html )
+		{
+			println "${field.html}";
+		}
+	},
+	
+	"combo" : { field ->
+		def attrs = new StringBuilder();
+		
+		def f = new LinkedHashMap(field);
+		buildCommonAttrs( f, attrs );
+		if( f.items )		attrs << " r:items='${f.remove('items')}'";
+		if( f.itemKey )		attrs << " r:itemKey='${f.remove('itemKey')}'";
+		if( f.itemLabel )	attrs << " r:itemLabel='${f.remove('itemLabel')}'";
+		if( f.allowNull )	attrs << " r:allowNull='${f.remove('allowNull')}'";
+		
+		buildExtAttrs( f, attrs );
+		
+		println "<select ${attrs}></select>";
+	},
+	
+	"textarea" : { field ->
+		def attrs = new StringBuilder();
+		
+		def f = new LinkedHashMap(field);
+		buildCommonAttrs( f, attrs );
+		buildExtAttrs( f, attrs );
+		
+		println "<textarea ${attrs}></textarea>";
+	},
+	
+	"radio" : { field ->
+		def f = new LinkedHashMap(field);
+		
+		def orientation = f.remove('orientation')
+		if( orientation ) orientation = orientation.toLowerCase();
+		
+		def options = [:];
+		if( f.options ) options = JsonUtil.toObject( f.remove('options') );
+		
+		def attrs = new StringBuilder();
+		buildCommonAttrs( f, attrs );
+		buildExtAttrs( f, attrs );
+		
+		options.each{ k,v ->
+			println "<label><input type='radio' ${attrs} value='${k}'/>${v}</label>";
+			if( orientation == 'vertical' ) println "<br/>";
+		};
+	},
+	
+	"date" : { field ->
+		PAGE.imports << "/js/ext/datetime.js";
+	
+		def attrs = new StringBuilder();
+		
+		def f = new LinkedHashMap(field);
+		buildCommonAttrs( f, attrs );
+		if( f.options ) {
+			attrs << "r:options=\"${f.remove('options')}\"";
+		}
+		else {
+			attrs << "r:options=\"{mode:'date'}\"";
+		}
+		
+		buildExtAttrs( f, attrs );
+		
+		println "<span r:type='datetime' ${attrs}></span>";
+	},
+	
+	"checkbox" : { field ->	
+		def attrs = new StringBuilder();
+		
+		def f = new LinkedHashMap(field);
+		buildCommonAttrs( f, attrs );
+		if( f.checkValue )		attrs << " r:checkValue='${f.remove('checkValue')}'";
+		if( f.uncheckValue )	attrs << " r:uncheckValue='${f.remove('uncheckValue')}'";
+		buildExtAttrs( f, attrs );
+		
+		println "<input type='checkbox' ${attrs}/>";
+	},
+];
+
+%>
+
+<table class="form">
+    <% fields.each { field -> %>
+		<tr>
+			<td valign="top">
+				${field.caption ? field.caption : ''}
+			</td>
+			<td valign="top">
+				:
+				<% if( field.required ) { %>
+					<span class="required">*</span>
+				<% } %>
+			</td>
+			<td valign="top">
+				<%
+					def type = field.type ? field.remove('type') : "text";
+					if( handlers[type] ) {
+						handlers[type]( field );
+					}
+					else {
+						println "Field type ${type} is not yet supported.";
+					}
+				%>
+			</td>
+		</tr>
+	<% } %>
+</table>

@@ -1,0 +1,21 @@
+<table width="100%" height="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td valign="top" colspan="2">${_content}</td>
+	</tr>
+	<tr>
+		<td valign="top" height="10">
+			<button r:context="${PAGE.context}" r:name="edit" r:visibleWhen="#{mode=='read'}" r:immediate="true">Edit</button>
+			<button r:context="${PAGE.context}" r:name="_close" r:visibleWhen="#{mode=='read'}" r:immediate="true">Close</button>
+			
+			<button r:context="${PAGE.context}" r:name="saveCreate" r:visibleWhen="#{mode=='create'}">Save</button>
+			<button r:context="${PAGE.context}" r:name="cancelCreate" r:visibleWhen="#{mode=='create'}" r:immediate="true">Cancel</button>
+			
+			<button r:context="${PAGE.context}" r:name="saveEdit" r:visibleWhen="#{mode=='edit'}">Save</button>
+			<button r:context="${PAGE.context}" r:name="cancelEdit" r:visibleWhen="#{mode=='edit'}" r:immediate="true">Cancel</button>
+		</td>
+		<td align="right" valign="top" height="10">
+			${_actions}
+		</td>
+	</tr>
+	
+</table>

@@ -1,0 +1,9 @@
+{
+	title: 		'Role',
+	context:	'role',
+	fragment: 	true,
+	sortorder:	2,
+	secured:	true,
+	layout:		'common/popup_form',
+	options:	{height:450, width:500}
+}

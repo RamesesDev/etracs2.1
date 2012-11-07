@@ -1,16 +1,8 @@
 [list]
- select * from role order by name 
+select *, (case when sysrole=role then 1 else system end) as system from role order by sysrole, role 
 
-[list-exclude-system]
-select * from role where not(system=1) order by name 
+[list-by-domain]
+select *, (case when sysrole=role then 1 else system end) as system from role where domain=$P{domain} order by role
 
-[list-by-roleclass]
-select * from role where roleclass=$P{roleclass} order by name
- 
-[list-by-roleclass-exclude-system]
-select * from role where roleclass=$P{roleclass} and not(system=1) order by name
-
-[permissions]
-select r.name, r.included, r.roleclass  
-from role r 
-where r.name = $P{role} 
+[list-by-sysrole]
+select *, (case when sysrole=role then 1 else system end) as system from role where domain=$P{domain} and sysrole=$P{sysrole}  order by role

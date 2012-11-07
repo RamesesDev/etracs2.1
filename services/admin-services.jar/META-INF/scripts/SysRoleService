@@ -1,0 +1,24 @@
+import com.rameses.annotations.*;
+
+class SysRoleService {
+
+	@PersistenceContext("system")
+	def em;
+
+	@ProxyMethod
+	public def getList(def o) {
+		return em.sqlContext.createNamedQuery( "sysrole:list" ).setParameters(o).resultList;
+	}
+
+	@ProxyMethod
+	public def getPermissions( o ) {
+		return  em.sqlContext.createNamedQuery( "sysrole:get-permissions" ).setParameters(o).resultList;
+	}
+	
+	@ProxyMethod
+	public def getDomainList(o) {
+		return  em.sqlContext.createNamedQuery( "sysrole:domain-list" ).resultList;
+	}
+	
+	
+}

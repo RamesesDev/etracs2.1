@@ -1,0 +1,8 @@
+{
+	title: 		'Roles',
+	context:	'rolelist',
+	fragment: 	true,
+	secured:	true,
+	layout:		'common/pagelist',
+	master:		'fragment_document',
+}

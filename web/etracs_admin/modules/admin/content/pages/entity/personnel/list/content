@@ -1,0 +1,87 @@
+<%
+    def PERSONNEL_EDIT = ANUBIS.getFileInfo( "/" + MODULE.name + "/entity/personnel/edit.pg" );
+	def PERSONNEL_INFO = ANUBIS.getFileInfo( "/" + MODULE.name + "/entity/personnel/info.pg" );
+%>
+
+
+<script type="text/javascript">
+	@register(  PERSONNEL_EDIT.path ) 
+	
+	\$put( 
+		"${PAGE.context}", 
+		new function() 
+		{
+			var svc = Service.lookup( "admin/PersonnelService" );
+
+			var self = this;
+
+			this.selectedItem;
+			
+			this.qry = {};
+			
+			this.listModel = {
+				rows: 10,
+				fetchList: function(o) {
+					o.staffno = (self.qry.staffno) ? self.qry.staffno : null;
+					o.firstname = (self.qry.firstname) ? self.qry.firstname : null;
+					o.lastname = (self.qry.lastname) ? self.qry.lastname : null;
+					return svc.getList( o );	
+				}
+			}
+
+			this.reloadList = function() {
+				self.listModel.load();	
+			}
+			
+			var refreshList = function() {
+				self.listModel.refresh(true);
+			}
+
+			this.propertyChangeListener = {
+				orgUnit : function(o) { self.reloadList() }
+			}
+			
+			this.addNew = function() {
+				return new PopupOpener( "${PERSONNEL_EDIT.name}", { saveHandler: refreshList });
+			}
+			
+			this.reset = function() {
+				this.qry = {};
+				self.reloadList();
+			}
+			
+			this.show_search = true;
+			
+			this.toggleSearch = function() {
+				this.show_search = !this.show_search;
+			}
+		}
+	);
+</script>
+
+
+
+<table r:context="${PAGE.context}" r:model="listModel" r:name="selectedItem" r:varName="item" width="100%" class="grid" cellpadding="0" cellspacing="0"> 
+	<thead>
+		<tr>
+			<td>Staff No</td>
+			<td>Lastname</td>
+			<td>Firstname</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>#{item.staffno}</td>	
+			<td>#{item.lastname}</td>	
+			<td>#{item.firstname}</td>	
+			<td>
+				<img src="/res/admin/#{item.canlogin? 'checked' : 'unchecked'}.png"/>
+			</td>	
+			<td>
+				<a href="#${PERSONNEL_INFO.name}?objid=#{item.objid}">View</a>	
+			</td>	
+		</tr>
+	</tbody>
+</table>

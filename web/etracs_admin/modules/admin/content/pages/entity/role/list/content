@@ -1,0 +1,111 @@
+<% 
+	def ROLE_INFO = ANUBIS.getFileInfo( "/"+ MODULE.name + "/entity/role/info.pg" );
+%>
+<script>
+	@register( ROLE_INFO.path );
+	
+	\$put( 
+		"${PAGE.context}", 
+		new function() {
+			
+			var svc = Service.lookup( "admin/RoleService" );
+			
+			var self = this;
+			this.selectedItem;
+			this.domains;
+			
+			this.domain;
+			this.sysrole;
+	
+			this.onload = function() {
+				this.domains = svc.getDomainList();	
+			}
+			
+			this.getSysRoles = function() {
+				if(!this.domain) return [];
+				return svc.getSysRoles({domain:this.domain});
+			}
+			
+			this.listModel = {
+				rows: 10,
+				fetchList: function(o) {
+					o.exclude_system = true;
+					o.sysrole = null;
+					o.domain = null;
+					if( self.sysrole ) o.sysrole = self.sysrole;
+					if( self.domain ) o.domain = self.domain;
+					return svc.getList( o );	
+				}
+			}
+	
+			var refreshList = function() {
+				self.listModel.refresh(true);	
+			}
+			
+			var reloadList = function() {
+				self.listModel.load();
+			}
+	
+			this.addNew = function() {
+				var params = {saveHandler:refreshList};
+				var rc = this.sysrole;
+				var dc = this.domain; 
+				params.role = { sysrole: (rc ? rc : null), domain: (dc ? dc : null) };
+				return new PopupOpener( "${ROLE_INFO.name}", params, {title:"Add Role"} );
+			}
+			
+			this.open = function() {
+				return new PopupOpener( "${ROLE_INFO.name}", {saveHandler:refreshList, mode:'read', role: this.selectedItem}, {title:"Role"} );
+			}
+
+			this.propertyChangeListener = {
+				"sysrole" : function(o) {
+					reloadList();
+				},
+				"domain" : function(o) {
+					self.sysrole = null;
+					reloadList();
+				}
+			}
+			
+			this.removeItem = function() {
+				if( confirm("You are about to remove this role. Continue?") ) {
+					svc.remove( this.selectedItem );
+					refreshList();
+				}	
+			}
+			
+		}
+	);
+</script>
+
+<table r:context="${PAGE.context}" r:model="listModel" r:name="selectedItem" r:varName="item" width="100%" class="grid" cellpadding="0" cellspacing="0"> 
+	<thead>
+		<tr>
+			<td>Role</td>
+			<td>Domain</td>
+			<td>Sys Role</td>
+			<td>Title</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>#{item.role}</td>
+			<td>#{item.domain}</td>
+			<td>#{item.sysrole}</td>
+			<td>#{item.description}</td>
+			<td>
+				<a r:context="${PAGE.context}" r:name="open" r:visibleWhen="#{item.system != 1}">
+					<img src="/res/admin/edit.gif"/>
+				</a>
+			</td>
+			<td>
+				<a r:context="${PAGE.context}" r:name="removeItem" r:visibleWhen="#{item.system != 1}">
+					<img src="/res/admin/trash.gif"/>
+				</a>
+			</td>	
+		</tr>
+	</tbody>
+</table>

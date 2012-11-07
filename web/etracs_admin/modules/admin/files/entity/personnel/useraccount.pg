@@ -1,0 +1,7 @@
+{
+	title:		'Create User Account',
+	context:	'useraccount',
+	fragment: 	true,
+	layout:		'common/popup_create',
+	options:	{width: 400, height: 300, resizable: false},
+}

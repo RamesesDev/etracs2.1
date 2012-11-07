@@ -1,0 +1,144 @@
+<script>
+	\$put( "${PAGE.context}", 
+		new function() {
+			var svc = Service.lookup("admin/RoleService");
+			
+			var self = this;
+	
+			this.saveHandler;
+			this.role;
+			
+			this.domains;
+			this.mode = 'create';
+			
+			this.permissions;
+			
+			this.onload = function() {
+				this.domains = svc.getDomainList();
+				if( this.mode == "read" ) {
+					self.permissions = svc.getPermissions( self.role );
+				}
+			}
+	
+			this.getSysRoles = function() {
+				if(!this.role.domain) return [];
+				return svc.getSysRoles(this.role);
+			}
+	
+			this.edit = function() {
+				this.mode = "edit";
+			}
+
+			this.saveCreate = function() {
+				this.role.permissions = self.permissions;
+				this.role = svc.create( this.role );
+				if(this.saveHandler) this.saveHandler( this.role );
+				return '_close';
+			}
+			
+			this.saveEdit = function() {
+				this.role.permissions = self.permissions;
+				this.role = svc.update( this.role );
+				if(this.saveHandler) this.saveHandler( this.role );
+				this.mode = "read";
+			}
+
+			this.cancelCreate = function() {
+				if( confirm("Discard changes?")) {
+					return "_close";
+				}
+			}
+			
+			this.cancelEdit = function() {
+				if( confirm("Discard changes?")) {
+					this.mode = "read";
+				}
+			}
+
+			this.propertyChangeListener = {
+				'role.role' : function(value) {
+					if( value ) {
+						self.role.role = value.formatCode();
+						self._controller.refresh();
+					}
+				},
+				'role.domain' : function(v) {
+					self.sysrole = null;
+					self.permissions = [];
+				},
+				'role.sysrole' : function(o) {
+					self.permissions = [];
+					if( o ) self.permissions = svc.getPermissions( self.role );
+				}
+			}; 
+			
+		}
+	);
+</script>
+
+<style>
+	.label {
+		font-weight: bolder;
+		width: 100px;
+		vertical-align:top;
+		padding:1px;
+	}
+	
+</style>
+
+<table cellpadding="0" cellspacing="1">
+	<tr>
+		<td class="label">Role Name</td>
+		<td>
+			<input type="text" r:context="${PAGE.context}" r:name="role.role" r:required="true" r:caption="Role Name" style="width:300px" r:visibleWhen="#{mode=='create'}" maxlength="50"/>
+			<label r:context="${PAGE.context}" r:name="role.role" r:visibleWhen="#{mode!='create'}" />
+		</td>
+	</tr>
+	<tr>
+		<td class="label">Description</td>
+		<td>
+			<textarea r:context="${PAGE.context}" r:name="role.description" r:required="true" r:caption="Description" style="width:300px" r:visibleWhen="#{mode!='read'}"/>
+			<label r:context="${PAGE.context}" r:name="role.description" r:visibleWhen="#{mode=='read'}" />
+		</td>
+	</tr>
+	<tr> 
+		<td class="label">Domain</td>
+		<td>
+			<select r:context="${PAGE.context}" r:name="role.domain" r:allowNull="true" r:required="true" r:items="domains" r:visibleWhen="#{mode!='read'}"></select>
+			<label r:context="${PAGE.context}" r:name="role.domain" r:visibleWhen="#{mode=='read'}" />
+		</td>
+	</tr>
+	<tr> 
+		<td class="label">Sys Role</td>
+		<td>
+			<select r:context="${PAGE.context}" r:name="role.sysrole" r:allowNull="true" r:required="true" r:items="getSysRoles()" 
+				r:visibleWhen="#{mode!='read'}" r:depends="role.domain"></select>
+			<label r:context="${PAGE.context}" r:name="role.sysrole" r:visibleWhen="#{mode=='read'}" />
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">&nbsp;</td>
+	</tr>
+	<tr>
+		<td valign="top" class="label">
+			Permissions
+		</td>
+		<td valign="top">
+			<div>
+				<table width="100%" cellpadding="0" cellspacing="0" r:context="${PAGE.context}" r:items="permissions" r:varStatus="stat" r:varName="item" r:depends="role.sysrole,role.domain">
+					<tbody>
+						<tr>
+							<td>
+								<input type="checkbox" r:name="permissions[#{stat.index}].allowed" r:context="${PAGE.context}" r:visibleWhen="#{mode=='read'}" disabled/>
+								<input type="checkbox" r:name="permissions[#{stat.index}].allowed" r:context="${PAGE.context}" r:visibleWhen="#{mode!='read'}"/>
+							</td>
+							<td>#{item.title}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</td>
+	</tr>
+</table>
+
+

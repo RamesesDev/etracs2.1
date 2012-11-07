@@ -1,0 +1,16 @@
+<table cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+		<td align="left">
+			<b>Org. Unit : </b>
+			<select r:context="${PAGE.context}" r:items="orgUnits" r:name="orgUnit" r:itemLabel="code" 
+				r:allowNull="true" r:emptyText="All"></select>
+		</td>		
+		<td align="right">
+			<b>Search</b>
+			<input type="text" r:context="${PAGE.context}" r:name="searchText" style="width:250px"/>
+			<button r:context="${PAGE.context}" r:name="doSearch">Go</button>
+			<button r:context="${PAGE.context}" r:name="reset">Reset</button>
+		</td>
+	</tr>
+</table>
+

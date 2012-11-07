@@ -1,0 +1,10 @@
+String sid = '';
+if( SESSION.session ) {
+	sid = SESSION.session.sessionid;
+	if( sid.indexOf("!")>0) {
+		sid = sid.substring(0, sid.indexOf("!"));
+	}
+	def svc = SERVICE.lookup('user-service/SessionService');
+	return svc.getInfo( sid );	
+}
+return [:];

@@ -1,0 +1,32 @@
+<% def context="add_item"; %>
+
+<script>
+	\$put(
+		'${context}',
+		new function() 
+		{
+			this.entity = {};
+			this.saveHandler;
+			this.lgutype;
+			
+			this.save = function() {
+				if( this.saveHandler )
+					this.saveHandler( this.entity );
+				this.entity = {};
+				\$('#idxno').focus();
+			}
+		}
+	);
+</script>
+
+
+<div r:type="label" r:context="${context}">
+	<h3>Add #{lgutype}</h3>
+</div>
+
+@form( context: context, fields: [
+	[name: 'entity.indexno', caption: 'Index No.', required: true, size: '10', id:'idxno'],
+	[name: 'entity.lguname', caption: 'Name', required: true, size: '30'],
+])
+
+

@@ -1,0 +1,2 @@
+<b>Org. Type : </b>
+<select r:context="${PAGE.context}" r:name="orgType" r:items="orgTypes" r:itemLabel="name" r:allowNull="true" r:emptyText="Select an Org.Type"></select>

@@ -1,0 +1,8 @@
+{
+	name:		'admin:personnel-lookup',
+	context:	'personnellookup',
+	options:	{width: 450, resizable: false},
+	fragment: 	true,
+	hidden: 	true,
+	title:		'Search Personnel',
+}

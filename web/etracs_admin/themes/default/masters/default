@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		@head/import-fonts('opensans')
+		@head/favicon()
+		@head/standard()
+		@head/css('default')
+		@@head/page-imports()
+		
+		
+	</head>
+	
+	<body>
+		<div class="master-header">
+			<div class="centered-canvas">
+				<table width="100%" cellpadding="0" cellspacing="0">
+					<tr>
+						<td width="180px"><img src="${PROJECT.logo}" height="40"/></td>
+						<td>${_header_options}</td>
+						<td align="right" class="header-nav">@navbar()</td>
+						<td align="right" class="header-action" width="50">@logout()</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		<div class="master-layout centered-canvas">
+			<div class="master-content">
+				${_content}
+			</div>
+			<div class="master-footer">
+				${_footer}
+			</div>
+		</div>
+	</body>
+</html>
+

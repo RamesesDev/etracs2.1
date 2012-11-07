@@ -1,0 +1,71 @@
+<!--
+
+@author:		jaycverg
+@description:	renders a an html grid
+
+-->
+<%
+
+
+def context 	= OPTIONS.context ? OPTIONS.context : "";
+def name 		= OPTIONS.name ? OPTIONS.name : "selectedItem";
+def listModel 	= OPTIONS.model ? OPTIONS.model : "listModel";
+def varName 	= OPTIONS.varName ? OPTIONS.varName : "item";
+def cols		= OPTIONS.cols ? OPTIONS.cols : [];
+def hasHeader 	= cols.find{ it.caption != null } ? true : false;
+
+
+%>
+
+<table r:context="${context}" r:model="${listModel}" r:varName="${varName}" r:name="${name}"
+   class="grid" width="100%" cellpadding="0" cellspacing="0">
+    <% if( hasHeader && cols ) { %>
+		<thead>
+			<tr>
+				<% cols.each { col -> %>
+					<th>${col.caption ? col.caption : '&nbsp;'}</th>
+				<% } %>
+			</tr>
+		</thead>
+	<% } %>
+	<% if( cols ) { %>
+		<tbody>
+			<tr>
+				<% cols.each { col -> %>
+					<%
+					
+					def attributes = new StringBuilder();
+					col.each {k,v->
+						if( k == "html" || k == "name" || k == "caption" ) return;
+						attributes << " $k=\"$v\"";
+					}
+					
+					%>
+					<td ${attributes}>
+						<%
+						
+						if( col.html )
+							println col.html;
+						else if( col.name )
+							println "#{${varName}.${col.name}}";
+						else
+							println "&nbsp;";
+						
+						%>
+					</td>
+				<% } %>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="${cols.size()}" align="right">
+					<span r:context="${context}" r:visibleWhen="#{${listModel}.rows > 0}">
+						<button r:context="${context}" r:name="${listModel}.moveFirst">First</button>
+						<button r:context="${context}" r:name="${listModel}.movePrev">Prev</button>
+						<button r:context="${context}" r:name="${listModel}.moveNext">Next</button>
+					</span>
+				</td>
+			</tr>
+		</tfoot>
+	<% } %>
+</table>

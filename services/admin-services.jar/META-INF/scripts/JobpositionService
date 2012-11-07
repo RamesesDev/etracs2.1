@@ -1,36 +1,36 @@
 import com.rameses.annotations.*;
 
-class JobpositionService 
-{
+class JobpositionService {
 
 	@PersistenceContext("main")
 	def em;
 	
-	@Service("RoleclassService")
-	def roleclassSvc;
+	@Service("RoleService")
+	def roleSvc;
 
-	
 	@ProxyMethod
 	public def getList(def params) {
-		def qry = em.sqlContext.createNamedQuery( "jobposition:list" );
+		def sq = "jobposition:list";
+		if( params.unassigned ) sq = "jobposition:unassigned-list";
+		def qry = em.sqlContext.createNamedQuery( sq );
 		qry.setPagingKeys("jp.objid");
 		if(params) {
 			if(params._start) qry.setFirstResult( params._start );
 			if(params._limit) qry.setMaxResults( params._limit );
 
 			def sb = new StringBuffer();
-			def condition = ' 1=1 ';
+			def condition = '';
 			if( params.orgunitid ) {
 				sb.append( ''' orgunitid=$P{orgunitid} ''' );	
 			}	
 			if( params.searchText ) {
 				params.searchText = "%" + params.searchText + "%";
 				if( sb.length() > 0 ) sb.append( ' and ' );
-				sb.append( ''' jp.code like $P{searchText} or jp.title like $P{searchText} or p.lastname like $P{searchText} or p.firstname like $P{searchText} ''' );	
+				sb.append( ''' code like $P{searchText} or title like $P{searchText} ''' );	
 			}	
 			
 			if( sb.length() > 0 ) {
-				condition += ' and  ' + sb.toString();
+				condition = ' where ' + sb.toString();
 			}	
 			qry.setVars( [ condition: condition ] );	
 			qry.setParameters( params );
@@ -42,35 +42,22 @@ class JobpositionService
 	@ProxyMethod
 	public def create(@Param(schema="jobposition") o) {
 		if(!o.objid) throw new Exception("Please provide an objid");
-		em.create( "jobposition", o );
-		o.tags.each {
-			em.save("jobposition:tag", [jobid: o.objid, tagid: it]);
-		}
-		return o;
+		return em.create( "jobposition", o );
 	}
 	
 	@ProxyMethod
 	public def read(def o) {
-		def jp = em.read( "jobposition", o );
-		jp.tags = em.sqlContext.createNamedQuery('jobposition:get-tags').setParameters([jobid:o.objid]).resultList.collect{it.tagid};
-		jp.availableTags = roleclassSvc.getAvailableTags( [name: jp.roleclass] );
-		return jp;
+		return em.read( "jobposition", o );
 	}
 
 	@ProxyMethod
 	public def update(@Param(schema="jobposition") o) {
-		em.update( "jobposition", o );
-		if( o.tags != null ) {
-			em.sqlContext.createNamedExecutor("jobposition:remove-tags").setParameters([jobid:o.objid]).execute();
-			o.tags.each{
-				em.save("jobposition:tag", [jobid: o.objid, tagid: it]);
-			};
-		}
-		return read( o );
+		return em.update( "jobposition", o );
 	}
 	
 	@ProxyMethod
 	public def remove(def o) {
+		em.sqlContext.createNamedExecutor("jobposition:remove-roles").setParameters([jobpositionid:o.objid]).execute();
 		em.delete( "jobposition", o );
 	}
 	
@@ -88,6 +75,48 @@ class JobpositionService
 		x.assigneeid = null;
 		em.update( "jobposition", x );
 		return x;
+	}
+	
+	@ProxyMethod
+	public def getRoles(o) {
+		return em.sqlContext.createNamedQuery('jobposition:roles').setParameters([jobpositionid:o.objid]).resultList;
+	}
+	
+	@ProxyMethod
+	public def getRolePermissions(def o) {
+		def role = roleSvc.read( o );
+		def perms = roleSvc.getLimitedPermissions( role );
+		perms.each {
+			if( o.disallowed && it.key.matches( o.disallowed )) it.allowed = false;
+		}
+		return perms;
+	}
+	
+	@ProxyMethod
+	public def updatePermissions(def o) {
+		em.sqlContext.createNamedExecutor("jobposition:remove-roles").setParameters([jobpositionid:o.objid]).execute();
+		o.roles.each {
+			def disallowed = [];
+			if(it.permissions) {
+				it.permissions.each { x->
+					if(!x.allowed) disallowed.add( x.key );	
+				}
+			}
+			it.jobpositionid = o.objid;
+			
+			//In case permissions of the role was not fetched, use existing disallowed of the role
+			if( it.permissions ) it.disallowed = disallowed.join("|");
+			
+			em.save( "jobposition:role", it );
+		};
+	}
+	
+	/***
+	This is referenced during login.
+	***/
+	@ProxyMethod
+	public def getUserPermissions(def o) {
+		return em.sqlContext.createNamedQuery("jobposition:role-permissions-byuser").setParameters(o).resultList;			
 	}
 	
 }

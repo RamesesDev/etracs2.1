@@ -1,0 +1,15 @@
+<table width="100%">
+	<tr>
+		<td>
+		<b>Domain: </b>
+		<select r:context="${PAGE.context}" r:items="domains" r:name="domain" r:allowNull="true" r:emptyText="- All -">
+		
+		</select>
+		&nbsp;&nbsp;&nbsp;
+		<b>Sys Role: </b>
+		<select r:context="${PAGE.context}" r:items="getSysRoles()" r:name="sysrole" r:allowNull="true" r:emptyText="- All -" r:depends="domain"></select>
+		
+		</td>
+	</tr>
+</table>
+
