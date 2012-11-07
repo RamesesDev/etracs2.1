@@ -63,6 +63,7 @@ public class RPTSettingPage extends javax.swing.JPanel {
         xCheckBox2 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox3 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox4 = new com.rameses.rcp.control.XCheckBox();
+        xCheckBox9 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox5 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox6 = new com.rameses.rcp.control.XCheckBox();
         xCheckBox7 = new com.rameses.rcp.control.XCheckBox();
@@ -380,6 +381,15 @@ public class RPTSettingPage extends javax.swing.JPanel {
         xCheckBox4.setUncheckValue(0);
         formPanel1.add(xCheckBox4);
 
+        xCheckBox9.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        xCheckBox9.setText("<html>Allow <b>Change Depreciation</b> for properties with balance</html>");
+        xCheckBox9.setCheckValue(1);
+        xCheckBox9.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        xCheckBox9.setName("entity.allowchangedepreciationwithbalance");
+        xCheckBox9.setShowCaption(false);
+        xCheckBox9.setUncheckValue(0);
+        formPanel1.add(xCheckBox9);
+
         xCheckBox5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox5.setText("<html>Allow <b>Subdivision</b> for properties with balance</html>");
         xCheckBox5.setCheckValue(1);
@@ -429,8 +439,8 @@ public class RPTSettingPage extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel3Layout.createSequentialGroup()
                 .add(27, 27, 27)
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 176, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(146, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 256, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(66, Short.MAX_VALUE))
         );
         jTabbedPane1.addTab("Transaction Control", jPanel3);
 
@@ -488,6 +498,7 @@ public class RPTSettingPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XCheckBox xCheckBox6;
     private com.rameses.rcp.control.XCheckBox xCheckBox7;
     private com.rameses.rcp.control.XCheckBox xCheckBox8;
+    private com.rameses.rcp.control.XCheckBox xCheckBox9;
     private com.rameses.rcp.control.XDateField xDateField1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XList xList1;

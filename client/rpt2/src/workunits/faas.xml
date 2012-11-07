@@ -10,13 +10,14 @@
         <invoker folderid="/menu/rpt/faas" action="initCapture"      caption="Data Capture"          mnemonic="c" target="window" permission="datacapture.create" index="1" />
         <invoker folderid="/menu/rpt/faas" action="transfer"         caption="Transfer of Ownership" mnemonic="t" target="window" permission="transfer.create"  index="2"/>
         <invoker folderid="/menu/rpt/faas" action="transferReassessment"    caption="Transfer with Reassessment" mnemonic="f" target="window" permission="transfer.create"  index="3"/>
-        <invoker folderid="/menu/rpt/faas" action="transferWithCorrection"  caption="Transfer with Correction" mnemonic="w" target="window" permission="transfer.create"  index="3"/>
+        <invoker folderid="/menu/rpt/faas" action="transferWithCorrection"  caption="Transfer with Correction" mnemonic="r" target="window" permission="transfer.create"  index="3"/>
         <invoker folderid="/menu/rpt/faas" action="changeClassification"    caption="Change Classification"   mnemonic="c" target="window" permission="changeclassification.create"  index="4"/>
-        <invoker folderid="/menu/rpt/faas" action="changeTaxability"       caption="Change Taxability"   mnemonic="c" target="window" permission="changetaxability.create"  index="5"/>
+        <invoker folderid="/menu/rpt/faas" action="changeTaxability"       caption="Change Taxability"   mnemonic="t" target="window" permission="changetaxability.create"  index="5"/>
+        <invoker folderid="/menu/rpt/faas" action="changeDepreciation"       caption="Change Depreciation"   mnemonic="d" target="window" permission="changedepreciation.create"  index="5"/>
         <invoker folderid="/menu/rpt/faas" action="correction"       caption="Correction of Entry"   mnemonic="e" target="window" permission="correction.create"  index="6"/>
-        <invoker folderid="/menu/rpt/faas" action="newdiscovery"     caption="New Discovery"         mnemonic="d" target="window" permission="newdiscovery.create"  index="7"/>
+        <invoker folderid="/menu/rpt/faas" action="newdiscovery"     caption="New Discovery"         mnemonic="w" target="window" permission="newdiscovery.create"  index="7"/>
         <invoker folderid="/menu/rpt/faas" action="multipleclaim"    caption="Multiple Claim"        mnemonic="m" target="window" permission="multipleclaim.create"  index="8"/>
-        <invoker folderid="/menu/rpt/faas" action="reassessment"     caption="Re-Assessment"         mnemonic="r" target="window" permission="reassessment.create"  index="9"/>
+        <invoker folderid="/menu/rpt/faas" action="reassessment"     caption="Re-Assessment"         mnemonic="a" target="window" permission="reassessment.create"  index="9"/>
         <invoker folderid="/menu/rpt/faas" action="generalRevision"   caption="General Revision"      mnemonic="g" target="window" permission="generalrevision.create"  index="10"/>
         
         <invoker folderid="/txn/rpt/txn" action="initCapture"      caption="Data Capture"          mnemonic="c" target="window" permission="datacapture.create" index="1" />
@@ -25,35 +26,12 @@
         <invoker folderid="/txn/rpt/txn" action="transferWithCorrection"         caption="Transfer with Correction" mnemonic="f" target="window" permission="transfer.create"  index="3"/>
         <invoker folderid="/txn/rpt/txn" action="changeClassification"       caption="Change Classification"   mnemonic="c" target="window" permission="changeclassification.create"  index="4"/>
         <invoker folderid="/txn/rpt/txn" action="changeTaxability"       caption="Change Taxability"   mnemonic="c" target="window" permission="changetaxability.create"  index="5"/>
+        <invoker folderid="/txn/rpt/faas" action="changeDepreciation"       caption="Change Depreciation"   mnemonic="d" target="window" permission="changedepreciation.create"  index="5"/>
         <invoker folderid="/txn/rpt/txn" action="correction"       caption="Correction of Entry"   mnemonic="e" target="window" permission="correction.create"  index="6"/>
         <invoker folderid="/txn/rpt/txn" action="newdiscovery"     caption="New Discovery"         mnemonic="d" target="window" permission="newdiscovery.create"  index="7"/>
         <invoker folderid="/txn/rpt/txn" action="multipleclaim"    caption="Multiple Claim"        mnemonic="m" target="window" permission="multipleclaim.create"  index="8"/>
         <invoker folderid="/txn/rpt/txn" action="reassessment"     caption="Re-Assessment"         mnemonic="r" target="window" permission="reassessment.create"  index="9"/>
         <invoker folderid="/txn/rpt/txn" action="generalRevision"   caption="General Revision"      mnemonic="g" target="window" permission="generalrevision.create"  index="10"/>
-        
-        <invoker type="rpttransaction" action="initCapture"      caption="Data Capture"          mnemonic="c" target="window" permission="datacapture.create"/>
-        <invoker type="rpttransaction" action="transfer"         caption="Transfer of Ownership" mnemonic="t" target="window" permission="transfer.create"/>
-        <invoker type="rpttransaction" action="transferReassessment"         caption="Transfer with Reassessment" mnemonic="f" target="window" permission="transfer.create"/>
-        <invoker type="rpttransaction" action="transferWithCorrection"         caption="Transfer with Correction" mnemonic="w" target="window" permission="transfer.create"/>
-        <invoker type="rpttransaction" action="changeClassification"       caption="Change Classification"   mnemonic="c" target="window" permission="changeclassification.create"/>
-        <invoker type="rpttransaction" action="changeTaxability"       caption="Change Taxability"   mnemonic="c" target="window" permission="changetaxability.create"/>
-        <invoker type="rpttransaction" action="correction"       caption="Correction of Entry"   mnemonic="e" target="window" permission="correction.create"/>
-        <invoker type="rpttransaction" action="newdiscovery"     caption="New Discovery"         mnemonic="d" target="window" permission="newdiscovery.create"/>
-        <invoker type="rpttransaction" action="multipleclaim"    caption="Multiple Claim"        mnemonic="m" target="window" permission="multipleclaim.create"/>
-        <invoker type="rpttransaction" action="reassessment"     caption="Re-Assessment"         mnemonic="r" target="window" permission="reassessment.create"/>
-        <invoker type="rpttransaction" action="generalRevision"   caption="General Revision"      mnemonic="g" target="window" permission="generalrevision.create"/>
-        
-        <invoker type="rpttransaction.initCapture"   action="initCapture"      caption="Data Capture"          target="window" />
-        <invoker type="rpttransaction.transfer"      action="transfer"         caption="Transfer of Ownership" target="window" />
-        <invoker type="rpttransaction.transferReassessment"      action="transferReassessment"         caption="Transfer with Reassessment" target="window" />
-        <invoker type="rpttransaction.transferWithCorrection"      action="transferWithCorrection"         caption="Transfer with Correction" target="window" />
-        <invoker type="rpttransaction.correction"    action="correction"       caption="Correction of Entry"   target="window" />
-        <invoker type="rpttransaction.changeClassification"  action="changeClassification"     caption="Change Classification"         target="window" />
-        <invoker type="rpttransaction.changeTaxability"  action="changeTaxability"     caption="Change Taxability"         target="window" />
-        <invoker type="rpttransaction.reassessment"  action="reassessment"     caption="Re-Assessment"         target="window" />
-        <invoker type="rpttransaction.newdiscovery"  action="newdiscovery"     caption="New Discovery"         target="window" />
-        <invoker type="rpttransaction.multipleclaim" action="multipleclaim"    caption="Multiple Claim"        target="window" />
-        <invoker type="rpttransaction.generalRevision"  action="generalRevision"     caption="General Revision"         target="window" />
         
         <invoker type="quick_launcher" code="DC01"  action="initCapture"      caption="Data Capture"          target="window" />
         <invoker type="quick_launcher" code="TR01"      action="transfer"         caption="Transfer of Ownership" target="window" />
@@ -62,6 +40,7 @@
         <invoker type="quick_launcher" code="CE01"    action="correction"       caption="Correction of Entry"   target="window" />
         <invoker type="quick_launcher" code="CC01"  action="changeClassification"     caption="Change Classification"         target="window" />
         <invoker type="quick_launcher" code="CT01"  action="changeTaxability"     caption="Change Taxability"         target="window" />
+        <invoker type="quick_launcher" code="CD01"  action="changeDepreciation"     caption="Change Depreciation"         target="window" />
         <invoker type="quick_launcher" code="RE01"  action="reassessment"     caption="Re-Assessment"         target="window" />
         <invoker type="quick_launcher" code="ND01"  action="newdiscovery"     caption="New Discovery"         target="window" />
         <invoker type="quick_launcher" code="MC01" action="multipleclaim"    caption="Multiple Claim"        target="window" />
@@ -491,6 +470,7 @@ public class FAASController
     def reassessment()  { initTxn( 'RE', 'Re-Assessment Transaction' ) }
     def changeClassification() { initTxn( 'CC', 'Change Classification Transaction' ) }
     def changeTaxability() { initTxn( 'CT', 'Change Taxability Transaction' ) }
+    def changeDepreciation() { initTxn( 'CD', 'Change Depreciation Transaction' ) }
     def correction()    { initTxn( 'CE', 'Correction of Entry Transaction' ) }
     def multipleclaim() { initTxn( 'MC', 'Multiple Claim Transaction' ) }
     
