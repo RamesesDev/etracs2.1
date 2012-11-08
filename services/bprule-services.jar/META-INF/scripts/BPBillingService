@@ -318,6 +318,12 @@ public class BPBillingService
 			
 			def lob = bill.lobs.find{ it.lobid == tf.lobid }
 			
+			tffact.assessmenttype = bill.txntype 
+			if(lob ) {
+				tffact.assessmenttype = lob.assessmenttype
+			}
+			
+			
 			if( lob && lob.assessmenttype != 'NEW' ) {
 				tffact.applysurcharge = isApplySurcharge( cyfact, tf.year, tf.qtr )
 			}

@@ -1,0 +1,33 @@
+<workunit>
+    <invokers>
+        <invoker type="value_handler:assessmenttype" />
+    </invokers>
+    
+    <code>
+        <![CDATA[
+
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        import rulemgmt.*;
+
+        public class AssessmentTypeValueHandler extends LookupValueHandler {
+        
+            public ValueHandlerLookupModel getHandler() {
+                return [
+                    getItemObjid: { it.assessmenttype },
+                    getItemName:  { it.assessmenttype },
+                    getLookupOpenerName:  { 'assessmenttype.lookup' },
+                    getSelectHandlerName: { 'onselect' }
+                ] as ValueHandlerLookupModel
+            }
+            
+        }
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="rulemgmt.support.LookupValuePage"/> 
+    </pages>
+    
+</workunit>
