@@ -116,8 +116,8 @@ class RPTUtilityService
 			}
 			else
 			{
-				rp.munidistrict  	 = info.municipality.lguname;
-				rp.munidistrictindex = info.municipality.indexno;
+				rp.munidistrict  	 = info.municity.lguname;
+				rp.munidistrictindex = info.municity.indexno;
 			}
 			
 			em.sqlContext.createNamedExecutor('rptutility:updateRealProperty').setParameters( rp ).execute()
