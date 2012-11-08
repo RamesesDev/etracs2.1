@@ -279,6 +279,7 @@ class MachRPUService
     @ProxyMethod
     public List lookupActualUse( lguid, ry , searchText, params) {
         def searchValue = (searchText ? searchText+'%' : '%')
+		lguid = ( lguid ? lguid : '%' )
         def criteria = [lguid:lguid, ry:ry, code:searchValue]
         def list = getListByName('machrpu:lookupActualUseByCode', criteria, params, 'bl.objid')
         return list.each {

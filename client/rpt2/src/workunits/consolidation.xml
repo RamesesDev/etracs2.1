@@ -24,7 +24,7 @@
         <invoker type="formActions" action="submitToProvince" shortcut="ctrl M" visibleWhen="#{showSubmitToProvinceAction == true}" caption="Submit To Province" mnemonic="m" icon="images/doc-submit.png" permission="consolidation.submitToProvince" />
         <invoker type="formActions" action="disapproveByProvince" visibleWhen="#{showDisapproveByProvinceAction == true}" caption="Disapprove" icon="images/disapprove.png" permission="consolidation.disapproveByProvince" />
         <invoker type="formActions" action="approveByProvince" shortcut="ctrl A" visibleWhen="#{showApprovedByProvinceAction == true}" caption="Approve" mnemonic="a" icon="images/approve.png" permission="consolidation.approveByProvince" />
-        <invoker type="formActions" action="viewTaxdeclaration" shortcut="ctrl V" visibleWhen="#{consolidation.docstate == 'APPROVED'}" caption="View Tax Declarations" mnemonic="a" icon="images/doc-view.png"/>
+        <invoker type="formActions" action="viewTaxdeclaration" shortcut="ctrl V" visibleWhen="#{showViewTDAction == true}" caption="View Tax Declarations" mnemonic="a" icon="images/doc-view.png"/>
         
         <invoker type="realpropertyActions" action="validateRealProperty" caption="Next" mnemonic="n" icon="images/next.png" permission="consolidation.view" />
         
@@ -269,12 +269,12 @@ public class ConsolidationController
     def affectedrpuListHandler = [
         getRows    : { return 50 },
         getColumns : { return [
-            new Column( name:'rputype', caption:'Type', maxWidth:60 ),
-            new Column( name:'prevfullpin', caption:'PIN', maxWidth:150),
-            new Column( name:'prevtdno', caption:'TD No.', maxWidth:120),
-            new Column( name:'newtdno', caption:'New TD No.', maxWidth:120, editable:true),
-            new Column( name:'newsuffix', caption:'New Suffix', type:'integer', format:'0000', maxWidth:120, editable:true),
-            new Column( name:'memoranda', caption:'Memoranda*', editable:true),
+            new Column( name:'rputype', caption:'Type', width:70 ),
+            new Column( name:'prevfullpin', caption:'PIN', width:180),
+            new Column( name:'prevtdno', caption:'TD No.', width:150),
+            new Column( name:'newtdno', caption:'New TD No.', width:150, editable:true),
+            new Column( name:'newsuffix', caption:'New Suffix', type:'integer', format:'0000', width:120, editable:true),
+            new Column( name:'memoranda', caption:'Memoranda*', editable:true, width:300),
         ]},
         validate  : { li -> validateAffectedRpu( li.item ) },
         onColumnUpdate : {item, colname ->  checkDuplicateSuffix( colname, item ) },
@@ -412,7 +412,7 @@ public class ConsolidationController
     
     boolean getShowApprovedByProvinceAction() {
         def lgutype = consolidation.rp.lgutype?.toLowerCase()
-        if( lgutype == 'city' || lgutype == 'municipality' ) return false 
+        if( lgutype == 'city'  ) return false
         if( lgutype == 'municipality' && consolidation.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && consolidation.docstate != 'FORAPPROVAL' ) return false
         return true
@@ -420,10 +420,18 @@ public class ConsolidationController
     
     boolean getShowDisapproveByProvinceAction() {
         def lgutype = consolidation.rp.lgutype?.toLowerCase()
-        if( lgutype == 'city' ) return false 
+        if( lgutype == 'city'  ) return false
         if( lgutype == 'municipality' && consolidation.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && consolidation.docstate != 'FORAPPROVAL' ) return false
         return true 
+    }
+    
+    boolean getShowViewTDAction() {
+        def lgutype = consolidation.lgutype?.toLowerCase()
+        if( consolidation.docstate == 'APPROVED' ) return true
+        if( lgutype == 'city' && consolidation.docstate == 'FORAPPROVAL' ) return true
+        if( lgutype != 'city' && consolidation.docstate == 'FORPROVAPPROVAL' ) return true
+        return false 
     }
     
     def getTotalareasqm() {

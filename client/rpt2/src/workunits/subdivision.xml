@@ -23,7 +23,7 @@
         <invoker type="formActions" action="submitToProvince" shortcut="ctrl M" visibleWhen="#{showSubmitToProvinceAction == true}" caption="Submit To Province" mnemonic="m" icon="images/doc-submit.png" permission="subdivision.submitToProvince"/>
         <invoker type="formActions" action="disapproveByProvince" visibleWhen="#{showDisapproveByProvinceAction == true}" caption="Disapprove" icon="images/disapprove.png" permission="subdivision.disapproveByProvince" />
         <invoker type="formActions" action="approveByProvince" shortcut="ctrl A" visibleWhen="#{showApprovedByProvinceAction == true}" caption="Approve" mnemonic="a" icon="images/approve.png" permission="subdivision.approveByProvince" />
-        <invoker type="formActions" action="viewTaxDeclarations" shortcut="ctrl A" visibleWhen="#{subdivision.docstate == 'APPROVED'}" caption="View Tax Declarations" mnemonic="v" icon="images/doc-view.png"/>
+        <invoker type="formActions" action="viewTaxDeclarations" shortcut="ctrl A" visibleWhen="#{showViewTDAction == true}" caption="View Tax Declarations" mnemonic="v" icon="images/doc-view.png" immediate="true" />
         
         <invoker type="subdividedlandActions" action="addSubdividedLand" caption="Add" mnemonic="a" icon="images/doc-add.png" />
         <invoker type="subdividedlandActions" action="editSubdividedLand" caption="Edit" mnemonic="e" icon="images/edit.png" />
@@ -286,7 +286,7 @@ public class SubdivisionController
     void validateAffectedRpu( item ) {
         try {
             if( item.itemno ) {
-                def sland = subdividedlands.find{ it.itemno == item.itemno }
+                def sland = subdividedlands.find{ it.itemno.toString() == item.itemno.toString() }
                 if( ! sland ) throw new Exception('Invalid New Land Reference.')
                 item.subdivisionlandid = sland.objid 
                 item.newpin = sland.newpin
@@ -392,6 +392,14 @@ public class SubdivisionController
         if( lgutype == 'municipality' && subdivision.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && subdivision.docstate != 'FORAPPROVAL' ) return false
         return true
+    }
+    
+    boolean getShowViewTDAction() {
+        def lgutype = subdivision.lgutype?.toLowerCase()
+        if( subdivision.docstate == 'APPROVED' ) return true
+        if( lgutype == 'city' && subdivision.docstate == 'FORAPPROVAL' ) return true
+        if( lgutype != 'city' && subdivision.docstate == 'FORPROVAPPROVAL' ) return true
+        return false 
     }
     
     def getTotalareasqm() {

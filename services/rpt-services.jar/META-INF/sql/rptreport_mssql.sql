@@ -235,7 +235,7 @@ FROM faaslist f
 	LEFT JOIN lgu l ON l.objid = f.barangayid 
 WHERE f.txntimestamp < $P{currenttimestamp} 
   AND f.docstate = 'CURRENT' 
-  AND l.parentid = $P{lguindex} 
+  AND l.parentid LIKE $P{lguindex} 
 GROUP BY l.objid, l.lguname  
 ORDER BY MIN(l.indexno)
 
@@ -251,7 +251,7 @@ FROM faaslist f
 	LEFT JOIN lgu l ON l.objid = f.barangayid 
 WHERE f.txntimestamp LIKE $P{currenttimestamp} 
   AND f.docstate = 'CURRENT' 
-  AND l.parentid = $P{lguindex} 
+  AND l.parentid LIKE $P{lguindex}  
 GROUP BY l.objid, l.lguname  
 ORDER BY MIN(l.indexno)
 
@@ -267,7 +267,7 @@ FROM faaslist f
 	LEFT JOIN lgu l ON l.objid = f.barangayid 
 WHERE f.txntimestamp LIKE $P{currenttimestamp}  
   AND f.docstate = 'CANCELLED' 
-  AND l.parentid = $P{lguindex} 
+  AND l.parentid LIKE $P{lguindex} 
 GROUP BY l.objid, l.lguname  
 ORDER BY MIN(l.indexno) 	 
 
@@ -283,7 +283,7 @@ FROM faaslist f
 	LEFT JOIN lgu l ON l.objid = f.barangayid  
 WHERE f.txntimestamp < $P{endingtimestamp} 
   AND f.docstate = 'CURRENT' 
-  AND l.parentid = $P{lguindex} 
+  AND l.parentid LIKE $P{lguindex} 
 GROUP BY l.objid, l.lguname  
 ORDER BY MIN(l.indexno) 	 
 

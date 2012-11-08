@@ -19,20 +19,24 @@ class CancelAnnotationInterceptor
 	@Service('Var')
 	def var 
 	
+	@Service('ETRACSUtilService')
+	def utilSvc
 	
 	/*==============================================================
 	** LOCAL INTERCEPTORS 
 	==============================================================*/
 	@After(pattern='CancelAnnotationService.approve') 
 	public void interceptApprove( evt ) {
-		def cancelannotation = evt.result 
-		def attachment = [ 
-			cancelannotation : evt.result 
-		]
-		def msg = msgSvc.createMessage( 'faascancelannotation.post', attachment )
-		msg.refid = cancelannotation.objid 
-		updateReceiverInfo( msg, cancelannotation )
-		msgSvc.send( msg ) 
+		if( utilSvc.toBoolean(var.remote_connection_active, false) ) {
+			def cancelannotation = evt.result  
+			def attachment = [ 
+				cancelannotation : evt.result 
+			]
+			def msg = msgSvc.createMessage( 'faascancelannotation.post', attachment )
+			msg.refid = cancelannotation.objid 
+			updateReceiverInfo( msg, cancelannotation )
+			msgSvc.send( msg ) 
+		}
 	}
 	
 	void updateReceiverInfo( msg, cancelannotation ) {

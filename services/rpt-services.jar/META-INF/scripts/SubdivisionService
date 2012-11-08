@@ -246,7 +246,22 @@ class SubdivisionService
     
     @ProxyMethod
     public List getSubdividedLands( subdivisionid ) {
-        return em.sqlContext.createNamedQuery('subdivision:getSubdividedLands').setParameter('subdivisionid', subdivisionid ).resultList 
+        return em.sqlContext.createNamedQuery('subdivision:getSubdividedLands')
+					.setParameter('subdivisionid', subdivisionid )
+					.resultList
+					.each{ 
+						it.itemno = it.itemno.toString()
+						if( it.rp ) {
+							it.rp = em.serializer.read( it.rp )
+						}
+						if( it.rpu ) {
+							it.rpu = em.serializer.read( it.rpu )
+						}
+						if( it.extended ) {
+							it.putAll( em.serializer.read(it.extended) )
+						}
+					} 
+		
     }
     
     @ProxyMethod
@@ -558,7 +573,6 @@ class SubdivisionService
     void validateInfo( subdivision ) {
         required( 'Mother TD No.', subdivision.motherfaasid )
         required( 'Issue Date', subdivision.issuedate )
-        required( 'Memoranda', subdivision.memoranda )
         if( subdivision.effectivityyear <= 0) throw new Exception('Effectivity Year is invalid.')
         if( subdivision.subdivisioncount <= 1) throw new Exception('Subdivision count must be greater than one.')
     }

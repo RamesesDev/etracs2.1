@@ -234,7 +234,7 @@ class FAASService
 								annotated		: false, 
                             ],
             rp            : [lgutype: var.lgu_type?.toLowerCase(), attributes:[], autonumber:var.pin_autonumber, pintype:var.pin_type?.toLowerCase()],
-            rpu           : [ry:ry, classid:'RES', classcode:'RES', classname:'RES',suffix:0,info:[:], taxable:true, totalareasqm:0.0, totalareaha:0.0],
+            rpu           : [ry:ry, classid:'RES', classcode:'RES', classname:'RESIDENTIAL',suffix:0,info:[:], taxable:true, totalareasqm:0.0, totalareaha:0.0],
             previousfaases: [],
             lgutype       : var.lgu_type,
 			lguid		  : var.lgu_index,
@@ -929,6 +929,7 @@ class FAASService
 		else if( txntype == 'SD' && rptsetting.allowsubdivisionwithbalance )         return true
 		else if( txntype == 'CS' && rptsetting.allowconsolidationwithbalance )       return true
 		else if( txntype == 'CC' && rptsetting.allowreclasswithbalance )             return true
+		else if( txntype == 'RE' && rptsetting.allowreassessmentwithbalance )        return true
 		
 		return false;
 	}
@@ -1529,6 +1530,7 @@ class FAASService
                 prevfaas.info.cancelreason  = faas.info.txntype 
                 prevfaas.info.canceldate    = faas.info.issuedate 
                 prevfaas.info.cancelledbytdnos = faas.info.tdno 
+				prevfaas.info.cancelnote     = faas.cancelnote 
                 em.update( prevfaas.schemaname, prevfaas )
                 def previnfo = [objid:prevfaas.objid, docstate:CANCELLED_STATE, cancelreason:faas.info.txntype, canceldate:faas.info.issuedate, cancelledbytdnos:faas.info.tdno ]
                 em.sqlContext.createNamedExecutor('faas:updateListCancelInfo').setParameters( previnfo  ).execute() 

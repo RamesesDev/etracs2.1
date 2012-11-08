@@ -55,10 +55,11 @@ public class CancelAnnotationPage extends javax.swing.JPanel {
         xTextField9 = new com.rameses.rcp.control.XTextField();
         xDateField5 = new com.rameses.rcp.control.XDateField();
         xNumberField3 = new com.rameses.rcp.control.XNumberField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        xTextArea2 = new com.rameses.rcp.control.XTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         xTextArea3 = new com.rameses.rcp.control.XTextArea();
+        formPanel9 = new com.rameses.rcp.util.FormPanel();
+        xLabel1 = new com.rameses.rcp.control.XLabel();
+        xLabel3 = new com.rameses.rcp.control.XLabel();
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Cancel Annotation Information");
@@ -238,21 +239,6 @@ public class CancelAnnotationPage extends javax.swing.JPanel {
 
         formPanel2.add(formPanel6);
 
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 60));
-        xTextArea2.setColumns(20);
-        xTextArea2.setLineWrap(true);
-        xTextArea2.setRows(5);
-        xTextArea2.setWrapStyleWord(true);
-        xTextArea2.setCaption("Details");
-        xTextArea2.setCaptionWidth(110);
-        xTextArea2.setEnabled(false);
-        xTextArea2.setName("annotation.details");
-        xTextArea2.setPreferredSize(new java.awt.Dimension(0, 60));
-        xTextArea2.setTextCase(com.rameses.rcp.constant.TextCase.UPPER);
-        jScrollPane2.setViewportView(xTextArea2);
-
-        formPanel2.add(jScrollPane2);
-
         jScrollPane3.setPreferredSize(new java.awt.Dimension(0, 60));
         xTextArea3.setColumns(20);
         xTextArea3.setLineWrap(true);
@@ -268,6 +254,30 @@ public class CancelAnnotationPage extends javax.swing.JPanel {
 
         formPanel2.add(jScrollPane3);
 
+        formPanel9.setCaptionFont(new java.awt.Font("Tahoma", 1, 12));
+        formPanel9.setCaptionVAlignment(com.rameses.rcp.constant.UIConstants.CENTER);
+        formPanel9.setCaptionWidth(160);
+        formPanel9.setFont(new java.awt.Font("Tahoma", 1, 14));
+        formPanel9.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        formPanel9.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        xLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel1.setCaption("Annotated TD No.");
+        xLabel1.setCaptionWidth(135);
+        xLabel1.setCellPadding(new java.awt.Insets(0, 0, 0, 20));
+        xLabel1.setFont(new java.awt.Font("Tahoma", 1, 12));
+        xLabel1.setName("annotation.tdno");
+        xLabel1.setPreferredSize(new java.awt.Dimension(180, 24));
+        formPanel9.add(xLabel1);
+
+        xLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        xLabel3.setCaption("PIN");
+        xLabel3.setCaptionWidth(45);
+        xLabel3.setCellPadding(new java.awt.Insets(0, 0, 0, 20));
+        xLabel3.setFont(new java.awt.Font("Tahoma", 1, 12));
+        xLabel3.setName("annotation.fullpin");
+        xLabel3.setPreferredSize(new java.awt.Dimension(216, 24));
+        formPanel9.add(xLabel3);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -275,9 +285,13 @@ public class CancelAnnotationPage extends javax.swing.JPanel {
             .add(xActionBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 751, Short.MAX_VALUE)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(formPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 599, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 599, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(formPanel9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 693, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(48, Short.MAX_VALUE))
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE))
                 .addContainerGap(142, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -285,10 +299,12 @@ public class CancelAnnotationPage extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .add(xActionBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(formPanel9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 24, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(formPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 276, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 216, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(formPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 218, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(66, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -302,19 +318,20 @@ public class CancelAnnotationPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel6;
     private com.rameses.rcp.util.FormPanel formPanel7;
     private com.rameses.rcp.util.FormPanel formPanel8;
+    private com.rameses.rcp.util.FormPanel formPanel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XDateField xDateField2;
     private com.rameses.rcp.control.XDateField xDateField3;
     private com.rameses.rcp.control.XDateField xDateField4;
     private com.rameses.rcp.control.XDateField xDateField5;
+    private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XLabel xLabel2;
+    private com.rameses.rcp.control.XLabel xLabel3;
     private com.rameses.rcp.control.XNumberField xNumberField2;
     private com.rameses.rcp.control.XNumberField xNumberField3;
     private com.rameses.rcp.control.XTextArea xTextArea1;
-    private com.rameses.rcp.control.XTextArea xTextArea2;
     private com.rameses.rcp.control.XTextArea xTextArea3;
     private com.rameses.rcp.control.XTextField xTextField1;
     private com.rameses.rcp.control.XTextField xTextField2;

@@ -31,6 +31,9 @@ class ConsolidationService
     
     @Service('LandRPUService')
     def landrpuSvc
+	
+	@Service('ETRACSUtilService')
+	def utilSvc
     
     def SCHEMA_NAME                  = 'consolidation'
     def CONSOLIDATEDLAND_SCHEMANAME  = 'consolidation:consolidatedland'
@@ -320,7 +323,7 @@ class ConsolidationService
 			def parseddate = dateSvc.parseDate( refdate, null )
 			if( ledger.docstate == 'PENDING' ) throw new Exception('Ledger is not yet approved.\nLet LandTax approve the ledger before processing the transaction.')
 			if( ledger.docstate == 'CANCELLED') throw new Exception('Ledger has already been cancelled.')
-			if( TO_BOOLEAN( ledger.taxable ) == false ) return 
+			if( utilSvc.toBoolean( ledger.taxable, true ) == false ) return 
 			
 			if( faasSvc.isTxnAllowedWithBalance( CONSOLIDATION_TXNTYPE ) ) return
 			
@@ -363,7 +366,7 @@ class ConsolidationService
                      .setParameter('consolidationid', cland.consolidationid)
                      .resultList.each {
                         if( it.landfaasid == cland.landfaasid ) {
-                            refSvc.delete( em, it.prevfaasid )
+                            refSvc.delete( it.prevfaasid )
                         }
                      }
         
@@ -442,7 +445,7 @@ class ConsolidationService
             newfaas.info.tdno      = arpu.newtdno
             newfaas.info.txntype   = CONSOLIDATION_TXNTYPE
             newfaas.info.txn       = faasSvc.resolveTxnType( CONSOLIDATION_TXNTYPE )
-            newfaas.info.autonumber         = TO_BOOLEAN( consolidation.autonumber )
+            newfaas.info.autonumber         = utilSvc.toBoolean( consolidation.autonumber, false )
             newfaas.info.memoranda          = consolidation.memoranda
             newfaas.info.effectivityyear    = consolidation.effectivityyear
             newfaas.info.effectivityqtr     = consolidation.effectivityqtr
@@ -498,7 +501,7 @@ class ConsolidationService
 		newfaas.info.effectivityyear = consolidation.effectivityyear
         newfaas.info.effectivityqtr  = consolidation.effectivityqtr
 		newfaas.txntimestamp 		= dateSvc.buildCustomTimeStamp( newfaas.info.issuedate ) 
-        newfaas.info.autonumber     = TO_BOOLEAN( consolidation.autonumber )
+        newfaas.info.autonumber     = utilSvc.toBoolean( consolidation.autonumber, false )
         newfaas.info.titletype       = consolidation.newtitletype
         newfaas.info.titleno         = consolidation.newtitleno
         newfaas.info.titledate       = consolidation.newtitledate
@@ -596,7 +599,10 @@ class ConsolidationService
         //validate area 
         def data = em.sqlContext.createNamedQuery('consolidation:getTotalConsolidatedLandArea').setParameter('consolidationid', consolidation.objid).singleResult
         if( ! data  ) throw new Exception('Consolidation lands are required.')
-        if( data.totalareasqm != consolidation.areasqm ) throw new Exception('Total consolidated land area must be equal to ' + consolidation.areasqm + ' sqm.')
+		
+		if( utilSvc.toBoolean(var.consolidation_allow_equal_area_only, true ) ) {
+			if( data.totalareasqm != consolidation.areasqm ) throw new Exception('Total consolidated land area must be equal to ' + consolidation.areasqm + ' sqm.')
+		}
     }
     
     
@@ -626,11 +632,6 @@ class ConsolidationService
 						.setMaxResults( params._limit )
 						.resultList
 	}
-	
-	boolean TO_BOOLEAN( value ) {
-		if( value instanceof Boolean ) return value 
-		return ( value.toString().toLowerCase().matches('1|y|yes|t|true') )
-	}
-    
+	    
 }
 
