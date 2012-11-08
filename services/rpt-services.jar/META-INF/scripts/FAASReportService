@@ -232,7 +232,7 @@ class FaasReportService
 			list.add( item )
 		}
 		
-		def group = list.groupBy{ it.classifiation + it.actualuse }
+		def group = list.groupBy{ it.classification + it.actualuse }
 		def keysets = group.keySet()
 		keysets.each{
 			def list2 = group[it]
