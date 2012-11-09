@@ -155,6 +155,21 @@ class FAASService
 	}
 	
 	@ProxyMethod
+	public def getFaasIds( def params ) {
+		def filter = [ 'barangayid=$P{barangayid}' ];
+		if( params.section) {
+			filter  << 'section=$P{section}'
+		}
+	
+		def list = em.sqlContext.createNamedQuery('faas:getFaasIds')
+					.setVars( [filter: filter.join(' and ')] )
+					.setParameters( params )
+					.resultList;
+		if( ! list) throw new Exception("No record(s) found.    ");
+		return list;
+	}
+	
+	@ProxyMethod
 	public def getLookupList( searchText, params ) {
 		def result;
 		

@@ -138,7 +138,7 @@ SELECT * FROM lgu WHERE lgutype = 'BARANGAY' ORDER BY objid
 SELECT * FROM lgu 
 WHERE parentid = $P{parentid} 
   AND lgutype = 'BARANGAY' 
-ORDER BY objid 
+ORDER BY lguname
 
 [getActiveAnnotationId] 
 SELECT objid FROM faasannotation WHERE faasid = $P{faasid} AND docstate = 'APPROVED' ORDER BY docno DESC 
@@ -349,6 +349,9 @@ WHERE ${whereclause}
 
 [getFaasFilters]
 SELECT * FROM filter WHERE refname = 'faas' ORDER BY name  
+
+[getFaasIds]
+select objid, tdno from faaslist where ${filter}
 
 [getClassificationList]
 SELECT objid, propertycode AS classcode, propertydesc AS classname FROM propertyclassification ORDER BY orderno  
