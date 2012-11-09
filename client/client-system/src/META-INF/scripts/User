@@ -33,7 +33,7 @@ public class User {
 
     public void init( def usr, def pwd ) {
         def sp = OsirisContext.session.securityProvider;
-        sp.permissions.addAll(usr.permissions);
+        //sp.permissions.addAll(usr.permissions);
         OsirisContext.env.putAll( usr.env );
         OsirisContext.clientContext.properties.put("PWD", pwd );
 

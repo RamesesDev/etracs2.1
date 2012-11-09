@@ -1,7 +1,7 @@
 <workunit>
     
     <invokers>
-        <invoker type="loader" caption="Login" index="-1000" action="init"/> 
+        <invoker type="loader" role="SYSTEM" caption="Login" index="-1000" action="init"/> 
     </invokers>
     
     <code>
