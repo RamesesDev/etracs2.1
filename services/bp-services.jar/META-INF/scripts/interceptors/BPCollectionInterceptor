@@ -263,19 +263,19 @@ class BPCollectionInterceptor {
 		}
 
 		entity.items += item
-	}
+	}   
 	
-	private void removePenaltyRcptItems( receipt ){
+	private void removePenaltyAmt( receipt ){
 		receipt.items.each{
-			if( it.surcharge > 0.0 ) it.amount -= it.surcharge
-			if( it.interest > 0.0 ) it.amount -= it.interest
+			if( it.surcharge ) it.amount -= it.surcharge
+			if( it.interest )  it.amount -= it.interest
 		}
 	}
 	
 	private void summarizedItems( def receipt ){
 		if( 'BUSINESS_TAX'.equals( receipt.doctype ) ) {
 			populatePenaltyInfo( receipt )
-			removePenaltyRcptItems( receipt )
+			removePenaltyAmt( receipt )
 			summarizedByBTItems( receipt )
 			summarizedByAccts( receipt ) 
 		}

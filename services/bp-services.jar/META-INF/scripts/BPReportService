@@ -135,20 +135,15 @@ public class BPReportService
 		if( var.varname_gross ) VAR_GROSS = var.varname_gross 
 		
 		entity.classification = entity.classification?.classification
-		def param = [ classification:entity.classification, txntype:entity.txntype, topsize:entity.topsize]
+		def titleparam = [ classification:entity.classification, txntype:entity.txntype, topsize:entity.topsize]
+		def params = [ txntype:entity.txntype, tsize:entity.topsize, year:entity.year,
+					  classification:( entity.classification ? entity.classification : '%' ),
+					  varname:( entity.txntype == 'NEW' ? VAR_CAPITAL : VAR_GROSS)	]
 		def reportdata = [:]
-		reportdata.title = buildTitle( param )
 		reportdata.items = []
-
-		em.sqlContext.createNamedQuery('bpreport:getBusinessTopList')
-			.setVars(['topsize':'TOP ' + entity.topsize])
-			.setParameters([
-				  txntype:entity.txntype, tsize:entity.topsize, year:entity.year,
-				  classification:( entity.classification ? entity.classification : '%' ),
-				  varname:( entity.txntype == 'NEW' ? VAR_CAPITAL : VAR_GROSS)
-			])
-			.resultList.each{ 
-			
+		reportdata.title = buildTitle( titleparam )
+		
+		em.sqlContext.createNamedQuery('bpreport:getBusinessTopList').setParameters( params ).resultList.each{ 
 			reportdata.items += em.sqlContext.createNamedQuery('bpreport:getBusinessTopListGroupByAmount')
 				.setParameters([
 					txntype:entity.txntype, amount:it.amount, year:entity.year,
@@ -180,7 +175,8 @@ public class BPReportService
 		def reportdata = [:]
 		checkComparativeYearRange( param )
 		reportdata.type = param.type
-		reportdata.title = "Comparative Report on $param.varname Investment by Classification".toString()
+		param.varname = param.varname.equals('GROSS') ? 'Gross Sales' : 'Capital Investment'
+		reportdata.title = "Comparative Report on $param.varname by Classification".toString()
 		param.sql_stmt = param.type.equals('ANNUALLY') ? 'getAnnually' : 'getQuarterly'
 		reportdata.items = getComparativeResult( param )
 		if( !reportdata.items ) throw new Exception( 'No Records found' )
@@ -210,7 +206,6 @@ public class BPReportService
 	
 	private def getComparativeResult( def param ){
 		def result = em.sqlContext.createNamedQuery( 'bpreport:' + param.sql_stmt ).setParameters( param ).resultList
-		
 		return getAmtPercentage( result )  
 	}
 	
@@ -228,7 +223,6 @@ public class BPReportService
 				it.increaserate = (( it.amountto - it.amountfrom ) / it.amountto * 100) as double
 				it.percenttage =  numSvc.format('0.00', it.increaserate) + '%'
 			}
-			
 		}
 	
 	}

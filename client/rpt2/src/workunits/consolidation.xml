@@ -412,8 +412,8 @@ public class ConsolidationController
     }
     
     boolean getShowDisapproveAction() {
-        if( consolidation.lgutype?.toLowerCase() != 'city'  ) return false
         if( consolidation.docstate != 'FORAPPROVAL' ) return false
+        if( consolidation.rp.lgutype?.toLowerCase() != 'city'  ) return false
         return true
     }
     
@@ -436,7 +436,7 @@ public class ConsolidationController
         if( lgutype == 'city'  ) return false
         if( lgutype == 'municipality' && consolidation.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && consolidation.docstate != 'FORAPPROVAL' ) return false
-        return true
+        return true 
     }
     
     boolean getShowViewTDAction() {

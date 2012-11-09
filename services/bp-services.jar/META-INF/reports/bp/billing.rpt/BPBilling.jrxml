@@ -39,6 +39,7 @@
 	<field name="grandtotal" class="java.math.BigDecimal"/>
 	<field name="printedby" class="java.lang.String"/>
 	<field name="expirydate" class="java.util.Date"/>
+	<field name="info.taxpayerno" class="java.lang.String"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -184,7 +185,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.taxpayername}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{info.taxpayername} + " - " + $F{info.taxpayerno} ]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement

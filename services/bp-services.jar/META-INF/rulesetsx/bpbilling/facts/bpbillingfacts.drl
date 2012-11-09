@@ -1,0 +1,46 @@
+package bp.billing.facts
+
+declare CurrentYearFact
+	year  : Integer
+	qtr   : Integer
+	month : Integer
+	day   : Integer
+end
+
+declare BPLedgerFact
+	ledgerid      : String
+	yearstarted   : Integer
+	lastyearpaid  : Integer
+	lastqtrpaid   : Integer
+end
+
+declare TaxFeeFact
+	ledgerid  : String
+	appid     : String 
+	assessmenttype : String 
+	taxfeeid  : String 
+	lobid     : String
+	lobname   : String
+	rulename  : String
+	year      : Integer
+	qtr       : Integer
+	monthsfromjan : Integer
+	monthsfromqtr : Integer
+	daysfromjan : Integer
+	daysfromqtr : Integer
+	acctid    : String
+	accttitle : String
+	amount    : Double
+	surchargeacctid : String 
+	surchargeaccttitle : String 
+	surcharge   : Double 
+	interestacctid : String	
+	interestaccttitle : String 
+	interest  : Double
+	discount  : Double
+	expr      : String 
+	varlist   : java.util.Map
+	applysurcharge	: Boolean
+	applydiscount	: Boolean
+end
+   
