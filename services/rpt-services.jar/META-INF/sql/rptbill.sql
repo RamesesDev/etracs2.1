@@ -32,17 +32,18 @@ WHERE rl.objid = ppi.ledgerid
  
 [getOpenLedgersById]
 SELECT 
-	objid, taxpayerid, fullpin AS pin, tdno , rputype, assessedvalue, 
-    barangay, classcode, txntype, cadastrallotno, taxpayername, 
-	CASE WHEN lastqtrpaid = 4 AND partialbasic = 0.0 THEN lastyearpaid +1 ELSE lastyearpaid END AS fromyear, 
-	CASE WHEN lastqtrpaid = 4 THEN 1 ELSE lastqtrpaid + 1 END AS fromqtr, 
-    lastyearpaid, lastqtrpaid, 
-	0 AS toyear, 0 AS toqtr, partialbasic, partialbasicint, partialsef,  partialsefint, 
+	r.objid, r.taxpayerid, r.fullpin AS pin, r.tdno , r.rputype, r.assessedvalue, fl.totalareasqm, fl.totalareaha, 
+    r.barangay, r.classcode, r.txntype, r.cadastrallotno, r.taxpayername, 
+	CASE WHEN r.lastqtrpaid = 4 AND r.partialbasic = 0.0 THEN r.lastyearpaid +1 ELSE r.lastyearpaid END AS fromyear, 
+	CASE WHEN r.lastqtrpaid = 4 THEN 1 ELSE r.lastqtrpaid + 1 END AS fromqtr, 
+    r.lastyearpaid, lastqtrpaid, 
+	0 AS toyear, 0 AS toqtr, r.partialbasic, r.partialbasicint, r.partialsef,  r.partialsefint, 
     0.0 AS basic, 0.0 AS basicint, 0.0 AS basicdisc, 
-    0.0 AS sef, 0.0 AS sefint, 0.0 AS sefdisc, administratorname, administratoraddress 
-FROM rptledger 
-WHERE objid = $P{objid} AND docstate = 'APPROVED' AND taxable = 1 
- AND ( lastyearpaid < $P{currentyr} OR (lastyearpaid = $P{currentyr} AND lastqtrpaid < 4 ) OR partialbasic > 0 ) 
+    0.0 AS sef, 0.0 AS sefint, 0.0 AS sefdisc, r.administratorname, r.administratoraddress 
+FROM rptledger r 
+INNER  JOIN faaslist fl ON fl.objid = r.faasid 
+WHERE r.objid = $P{objid} AND r.docstate = 'APPROVED' AND r.taxable = 1 
+ AND ( r.lastyearpaid < $P{currentyr} OR (r.lastyearpaid = $P{currentyr} AND r.lastqtrpaid < 4 ) OR r.partialbasic > 0 ) 
  
  
 [getOpenLedgerItems] 
