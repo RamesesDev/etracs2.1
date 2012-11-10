@@ -42,3 +42,7 @@
     enabled:false;
 }
 
+"taxpayer|faas.info.owner.*|faas.info.taxpayer.*|faas.info.administrator.*"[faas.info.txntype == 'CD'] {
+    enabled:false;
+}
+
