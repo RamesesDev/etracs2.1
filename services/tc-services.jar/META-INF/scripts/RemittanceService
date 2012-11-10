@@ -35,10 +35,10 @@ class RemittanceService {
 	@Env
 	def env
 	
-	def SCHEMANAME = "remittance:remittance";
-	def SCHEMAVERSION = "1.0";
-	def LISTSCHEMANAME = "remittance:remittancelist";
-	def REMITTED_FORM_SCHEMANAME = "remittance:remittedform";
+	def SCHEMA_NAME = "remittance:remittancelist";
+	def SCHEMA_VERSION = "1.0";
+	def LISTSCHEMA_NAME = "remittance:remittancelist";
+	def REMITTED_FORM_SCHEMA_NAME = "remittance:remittedform";
 	def REMITTANCE_IMPORT_SCHEMA = 'remittance:remittanceimport'
 	
 	
@@ -55,7 +55,7 @@ class RemittanceService {
 			return (o != null)
 		}
 		catch(e) {
-			e.printStackTrace();
+			println e.message
 		}
 		return false;
 	}
@@ -72,22 +72,31 @@ class RemittanceService {
 	}
 	
 	private def getListByCollector( searchText, params ) {
-		if ( !searchText )
-			return em.sqlContext.createNamedQuery( "remittance:getListByCollectorid" ).setParameters( [collectorid:params.USERID] ).resultList;
-		def results = em.sqlContext.createNamedQuery( "remittance:getRemittanceByTxnNoByCollectorid" ).setParameters( [collectorid:params.USERID, txnno:searchText] ).resultList;
+		if ( !searchText ) {
+			return em.sqlContext.createNamedQuery( "remittance:getListByCollectorid" )
+				.setParameters( [collectorid:params.USERID] )
+				.setMaxResults( params._limit)
+				.setFirstResult( params._start )
+				.resultList;
+		}
+		def results = em.sqlContext.createNamedQuery( "remittance:getRemittanceByTxnNoByCollectorid" )
+			.setParameters( [collectorid:params.USERID, txnno:searchText] )
+			.setMaxResults( params._limit)
+			.setFirstResult( params._start )
+			.resultList;
 		if (results) return results;	
 		return [];
 	}
 
+	/*========================================================================
+	** Load receipts, otherpayments and remittedforms when needed only. 
+	** In normal circumstances, users rarely view this informations.
+	========================================================================*/
 	@ProxyMethod
 	public def open( objid ) {
-		if (!objid)
-			return null;
-		def rem = em.read( SCHEMANAME, [objid:objid] );
-		rem.receipts = getRemittanceReceipts( rem.objid )
-		rem.otherpayments = em.sqlContext.createNamedQuery( "remittance:getOtherPaymentsByRemittance" ).setParameter( "remittanceid", rem.objid ).resultList;
+		def rem = em.read( SCHEMA_NAME, [objid:objid] );
 		rem.remittedforms = em.sqlContext.createNamedQuery( "remittance:getRemittedFormsByRemittance" ).setParameter( "remittanceid", rem.objid ).resultList;
-		
+		if( ! rem ) throw new Exception('Remittance does not exists or has been deleted.')
 		return rem;
 	}
 	
@@ -108,24 +117,37 @@ class RemittanceService {
 	}
 	
 	@ProxyMethod
+	public List getOpenNonCashPayments( entity ) {
+		return em.sqlContext.createNamedQuery('remittance:getOpenNonCashPayments')
+					.setParameter('collectorid', entity.collectorid)
+					.resultList 
+	}
+	
+	@ProxyMethod
+	public List getRemittedNonCashPayments( entity ) {
+		return em.sqlContext.createNamedQuery('remittance:getRemittedNonCashPayments')
+					.setParameter('objid', entity.objid)
+					.resultList 
+	}
+	
+	@ProxyMethod
 	public def save( rem ) {
 		validate( rem );
-		rem.objid = 'REM' + new UID();
-		rem.schemaname = SCHEMANAME;
-		rem.schemaversion = SCHEMAVERSION;
-		rem.docstate = 'OPEN';
-		rem.info.txnno = generateRemNo( rem.collectorid );
-		rem.dtposted = dtsvc.getServerDate()
-		if( ! rem.info.txndate ) {
-			rem.info.txndate = dtsvc.format( "yyyy-MM-dd", rem.dtposted );
+		
+		rem.docstate 	= 'OPEN';
+		rem.txnno 		= generateRemNo( rem.collectorid );
+		rem.dtposted 	= dtsvc.getServerDate()
+		if( ! rem.txndate ) {
+			rem.txndate = dtsvc.format( "yyyy-MM-dd", rem.dtposted );
 		}
-		em.validate( SCHEMANAME, rem );
-		em.create( SCHEMANAME, rem );
+		def dt = dtsvc.parseDate( rem.txndate, null );
+		rem.txntimestamp = dtsvc.buildCustomTimeStamp( rem.txndate )
+		
+		em.validate( SCHEMA_NAME, rem );
+		em.create( SCHEMA_NAME, rem );
 		closeReceipts( rem );
 		updateAfControls( rem );
 		postRemittedForms( rem );
-		createListingItem( rem );
-		
 		return rem;
 	}
 	
@@ -138,37 +160,38 @@ class RemittanceService {
 		def lq = em.sqlContext.createNamedQuery('remittance:getLiquidatingOfficer').setParameter('collectorid', rem.collectorid).singleResult 
 		if( ! lq ) throw new Exception('Liquidating Officer for this collector is not set.')
 		rem.liquidatingofficerid 		= lq.objid 
-		rem.info.liquidatingofficername 	= lq.formalname
-		rem.info.liquidatingofficertitle 	= lq.jobtitle 
+		rem.liquidatingofficername 	= lq.formalname
+		rem.liquidatingofficertitle 	= lq.jobtitle 
 	}
 	
 	private validate( rem ) {
+		// check: totalcash == total( denomination.amount )
 		def totalcash = 0.00;
-		for (denom in rem.info.denominations) {
+		for (denom in rem.denominations) {
 			totalcash += denom.amount;
 		}
-		if ( totalcash != rem.info.totalcash )
+		if ( totalcash != rem.totalcash )
 			 throw new Exception( "Cash Received must be equal to Cash Expected." );
-		def remTemp = createRemittance( rem );
-		if (rem.receipts.size() != remTemp.receipts.size() )
-			throw new Exception( "There are new transactions not included in this remittance." );
-		if ( rem.info.amount != remTemp.info.amount )
-			throw new Exception( "Data does not coincide with current remittance data.\nPlease create new remittance." );
+			 
+		//check _receiptcount == existing _receiptcount and _totalamount = existing _totalamount
+		def info = getUnremittedReceiptSummaryInfo( rem.collectorid )
 		
-	}
-	
-	private void createListingItem( rem ) {
-		def dt = dtsvc.parseDate( rem.info.txndate, null );
-		rem.txntimestamp = dtsvc.buildCustomTimeStamp( rem.info.txndate )
-		em.create( LISTSCHEMANAME, rem)
+		println 'info -> ' + info 
+		println rem._receiptcount
+		println rem._totalamount
+		
+		if (rem._receiptcount != info.count )
+			throw new Exception( "There are new transactions not included in this remittance.\nClose the form and perform the transaction again." );
+		if ( rem._totalamount != info.totalamount )
+			throw new Exception( "Amount discrepancy detected.\nClose the form and perform the transaction again." );		
 	}
 	
 	private void closeReceipts( rem ) {
 		def params = [
 			collectorid : rem.collectorid, 
 			remittanceid : rem.objid, 
-			remittanceno : rem.info.txnno, 
-			remittancedate : rem.info.txndate
+			remittanceno : rem.txnno, 
+			remittancedate : rem.txndate
 		];
 		em.sqlContext.createNamedExecutor( "remittance:closeReceiptListForRemittance" ).setParameters( params ).execute();
 	}
@@ -203,8 +226,8 @@ class RemittanceService {
 	private void postRemittedForms( rem ) {
 		for (form in rem.remittedforms) {
 			form.remittanceid = rem.objid;
-			em.validate( REMITTED_FORM_SCHEMANAME, form );
-			em.create( REMITTED_FORM_SCHEMANAME, form );
+			em.validate( REMITTED_FORM_SCHEMA_NAME, form );
+			em.create( REMITTED_FORM_SCHEMA_NAME, form );
             //
             //post to afinventorycredit 
             def creditinfo = [afcontrolid:form.afcontrolid, qtyissued:form.issuedqty ]
@@ -215,24 +238,25 @@ class RemittanceService {
 	@ProxyMethod
 	public def createRemittance( rem ) {
 		checkUnpostedCapturedCollections( rem.collectorid )
-		rem.receipts = getUnremittedReceipts( rem.collectorid );
-		if ( !rem.receipts )
-			throw new Exception( "There are no unremitted receipts." );
-		
+		checkHasUnremittedReceipts( rem)
 		def reminfo = em.sqlContext.createNamedQuery( "remittance:getRemittanceInfo" ).setParameter( "collectorid", rem.collectorid ).singleResult;
-		rem.info.amount = (reminfo.totalamount) ? reminfo.totalamount : 0.0;
-		rem.info.totalcash = (reminfo.totalcash) ? reminfo.totalcash : 0.0;
-		rem.info.totalotherpayment = (reminfo.totalotherpayment) ? reminfo.totalotherpayment : 0.0;
-		
-		rem.otherpayments = em.sqlContext.createNamedQuery( "remittance:getOtherPayments" ).setParameter( "collectorid", rem.collectorid ).resultList;
-
+		rem.amount = (reminfo.totalamount) ? reminfo.totalamount : 0.0;
+		rem.totalcash = (reminfo.totalcash) ? reminfo.totalcash : 0.0;
+		rem.totalotherpayment = (reminfo.totalotherpayment) ? reminfo.totalotherpayment : 0.0;
 		rem.remittedforms = createRemittedForms( rem );
-		
 		return rem;
 	}
 	
+	void checkHasUnremittedReceipts( rem ) {
+		def info = getUnremittedReceiptSummaryInfo( rem.collectorid )
+		rem._receiptcount = info.count
+		rem._totalamount  = info.totalamount 
+
+		if ( rem._receiptcount == 0 )
+			throw new Exception( "There are no unremitted receipts." );
+	}
+	
 	void checkUnpostedCapturedCollections( collectorid ) {
-		println 'pass...'
 		def unpostedCaptures = em.sqlContext.createNamedQuery('remittance:getUnpostedBatchCaptureCollections')
 								.setParameter('collectorid', collectorid)
 								.resultList
@@ -260,9 +284,9 @@ class RemittanceService {
 		def remittance = em.sqlContext.createNamedQuery('remittance:exportRemittance')
 						   .setParameter('objid', objid).singleResult 
 		if( ! remittance ) throw new Exception('Remittance does not exists.\nPlease verify that the records still exists.')
-		remittance.info = em.serializer.read( remittance.info )
+		remittance.denominations = em.serializer.read( remittance.denominations)
 		return remittance 
-	}
+	} 
 	
 	@ProxyMethod 
 	public def exportRemittanceList( objid ) {
@@ -322,8 +346,8 @@ class RemittanceService {
 		data.remittance.dtposted = dtsvc.serverDate 
 		em.create( REMITTANCE_IMPORT_SCHEMA, data.remittance)
 		
-		em.create(SCHEMANAME, data.remittance )
-		em.create(LISTSCHEMANAME, data.remittance )
+		em.create(SCHEMA_NAME, data.remittance )
+		em.create(LISTSCHEMA_NAME, data.remittance )
 		
 		data.remittedforms.each { rf ->
 			def importedafc = data.afcontrols.find{ a -> a.objid == rf.afcontrolid  }
@@ -332,7 +356,7 @@ class RemittanceService {
 			//set the original afcontrolid 
 			def afc = getOrigAFControlByImportedAFControl( importedafc )
 			rf.afcontrolid = afc.objid 
-			em.create(REMITTED_FORM_SCHEMANAME, rf )
+			em.create(REMITTED_FORM_SCHEMA_NAME, rf )
 		}
 		
 		postImportedAFControls( data ) 
@@ -379,17 +403,7 @@ class RemittanceService {
 			em.update( importedcredit.schemaname, importedcredit )
 		}
 	}
-	
-	void buildDatePartInfo( receipt ) {
-		def txndate = receipt.info.txndate
-		if( txndate instanceof String) txndate = java.sql.Date.valueOf( txndate )
-		def dt = dtsvc.parseDate( txndate, null )
-		receipt.iyear  = dt.year
-		receipt.iqtr   = dt.qtr
-		receipt.imonth = dt.month
-		receipt.iday   = dt.day
-	}
-	
+		
 	def getOrigAFControlByImportedAFControl( importedafc ) {
 		def afc = em.sqlContext.createNamedQuery('remittance:getAFControlByRemittedForm').setParameters( importedafc ).singleResult 
 		if( ! afc ) throw new Exception("Accountable Form No. ${importedafc.stubno} does not exists or was deleted.")
@@ -446,9 +460,15 @@ class RemittanceService {
 	}
 	
 	
-	
-	private def getUnremittedReceipts( collectorid ) {
+	@ProxyMethod  
+	public def getUnremittedReceipts( collectorid ) {
 		return em.sqlContext.createNamedQuery( "remittance:getUnremittedReceipts" ).setParameter( "collectorid", collectorid ).resultList;
+	}
+	
+	private def getUnremittedReceiptSummaryInfo( collectorid ) {
+		return em.sqlContext.createNamedQuery( "remittance:getUnremittedReceiptSummaryInfo" )
+					.setParameter( "collectorid", collectorid )
+					.singleResult
 	}
 	
 	private def createRemittedForms( rem ) {
@@ -484,293 +504,7 @@ class RemittanceService {
 		return em.sqlContext.createNamedQuery("remittance:getOpenCollectionSummaries").setParameters( [collectorid:collectorid] ).resultList;
 	}
 	
-	
-	@ProxyMethod
-	public def update( rem ) {
-		em.validate( SCHEMANAME, rem );
-		def dt = dtsvc.parseDate( rem.info.txndate, null );
-		em.update( LISTSCHEMANAME, [
-			objid : rem.objid,
-			docstate : rem.docstate,
-			txnno : rem.info.txnno,
-			txndate : rem.info.txndate,
-			iyear : dt.year,
-			imonth : dt.month,
-			iday : dt.day,
-			collectorid : rem.collectorid,
-			collectorname : rem.info.collectorname,
-			amount : rem.info.amount,
-			totalcash : rem.info.totalcash,
-			totalotherpayment : rem.info.totalotherpayment
-		]);
-	}
-	
-	
-	@ProxyMethod
-	public def fetchOtherPayments( param ){
-		def sql_stmt = "fetchOtherPayments"
-		if( !param.objid )
-			sql_stmt = "getOtherPayments";
-			
-		return em.sqlContext.createNamedQuery("remittance:" + sql_stmt).setParameters( param ).resultList
-	}
-	
-	@ProxyMethod
-	public def getHtml( rem ){
-		def html = '';
-		if ( !rem )
-			return "<html><head><h1> Select an item. </h1></head></html>";
-			
-		rem.afitems = em.sqlContext.createNamedQuery("remittance:getCollectionType").setParameter( 'remittanceid', rem.objid ).resultList;
-		rem.otherpayments = fetchOtherPayments( rem );
-		
-		def data = [
-            header  : buildHeader( rem ),
-			afcollections : buildAF( rem ),
-			otherpayments : buildOtherPayments( rem ),
-			breakdown   : buildBreakdown( rem )
-			
-        ]
-		
-        return doBuildHtml( data )
-	}
-	
-	private def buildHeader( rem ) {
-		def decformat = new DecimalFormat("#,##0.00");
-		def grandtotal = decformat.format( rem.info.amount );
-		def totalcash = decformat.format( rem.info.totalcash );
-		def totalotherpayment = decformat.format( rem.info.totalotherpayment );
-		
-		return """
-			<table >
-				<tr>
-					<th class="title"><b> GENERAL INFORMATION </b></th>
-				<tr>
-				<tr>
-					<td align="left" class="header"> Remittance No. : </td>
-					<td align="left" class="header" colspan="3"> <b>$rem.info.txnno</b> </td>
-				</tr>
-				<tr>
-					<td class="header"> Date :</td>
-					<td class="header"> <b>$rem.info.txndate</b> </td>
-				</tr>
-				<tr>
-					<td class="header"> Non-Cash Total :</td>
-					<td class="header"> <b>$totalotherpayment</b> </td>
-				</tr>
-				<tr>
-					<td class="header"> Cash Total: </td>
-					<td class="header"> <b>$totalcash</b> </td>
-				</tr>
-				<tr>
-					<td class="header"> Grand Total : </td>
-					<td class="header"> <b>$grandtotal</b> </td>
-				</tr>
-			</table>
-		"""
-	}
-	
-	private def buildAF( rem ){
-		def decformat = new DecimalFormat("#,##0.00");
-		def html = """
-		
-		<table width="100%">
-			<tr>
-				<table width="80%" cellspacing="1" style="background-color:silver">
-					<tr> <th align="left" colspan="3"> Collections </th> </tr>
-					<tr>
-						<th>
-							Type ( FORM NO. )
-						</th>
-						<td bgcolor="#CCCCCC" >
-							<table width=100%" style="bordercolor:silver">
-								<tr>
-									<th colspan="2"> Official Receipt/Serial No. </th>
-								</tr>
-								<tr>
-									<th align="center" width="50%"> FROM </th>
-									<th align="center" width="50%"> TO </th>
-								</tr>
-							</table>
-						</td>
-						<th>
-							Amount
-						</th>
-					</tr>
-		"""
-		rem.afitems.each(){
-			def amount = decformat.format( it.amount );
-			html += """
-					<tr>
-						<td align="center"> $it.afid </td>
-						<td>
-							<table width="100%">
-								<tr>
-									<td align="center" width="50%"> ${it.fromserialno ? it.fromserialno : ''} </td>
-									<td align="center" width="50%"> ${it.toserialno ? it.toserialno : ''} </td>
-								</tr>
-							</table>
-						</td>
-						<td align="right" > $amount </td>
-					</tr>
-			""";
-		}
-		html += """
-				</table>
-			</tr>
-		</table>
-		"""
-			
-		return html
-	}
-	
-	private def buildOtherPayments( rem ){
-		if( !rem.otherpayments ) return '';
-		def decformat = new DecimalFormat("#,##0.00");
-		def html = """
-		<table width="100%">
-		<tr>
-		<td>
-		<div style="background-color:silver" width="100%">
-		<table width="100%" cellspacing="1">
-		"""
-					
-		html += """
-			<tr> <th align="left" colspan="3"> Non-Cash Payments </th> </tr>
-			<tr>
-				<th> Type </th>
-				<th> Particulars </th>
-				<th> Amount </th>
-			</tr>			
-		"""
-	
-		rem.otherpayments.each(){
-			def payamount = decformat.format( it.amount );
-			html += """
-			<tr>
-				<td> $it.paytype </td>
-				<td> $it.particulars </td>
-				<td align="right"> $payamount </td>
-			</tr>
-			""";
-		}
-		def totalotherpayment = decformat.format( rem.info.totalotherpayment );
-		html += """
-			<tr>
-				<td colspan='2'>Total Other Payment</td>
-				<td align="right">${totalotherpayment}</td>
-			</tr>
-			
-			</td>
-			</tr>
-		</table>
-		"""
-			
-		return html
-	}
-	
-	private def buildBreakdown( rem ){
-		def decformat = new DecimalFormat("#,##0.00");
-		def html = """
-		<table width="100%">
-		<tr>
-		<td>
-		<div style="background-color:silver" width="100%">
-		<table width="100%" cellspacing="1">
-		"""
-
-		html += """
-			<tr> <th align="left" colspan="3"> Remittance Breakdown </th> </tr>
-			<tr>
-				<th> Denomination </th>
-				<th> Quantity </th>
-				<th> Amount </th>
-			</tr>			
-		"""
-		
-		rem.info.denominations.each {
-			def amount = decformat.format( it.amount );
-			def qty = decformat.format( it.qty );
-			html += """
-			<tr>
-				<td align="right">$it.caption</td>
-				<td align="right">$qty</td>
-				<td align="right">$amount</td>                 
-			</tr>
-			"""
-		}
-		def totalcash = decformat.format( rem.info.totalcash );
-		html += """
-			<tr>
-				<td colspan="2">Total Cash</td>
-				<td align="right">${totalcash}</td>
-			</tr>
-			
-		</td>
-		</tr>
-        </table>
-		"""
-			
-		return html
-	}
-	
-	private def doBuildHtml( data ) {
-		
-		return """
-			<html>
-				<head>
-					<style type="text/css">
-						body, td, th { 
-							font-family: tahoma
-							font-size  : 10pt
-						}	
-						td {
-							background-color:white
-						}
-						th {
-							background-color : #CCCCCC
-						}
-						.title {
-							background-color:#CCCCFF
-							font-weight:bold
-						}
-						.caption {
-							width : 120
-						}
-						.numeric {
-							text-align:right
-						}
-						.header {
-							font-family : tahoma
-							font-size   : 18pt
-							width       : 120
-						}
-						.data {
-							font-weight:bold
-						}
-					</style>
-				</head>
-				<body>
-					<table width="100%">
-						<tr colspan="2">
-							<td>$data.header</td>
-						</tr>
-						<tr colspan="2">
-							<td width="80%">$data.afcollections</td>
-						</tr>
-						<tr>
-							<td width="30%">$data.breakdown</td>
-							<td valign="top" width="70%" >$data.otherpayments</td>
-						</tr>
-					</table>
-				</body>
-			</html>
-		"""
-	}
-	
 	def getListByQuery( namedQuery, criteria, params, pagingkeys = null ) {
-		println '='*50
-		println params 
         if( ! params ) params = [ _start:0, _limit:25]
 		def qry = em.sqlContext.createNamedQuery( namedQuery )
 				    .setParameters( criteria )

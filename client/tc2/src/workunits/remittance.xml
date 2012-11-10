@@ -12,8 +12,8 @@
         <invoker type="formActions" action="close"  immediate="true" caption="Close" mnemonic="c" icon="images/cancel.png"/>
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" permission="remittance.create"/>
         <invoker type="formActions" action="next" shortcut="ctrl N" visibleWhen="#{mode == 'init'}" caption="Next" mnemonic="n" icon="images/next.png"/>
-        <invoker type="formActions" action="back" shortcut="ctrl B" visibleWhen="#{mode == 'main'}" caption="Back" mnemonic="b" icon="images/back.png"/>
-        <invoker type="formActions" action="submit" shortcut="ctrl S" visibleWhen="#{mode == 'main'}" caption="Submit" mnemonic="s" icon="images/doc-submit.png" permission="remittance.submit"/>
+        <invoker type="formActions" action="back" shortcut="ctrl B" visibleWhen="#{mode == 'create'}" caption="Back" mnemonic="b" icon="images/back.png"/>
+        <invoker type="formActions" action="submit" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" caption="Submit" mnemonic="s" icon="images/doc-submit.png" permission="remittance.submit"/>
         <invoker type="formActions" action="viewRCD" shortcut="ctrl R" visibleWhen="#{mode == 'view'}" immediate="true" caption="View RCD" mnemonic="r" icon="images/doc-view.png"/>
         <invoker type="formActions" action="exportRemittance" shortcut="ctrl E" visibleWhen="#{mode == 'view'}" immediate="true" caption="Export Remittance" mnemonic="r" icon="images/doc-view.png" />
         <invoker type="formActions" action="viewOtherReports" shortcut="ctrl O" visibleWhen="#{mode == 'view'}" immediate="true" caption="Other Reports" mnemonic="o" icon="images/otherReports.png" permission="remittance.create"/>
@@ -30,6 +30,7 @@
         import java.io.*
         import javax.swing.JFileChooser;
         import com.rameses.util.*
+        import java.rmi.server.UID
         
         public class RemittanceController {
         
@@ -67,13 +68,8 @@
             
             def create() {
                 collector = usersvc.getCollector( OsirisContext.env.USERID );
-                mode = 'init';
-                entity = [
-                    collectorid : collector.objid,
-                    info : buildInfo(),
-                    receipts : [],
-                    remittedforms : []
-                ];
+                entity = createEntity() 
+                mode = 'init'
                 collectionSummaries = svc.getOpenCollectionSummaries( OsirisContext.env.USERID ) 
                 remittanceAmount = 0.0
                 if( collectionSummaries ) {
@@ -81,8 +77,20 @@
                 }
                 
                 return 'init';
-                
-              
+            }
+            
+            def createEntity() {
+                return [
+                    objid               : 'REM' + new UID(),
+                    collectorid         : collector.objid,
+                    txndate             : dtsvc.getServerDate(),
+                    collectorname       : collector.formalname,
+                    collectortitle      : collector.jobtitle,
+                    amount              : 0.00,
+                    totalcash           : 0.00,
+                    totalotherpayment   : 0.00,
+                    remittedforms       : [],
+                ]
             }
             
             def summaryHandler = [
@@ -100,27 +108,23 @@
                 if (entity)
                     entity = svc.open( entity.objid );
                 mode = 'view';
-                denominationOpener = InvokerUtil.lookupOpener('cashreceipt:breakdown', [totalAmount:entity.info.totalcash, list:entity.info.denominations, mode:'view']);
+                denominationOpener = InvokerUtil.lookupOpener('cashreceipt:breakdown', [totalAmount:entity.totalcash, list:entity.denominations, mode:'view']);
                 
                 return 'main';
-            }
-            
-            def getHtml() {
-                return svc.getHtml( entity );
             }
             
             def next() {
                 updateLiquidatingOfficerInfo()
                 entity = svc.createRemittance( entity );
-                mode = 'main';
-                denominationOpener = InvokerUtil.lookupOpener('cashreceipt:breakdown', [totalAmount:entity.info.totalcash, list:entity.info.denominations]);
+                denominationOpener = InvokerUtil.lookupOpener('cashreceipt:breakdown', [totalAmount:entity.totalcash, list:entity.denominations]);
+                mode = 'create' 
                 return 'main';
             }
             
             void updateLiquidatingOfficerInfo() {
                 entity.liquidatingofficerid = lqofficer.objid
-                entity.info.liquidatingofficername = lqofficer.formalname
-                entity.info.liquidatingofficertitle = lqofficer.jobtitle
+                entity.liquidatingofficername = lqofficer.formalname
+                entity.liquidatingofficertitle = lqofficer.jobtitle
             }
             
             def back() {
@@ -129,9 +133,9 @@
             }
             
             def submit() {
-                if (! MsgBox.confirm( "Submit remittance to $entity.info.liquidatingofficername?" ) )
+                if (! MsgBox.confirm( "Submit remittance to $entity.liquidatingofficername?" ) )
                     return null;
-                entity.info.denominations = denominationOpener.handle.list;
+                entity.denominations = denominationOpener.handle.list;
                 entity = svc.save( entity );
                 if (caller)
                     caller.binding.refresh();
@@ -148,13 +152,12 @@
                 JFileChooser chooser = new JFileChooser( previouspath );
                 chooser.fileSelectionMode = JFileChooser.FILES_ONLY;
                 def sdf = new java.text.SimpleDateFormat("yyyyMMddHHmmss");
-                def fileName = entity.info.txnno + ".rem";
+                def fileName = entity.txnno + ".rem";
                 chooser.selectedFile = new File( fileName );
                 int res = chooser.showSaveDialog( null );
                 if( res == JFileChooser.APPROVE_OPTION ){
                     def data = [
-                        remittance         : svc.exportRemittance( entity.objid ),   
-                        remittancelist     : svc.exportRemittanceList( entity.objid ),   
+                        remittance         : svc.exportRemittanceList( entity.objid ),   
                         remittedforms      : svc.exportRemittedForms( entity.objid ),   
                         revenues           : svc.exportRevenues( entity.objid ),   
                         receiptlists       : svc.exportReceiptLists( entity.objid ),   
@@ -174,7 +177,7 @@
                         oos.writeObject( data )
                         oos.close()
                         System.setProperty("chooser.previouspath", chooser.selectedFile.parent )
-                        MsgBox.alert( "Remittance No. $entity.info.txnno was successfully exported." )
+                        MsgBox.alert( "Remittance No. $entity.txnno was successfully exported." )
                     }
                     catch( e) {
                         throw e 
@@ -192,7 +195,12 @@
             
             
             def viewOtherPayments() {
-                entity.otherpayments = svc.fetchOtherPayments( entity )
+                if( entity.otherpayments == null ) {
+                    if( mode == 'create' )
+                        entity.otherpayments = svc.getOpenNonCashPayments( entity )
+                    else 
+                        entity.otherpayments = svc.getRemittedNonCashPayments( entity )
+                }
                 return new PopupOpener( outcome:'otherpayments' );
             }
             
@@ -201,24 +209,17 @@
             }
             
             def viewReceipts() {
+                if( entity.receipts == null ) {
+                    if( mode == 'create' )
+                        entity.receipts = svc.getUnremittedReceipts( entity.collectorid )
+                    else 
+                        entity.receipts = svc.getRemittanceReceipts( entity.objid )
+                }
                 return new PopupOpener( outcome:'receipts' );
             }
             
-            def buildInfo() {
-                return [
-                    txndate : dtsvc.getServerDate(),
-                    collectorname : collector.formalname,
-                    collectortitle : collector.jobtitle,
-                    amount : 0.00,
-                    totalcash : 0.00,
-                    totalotherpayment : 0.00
-                ];
-            }
-            
             def otherPaymentHandler = [
-            
                 getRows    : { return 50; },
-                
                 getColumns : {
                     return [
                         new Column( name:"paytype", caption:"Type" ),
@@ -226,15 +227,11 @@
                         new Column( name:"amount", caption:"Amount", format: "#,##0.00", width:100 )
                     ];
                 },
-                
-                fetchList : { 
-                    return entity.otherpayments;
-                }
-            
+                fetchList : { return entity.otherpayments; }
             ] as PageListModel;
             
             def getTotalOtherPayment() {
-                return numformat.format( entity.info.totalotherpayment );
+                return numformat.format( entity.totalotherpayment );
             }
             
             def receiptHandler = [
@@ -261,7 +258,7 @@
             ] as PageListModel;
             
             def getTotalAmount() {
-                return numformat.format( entity.info.amount );
+                return numformat.format( entity.amount );
             }
             
             def remittedFormHandler = [

@@ -75,7 +75,7 @@ SELECT pi.* FROM paymentitem pi, receiptlist rl
 WHERE rl.objid = pi.receiptid 
 AND rl.voided = 0 
 AND NOT pi.paytype = 'CASH' 
-AND rl.objid = $P{remittanceid} 
+AND rl.remittanceid = $P{remittanceid} 
 
 [getRemittedFormsByRemittance]
 SELECT * FROM remittedform 
@@ -126,6 +126,13 @@ AND docstate = 'OPEN'
 AND collectorid = $P{collectorid} 
 ORDER BY serialno DESC, txndate DESC
 
+[getUnremittedReceiptSummaryInfo]
+SELECT COUNT(*) AS count, SUM(amount) AS totalamount 
+FROM receiptlist 
+WHERE remittanceid IS NULL 
+AND docstate = 'OPEN' 
+AND collectorid = $P{collectorid} 
+
 [getUnpostedBatchCaptureCollections]
 SELECT objid 
 FROM batchcapture 
@@ -136,14 +143,6 @@ SELECT * FROM receiptlist
 WHERE remittanceid IS NULL 
 AND docstate = 'CAPTURED' 
 AND collectorid = $P{collectorid} 
-
-[getOtherPayments]
-SELECT pi.* FROM paymentitem pi, receiptlist rl 
-WHERE rl.objid = pi.receiptid 
-AND NOT pi.paytype = 'CASH' 
-AND rl.collectorid = $P{collectorid} 
-AND rl.voided = 0 
-AND rl.docstate = 'OPEN'
 
 [getRemittanceInfo]
 SELECT 
@@ -399,10 +398,17 @@ GROUP BY afid, afcontrolid, stubno
 ORDER BY afid, fromserialno, stubno  
 
 
-[fetchOtherPayments]
+[getOpenNonCashPayments]
+SELECT pi.* FROM paymentitem pi, receiptlist rl 
+WHERE rl.objid = pi.receiptid 
+AND NOT pi.paytype = 'CASH' 
+AND rl.collectorid = $P{collectorid} 
+AND rl.voided = 0 
+AND rl.docstate = 'OPEN' 
+
+[getRemittedNonCashPayments]
 SELECT  
- rl.objid, rl.remittanceid, 
- i.receiptid, i.paytype, i.particulars, i.amount 
+ i.*
 FROM receiptlist rl 
 INNER JOIN paymentitem i ON i.receiptid = rl.objid 
 WHERE rl.remittanceid = $P{objid} 
@@ -665,10 +671,7 @@ ORDER BY r.serialno
 SELECT objid, fundname FROM fund ORDER BY fundname 
 
 
-
-[exportRemittance]
-select * from remittance where objid = $P{objid}
-
+ 
 [exportRemittanceList]
 select * from remittancelist where objid = $P{objid}
 

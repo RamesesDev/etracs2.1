@@ -1,34 +1,27 @@
 <schema>
 	
-	<element name="remittance" tablename="remittance">
+	<element name="remittancelist" tablename="remittancelist">
 		<field name="objid" primary="true" />
-		<field name="schemaname" required="true" />
-		<field name="schemaversion" required="true" />
-		
 		<field name="docstate" required="true" />
 		<field name="dtposted" required="true" />
+		<field name="txnno" required="true" />
+		<field name="txndate" required="true" />
+		<field name="txntimestamp" required="true" />
 		<field name="collectorid" required="true" />
-		<field name="liquidatingofficerid"  required="true" />
+		<field name="collectorname" required="true" />
+		<field name="collectortitle" required="true" />
+		<field name="liquidatingofficerid" />
+		<field name="liquidatingofficername" />
+		<field name="liquidatingofficertitle" />
 		<field name="liquidationid" />
 		<field name="liquidationno" />
 		<field name="liquidationdate" />
-		<complex name="info" ref="info" serializer="default" />
-	</element>
-
-	<element name="info">
-		<field name="txnno" required="true" />
-		<field name="txndate" required="true" />
-		<field name="collectorname" required="true" />
-		<field name="collectortitle" required="true" />
-		<field name="liquidatingofficername" required="true" />
-		<field name="liquidatingofficertitle" required="true" />
 		<field name="amount" type="decimal" />
 		<field name="totalcash" type="decimal" />
-		<field name="totalotherpayment" type="decimal" />
-		<!--link ref="tc:denomination" /-->
+		<field name="totalotherpayment" type="decimal"  />
 		<complex name="denominations" type="list" min="1"  serializer="default"/>
 	</element>
-	
+		
 	<element name="receipt">
 		<field name="objid" required="true" />
 		<field name="txndate" required="true" />
@@ -59,37 +52,17 @@
 		<field name="endingqty" type="integer" /> 
 	</element>
 
-	<element name="remittancelist" tablename="remittancelist">
-		<field name="objid" primary="true" />
-		<field name="docstate" required="true" />
-		<field name="txnno" required="true" mapfield="info.txnno"/>
-		<field name="txndate" required="true" mapfield="info.txndate" />
-		<field name="txntimestamp" required="true" />
-		<field name="collectorid" required="true" />
-		<field name="collectorname" required="true" mapfield="info.collectorname" />
-		<field name="collectortitle" required="true" mapfield="info.collectortitle" />
-		<field name="liquidatingofficerid" />
-		<field name="liquidatingofficername" mapfield="info.liquidatingofficername"/>
-		<field name="liquidatingofficertitle" mapfield="info.liquidatingofficertitle" />
-		<field name="liquidationid" />
-		<field name="liquidationno" />
-		<field name="liquidationdate" />
-		<field name="amount" type="decimal" mapfield="info.amount" />
-		<field name="totalcash" type="decimal" mapfield="info.totalcash" />
-		<field name="totalotherpayment" type="decimal"  mapfield="info.totalotherpayment"/>
-	</element>
-	
 	<element name="remittanceimport" tablename="remittanceimport">
 		<field name="objid" primary="true" />
-		<field name="txnno" required="true" mapfield="info.txnno" />
-		<field name="txndate" required="true" mapfield="info.txndate"  />
-		<field name="amount" required="true" type="decimal" mapfield="info.amount"  />
+		<field name="txnno" required="true" />
+		<field name="txndate" required="true" />
+		<field name="amount" required="true" type="decimal" />
 		<field name="collectorid" required="true" />
-		<field name="collectorname" required="true" mapfield="info.collectorname" />
-		<field name="collectortitle" required="true" mapfield="info.collectortitle" />
+		<field name="collectorname" required="true" />
+		<field name="collectortitle" required="true" />
 		<field name="liquidatingofficerid"  required="true" />
-		<field name="liquidatingofficername"  required="true" mapfield="info.liquidatingofficername"/>
-		<field name="liquidatingofficertitle"  required="true" mapfield="info.liquidatingofficertitle" />
+		<field name="liquidatingofficername"  required="true" />
+		<field name="liquidatingofficertitle"  required="true" />
 		<field name="postedby"  required="true" />
 		<field name="dtposted"  required="true" />
 	</element>

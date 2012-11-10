@@ -1,6 +1,9 @@
 Patch-2.1.010
 ==================================================================================================
 
+
+- Add  "assessmenttype" fact to bpbilling rule
+
 - Add support for Change Depreciation transaction
 
 - Add facility to post the receipts of the receipts of the subcollector to collector 

@@ -3,15 +3,15 @@
     enabled:false;
 }
 
-"entity.info.txno" {
+"entity.txno" {
     readonly:true;
 }
 
-"entity.info.collectorname" {
+"entity.collectorname" {
     readonly:true;
 }
 
-"entity.info.txndate" {
+"entity.txndate" {
     readonly:true;
 }
 
