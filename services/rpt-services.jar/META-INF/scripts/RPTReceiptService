@@ -615,7 +615,7 @@ class RPTReceiptService
         pmt.objid       = 'RP' + new UID()
         pmt.schemaname      = 'rptpayment'
         pmt.schemaversion   = '1.0'
-        pmt.rptledgerid     = item.objid
+        pmt.rptledgerid     = item.rptledgerid
         pmt.opener          = 'rptonline'
         pmt.mode            = 'ONLINE'
         pmt.dtposted        = dateSvc.serverDate
