@@ -421,7 +421,7 @@ class ConsolidatedReportService {
 			   .setParameters([afid: rf.afid, afinventorycreditid: afcontrol.afinventorycreditid ]).singleResult
 			
 			if( craaf.craafyear == year && craaf.craafmonth == month && rf.issuedqty != 0 )
-				updateCRAAFbyRem( rem.objid, craaf, rf, afcontrol, rem.info.txndate );
+				updateCRAAFbyRem( rem.objid, craaf, rf, afcontrol, rem.txndate );
 			if( craaf.craafyear != year || craaf.craafmonth != month )
 				createCRAAFbyRemNextMonth( rem, rf, afcontrol );
 			
@@ -444,8 +444,8 @@ class ConsolidatedReportService {
 			craafyear		: cal.get(Calendar.YEAR),
 			craafmonth		: cal.get(Calendar.MONTH) + 1,
 			collectorid		: rem.collectorid,
-			collectorname	: rem.info.collectorname,
-			collectortitle	: rem.info.collectortitle,
+			collectorname	: rem.collectorname,
+			collectortitle	: rem.collectortitle,
 			afid			: rf.afid,
 			beginqty		: 0,
 			receivedqty		: afcontrol.qtyreceived,
@@ -471,9 +471,9 @@ class ConsolidatedReportService {
 			afinventorycreditid	: afcontrol.afinventorycreditid,
 			craafyear		: cal.get(Calendar.YEAR),
 			craafmonth		: cal.get(Calendar.MONTH) + 1,
-			collectorid		: rem.info.collectorid,
-			collectorname	: rem.info.collectorname,
-			collectortitle	: rem.info.collectortitle,
+			collectorid		: rem.collectorid,
+			collectorname	: rem.collectorname,
+			collectortitle	: rem.collectortitle,
 			afid			: rf.afid,
 			beginqty		: rf.beginqty,
 			beginfrom		: rf.beginfrom,

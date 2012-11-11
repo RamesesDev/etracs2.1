@@ -157,7 +157,7 @@
                 int res = chooser.showSaveDialog( null );
                 if( res == JFileChooser.APPROVE_OPTION ){
                     def data = [
-                        remittance         : svc.exportRemittanceList( entity.objid ),   
+                        remittance         : svc.exportRemittance( entity.objid ),   
                         remittedforms      : svc.exportRemittedForms( entity.objid ),   
                         revenues           : svc.exportRevenues( entity.objid ),   
                         receiptlists       : svc.exportReceiptLists( entity.objid ),   

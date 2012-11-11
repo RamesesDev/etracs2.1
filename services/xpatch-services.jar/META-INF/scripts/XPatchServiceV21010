@@ -14,7 +14,7 @@ public class XPatchServiceV21010
 	@ProxyMethod
 	public void updateRemittanceListDenomination( objid ) {
 		println 'Processing Remittance ' + objid 
-		def rem = em.sqlContext.createQuery('SELECT info FROM remittance WHERE objid = $P{objid}')
+		def rem = em.sqlContext.createQuery('SELECT info FROM xremittance WHERE objid = $P{objid}')
 						.setParameter('objid', objid)
 						.singleResult
 		if( ! rem ) return 

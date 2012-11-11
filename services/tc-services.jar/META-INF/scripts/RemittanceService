@@ -35,16 +35,15 @@ class RemittanceService {
 	@Env
 	def env
 	
-	def SCHEMA_NAME = "remittance:remittancelist";
+	def SCHEMA_NAME = "remittance";
 	def SCHEMA_VERSION = "1.0";
-	def LISTSCHEMA_NAME = "remittance:remittancelist";
 	def REMITTED_FORM_SCHEMA_NAME = "remittance:remittedform";
 	def REMITTANCE_IMPORT_SCHEMA = 'remittance:remittanceimport'
 	
 	
 	@ProxyMethod
 	public def getList( searchText, params ) {
-		if ( isCollector( params.USERID ) )
+		if ( isCollector( env.USERID ) )
 			return getListByCollector( searchText, params );
 		return getListAll( searchText, params );
 	}
@@ -66,26 +65,16 @@ class RemittanceService {
 			
 		def results = getListByQuery( "remittance:getRemittanceByTxnNo", [txnno:searchText], params, null )
 		if (results) return results;	
-		results = getListByQuery( "remittance:getRemittanceByCollector", [txnno:searchText+'%'], params, null )
+		results = getListByQuery( "remittance:getRemittanceByCollector", [collectorname:searchText+'%'], params, null )
 		if (results) return results;
 		return [];
 	}
 	
 	private def getListByCollector( searchText, params ) {
 		if ( !searchText ) {
-			return em.sqlContext.createNamedQuery( "remittance:getListByCollectorid" )
-				.setParameters( [collectorid:params.USERID] )
-				.setMaxResults( params._limit)
-				.setFirstResult( params._start )
-				.resultList;
+			return getListByQuery( "remittance:getListByCollectorid", [collectorid:env.USERID], params, null )
 		}
-		def results = em.sqlContext.createNamedQuery( "remittance:getRemittanceByTxnNoByCollectorid" )
-			.setParameters( [collectorid:params.USERID, txnno:searchText] )
-			.setMaxResults( params._limit)
-			.setFirstResult( params._start )
-			.resultList;
-		if (results) return results;	
-		return [];
+		return getListByQuery( "remittance:getListByCollectorid", [collectorid:env.USERID, txnno:searchText], params, null )
 	}
 
 	/*========================================================================
@@ -175,10 +164,6 @@ class RemittanceService {
 			 
 		//check _receiptcount == existing _receiptcount and _totalamount = existing _totalamount
 		def info = getUnremittedReceiptSummaryInfo( rem.collectorid )
-		
-		println 'info -> ' + info 
-		println rem._receiptcount
-		println rem._totalamount
 		
 		if (rem._receiptcount != info.count )
 			throw new Exception( "There are new transactions not included in this remittance.\nClose the form and perform the transaction again." );
@@ -289,11 +274,6 @@ class RemittanceService {
 	} 
 	
 	@ProxyMethod 
-	public def exportRemittanceList( objid ) {
-		return em.sqlContext.createNamedQuery('remittance:exportRemittanceList').setParameter('objid', objid).singleResult 
-	}
-	
-	@ProxyMethod 
 	public def exportRemittedForms( objid ) {
 		return em.sqlContext.createNamedQuery('remittance:exportRemittedForm').setParameter('objid', objid).resultList  
 	}
@@ -347,7 +327,6 @@ class RemittanceService {
 		em.create( REMITTANCE_IMPORT_SCHEMA, data.remittance)
 		
 		em.create(SCHEMA_NAME, data.remittance )
-		em.create(LISTSCHEMA_NAME, data.remittance )
 		
 		data.remittedforms.each { rf ->
 			def importedafc = data.afcontrols.find{ a -> a.objid == rf.afcontrolid  }
@@ -444,7 +423,7 @@ class RemittanceService {
 								.singleResult 
 		if( importedRem ) throw new Exception('Remittance ' + importedRem.txnno + ' has already been imported.' )						
 		
-		def rem = em.sqlContext.createNamedQuery('remittance:getRemittanceListById')
+		def rem = em.sqlContext.createNamedQuery('remittance:getRemittanceById')
 								.setParameter('objid', objid)
 								.singleResult 
 		if( rem ) throw new Exception('Remittance ' + rem.txnno + ' is already existing.' )						

@@ -1,3 +1,43 @@
+/* ============================================================
+**  DENORMALIZE REMITTANCE SUPPORT 
+============================================================ */
+
+ALTER TABLE lguname_etracs.remittancelist ADD COLUMN dtposted DATE NULL;
+
+UPDATE lguname_etracs.remittancelist SET dtposted = txndate;
+
+ALTER TABLE lguname_etracs.remittancelist CHANGE COLUMN dtposted dtposted DATE NOT NULL;
+
+ALTER TABLE lguname_etracs.remittancelist ADD COLUMN denominations VARCHAR(600) NULL;
+
+ALTER TABLE lguname_etracs.remittancelist DROP FOREIGN KEY FK_remittancelist_remittance;
+
+
+ALTER TABLE lguname_etracs.receiptlist DROP FOREIGN KEY FK_receiptlist_remittance;
+
+ALTER TABLE lguname_etracs.remittedform DROP FOREIGN KEY FK_remittedform_remittance;
+
+
+
+RENAME TABLE lguname_etracs.remittance TO dev_etracs.xremittance; 
+
+RENAME TABLE lguname_etracs.remittancelist TO dev_etracs.remittance; 
+
+
+ALTER TABLE lguname_etracs.receiptlist
+	ADD CONSTRAINT FK_receiptlist_remittance FOREIGN KEY (remittanceid) REFERENCES remittance(objid);
+
+ALTER TABLE lguname_etracs.remittedform
+	ADD CONSTRAINT FK_remittedform_remittance FOREIGN KEY (remittanceid) REFERENCES remittance(objid);
+
+
+
+
+/* =================================================================== */
+
+
+
+
 -- add permission: changedepreciation.create to rpt2
 
 

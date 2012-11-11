@@ -2,6 +2,8 @@ Patch-2.1.010
 ==================================================================================================
 
 
+- Normalize remittance tables
+
 - Add  "assessmenttype" fact to bpbilling rule
 
 - Add support for Change Depreciation transaction

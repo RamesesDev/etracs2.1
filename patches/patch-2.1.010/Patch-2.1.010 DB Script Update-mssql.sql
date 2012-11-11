@@ -14,26 +14,44 @@ go
 alter table lguname_etracs..remittancelist add denominations varchar(600) null
 go
 
+
 ALTER TABLE lguname_etracs..remittancelist DROP FK_remittancelist_remittance
 go 
 
-
-ALTER TABLE bayawan_etracs..receiptlist DROP FK_receiptlist_remittance
-go 
-
-ALTER TABLE bayawan_etracs..receiptlist
-	add constraint FK_receiptlist_remittancelist foreign key (remittanceid) references remittancelist(objid)
+ALTER TABLE lguname_etracs..receiptlist DROP FK_receiptlist_remittance
 go 
 
 
-
-ALTER TABLE bayawan_etracs..remittedform DROP FK_remittedform_remittance
+ALTER TABLE lguname_etracs..remittedform DROP FK_remittedform_remittance
 go 
 
-ALTER TABLE bayawan_etracs..remittedform
-	add constraint FK_remittedform_remittancelist foreign key (remittanceid) references remittancelist(objid)
+
+/*-- rename remittance related tables --*/
+
+use lguname_etracs
+go
+
+sp_rename remittance, xremittance
+go
+
+sp_rename remittancelist, remittance
+go
+
+
+
+
+ALTER TABLE lguname_etracs..receiptlist
+	add constraint FK_receiptlist_remittance foreign key (remittanceid) references remittance(objid)
 go 
 
+
+ALTER TABLE lguname_etracs..remittedform
+	add constraint FK_remittedform_remittance foreign key (remittanceid) references remittance(objid)
+go 
+
+
+
+/* =================================================================== */
 
 
 

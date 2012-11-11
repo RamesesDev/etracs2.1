@@ -1,26 +1,26 @@
 [getList]
-SELECT * FROM remittancelist 
+SELECT * FROM remittance 
 ORDER BY txndate DESC, txnno DESC
 
 [getRemittanceByTxnNo]
 SELECT * 
-FROM remittancelist 
+FROM remittance 
 WHERE txnno = $P{txnno} 
 ORDER BY txndate DESC, txnno DESC 
 
 [getRemittanceByCollector]
-SELECT * FROM remittancelist 
-WHERE collectorname LIKE $P{collectorname} + '%' 
+SELECT * FROM remittance 
+WHERE collectorname LIKE $P{collectorname}
 ORDER BY txndate DESC, txnno DESC
 
 [getListByCollectorid]
-SELECT * FROM remittancelist 
+SELECT * FROM remittance 
 WHERE collectorid = $P{collectorid} 
 ORDER BY txndate DESC, txnno DESC
 
 [getRemittanceByTxnNoByCollectorid]
 SELECT * 
-FROM remittancelist 
+FROM remittance 
 WHERE txnno = $P{txnno} 
 AND collectorid = $P{collectorid} 
 ORDER BY txndate DESC, txnno DESC
@@ -53,7 +53,7 @@ SELECT
 FROM receiptitem ri   
 INNER JOIN incomeaccount ia ON ri.acctid = ia.objid  
 INNER JOIN receiptlist rl ON rl.objid = ri.receiptid    
-INNER JOIN remittancelist rml ON rml.objid = rl.remittanceid     
+INNER JOIN remittance rml ON rml.objid = rl.remittanceid     
 INNER JOIN af af ON rl.afid = af.objid 
 WHERE rml.objid = $P{remittanceid} 
   AND rl.voided = 0   
@@ -64,7 +64,7 @@ ORDER BY af.objid, min(ri.fundname), min(ia.groupid)
 [getReceiptsByRemittance]
 SELECT * FROM receiptlist 
 WHERE remittanceid = $P{remittanceid} 
-ORDER BY afid, serialno DESC, txndate DESC
+ORDER BY afid, serialno
 
 [getReceiptIdsByRemittance]
 SELECT objid, afid FROM receiptlist   
@@ -124,7 +124,7 @@ SELECT * FROM receiptlist
 WHERE remittanceid IS NULL 
 AND docstate = 'OPEN' 
 AND collectorid = $P{collectorid} 
-ORDER BY serialno DESC, txndate DESC
+ORDER BY afid, serialno
 
 [getUnremittedReceiptSummaryInfo]
 SELECT COUNT(*) AS count, SUM(amount) AS totalamount 
@@ -583,7 +583,7 @@ SELECT
 	ISNULL((SELECT SUM( basicdisc ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid ), 0.0) AS discount, 
 	ISNULL((SELECT SUM( basicint ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ), 0.0) AS penaltycurrent, 
 	ISNULL((SELECT SUM( basicint ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('previous','prior') ), 0.0) AS penaltyprevious 
-FROM remittancelist rem 
+FROM remittance rem 
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid  
 	INNER JOIN rptpayment rp ON rp.receiptid = r.objid  
 	INNER JOIN rptledger rl ON rp.rptledgerid = rl.objid  
@@ -608,7 +608,7 @@ SELECT
 	ISNULL((SELECT SUM( sefdisc ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid ),0.0) AS discount, 
 	ISNULL((SELECT SUM( sefint ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ),0.0) AS penaltycurrent, 
 	ISNULL((SELECT SUM( sefint ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('previous','prior' ) ),0.0) AS penaltyprevious 
-FROM remittancelist rem 
+FROM remittance rem 
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid  
 	INNER JOIN rptpayment rp ON rp.receiptid = r.objid  
 	INNER JOIN rptledger rl ON rp.rptledgerid = rl.objid  
@@ -633,7 +633,7 @@ SELECT
 	rp.basicdisc AS discount, 
 	rp.basicint AS penaltycurrent, 
 	rp.basicprevint + rp.basicpriorint AS penaltyprevious 
-FROM remittancelist rem 
+FROM remittance rem 
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid 
 	INNER JOIN rptpaymentmanual rp ON rp.receiptid = r.objid 
 WHERE rem.objid = $P{objid} 
@@ -659,7 +659,7 @@ SELECT
 	rp.sefdisc AS discount, 
 	rp.sefint AS penaltycurrent, 
 	rp.sefprevint + rp.sefpriorint AS penaltyprevious 
-FROM remittancelist rem 
+FROM remittance rem 
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid 
 	INNER JOIN rptpaymentmanual rp ON rp.receiptid = r.objid 
 WHERE rem.objid = $P{objid} 
@@ -672,8 +672,8 @@ SELECT objid, fundname FROM fund ORDER BY fundname
 
 
  
-[exportRemittanceList]
-select * from remittancelist where objid = $P{objid}
+[exportremittance]
+select * from remittance where objid = $P{objid}
 
 [exportRemittedForm]
 select * from remittedform where remittanceid = $P{objid}
@@ -725,5 +725,5 @@ WHERE afid = $P{afid}
 [getCraafCreditByInvCreditId]
 SELECT * FROM craaf WHERE afinventorycreditid = $P{afinventorycreditid} 
 
-[getRemittanceListById]
-SELECT * FROM remittancelist WHERE objid = $P{objid} 
+[getRemittanceById]
+SELECT * FROM remittance WHERE objid = $P{objid} 

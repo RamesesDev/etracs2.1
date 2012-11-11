@@ -39,7 +39,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
-            <Property name="title" type="java.lang.String" value="Other Payment Summary"/>
+            <Property name="title" type="java.lang.String" value="List of Non-Cash Payments"/>
           </PropertyBean>
         </Property>
       </Properties>
@@ -51,12 +51,12 @@
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="xDataTable1" pref="702" max="32767" attributes="0"/>
+                          <Component id="xDataTable1" pref="706" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="-2" pref="490" max="-2" attributes="0"/>
                           <Component id="jLabel6" min="-2" pref="50" max="-2" attributes="0"/>
-                          <EmptySpace pref="44" max="32767" attributes="0"/>
+                          <EmptySpace pref="46" max="32767" attributes="0"/>
                           <Component id="xLabel9" min="-2" pref="130" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -68,7 +68,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="xDataTable1" pref="246" max="32767" attributes="0"/>
+                  <Component id="xDataTable1" pref="248" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel6" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>

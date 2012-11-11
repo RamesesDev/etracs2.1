@@ -1,6 +1,6 @@
 <schema>
 	
-	<element name="remittancelist" tablename="remittancelist">
+	<element name="remittance" tablename="remittance">
 		<field name="objid" primary="true" />
 		<field name="docstate" required="true" />
 		<field name="dtposted" required="true" />
