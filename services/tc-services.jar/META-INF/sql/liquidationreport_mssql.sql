@@ -1,8 +1,8 @@
 [getOtherPaymentsByLiquidation] 
 SELECT pm.amount as amount, pm.paytype as paytype, pm.particulars as particulars  FROM paymentitem pm 
 INNER JOIN receiptlist rl on rl.objid = pm.receiptid 
-INNER JOIN remittancelist rml on rml.objid = rl.remittanceid 
-INNER JOIN liquidationlist ll on ll.objid = rml.liquidationid 
+INNER JOIN remittance rml on rml.objid = rl.remittanceid 
+INNER JOIN liquidation ll on ll.objid = rml.liquidationid 
 WHERE ll.objid = $P{liquidationid} 
 AND   pm.paytype != 'CASH' 
 AND rl.voided = 0 
@@ -13,8 +13,8 @@ SELECT
 		rml.amount as amount, 
 		rml.txnno as txnno, 
 		rml.txndate as txndate 
-FROM remittancelist rml 
-INNER JOIN liquidationlist ll on ll.objid = rml.liquidationid 
+FROM remittance rml 
+INNER JOIN liquidation ll on ll.objid = rml.liquidationid 
 WHERE ll.objid = $P{liquidationid} 
 ORDER BY rml.txnno 
 
@@ -24,8 +24,8 @@ SELECT
 	rf.receivedqty, rf.receivedfrom, rf.receivedto,  
 	rf.issuedqty, rf.issuedfrom, rf.issuedto,  
 	rf.endingqty, rf.endingfrom, rf.endingto  
-FROM liquidationlist lq 
-	INNER JOIN remittancelist rem ON lq.objid = rem.liquidationid 
+FROM liquidation lq 
+	INNER JOIN remittance rem ON lq.objid = rem.liquidationid 
 	INNER JOIN remittedform rf ON rem.objid = rf.remittanceid 
 WHERE lq.objid = $P{liquidationid} 
   AND rf.aftype = 'serial'  
@@ -38,8 +38,8 @@ SELECT
 	CASE WHEN rf.issuedqty >= 0 THEN rf.issuedqty * af.denomination ELSE 0.0 END AS issuedamt, 
 	CASE WHEN rf.endingqty >= 0 THEN rf.endingqty * af.denomination ELSE 0.0 END AS endingamt, 
 	rf.afid, rf.beginqty, rf.receivedqty, rf.issuedqty, rf.endingqty , rf.stubno 
-FROM liquidationlist lq 
-	INNER JOIN remittancelist rem ON lq.objid = rem.liquidationid 
+FROM liquidation lq 
+	INNER JOIN remittance rem ON lq.objid = rem.liquidationid 
 	INNER JOIN remittedform rf ON rem.objid = rf.remittanceid 
 	INNER JOIN af af ON rf.afid = af.objid 
 WHERE lq.objid = $P{liquidationid} 
@@ -57,8 +57,8 @@ SELECT
 	SUM( CASE WHEN rf.issuedqty >= 0 THEN rf.issuedqty * af.denomination ELSE 0.0 END ) AS issuedamt, 
 	SUM( CASE WHEN rf.endingqty IS NULL THEN 0 ELSE rf.endingqty END ) AS endingqty,   
 	SUM( CASE WHEN rf.endingqty >= 0 THEN rf.endingqty * af.denomination ELSE 0.0 END ) AS endingamt  
-FROM liquidationlist lq 
-	INNER JOIN remittancelist rem ON lq.objid = rem.liquidationid 
+FROM liquidation lq 
+	INNER JOIN remittance rem ON lq.objid = rem.liquidationid 
 	INNER JOIN remittedform rf ON rem.objid = rf.remittanceid 
 	INNER JOIN af af ON rf.afid = af.objid 
 WHERE lq.objid = $P{liquidationid} 
@@ -82,8 +82,8 @@ SELECT
 FROM receiptitem ri   
 INNER JOIN incomeaccount ia ON ri.acctid = ia.objid  
 INNER JOIN receiptlist rl on rl.objid = ri.receiptid    
-INNER JOIN remittancelist rml on rml.objid = rl.remittanceid     
-INNER JOIN liquidationlist ll on ll.objid = rml.liquidationid     
+INNER JOIN remittance rml on rml.objid = rl.remittanceid     
+INNER JOIN liquidation ll on ll.objid = rml.liquidationid     
 INNER JOIN af af ON rl.afid = af.objid 
 WHERE ll.objid = $P{liquidationid} 
   AND rl.voided = 0   
@@ -144,7 +144,7 @@ SELECT
 	a.pathbytitle AS pathtitle,   
 	a.acctcode AS parentcode,   
 	a.accttitle AS parenttitle, 
-	r.acctno AS acctcode, 
+	ia.acctcode AS acctcode, 
 	r.accttitle AS accttitle, 
 	SUM(r.amount) AS amount 
 FROM revenue r  
@@ -153,7 +153,7 @@ LEFT JOIN account a ON ia.sreid = a.objid
 WHERE r.fundid = $P{fundid}   
 AND   r.liquidationid = $P{liquidationid}  
 AND r.voided = 0  
-GROUP BY a.pathbytitle, a.acctcode, a.accttitle, r.acctno, r.accttitle  
+GROUP BY a.pathbytitle, a.acctcode, a.accttitle, ia.acctcode, r.accttitle  
 ORDER BY a.pathbytitle
 
 [getRevenueByIncomeAccountNGAS]  
@@ -161,7 +161,7 @@ SELECT
 	a.pathbytitle AS pathtitle,  
 	a.acctcode AS parentcode,
 	a.accttitle AS parenttitle,
-	r.acctno AS acctcode,  
+	ia.acctcode AS acctcode,  
 	r.accttitle AS accttitle,
 	SUM(r.amount) AS amount 
 FROM revenue r 
@@ -170,7 +170,7 @@ LEFT JOIN account a ON ia.ngasid =  a.objid
 WHERE r.fundid = $P{fundid} 
 AND   r.liquidationid = $P{liquidationid} 
 AND r.voided = 0  
-GROUP BY a.pathbytitle, a.acctcode, a.accttitle, r.acctno, r.accttitle 
+GROUP BY a.pathbytitle, a.acctcode, a.accttitle, ia.acctcode, r.accttitle 
 ORDER BY a.pathbytitle 
 
 [getRevenueByLiquidationId]
@@ -184,12 +184,12 @@ SELECT
 	r.payorname as payorname,  
 	r.accttitle as accttitle,  
 	r.amount as amount, 
-	ia.acctno  as acctno,
+	ia.acctcode  as acctno,
 	r.voided as voided,
 	r.afid as afid 
 FROM revenue r 
-	inner join liquidationlist lq on r.liquidationid = lq.objid  
-	inner join remittancelist rl on r.remittanceid = rl.objid 
+	inner join liquidation lq on r.liquidationid = lq.objid  
+	inner join remittance rl on r.remittanceid = rl.objid 
 	inner join incomeaccount ia on r.acctid = ia.objid  
 WHERE r.liquidationid = $P{liquidationid} 
 ORDER BY r.collectorname, rl.objid, r.afid, r.serialno, r.receiptdate 
@@ -223,8 +223,8 @@ SELECT
 	ISNULL(p1.acctcode,'') + ' - ' + p1.accttitle AS p1account, 
 	ISNULL(p.acctcode,'') + ' - ' + p.accttitle AS paccount,
 	SUM(ri.amount) AS amount 
-FROM liquidationlist ll  
-	INNER JOIN remittancelist rem ON ll.objid = rem.liquidationid 
+FROM liquidation ll  
+	INNER JOIN remittance rem ON ll.objid = rem.liquidationid 
 	INNER JOIN receiptlist rl ON rem.objid = rl.remittanceid 
 	INNER JOIN receiptitem ri on rl.objid = ri.receiptid 
 	INNER JOIN incomeaccount ia on ri.acctid = ia.objid 
@@ -245,8 +245,8 @@ SELECT
 	ISNULL(p1.acctcode,'') + ' - ' + p1.accttitle AS p1account, 
 	ISNULL(p.acctcode,'') + ' - ' + p.accttitle AS paccount,
 	SUM(ri.amount) AS amount 
-FROM liquidationlist ll  
-	INNER JOIN remittancelist rem ON ll.objid = rem.liquidationid 
+FROM liquidation ll  
+	INNER JOIN remittance rem ON ll.objid = rem.liquidationid 
 	INNER JOIN receiptlist rl ON rem.objid = rl.remittanceid 
 	INNER JOIN receiptitem ri on rl.objid = ri.receiptid 
 	INNER JOIN incomeaccount ia on ri.acctid = ia.objid 

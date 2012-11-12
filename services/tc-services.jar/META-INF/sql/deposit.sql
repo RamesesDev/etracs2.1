@@ -22,7 +22,7 @@ SELECT docstate FROM deposit WHERE objid = $P{objid}
 SELECT 
 	objid, txnno, txndate, amount, 
 	liquidatingofficerid, liquidatingofficername, liquidatingofficertitle 
-FROM liquidationlist 
+FROM liquidation 
 WHERE docstate = 'OPEN'  
 
 [getOpenLiquidationsByCashier] 
@@ -30,7 +30,7 @@ SELECT
 	lr.objid, lr.fundid, lr.fundname, lr.liquidationid, l.txnno, l.txndate, SUM(lr.amount) AS amount, 
 	l.liquidatingofficerid, l.liquidatingofficername, l.liquidatingofficertitle 
 FROM liquidationrcd lr 
-	INNER JOIN liquidationlist l ON lr.liquidationid = l.objid 
+	INNER JOIN liquidation l ON lr.liquidationid = l.objid 
 WHERE lr.docstate = 'OPEN'  
   AND lr.cashierid = $P{cashierid} 
 GROUP BY 
@@ -52,7 +52,7 @@ SELECT
 	SUM( ri.amount ) AS cash,  
 	0.0 AS noncash, 
 	SUM( ri.amount ) AS amount 
-FROM liquidationlist lq, remittancelist rem, receiptlist r, receiptitem ri, bankaccount ba, fund f 
+FROM liquidation lq, remittance rem, receiptlist r, receiptitem ri, bankaccount ba, fund f 
 WHERE lq.objid = rem.liquidationid 
   AND rem.objid = r.remittanceid  
   AND r.objid = ri.receiptid  
@@ -68,7 +68,7 @@ SELECT
 	ri.fundname, 
 	SUM( ri.amount ) AS amount,  
 	0.0 AS amtdeposited 
-FROM liquidationlist lq, remittancelist rem, receiptlist r, receiptitem ri 
+FROM liquidation lq, remittance rem, receiptlist r, receiptitem ri 
 WHERE lq.objid = rem.liquidationid 
   AND rem.objid = r.remittanceid  
   AND r.objid = ri.receiptid  
@@ -85,7 +85,7 @@ SELECT
 	0.0 AS amtdeposited 
 FROM liquidationrcd lr 
 	INNER JOIN fund f ON lr.fundid = f.objid 
-	INNER JOIN liquidationlist l ON lr.liquidationid = l.objid 
+	INNER JOIN liquidation l ON lr.liquidationid = l.objid 
 WHERE lr.docstate = 'OPEN'  
   AND lr.cashierid = $P{cashierid} 
 GROUP BY CASE WHEN f.bankacctrequired = 1 THEN lr.fundid ELSE f.fund END,
@@ -100,7 +100,7 @@ SELECT
 	p.amount, 
 	'SYSTEM' AS source, 
 	p.extended 
-FROM liquidationlist l, remittancelist rem, receipt r, paymentitem p 
+FROM liquidation l, remittance rem, receipt r, paymentitem p 
 WHERE l.objid = rem.liquidationid 
   AND rem.objid = r.remittanceid  
   AND r.objid = p.receiptid  
@@ -116,9 +116,9 @@ SELECT 	DISTINCT p.objid AS paymentitemid,
 	p.amount, 
 	'SYSTEM' AS source, 
 	p.extended 
-FROM liquidationlist l 
+FROM liquidation l 
 	INNER JOIN liquidationrcd lr ON l.objid = lr.liquidationid 
-	INNER JOIN remittancelist rem ON rem.liquidationid = l.objid 
+	INNER JOIN remittance rem ON rem.liquidationid = l.objid 
 	INNER JOIN receiptlist rl ON rem.objid = rl.remittanceid 
 	INNER JOIN paymentitem p ON rl.objid = p.receiptid 
 WHERE l.docstate = 'OPEN'  
@@ -135,7 +135,7 @@ SELECT
  	'SYSTEM' AS source, 
  	p.extended 
 FROM liquidationrcd lr 
-	INNER JOIN liquidationlist l ON lr.liquidationid = l.objid 
+	INNER JOIN liquidation l ON lr.liquidationid = l.objid 
 	INNER JOIN paymentitem p ON lr.objid = p.liquidationrcdid 
 	INNER JOIN receiptlist rl ON p.receiptid = rl.objid 
 WHERE lr.docstate = 'OPEN'  
@@ -159,8 +159,8 @@ UPDATE liquidation SET
 	dtdeposited = $P{dtdeposited}  
 WHERE docstate = 'OPEN'	 
 
-[depositOpenLiquidationList]
-UPDATE liquidationlist SET 
+[depositOpenliquidation]
+UPDATE liquidation SET 
 	docstate  = 'CLOSED', 
 	depositid = $P{depositid}, 
 	dtdeposited = $P{dtdeposited} 
@@ -168,15 +168,15 @@ WHERE docstate = 'OPEN'
 
 
 
-[closeLiquidationListByDeposit]
-UPDATE liquidationlist ll SET 
+[closeliquidationByDeposit]
+UPDATE liquidation ll SET 
 	ll.docstate = 'CLOSED' 
 WHERE ll.objid IN ( 
 	SELECT a.liquidationid FROM 
 	( SELECT lr.liquidationid,  
 		 COUNT(*) AS itemcount,  
 		 SUM( CASE WHEN lr.docstate = 'CLOSED' THEN 1 ELSE 0 END ) AS closeditemcount 
-	  FROM liquidationrcd lr, liquidationlist ll 
+	  FROM liquidationrcd lr, liquidation ll 
 	  WHERE lr.liquidationid = ll.objid  
 	    AND ll.docstate = 'OPEN' 
 	    AND lr.depositid = $P{depositid} 
@@ -187,7 +187,7 @@ WHERE ll.objid IN (
 
 
 [closeLiquidationByDeposit]
-UPDATE liquidation l, liquidationlist  ll, liquidationrcd lr SET 
+UPDATE liquidation l, liquidation  ll, liquidationrcd lr SET 
 	l.docstate = ll.docstate 
 WHERE l.objid = ll.objid 
   AND l.objid = lr.liquidationid 
@@ -207,8 +207,8 @@ SELECT
 	END AS particulars, 
 	SUM( ri.amount ) AS  amount   
 FROM deposit d  
-	INNER JOIN liquidationlist lq on d.objid = lq.depositid  
-	INNER JOIN remittancelist rem on lq.objid = rem.liquidationid   
+	INNER JOIN liquidation lq on d.objid = lq.depositid  
+	INNER JOIN remittance rem on lq.objid = rem.liquidationid   
 	INNER JOIN receiptlist rct on rem.objid = rct.remittanceid   
 	INNER JOIN af af ON rct.afid = af.objid  	 
 	INNER JOIN receiptitem ri  on rct.objid = ri.receiptid   
@@ -231,7 +231,7 @@ SELECT
 	SUM( ri.amount ) AS  amount   
 FROM deposit d  
 	INNER JOIN liquidationrcd lq on d.objid = lq.depositid  
-	INNER JOIN remittancelist rem on lq.liquidationid = rem.liquidationid   
+	INNER JOIN remittance rem on lq.liquidationid = rem.liquidationid   
 	INNER JOIN receiptlist rct on rem.objid = rct.remittanceid   
 	INNER JOIN af af ON rct.afid = af.objid  	 
 	INNER JOIN receiptitem ri  on rct.objid = ri.receiptid and ri.liquidationrcdid = lq.objid 
@@ -263,8 +263,8 @@ SELECT
 	rf.receivedqty, rf.receivedfrom, rf.receivedto,  
 	rf.issuedqty, rf.issuedfrom, rf.issuedto,  
 	rf.endingqty, rf.endingfrom, rf.endingto  
-FROM liquidationlist lq 
-	INNER JOIN remittancelist rem ON lq.objid = rem.liquidationid 
+FROM liquidation lq 
+	INNER JOIN remittance rem ON lq.objid = rem.liquidationid 
 	INNER JOIN remittedform rf ON rem.objid = rf.remittanceid 
 WHERE lq.objid = $P{liquidationid} 
   AND rf.afid = $P{afid}  

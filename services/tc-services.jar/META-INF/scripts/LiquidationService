@@ -28,9 +28,9 @@ class LiquidationService {
 	
 	def CASHIER_ROLE = 'CASHIER'
 	
-	def SCHEMANAME = "liquidation:liquidation";
-	def SCHEMAVERSION = "1.0";
-	def LISTSCHEMANAME = "liquidation:liquidationlist";
+	def SCHEMA_NAME = "liquidation:liquidation";
+	def SCHEMA_VERSION = "1.0";
+	def LISTSCHEMA_NAME = "liquidation:liquidationlist";
 	
 	@ProxyMethod
 	public def getList( searchText, params ) {
@@ -54,10 +54,8 @@ class LiquidationService {
 			updateLiquidationInfo( liq, 'multi' )
 			// from now on, check for open liquidationrcds 
 			liq.docstate = 'CLOSED' 
-			em.validate( SCHEMANAME, liq );
-			em.create( SCHEMANAME, liq );
-			createListingItem( liq );
-			updateCashierInfo( liq )
+			em.validate( SCHEMA_NAME, liq );
+			em.create( SCHEMA_NAME, liq );
 			closeMultiCashierRemittance( liq );
 			postLiquidationRcdMulti( liq )
 			return liq;
@@ -74,13 +72,11 @@ class LiquidationService {
 		try {
 			validate( liq );
 			updateLiquidationInfo( liq, 'single' )
-			updateCashierInfo( liq )
 			updateRCDCashierInfo( liq )
 			updateRCDDenomination( liq )
 			liq.fundsummaries = getFundSummaries( liq.objid );
-			em.validate( SCHEMANAME, liq );
-			em.create( SCHEMANAME, liq );
-			createListingItem( liq );
+			em.validate( SCHEMA_NAME, liq );
+			em.create( SCHEMA_NAME, liq );
 			closeRemittance( liq );
 			postLiquidationRcd( liq )
 			return liq;
@@ -91,16 +87,15 @@ class LiquidationService {
 	}
 	
 	void updateLiquidationInfo( liq, opener  ) {
-		liq.objid = "LIQ" + new UID();
-		liq.schemaname = SCHEMANAME;
-		liq.schemaversion = SCHEMAVERSION;
 		liq.docstate = 'OPEN';
 		liq.opener = opener 
 		liq.dtposted = dtsvc.getServerDate()
-		liq.info.txnno = generateLiqNo( liq.info.liquidatingofficerid );
-		if( ! liq.info.txndate ) {
-			liq.info.txndate = dtsvc.format( "yyyy-MM-dd", liq.dtposted);
+		liq.txnno = generateLiqNo( liq.liquidatingofficerid );
+		if( ! liq.txndate ) {
+			liq.txndate = dtsvc.format( "yyyy-MM-dd", liq.dtposted);
 		}
+		buildCustomTimeStamp( liq )
+		updateCashierInfo( liq )
 	}
 	
 	
@@ -120,8 +115,8 @@ class LiquidationService {
 		}
 		
 		//check if there are no new remittances not included in the liquidation 
-		def openremittances = getOpenRemittances( liq.info )
-		if (liq.remittances.size() != openremittances.size() ) {
+		def reminfo = getUnliquidatedRemittanceInfo( liq )
+		if (liq.remittancecount != reminfo.remittancecount ) {
 			throw new Exception( "There are new remittances not included in this liquidation.\nPlease close and process the liquidation again." );
 		}
 	}
@@ -133,11 +128,11 @@ class LiquidationService {
 			rcd.schemaversion 	= '1.0'
 			rcd.docstate		= 'OPEN' 
 			rcd.liquidationid   = liq.objid 
-			rcd.liquidationno   = liq.info.txnno 
-			rcd.liquidationdate = liq.info.txndate 
-			rcd.lqofficerid     = liq.info.liquidatingofficerid
-			rcd.lqofficername   = liq.info.liquidatingofficername
-			rcd.lqofficertitle  = liq.info.liquidatingofficertitle 
+			rcd.liquidationno   = liq.txnno 
+			rcd.liquidationdate = liq.txndate 
+			rcd.lqofficerid     = liq.liquidatingofficerid
+			rcd.lqofficername   = liq.liquidatingofficername
+			rcd.lqofficertitle  = liq.liquidatingofficertitle 
 			
 			em.validate( rcd.schemaname, rcd )
 			em.create( rcd.schemaname, rcd ) 
@@ -154,11 +149,11 @@ class LiquidationService {
 			rcd.schemaversion 	= '1.0'
 			rcd.docstate		= 'OPEN' 
 			rcd.liquidationid   = liq.objid 
-			rcd.liquidationno   = liq.info.txnno 
-			rcd.liquidationdate = liq.info.txndate 
-			rcd.lqofficerid     = liq.info.liquidatingofficerid
-			rcd.lqofficername   = liq.info.liquidatingofficername
-			rcd.lqofficertitle  = liq.info.liquidatingofficertitle 
+			rcd.liquidationno   = liq.txnno 
+			rcd.liquidationdate = liq.txndate 
+			rcd.lqofficerid     = liq.liquidatingofficerid
+			rcd.lqofficername   = liq.liquidatingofficername
+			rcd.lqofficertitle  = liq.liquidatingofficertitle 
 			
 			em.validate( rcd.schemaname, rcd )
 			em.create( rcd.schemaname, rcd ) 
@@ -219,14 +214,14 @@ class LiquidationService {
 		def cashier = cashiers[0]
 		*/
 		
-		liq.info.depositedbyid 		= '-'
-		liq.info.depositedbyname 	= '-'
-		liq.info.depositedbytitle 	= '-'
+		liq.depositedbyid 		= null 
+		liq.depositedbyname 	= null 
+		liq.depositedbytitle 	= null 
 		
 		if( liq.cashier ) {
-			liq.info.depositedbyid 		= liq.cashier.cashierid  
-			liq.info.depositedbyname 	= liq.cashier.cashiername  
-			liq.info.depositedbytitle 	= liq.cashier.cashiertitle 
+			liq.depositedbyid 		= liq.cashier.cashierid  
+			liq.depositedbyname 	= liq.cashier.cashiername  
+			liq.depositedbytitle 	= liq.cashier.cashiertitle 
 		}
 		
 	}
@@ -246,20 +241,22 @@ class LiquidationService {
 	
 	void updateRCDDenomination( liq ) {
 		liq.rcds.each { rcd ->
-			rcd.denominations = liq.info.denominations 
+			rcd.denominations = liq.denominations 
 		}
 	}
 	
 	private void validate( liq ) {
 		def totalcash = 0.00;
-		for (denom in liq.info.denominations) {
+		for (denom in liq.denominations) {
 			totalcash += denom.amount;
 		}
-		if ( totalcash != liq.info.totalcash )
+		if ( totalcash != liq.totalcash )
 			 throw new Exception( "Cash Received must be equal to Cash Expected." );
-		def liqTemp = createLiquidation( liq );
-		if (liq.remittances.size() != liqTemp.remittances.size() )
-			throw new Exception( "There are new transactions not included in this Liquidation." );
+		
+		def reminfo = getUnliquidatedRemittanceInfo( liq )
+		if (liq.remittancecount != reminfo.remittancecount ) {
+			throw new Exception( "There are new remittances not included in this liquidation.\nPlease close and process the liquidation again." );
+		}
 	}
 	
 	private def generateLiqNo( liquidatingofficerid ) {
@@ -282,52 +279,49 @@ class LiquidationService {
 	private void closeRemittance( liq ) {
 		def params = [
 			liquidationid : liq.objid,
-			liquidationno : liq.info.txnno,
-			liquidationdate : liq.info.txndate,
-			liquidatingofficerid : liq.info.liquidatingofficerid
+			liquidationno : liq.txnno,
+			liquidationdate : liq.txndate,
+			liquidatingofficerid : liq.liquidatingofficerid
 		];
 		em.sqlContext.createNamedExecutor( "liquidation:closeRemittanceByLiquidatingOfficer" ).setParameters( params ).execute();
-		em.sqlContext.createNamedExecutor( "liquidation:closeRemittanceListByLiquidatingOfficer" ).setParameters( params ).execute();
 	}
 	
 	private void closeMultiCashierRemittance( liq ) { 	
 		def params = [
 			liquidationid : liq.objid,
-			liquidationno : liq.info.txnno,
-			liquidationdate : liq.info.txndate,
-			liquidatingofficerid : liq.info.liquidatingofficerid
+			liquidationno : liq.txnno,
+			liquidationdate : liq.txndate,
+			liquidatingofficerid : liq.liquidatingofficerid
 		];
 		em.sqlContext.createNamedExecutor( "liquidation:closeRemittanceByLiquidatingOfficer" ).setParameters( params ).execute();
-		em.sqlContext.createNamedExecutor( "liquidation:closeRemittanceListByLiquidatingOfficer" ).setParameters( params ).execute();
 	}
 	
-	private void createListingItem( liq ) {
+	private void buildCustomTimeStamp( liq ) {
 		def cal = Calendar.instance;
-		def pd = dtsvc.parseDate( liq.info.txndate, null )
-		liq.txntimestamp = dtsvc.buildCustomTimeStamp( liq.info.txndate )
+		def pd = dtsvc.parseDate( liq.txndate, null )
+		liq.txntimestamp = dtsvc.buildCustomTimeStamp( liq.txndate )
 		liq.iyear  = pd.year 
 		liq.iqtr   = pd.qtr 
 		liq.imonth = pd.month 
 		liq.iday   = pd.day 
-		em.create( LISTSCHEMANAME, liq )
 	}
 	
 	@ProxyMethod
 	public def createLiquidationMultiCashier( liq ) {
-		liq.info.amount = 0.0;
-		liq.info.totalcash = 0.0;
-		liq.info.totalotherpayment = 0.0;
-		liq.info.treasurername = var.get('treasurer_name');
-		liq.info.treasurertitle = var.get('treasurer_title');
-		liq.info.denominations = [] 
-		
-		liq.remittances   	= getOpenRemittances( liq.info )
-		liq.otherpayments	= getOpenNonCashPayments( liq.info ) 
-		liq.rcds			= getOpenRcdsByFund( liq.info )		
+		liq.amount = 0.0;
+		liq.totalcash = 0.0;
+		liq.totalotherpayment = 0.0;
+		liq.treasurername  = var.get('treasurer_name');
+		liq.treasurertitle = var.get('treasurer_title');
+		liq.otherpayments  = getOpenNonCashPayments( liq)
+		liq.rcds 		   = getOpenRcdsByFund( liq  )		 
 		updateLiquidationAmountInfo( liq )
 		
+		if( ! liq.rcds ) 
+			throw new Exception('There are no open remittances to liquidate.')
+		
 		//check liquidation amount = total rcds amount 
-		if( liq.info.amount != liq.rcds.amount.sum() ) {
+		if( liq.amount != liq.rcds.amount.sum() ) {
 			throw new Exception('Liquidation amount is not equal to RCD total amount.\nFix the discrepancy before proceeding.')
 		}
 		return liq;
@@ -335,20 +329,18 @@ class LiquidationService {
 	
 	@ProxyMethod
 	public def createLiquidation( liq ) {
-		liq.info.amount = 0.0;
-		liq.info.totalcash = 0.0;
-		liq.info.totalotherpayment = 0.0;
-		liq.info.treasurername = var.get('treasurer_name');
-		liq.info.treasurertitle = var.get('treasurer_title');
-		
-		liq.remittances   	= getOpenRemittances( liq.info )
-		liq.otherpayments	= getOpenNonCashPayments( liq.info ) 
-		liq.rcds			= getOpenRcdsByFund( liq.info )		
+		liq.amount = 0.0;
+		liq.totalcash = 0.0;
+		liq.totalotherpayment = 0.0;
+		liq.treasurername = var.get('treasurer_name');
+		liq.treasurertitle = var.get('treasurer_title');
+		liq.rcds = getOpenRcdsByFund( liq )		
 		updateLiquidationAmountInfo( liq )
 		return liq;
 	}
 	
-	List getOpenRemittances( liqinfo ) {
+	@ProxyMethod 
+	public List getOpenRemittances( liqinfo ) {
 		def remits = em.sqlContext.createNamedQuery( "liquidation:getUnliquidatedRemittanceByLiquidatingOfficer" )
 							.setParameter( "liquidatingofficerid", liqinfo.liquidatingofficerid )
 							.setParameter( "txndate", liqinfo.txndate )
@@ -360,7 +352,8 @@ class LiquidationService {
 		return remits
 	}
 	
-	List getOpenNonCashPayments( liqinfo ) {
+	@ProxyMethod
+	public List getOpenNonCashPayments( liqinfo ) {
 		return em.sqlContext.createNamedQuery( "liquidation:getUnliquidatedRemittanceOtherPaymentsByLiquidatingOfficer" )
 								.setParameter( "liquidatingofficerid", liqinfo.liquidatingofficerid )
 								.setParameter( "txndate", liqinfo.txndate )
@@ -383,25 +376,44 @@ class LiquidationService {
 	}
 	
 	void updateLiquidationAmountInfo( liq ) {
-		def reminfo = em.sqlContext.createNamedQuery( "liquidation:getUnliquidatedRemittanceInfoByLiquidatingOfficer" )
-								.setParameter( "liquidatingofficerid", liq.info.liquidatingofficerid ) 
-								.setParameter( "txndate", liq.info.txndate )
+		def reminfo = getUnliquidatedRemittanceInfo( liq ) 
+		liq.amount 				= reminfo.totalamount;
+		liq.totalcash 			= reminfo.totalcash;
+		liq.totalotherpayment 	= reminfo.totalotherpayment;
+		liq.remittancecount		= reminfo.remittancecount 
+	}
+	
+	def getUnliquidatedRemittanceInfo( liq ) {
+		return em.sqlContext.createNamedQuery( "liquidation:getUnliquidatedRemittanceInfoByLiquidatingOfficer" )
+								.setParameter( "liquidatingofficerid", liq.liquidatingofficerid ) 
+								.setParameter( "txndate", liq.txndate )
 								.singleResult;
-								
-		liq.info.amount 			= reminfo.totalamount;
-		liq.info.totalcash 			= reminfo.totalcash;
-		liq.info.totalotherpayment 	= reminfo.totalotherpayment;
 	}
 	
 	@ProxyMethod
 	public def open( objid ) {
-		if (!objid)
-			return null;
-		def liq = em.read( SCHEMANAME, [objid:objid] );
-		liq.remittances = em.sqlContext.createNamedQuery( "liquidation:getRemittancesByLiquidation" ).setParameter( "liquidationid", objid ).resultList;
-		liq.otherpayments = em.sqlContext.createNamedQuery( "liquidation:getOtherPaymentsByLiquidation" ).setParameter( "liquidationid", objid ).resultList;
-
-		return liq;
+		def liq = em.read( SCHEMA_NAME, [objid:objid] );
+		if( ! liq ) throw new Exception('Liquidation does not exists or has been deleted.')
+		liq.rcds = loadRcds( objid )
+		return liq 
+	}
+	
+	@ProxyMethod 
+	public List getLiquidatedRemittances( objid ) {
+		return em.sqlContext.createNamedQuery( "liquidation:getRemittancesByLiquidation" )
+					.setParameter( "liquidationid", objid )
+					.resultList;
+	}
+	
+	List loadRcds( objid ) {
+		return em.sqlContext.createNamedQuery('liquidation:getRcdList')
+					.setParameter('liquidationid', objid)
+					.resultList 
+					.each {
+						it.cashier       = [cashiername:it.cashiername]
+						it.denominations = em.serializer.read( it.denominations )
+						it.noncashpayments = em.serializer.read( it.noncashpayments )
+					}
 	}
 	
 	private def getFundSummaries(def liquidationid){
@@ -410,204 +422,10 @@ class LiquidationService {
 				 .resultList;
 	}
 	
-	@ProxyMethod
-	public def fetchOtherPayments( param ){
-		def sql_stmt = "getOtherPaymentsByLiquidation"
-		param.liquidationid = param.objid
-		if( param.info.txndate ) param.txndate = param.info.txndate
-		if( !param.objid )
-			sql_stmt = "getOtherPaymentNoLiq"
-		return em.sqlContext.createNamedQuery( "liquidation:" + sql_stmt ).setParameters( param ).resultList	
-	}
-	
-	@ProxyMethod
-	public def getHtml( liq ) {
-		def html = '';
-		if ( !liq )
-			return "<html><head><h1> Select an item. </h1></head></html>";
-		
-		def data = [
-            header  : buildHeader( liq ),
-			otherpayments : buildOtherPayments( liq ),
-			breakdown   : buildBreakdown( liq )
-			
-        ]
-		
-        return doBuildHtml( data )
-	}
-		
-	private def buildBreakdown( liq ){
-		def decformat = new DecimalFormat("#,##0.00");
-		def html = """
-		<table width="100%">
-		<tr>
-		<td>
-		<div style="background-color:silver" width="100%">
-		<table width="100%" cellspacing="1">
-		"""
-
-		html += """
-			<tr> <th align="left" colspan="3"> Liquidation Breakdown </th> </tr>
-			<tr>
-				<th> Denomination </th>
-				<th> Quantity </th>
-				<th> Amount </th>
-			</tr>			
-		"""
-		
-		liq.info.denominations.each {
-			def amount = decformat.format( it.amount );
-			def qty = decformat.format( it.qty );
-			html += """
-			<tr>
-				<td align="right">$it.caption</td>
-				<td align="right">$qty</td>
-				<td align="right">$amount</td>                 
-			</tr>
-			"""
-		}
-		def totalcash = decformat.format( liq.info.totalcash );
-		html += """
-			<tr>
-				<td colspan="2">Total Cash</td>
-				<td align="right">${totalcash}</td>
-			</tr>
-			
-		</td>
-		</tr>
-        </table>
-		"""
-			
-		return html
-	}
-	
-	private def buildOtherPayments( liq ){
-		if( !liq.otherpayments ) return '';
-		def decformat = new DecimalFormat("#,##0.00");
-		def html = """
-		<table width="100%">
-		<tr>
-		<td>
-		<div style="background-color:silver" width="100%">
-		<table width="100%" cellspacing="1">
-		"""
-					
-		html += """
-			<tr> <th align="left" colspan="3"> Non-Cash Payments </th> </tr>
-			<tr>
-				<th> Type </th>
-				<th> Particulars </th>
-				<th> Amount </th>
-			</tr>			
-		"""
-	
-		liq.otherpayments.each(){
-			def payamount = decformat.format( it.amount );
-			html += """
-			<tr>
-				<td> $it.paytype </td>
-				<td> $it.particulars </td>
-				<td align="right"> $payamount </td>
-			</tr>
-			""";
-		}
-		def totalotherpayment = decformat.format( liq.info.totalotherpayment );
-		html += """
-			<tr>
-				<td colspan='2'>Total Other Payment</td>
-				<td align="right">${totalotherpayment}</td>
-			</tr>
-			
-			</td>
-			</tr>
-		</table>
-		"""
-			
-		return html
-	}
-	
-	private def buildHeader( liq ) {
-		def decformat = new DecimalFormat("#,##0.00");
-		def grandtotal = decformat.format( liq.info.amount );
-		def totalotherpayment = decformat.format( liq.info.totalotherpayment );
-		def totalcash = decformat.format( liq.info.totalcash );
-		return """
-			<table>
-				<tr>
-					<th class="title"><b>GENERAL INFORMATION</th>
-				<tr>
-				<tr>
-					<td class="header">Liquidation No. :</td>
-					<td class="header" colspan="3"><b>$liq.info.txnno</b></td>
-				</tr>
-				<tr>
-					<td class="header">Date :</td>
-					<td class="header"><b>$liq.info.txndate</b></td>
-				</tr>
-				<tr>
-					<td class="header">Non-Cash Total :</td>
-					<td class="header"><b>$totalotherpayment</b></td>
-				</tr>
-				<tr>
-					<td class="header">Cash Total :</td>
-					<td class="header"><b>$totalcash</b></td>
-				</tr>
-				<tr>
-					<td class="header">Grand Total :</td>
-					<td class="header"><b>$grandtotal</b></td>
-				</tr>
-			</table>
-		"""
-	}
-	
-	private def doBuildHtml( data ) {
-		return """
-			<html>
-				<head>
-					<style type="text/css">
-						body, td, th { 
-							font-family: tahoma
-							font-size  : 10pt
-						}	
-						td {
-							background-color:white
-						}
-						th {
-							background-color : #CCCCCC
-						}
-						.title {
-							background-color:#CCCCFF
-							font-weight:bold
-						}
-						.caption {
-							width : 120
-						}
-						.numeric {
-							text-align:right
-						}
-						.header {
-							font-family : tahoma
-							font-size   : 18pt
-							width       : 120
-						}
-						.data {
-							font-weight:bold
-						}
-					</style>
-				</head>
-				<body>
-					<table width="100%">
-						<tr colspan="2">
-							<td>$data.header</td>
-						</tr>
-						<tr>
-							<td width="30%">$data.breakdown</td>
-							<td valign="top" width="70%" >$data.otherpayments</td>
-						</tr>
-					</table>
-				</body>
-			</html>
-		"""
-	}
-	
+	@ProxyMethod 
+	public def getLiquidatedNonCashPayments( liquidationid ) {
+		return em.sqlContext.createNamedQuery('liquidation:getLiquidatedNonCashPayments')
+					.setParameter('liquidationid', liquidationid)
+					.resultList 
+	}	
 }

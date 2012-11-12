@@ -9,7 +9,11 @@ def proxy = new TestProxy(env)
 def svc = proxy.create('XPatchServiceV21010')
 
 svc.getRemittanceList().each {
-	svc.updateRemittanceListDenomination( it.objid )
+	svc.updateRemittanceDenomination( it.objid )
+}
+
+svc.getLiquidationList().each {
+	svc.updateLiquidationDenomination( it.objid )
 }
 
 println 'done' 

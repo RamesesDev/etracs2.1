@@ -236,9 +236,6 @@ class DepositService
 		// em.sqlContext.createNamedExecutor('deposit:depositOpenLiquidationList').setParameters(params).execute()
 	}
 	void closeLiquidation( deposit ){
-		em.sqlContext.createNamedExecutor('deposit:closeLiquidationListByDeposit')
-				.setParameter('depositid', deposit.objid)
-				.execute()
 		em.sqlContext.createNamedExecutor('deposit:closeLiquidationByDeposit')
 				.setParameter('depositid', deposit.objid)
 				.execute()

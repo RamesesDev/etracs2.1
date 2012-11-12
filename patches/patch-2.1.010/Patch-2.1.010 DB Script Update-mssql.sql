@@ -1,63 +1,3 @@
-/* =========================================================
-** DENORMALIZE REMITTANCE SUPPORT 
-============================================================ */
-
-alter table lguname_etracs..remittancelist add dtposted date null
-go
-
-update lguname_etracs..remittancelist set dtposted = txndate
-go
-
-alter table lguname_etracs..remittancelist alter column dtposted date not null
-go
-
-alter table lguname_etracs..remittancelist add denominations varchar(600) null
-go
-
-
-ALTER TABLE lguname_etracs..remittancelist DROP FK_remittancelist_remittance
-go 
-
-ALTER TABLE lguname_etracs..receiptlist DROP FK_receiptlist_remittance
-go 
-
-
-ALTER TABLE lguname_etracs..remittedform DROP FK_remittedform_remittance
-go 
-
-
-/*-- rename remittance related tables --*/
-
-use lguname_etracs
-go
-
-sp_rename remittance, xremittance
-go
-
-sp_rename remittancelist, remittance
-go
-
-
-
-
-ALTER TABLE lguname_etracs..receiptlist
-	add constraint FK_receiptlist_remittance foreign key (remittanceid) references remittance(objid)
-go 
-
-
-ALTER TABLE lguname_etracs..remittedform
-	add constraint FK_remittedform_remittance foreign key (remittanceid) references remittance(objid)
-go 
-
-
-
-/* =================================================================== */
-
-
-
-
-
-
 delete from lguname_system..rule_package where packagename = 'bp.billing.facts'
 go
 
@@ -254,4 +194,151 @@ UPDATE lguname_system..sys_roleclass SET
 	tags='[''AFO'', ''COLLECTOR'', ''SUBCOLLECTOR'', ''LIQUIDATING_OFFICER'', ''CASHIER'', ]'
 WHERE name = 'TREASURY'
 go 
+
+
+
+
+
+
+/* =========================================================
+** DENORMALIZE REMITTANCE SUPPORT 
+============================================================ */
+
+alter table lguname_etracs..remittancelist add dtposted date null
+go
+
+update lguname_etracs..remittancelist set dtposted = txndate
+go
+
+alter table lguname_etracs..remittancelist alter column dtposted date not null
+go
+
+alter table lguname_etracs..remittancelist add denominations varchar(600) null
+go
+
+
+ALTER TABLE lguname_etracs..remittancelist DROP FK_remittancelist_remittance
+go 
+
+ALTER TABLE lguname_etracs..receiptlist DROP FK_receiptlist_remittance
+go 
+
+
+ALTER TABLE lguname_etracs..remittedform DROP FK_remittedform_remittance
+go 
+
+
+/*-- rename remittance related tables --*/
+
+use lguname_etracs
+go
+
+sp_rename remittance, xremittance
+go
+
+sp_rename remittancelist, remittance
+go
+
+
+
+
+ALTER TABLE lguname_etracs..receiptlist
+	add constraint FK_receiptlist_remittance foreign key (remittanceid) references lguname_etracs..remittance(objid)
+go 
+
+
+ALTER TABLE lguname_etracs..remittedform
+	add constraint FK_remittedform_remittance foreign key (remittanceid) references lguname_etracs..remittance(objid)
+go 
+
+
+
+/* =================================================================== 
+** Normalize Liquidation  
+=================================================================== */
+alter table lguname_etracs..liquidationlist add dtposted date
+go 
+
+update lguname_etracs..liquidationlist set dtposted = txndate
+go
+
+alter table lguname_etracs..liquidationlist alter column dtposted date not null 
+go 
+
+
+alter table lguname_etracs..liquidationlist add denominations varchar(600)
+go 
+
+update lguname_etracs..liquidationlist set denominations = '[]' 
+go 
+
+
+alter table lguname_etracs..liquidationlist drop FK_liquidationlist_deposit
+go
+alter table lguname_etracs..liquidationlist drop FK_liquidationlist_liquidation
+go
+alter table lguname_etracs..liquidationlist drop FK_liquidationlist_personnel
+go
+alter table lguname_etracs..liquidationlist drop FK_liquidationlist_personnel_depositedbyid
+go
+
+
+
+
+-- Rename related tables 
+use lguname_etracs
+go
+
+sp_rename liquidation, xliquidation
+go
+
+sp_rename liquidationlist, liquidation 
+go
+
+
+
+alter table lguname_etracs..liquidation
+	add constraint FK_liquidation_deposit foreign key(depositid) references lguname_etracs..deposit(objid)
+go
+
+alter table lguname_etracs..liquidation
+	add constraint FK_liquidation_personnel foreign key(liquidatingofficerid) references lguname_etracs..personnel(objid)
+go
+
+alter table lguname_etracs..liquidation 
+	add constraint FK_liquidation_personnel_depositedbyid foreign key(depositedbyid) references lguname_etracs..personnel(objid)
+go
+
+
+
+
+
+alter table lguname_etracs..remittance drop FK_remittancelist_liquidation
+go
+alter table lguname_etracs..remittance drop FK_remittancelist_personnel
+go
+alter table lguname_etracs..remittance drop FK_remittancelist_personnel_lqid
+go
+
+
+
+alter table lguname_etracs..remittance 
+	add constraint FK_remittance_liquidation foreign key(liquidationid) 
+	references lguname_etracs.liquidation( objid )
+go
+
+alter table lguname_etracs..remittance 
+	add constraint FK_remittance_personnel foreign key(collectorid) 
+	references lguname_etracs..personnel( objid )
+
+go
+
+alter table lguname_etracs..remittance 
+	add constraint FK_remittance_personnel_lqid foreign key(liquidatingofficerid) 
+	references lguname_etracs..personnel( objid )
+go
+
+
+
+
 

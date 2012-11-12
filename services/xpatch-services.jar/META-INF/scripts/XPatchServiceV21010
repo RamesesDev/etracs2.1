@@ -8,11 +8,11 @@ public class XPatchServiceV21010
 	
 	@ProxyMethod 
 	public List getRemittanceList() {
-		return em.sqlContext.createQuery('SELECT objid FROM remittancelist').resultList 
+		return em.sqlContext.createQuery('SELECT objid FROM remittance').resultList 
 	}
 	
 	@ProxyMethod
-	public void updateRemittanceListDenomination( objid ) {
+	public void updateRemittanceDenomination( objid ) {
 		println 'Processing Remittance ' + objid 
 		def rem = em.sqlContext.createQuery('SELECT info FROM xremittance WHERE objid = $P{objid}')
 						.setParameter('objid', objid)
@@ -21,6 +21,28 @@ public class XPatchServiceV21010
 		def info = em.serializer.read( rem.info )
 		
 		em.sqlContext.createExecutor('UPDATE remittancelist SET denominations = $P{denominations} WHERE objid = $P{objid}')
+				.setParameter('denominations', em.serializer.write(info.denominations))
+				.setParameter('objid', objid)
+				.execute()
+	}
+	
+	
+	
+	@ProxyMethod 
+	public List getLiquidationList() {
+		return em.sqlContext.createQuery('SELECT objid FROM liquidation').resultList 
+	}
+	
+	@ProxyMethod
+	public void updateLiquidationDenomination( objid ) {
+		println 'Processing Liquidation ' + objid 
+		def rem = em.sqlContext.createQuery('SELECT info FROM xliquidation WHERE objid = $P{objid}')
+						.setParameter('objid', objid)
+						.singleResult
+		if( ! rem ) return 
+		def info = em.serializer.read( rem.info )
+		
+		em.sqlContext.createExecutor('UPDATE liquidation SET denominations = $P{denominations} WHERE objid = $P{objid}')
 				.setParameter('denominations', em.serializer.write(info.denominations))
 				.setParameter('objid', objid)
 				.execute()

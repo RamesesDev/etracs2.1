@@ -49,7 +49,7 @@ public class LiquidationInitPage extends javax.swing.JPanel {
         xTextField1.setCaption("Liquidation Officer");
         xTextField1.setCaptionWidth(120);
         xTextField1.setFont(new java.awt.Font("Arial", 1, 14));
-        xTextField1.setName("entity.info.liquidatingofficername");
+        xTextField1.setName("entity.liquidatingofficername");
         xTextField1.setPreferredSize(new java.awt.Dimension(0, 24));
         xTextField1.setReadonly(true);
         formPanel1.add(xTextField1);
@@ -57,7 +57,7 @@ public class LiquidationInitPage extends javax.swing.JPanel {
         xDateField1.setCaption("Date");
         xDateField1.setCaptionWidth(120);
         xDateField1.setFont(new java.awt.Font("Arial", 1, 14));
-        xDateField1.setName("entity.info.txndate");
+        xDateField1.setName("entity.txndate");
         xDateField1.setPreferredSize(new java.awt.Dimension(120, 24));
         xDateField1.setRequired(true);
         formPanel1.add(xDateField1);

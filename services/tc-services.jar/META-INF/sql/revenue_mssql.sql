@@ -61,7 +61,7 @@ SELECT
 	ia.sreid, 
 	CASE WHEN rct.voided = 0 THEN ri.amount ELSE 0.0 END AS amount,  
 	rct.voided 
-FROM remittancelist rem, receiptlist rct, receiptitem ri, incomeaccount ia   
+FROM remittance rem, receiptlist rct, receiptitem ri, incomeaccount ia   
 WHERE rem.objid = rct.remittanceid  
   AND rct.objid = ri.receiptid   
   AND ri.acctid = ia.objid  
@@ -75,7 +75,7 @@ UPDATE rev set
 	rev.liquidationno  = l.txnno,
 	rev.liquidationdate = l.txndate,
 	rev.liquidationtimestamp = $P{timestamp} 
-FROM revenue rev, liquidationlist l, remittance rem 
+FROM revenue rev, liquidation l, remittance rem 
 WHERE l.objid = rem.liquidationid  
   AND rem.objid = rev.remittanceid  
   AND l.objid = $P{liquidationid} 
@@ -103,7 +103,7 @@ UPDATE rev set
 	rev.depositno  = d.txnno,
 	rev.depositdate = d.dtposted,
 	rev.deposittimestamp = $P{timestamp} 
-FROM revenue rev, deposit d, liquidationlist l 
+FROM revenue rev, deposit d, liquidation l 
 WHERE d.objid = l.depositid
   AND l.objid = rev.liquidationid 
   AND d.objid = $P{depositid}
