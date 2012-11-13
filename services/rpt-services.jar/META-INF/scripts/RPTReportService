@@ -613,8 +613,51 @@ class RPTReportService
 				endtotal	: 0.0,
 			]
 	}	
+
 	
 	
+	@ProxyMethod 
+	public List getApproveFaasList( def params ){
+		if( !params.lguid || params.lguid == null )
+			params.lguid = '%'
+		if( !params.barangayid || params.barangayid == null )
+			params.barangayid = '%' 
+		params.month = !params.month ? '%' : params.month.month
+		
+		def list = em.sqlContext.createNamedQuery( 'rptreport:getApproveFaasList' )
+					.setParameters( params )
+					.resultList
+		
+		if( !list ) throw new Exception( 'No Records found.' )
+		return list
+	}
+	
+	@ProxyMethod
+	public def buildPeriod( def params ) { 
+		if( params.month && params.day ) return 'For the day of ' + getMonthName( params.month.month ) + ' ' + params.day + ', ' + params.year 
+		if( params.month ) return 'For the Month of ' + getMonthName( params.month.month ) + ', ' + params.year 
+		if( params.quarter ) return 'For the ' + getQuarterName( params.quarter ) + ' of ' + params.year 
+		return 'For the Year ' + params.year 
+	}	
+	
+	@ProxyMethod
+	public def getLGUList(){ 
+		def params = [lgutype:'%', id:'%']
+		if( var.lgu_type.equals( 'province' ) ) 
+			params.lgutype = 'municipality'
+		else if( var.lgu_type.matches('city|municipality') )
+			params.id = var.lgu_index 
+		
+		return em.sqlContext.createNamedQuery( 'rptreport:getLGUList' ).setParameters( params ).resultList 
+	}
+	 
+	@ProxyMethod
+	public def getBarangayListByParentId( parentid ){  
+		if( var.lgu_type.matches( 'city|municipality' ) ) 
+			parentid = var.lgu_index 
+			
+		return em.sqlContext.createNamedQuery( 'rptreport:getBarangayListByParentId' ).setParameter( 'parentid', parentid ).resultList 
+	}
 	
 	
 	
