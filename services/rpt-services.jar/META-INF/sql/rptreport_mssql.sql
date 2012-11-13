@@ -696,3 +696,31 @@ SELECT t.* FROM (
 	  ${classidfilter}
 ) t 
 ${orderby} 
+
+[getRDAP-RPTA-100]
+SELECT 
+	l.pin, 
+	l.indexno, 
+	SUM( CASE WHEN fl.rputype = 'land' AND fl.taxable = 1 THEN 1.0 ELSE 0 END ) AS landtaxablecount,
+	SUM( CASE WHEN fl.rputype = 'land' AND fl.taxable = 0 THEN 1.0 ELSE 0 END ) AS landexemptcount,
+	SUM( CASE WHEN fl.rputype = 'land' AND fl.taxable = 1 THEN fl.totalareaha ELSE 0 END ) AS landareataxable,
+	SUM( CASE WHEN fl.rputype = 'land' AND fl.taxable = 0 THEN fl.totalareaha ELSE 0 END ) AS landareaexempt,
+	SUM( fl.totalareaha ) AS landareatotal,
+	SUM( CASE WHEN fl.taxable = 1 THEN 1 ELSE 0 END ) AS tdtaxablecount,
+	SUM( CASE WHEN fl.taxable = 0 THEN 1 ELSE 0 END ) AS tdexemptcount,
+	COUNT( 1 ) AS tdcount,
+	SUM( CASE WHEN fl.rputype = 'land' THEN fl.totalav ELSE 0 END ) AS landavtotal,
+	SUM( CASE WHEN fl.rputype <> 'land' THEN fl.totalav ELSE 0 END ) AS improvavtotal,
+	SUM( fl.totalav ) AS avtotal,
+	SUM( CASE WHEN fl.taxable = 1 THEN fl.totalav ELSE 0 END ) AS avtaxable,
+	SUM( CASE WHEN fl.taxable = 0 THEN fl.totalav ELSE 0 END ) AS avexempt
+FROM lgu l 
+	LEFT JOIN faaslist fl ON fl.barangayid = l.objid 
+	 
+WHERE l.lgutype = 'BARANGAY' 
+  AND fl.objid IS NULL 
+   OR (fl.docstate = 'CURRENT' 	AND fl.txntimestamp <= $P{txntimestamp})
+GROUP BY l.pin, l.indexno
+ORDER BY l.pin  
+
+

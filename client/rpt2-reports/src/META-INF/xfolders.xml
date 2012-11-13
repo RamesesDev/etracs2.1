@@ -1,0 +1,30 @@
+<folders>
+    <folder id="menu">
+        <folder id="rpt" caption="Real Property Tax" mnemonic="t">
+            <folder id="master" caption="Master" mnemonic="m"/>
+            <folder id="faas" caption="FAAS" mnemonic="f"/>
+            <folder id="cert" caption="Certifications" mnemonic="c"/>
+            <folder id="landtax" caption="Land Tax" mnemonic="l"/>
+            <folder id="util" caption="Utilities" mnemonic="u"/>
+        </folder>
+    </folder>
+    
+    <folder id="report">
+        <folder id="assessor" caption="Assessor"/>
+        <folder id="landtax" caption="Land Tax"/>
+    </folder>
+    
+    <folder id="txn">
+        <folder id="rpt" caption="Real Property Assessment">
+            <folder id="master" caption="Master Files"/>
+            <folder id="ry" caption="Revision Year Settings"/>
+            <folder id="txn" caption="Transactions"/>
+            <folder id="subdivision" caption="Subdivision"/>
+            <folder id="consolidation" caption="Consolidation"/>
+            <folder id="cert" caption="Certifications"/>
+            <folder id="rpupdate" caption="Real Property Update"/>
+            <folder id="titleupdate" caption="Title Update"/>
+        </folder>
+        <folder id="landtax" caption="Land Tax"/>
+    </folder>
+</folders>

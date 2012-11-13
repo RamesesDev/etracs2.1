@@ -340,5 +340,15 @@ go
 
 
 
+insert into lguname_system..sys_module(name, title, permissions)
+values('rpt2-reports', 'RPT Reports', '[[action:"rptreport.pdaprpta100", title:"Generate PDAP-RPTA 100 Report",]]')
+go
+
+insert into lguname_system..sys_roleclass_module
+values('RPT', 'rpt2-reports')
+go
+
+
+
 
 

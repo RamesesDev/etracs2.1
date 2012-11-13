@@ -3,6 +3,7 @@ Patch-2.1.010
 
 Change Log:
 
+- Add RPAP-RPTA100 Assessor Report
 - Normalize liquidation tables
 - Normalize remittance tables
 - Add  "assessmenttype" fact to bpbilling rule
