@@ -10,8 +10,8 @@ SELECT
 	a.objid,  
 	p.txnno AS permitno, a.iyear,  a.organization, a.barangayname, 
 	a.tradename, a.businessaddress, a.taxpayername, a.taxpayeraddress, a.txntype,
-	(SELECT isnull(sum(convert(decimal(10,2),value)), 0) FROM bpappinfolisting WHERE applicationid = a.objid and varname like '%CAPITAL%') AS capital,
-	(SELECT isnull(sum(convert(decimal(10,2),value)), 0) FROM bpappinfolisting WHERE applicationid = a.objid and varname like '%GROSS%') AS gross 
+	(SELECT isnull(sum(convert(decimal(16,2),value)), 0) FROM bpappinfolisting WHERE applicationid = a.objid and varname like '%CAPITAL%') AS capital,
+	(SELECT isnull(sum(convert(decimal(16,2),value)), 0) FROM bpappinfolisting WHERE applicationid = a.objid and varname like '%GROSS%') AS gross 
 FROM bpapplicationlisting a, bppermit p  
 WHERE a.objid = p.applicationid  
   AND a.iyear = $P{iyear} 
