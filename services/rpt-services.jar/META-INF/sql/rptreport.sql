@@ -696,3 +696,33 @@ SELECT t.* FROM (
 ) t 
 ${orderby} 
 
+
+
+[getApproveFaasList]
+SELECT
+	docstate, ownername, fullpin, tdno, titleno, cadastrallotno,   
+	rputype, classcode, totalareaha, totalareasqm, totalmv, totalav, effectivityyear,  
+	prevtdno, prevowner, prevmv, prevav, 
+	cancelledbytdnos, cancelreason, canceldate    
+FROM faaslist  
+WHERE docstate = 'CURRENT'      
+ AND YEAR(issuedate) = $P{year}  
+ AND QUARTER(issuedate) = $P{quarter}      
+ AND lguid LIKE $P{lguid}  
+ AND barangayid LIKE $P{barangayid} 
+ ${monthfilter}   
+ 
+[getLGUList]
+SELECT 
+	* 
+FROM lgu  
+WHERE objid LIKE $P{id} 
+ AND lgutype LIKE $P{lgutype}  
+
+[getBarangayListByParentId]
+SELECT objid, lguname AS barangay FROM lgu 
+WHERE lgutype = 'BARANGAY'
+AND parentid = $P{parentid} 
+ORDER BY lguname 
+
+
