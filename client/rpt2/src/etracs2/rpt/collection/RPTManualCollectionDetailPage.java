@@ -48,12 +48,15 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
         formPanel5 = new com.rameses.rcp.util.FormPanel();
         xNumberField19 = new com.rameses.rcp.control.XNumberField();
         xComboBox2 = new com.rameses.rcp.control.XComboBox();
+        formPanel6 = new com.rameses.rcp.util.FormPanel();
         xNumberField1 = new com.rameses.rcp.control.XNumberField();
         xButton3 = new com.rameses.rcp.control.XButton();
         formPanel2 = new com.rameses.rcp.util.FormPanel();
         xNumberField2 = new com.rameses.rcp.control.XNumberField();
         xNumberField8 = new com.rameses.rcp.control.XNumberField();
         xNumberField3 = new com.rameses.rcp.control.XNumberField();
+        xNumberField18 = new com.rameses.rcp.control.XNumberField();
+        xNumberField20 = new com.rameses.rcp.control.XNumberField();
         xNumberField4 = new com.rameses.rcp.control.XNumberField();
         xNumberField5 = new com.rameses.rcp.control.XNumberField();
         xNumberField6 = new com.rameses.rcp.control.XNumberField();
@@ -62,6 +65,8 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
         xNumberField9 = new com.rameses.rcp.control.XNumberField();
         xNumberField10 = new com.rameses.rcp.control.XNumberField();
         xNumberField11 = new com.rameses.rcp.control.XNumberField();
+        xNumberField21 = new com.rameses.rcp.control.XNumberField();
+        xNumberField22 = new com.rameses.rcp.control.XNumberField();
         xNumberField12 = new com.rameses.rcp.control.XNumberField();
         xNumberField13 = new com.rameses.rcp.control.XNumberField();
         xNumberField14 = new com.rameses.rcp.control.XNumberField();
@@ -70,8 +75,9 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
         xButton2 = new com.rameses.rcp.control.XButton();
         xNumberField17 = new com.rameses.rcp.control.XNumberField();
         jLabel1 = new javax.swing.JLabel();
+        xButton4 = new com.rameses.rcp.control.XButton();
 
-        setPreferredSize(new java.awt.Dimension(598, 571));
+        setPreferredSize(new java.awt.Dimension(598, 597));
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder1 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder1.setTitle("Manual Collection Information");
@@ -189,7 +195,7 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
         xNumberField16.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xNumberField16.setFieldType(Integer.class);
         xNumberField16.setName("fromyear");
-        xNumberField16.setPreferredSize(new java.awt.Dimension(100, 22));
+        xNumberField16.setPreferredSize(new java.awt.Dimension(120, 22));
         xNumberField16.setRequired(true);
         formPanel4.add(xNumberField16);
 
@@ -213,7 +219,7 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
         xNumberField19.setCellPadding(new java.awt.Insets(0, 0, 0, 10));
         xNumberField19.setFieldType(Integer.class);
         xNumberField19.setName("toyear");
-        xNumberField19.setPreferredSize(new java.awt.Dimension(100, 22));
+        xNumberField19.setPreferredSize(new java.awt.Dimension(120, 22));
         xNumberField19.setRequired(true);
         formPanel5.add(xNumberField19);
 
@@ -228,21 +234,29 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
 
         formPanel1.add(formPanel5);
 
+        formPanel6.setOrientation(com.rameses.rcp.constant.UIConstants.HORIZONTAL);
+        formPanel6.setPadding(new java.awt.Insets(0, 0, 0, 0));
+        formPanel6.setPreferredSize(new java.awt.Dimension(0, 24));
+        formPanel6.setShowCaption(false);
         xNumberField1.setCaption("Assessed Value");
         xNumberField1.setCaptionWidth(120);
+        xNumberField1.setCellPadding(new java.awt.Insets(2, 0, 0, 0));
         xNumberField1.setFieldType(BigDecimal.class);
         xNumberField1.setName("item.assessedvalue");
         xNumberField1.setPattern("#,##0.00");
-        xNumberField1.setPreferredSize(new java.awt.Dimension(162, 19));
+        xNumberField1.setPreferredSize(new java.awt.Dimension(120, 19));
         xNumberField1.setRequired(true);
-        formPanel1.add(xNumberField1);
+        formPanel6.add(xNumberField1);
 
         xButton3.setMnemonic('m');
         xButton3.setText("Compute");
+        xButton3.setCellPadding(new java.awt.Insets(0, 10, 0, 0));
         xButton3.setImmediate(true);
         xButton3.setName("compute");
         xButton3.setShowCaption(false);
-        formPanel1.add(xButton3);
+        formPanel6.add(xButton3);
+
+        formPanel1.add(formPanel6);
 
         com.rameses.rcp.control.border.XTitledBorder xTitledBorder2 = new com.rameses.rcp.control.border.XTitledBorder();
         xTitledBorder2.setTitle("BASIC Breakdown");
@@ -276,6 +290,26 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
         xNumberField3.setPreferredSize(new java.awt.Dimension(200, 19));
         xNumberField3.setRequired(true);
         formPanel2.add(xNumberField3);
+
+        xNumberField18.setCaption("Basic Advance");
+        xNumberField18.setCaptionWidth(140);
+        xNumberField18.setDepends(new String[] {"item.toyear"});
+        xNumberField18.setFieldType(BigDecimal.class);
+        xNumberField18.setName("basicadv");
+        xNumberField18.setPattern("#,##0.00");
+        xNumberField18.setPreferredSize(new java.awt.Dimension(200, 19));
+        xNumberField18.setRequired(true);
+        formPanel2.add(xNumberField18);
+
+        xNumberField20.setCaption("Basic Adv. Discount");
+        xNumberField20.setCaptionWidth(140);
+        xNumberField20.setDepends(new String[] {"item.toyear"});
+        xNumberField20.setFieldType(BigDecimal.class);
+        xNumberField20.setName("basicadvdisc");
+        xNumberField20.setPattern("#,##0.00");
+        xNumberField20.setPreferredSize(new java.awt.Dimension(200, 19));
+        xNumberField20.setRequired(true);
+        formPanel2.add(xNumberField20);
 
         xNumberField4.setCaption("Basic Previous");
         xNumberField4.setCaptionWidth(140);
@@ -346,6 +380,26 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
         xNumberField11.setRequired(true);
         formPanel3.add(xNumberField11);
 
+        xNumberField21.setCaption("SEF Advance");
+        xNumberField21.setCaptionWidth(140);
+        xNumberField21.setDepends(new String[] {"basicadv", "item.toyear"});
+        xNumberField21.setFieldType(BigDecimal.class);
+        xNumberField21.setName("item.sefadv");
+        xNumberField21.setPattern("#,##0.00");
+        xNumberField21.setPreferredSize(new java.awt.Dimension(200, 19));
+        xNumberField21.setRequired(true);
+        formPanel3.add(xNumberField21);
+
+        xNumberField22.setCaption("SEF Adv. Discount");
+        xNumberField22.setCaptionWidth(140);
+        xNumberField22.setDepends(new String[] {"basicadvdisc", "item.toyear"});
+        xNumberField22.setFieldType(BigDecimal.class);
+        xNumberField22.setName("item.sefadvdisc");
+        xNumberField22.setPattern("#,##0.00");
+        xNumberField22.setPreferredSize(new java.awt.Dimension(200, 19));
+        xNumberField22.setRequired(true);
+        formPanel3.add(xNumberField22);
+
         xNumberField12.setCaption("SEF Previous");
         xNumberField12.setCaptionWidth(140);
         xNumberField12.setDepends(new String[] {"basicprev"});
@@ -404,7 +458,12 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
         xNumberField17.setPattern("#,##0.00");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("Total Amount :");
+
+        xButton4.setText("Copy Last Item Info");
+        xButton4.setImmediate(true);
+        xButton4.setName("copyLastInfo");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -414,19 +473,21 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(formPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
-                    .add(layout.createSequentialGroup()
-                        .add(formPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 276, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(formPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                        .add(layout.createSequentialGroup()
-                            .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(xNumberField17, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 132, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .add(layout.createSequentialGroup()
-                            .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                        .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(formPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 276, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(xButton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(xNumberField17, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 132, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(formPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -436,17 +497,19 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
                 .add(formPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, formPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(formPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(formPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                        .add(xButton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(xNumberField17, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(21, 21, 21)
+                .add(14, 14, 14)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(xButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(xButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .add(20, 20, 20))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -457,6 +520,7 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
     private com.rameses.rcp.util.FormPanel formPanel3;
     private com.rameses.rcp.util.FormPanel formPanel4;
     private com.rameses.rcp.util.FormPanel formPanel5;
+    private com.rameses.rcp.util.FormPanel formPanel6;
     private com.rameses.rcp.util.FormPanel formPanel7;
     private com.rameses.rcp.util.FormPanel formPanel8;
     private com.rameses.rcp.util.FormPanel formPanel9;
@@ -464,6 +528,7 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XButton xButton3;
+    private com.rameses.rcp.control.XButton xButton4;
     private com.rameses.rcp.control.XComboBox xComboBox1;
     private com.rameses.rcp.control.XComboBox xComboBox2;
     private com.rameses.rcp.control.XComboBox xComboBox3;
@@ -479,8 +544,12 @@ public class RPTManualCollectionDetailPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XNumberField xNumberField15;
     private com.rameses.rcp.control.XNumberField xNumberField16;
     private com.rameses.rcp.control.XNumberField xNumberField17;
+    private com.rameses.rcp.control.XNumberField xNumberField18;
     private com.rameses.rcp.control.XNumberField xNumberField19;
     private com.rameses.rcp.control.XNumberField xNumberField2;
+    private com.rameses.rcp.control.XNumberField xNumberField20;
+    private com.rameses.rcp.control.XNumberField xNumberField21;
+    private com.rameses.rcp.control.XNumberField xNumberField22;
     private com.rameses.rcp.control.XNumberField xNumberField3;
     private com.rameses.rcp.control.XNumberField xNumberField4;
     private com.rameses.rcp.control.XNumberField xNumberField5;

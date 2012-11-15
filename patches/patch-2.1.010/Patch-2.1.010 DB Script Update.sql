@@ -142,10 +142,19 @@ ALTER TABLE lguname_etracs.remittance
 
 
 insert into lguname_system.sys_module(name, title, permissions)
-values('rpt2-reports', 'RPT Reports', '[[action:"rptreport.pdaprpta100", title:"Generate PDAP-RPTA 100 Report",]]')
-go
+values('rpt2-reports', 'RPT Reports', '[[action:"rptreport.pdaprpta100", title:"Generate PDAP-RPTA 100 Report",]]');
 
 insert into lguname_system.sys_roleclass_module
-values('RPT', 'rpt2-reports')
-go
+values('RPT', 'rpt2-reports');
 
+alter table lguname_etracs..rptpaymentmanual add column basicadv decimal(16,2);
+alter table lguname_etracs..rptpaymentmanual add column basicadvdisc decimal(16,2);
+alter table lguname_etracs..rptpaymentmanual add column sefadv decimal(16,2);
+alter table lguname_etracs..rptpaymentmanual add column sefadvdisc decimal(16,2);
+
+
+update lguname_etracs.rptpaymentmanual set 
+	basicadv = 0.0, basicadvdisc = 0.0, 
+	sefadv = 0.0, sefadvdisc = 0.0;
+	
+	

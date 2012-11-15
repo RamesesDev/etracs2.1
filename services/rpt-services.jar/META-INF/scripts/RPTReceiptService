@@ -178,6 +178,7 @@ class RPTReceiptService
 		receipt.items = rctitems 
 		calculateManualReceiptTotals( receipt, items )
 		receiptSvc.create( receipt )
+		def parsedate = dateSvc.parseDate( receipt.info.txndate, null )
 		
 		//save items to rptpaymentmanual 
 		items.each { item ->
@@ -250,11 +251,15 @@ class RPTReceiptService
         receipt.basic       = 0.0          
         receipt.basicint    = 0.0
         receipt.basicdisc   = 0.0
+		receipt.basicadv    = 0.0
+		receipt.basicadvdisc = 0.0 
         receipt.basicdp     = 0.0
         receipt.basicnet    = 0.0
         receipt.sef         = 0.0
+        receipt.sefadv      = 0.0
         receipt.sefint      = 0.0
         receipt.sefdisc     = 0.0
+        receipt.sefadvdisc  = 0.0
         receipt.sefdp       = 0.0
         receipt.sefnet      = 0.0
         
@@ -262,11 +267,15 @@ class RPTReceiptService
             receipt.basic       += it.basic + it.basicprev + it.basicprior     
             receipt.basicint    += it.basicint+ it.basicprevint + it.basicpriorint 
             receipt.basicdisc   += it.basicdisc
+			receipt.basicadv    += it.basicadv 
+			receipt.basicadvdisc += it.basicadvdisc 
             receipt.basicdp     += (it.basicint - it.basicdisc )
             receipt.basicnet    += (it.basic + it.basicint - it.basicdisc )
             receipt.sef         += it.sef + it.sefprev + it.sefprior 
             receipt.sefint      += it.sefint + it.sefprevint + it.sefpriorint 
             receipt.sefdisc     += it.sefdisc 
+			receipt.sefadv      += it.sefadv 
+			receipt.sefadvdisc  += it.sefadvdisc 
             receipt.sefdp       += (it.sefint - it.sefdisc)
             receipt.sefnet      += (it.sef + it.sefint - it.sefdisc )
         }
@@ -284,6 +293,11 @@ class RPTReceiptService
 				throw new Exception('Basic Advance Account is not defined.')
 			}
 		}
+		
+		def basicadvitem  = rctitems.find{ it.systype == 'RPT_BASICADVANCE'}
+		if( ! basicadvitem) throw new Exception('Basic Advance Account is not defined.')
+		basicadvitem.amount = (itm.basicadv - itm.basicadvdisc )
+		
 		def basicintitem  		= rctitems.find{ it.systype == 'RPT_BASICINT'}
 		def basicprevitem  		= rctitems.find{ it.systype == 'RPT_BASICPREV'}
 		def basicprevintitem  	= rctitems.find{ it.systype == 'RPT_BASICPREVINT'}
@@ -321,6 +335,10 @@ class RPTReceiptService
 				throw new Exception('SEF Advance Account is not defined.')
 			}
 		}
+		
+		def sefadvitem  = rctitems.find{ it.systype == 'RPT_SEFADVANCE'}
+		if( ! sefadvitem) throw new Exception('SEF Advance Account is not defined.')
+		sefadvitem.amount = (itm.sefadv - itm.sefadvdisc )
 		
 		def sefintitem  		= rctitems.find{ it.systype == 'RPT_SEFINT'}
 		def sefprevitem  		= rctitems.find{ it.systype == 'RPT_SEFPREV'}

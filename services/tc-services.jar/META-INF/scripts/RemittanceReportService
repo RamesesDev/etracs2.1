@@ -284,7 +284,7 @@ class RemittanceReportService {
 		header.TITLE = 'ABSTRACT OF REAL PROPERTY TAX COLLECTION'
 		header.PERIOD = ''
 		header.REMITTANCENO = rem.txnno
-		header.REMITTANCEDATE = dtsvc.format('MMMMM dd, yyyy', entity.txndate )
+		header.REMITTANCEDATE = dtsvc.format('MMMMM dd, yyyy', dtsvc.parse('yyyy-MM-dd',rem.txndate ))
 		header.REMITTANCEAMOUNT = amount
 		header.COLLECTORNAME = rem.collectorname
 		header.COLLECTORTITLE = rem.collectortitle

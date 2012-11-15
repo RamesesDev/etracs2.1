@@ -19,14 +19,18 @@
 		<field name="toyear" required="true" type="integer" />
 		<field name="toqtr" required="true" type="integer" />
 		<field name="basic" required="true" type="decimal" />
+		<field name="basicadv" required="true" type="decimal" />
 		<field name="basicdisc" required="true" type="decimal" />
+		<field name="basicadvdisc" required="true" type="decimal" />
 		<field name="basicint" required="true" type="decimal" />
 		<field name="basicprev" required="true" type="decimal" />
 		<field name="basicprevint" required="true" type="decimal" />
 		<field name="basicprior" required="true" type="decimal" />
 		<field name="basicpriorint" required="true" type="decimal" />
 		<field name="sef" required="true" type="decimal" />
+		<field name="sefadv" required="true" type="decimal" />
 		<field name="sefdisc" required="true" type="decimal" />
+		<field name="sefadvdisc" required="true" type="decimal" />
 		<field name="sefint" required="true" type="decimal" />
 		<field name="sefprev" required="true" type="decimal" />
 		<field name="sefprevint" required="true" type="decimal" />

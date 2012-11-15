@@ -43,19 +43,23 @@ public class RPTBillingRuleService
 			}
 			
 			if( action.actiontype == 'calcBasic' ) s += calcBasic( rule, action, 'calcBasic', 'current' )
+			else if( action.actiontype == 'calcBasicAdvance' ) s += calcBasic( rule, action, 'calcBasic', 'advance' )
             else if( action.actiontype == 'calcBasicPrev' ) s += calcBasic( rule, action, 'calcBasic', 'previous' )
             else if( action.actiontype == 'calcBasicPrior' ) s += calcBasic( rule, action, 'calcBasic', 'prior' )
 			else if( action.actiontype == 'calcBasicInt' ) s += calcBasicInterest( rule, action, 'calcBasicInt', 'current' )
             else if( action.actiontype == 'calcBasicPrevInt' ) s += calcBasicInterest( rule, action, 'calcBasicInt', 'previous' )
             else if( action.actiontype == 'calcBasicPriorInt' ) s += calcBasicInterest( rule, action, 'calcBasicInt', 'prior' )
-			else if( action.actiontype == 'calcBasicDisc' ) s += calcBasicDiscount( rule, action )
+			else if( action.actiontype == 'calcBasicDisc' ) s += calcBasicDiscount( rule, action, 'current' )
+			else if( action.actiontype == 'calcBasicAdvanceDisc' ) s += calcBasicDiscount( rule, action, 'advance' )
             else if( action.actiontype == 'calcSef' ) s += calcSef( rule, action, 'calcSef', 'current' )
+			else if( action.actiontype == 'calcSefAdvance' ) s += calcSef( rule, action, 'calcSef', 'advance' )
             else if( action.actiontype == 'calcSefPrev' ) s += calcSef( rule, action, 'calcSef', 'previous' )
             else if( action.actiontype == 'calcSefPrior' ) s += calcSef( rule, action, 'calcSef', 'prior' )
 			else if( action.actiontype == 'calcSefInt' ) s += calcSefInterest( rule, action, 'calcSefInt', 'current' )
             else if( action.actiontype == 'calcSefPrevInt' ) s += calcSefInterest( rule, action, 'calcSefInt', 'previous' )
             else if( action.actiontype == 'calcSefPriorInt' ) s += calcSefInterest( rule, action, 'calcSefInt', 'prior' )
-			else if( action.actiontype.trim() == 'calcSefDisc' ) s += calcSefDiscount( rule, action )
+			else if( action.actiontype.trim() == 'calcSefDisc' ) s += calcSefDiscount( rule, action, 'current' )
+			else if( action.actiontype.trim() == 'calcSefAdvanceDisc' ) s += calcSefDiscount( rule, action, 'advance' )
             else throw new Exception('Action ' + action + ' is not yet supported.')
 		}
 		return s
@@ -128,9 +132,10 @@ public class RPTBillingRuleService
 		return s 
 	}    
     
-    String calcBasicDiscount( rule, action ) {
+    String calcBasicDiscount( rule, action, revtype ) {
         String s = ''
         s += '$LEDGER.setExpr("' + action.expr + '");\n'
+		s += '$LEDGER.setRevtype("' + revtype + '");\n'
         s += '$LEDGER.setVarlist( new HashMap() );\n'
         s += buildVarListParams( rule )
         s += 'actionList.setContext( drools );\n'
@@ -138,9 +143,10 @@ public class RPTBillingRuleService
 		return s 
 	}
     
-    String calcSefDiscount( rule, action ) {
+    String calcSefDiscount( rule, action, revtype ) {
         String s = ''
         s += '$LEDGER.setExpr("' + action.expr + '");\n'
+		s += '$LEDGER.setRevtype("' + revtype + '");\n'
         s += '$LEDGER.setVarlist( new HashMap() );\n'
         s += buildVarListParams( rule )
         s += 'actionList.setContext( drools );\n'

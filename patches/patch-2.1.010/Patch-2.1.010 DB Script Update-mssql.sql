@@ -352,3 +352,23 @@ go
 
 
 
+alter table lguname_etracs..rptpaymentmanual add basicadv decimal(16,2)
+go
+
+alter table lguname_etracs..rptpaymentmanual add basicadvdisc decimal(16,2)
+go
+
+alter table lguname_etracs..rptpaymentmanual add sefadv decimal(16,2)
+go
+
+alter table lguname_etracs..rptpaymentmanual add sefadvdisc decimal(16,2)
+go
+
+update lguname_etracs..rptpaymentmanual set 
+	basicadv = 0.0, basicadvdisc = 0.0, 
+	sefadv = 0.0, sefadvdisc = 0.0
+go	
+
+
+alter table lguname_etracs..rptledger add municityname varchar(50)
+go

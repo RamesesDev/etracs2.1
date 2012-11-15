@@ -1,0 +1,33 @@
+<workunit>
+    <invokers>
+        <invoker type="rptbilling:ruleaction" caption="Calculate SEF Advance Discount"  action="init" index="14" />        
+    </invokers>
+    <code>
+        <![CDATA[
+
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        
+        import rptbilling.rule.action.*;
+
+        public class RPTBillingRuleActionSEFAdvanceDiscountController extends RPTAbstractDiscountRuleAction {
+        
+            public String getActiontype() {
+                return "calcSefAdvanceDisc";
+            }
+            
+            public String buildDisplayText() {
+                 return "Calculate SEF Advance Discount using formula: ${action.expr}".toString();
+            }
+            
+        }
+
+        ]]>
+    </code>
+    
+    <pages>
+        <page template="rptbilling.rule.action.CalculateDiscountPage" />
+    </pages>
+    
+</workunit>

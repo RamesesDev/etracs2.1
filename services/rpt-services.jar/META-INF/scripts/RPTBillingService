@@ -137,7 +137,6 @@ public class RPTBillingService
 			msg.status =[date:new Date(), iserror:false, errormsg:'']
 			msg.attachment = [sessionid:bill.sessionid, bill:bill] 
 			msgSvc.send( msg ) 
-			println 'Sending Bill to ' + sendername
 		}
 		catch( e ) {
 			println 'generateRemoteRequestedBill' + ('='*50)
@@ -175,7 +174,6 @@ public class RPTBillingService
 	
 	@ProxyMethod 
 	public def getRemoteResponse( sessionid ) {
-		println 'getRemoteResponse(sessionid) -> ' + sessionid
 		def response = em.sqlContext.createNamedQuery('messenger:getResponseData')
 						.setParameter('sessionid', sessionid )
 						.singleResult
@@ -208,6 +206,15 @@ public class RPTBillingService
 		
 		zeroItemValues( bill )
 		
+		//summarize advance 
+		def advance = revtypegroup.advance 
+		if( advance ) {
+			bill.item.basicadv 		= advance.basic.sum()
+			bill.item.basicadvdisc	= advance.basicdisc.sum()
+			bill.item.sefadv 		= advance.sef.sum()
+			bill.item.sefadvdisc	= advance.sefdisc.sum()
+		}
+		
 		//summarize current 
 		def current = revtypegroup.current 
 		if( current ) {
@@ -237,20 +244,23 @@ public class RPTBillingService
 			bill.item.sefpriorint	= prior.sefint.sum()
 		}
 		bill.item.period = bill.items[0]?.period 
-		bill.items.clear()
 		return bill 
 	}
 	
 	void zeroItemValues( bill ) {
 		bill.item.basic 		= 0.0
+		bill.item.basicadv 		= 0.0
 		bill.item.basicdisc 	= 0.0
+		bill.item.basicadvdisc 	= 0.0
 		bill.item.basicint		= 0.0
 		bill.item.basicprev 	= 0.0
 		bill.item.basicprevint 	= 0.0
 		bill.item.basicprior 	= 0.0
 		bill.item.basicpriorint = 0.0
 		bill.item.sef 			= 0.0
+		bill.item.sefadv 		= 0.0
 		bill.item.sefdisc 		= 0.0
+		bill.item.sefadvdisc 	= 0.0
 		bill.item.sefint		= 0.0
 		bill.item.sefprev 		= 0.0
 		bill.item.sefprevint 	= 0.0
@@ -301,11 +311,15 @@ public class RPTBillingService
     -------------------------------------------------------------------------------*/
     void buildActionCommands( bill, facts, actionList ) {
 		actionList.addCommand( 'calcBasic', new CalcBasicHandler( em:em, bill:bill, facts:facts ) )		
+		actionList.addCommand( 'calcBasicAdvance', new CalcBasicHandler( em:em, bill:bill, facts:facts ) )		
         actionList.addCommand( 'calcBasicInt', new CalcBasicInterestHandler( em:em, bill:bill, facts:facts ) )		
         actionList.addCommand( 'calcBasicDisc', new CalcBasicDiscountHandler( em:em, bill:bill, facts:facts ) )		
+		actionList.addCommand( 'calcBasicAdvanceDisc', new CalcBasicDiscountHandler( em:em, bill:bill, facts:facts ) )		
         actionList.addCommand( 'calcSef', new CalcSefHandler( em:em, bill:bill, facts:facts ) )		
+		actionList.addCommand( 'calcSefAdvance', new CalcSefHandler( em:em, bill:bill, facts:facts ) )		
         actionList.addCommand( 'calcSefInt', new CalcSefInterestHandler( em:em, bill:bill, facts:facts ) )		
         actionList.addCommand( 'calcSefDisc', new CalcSefDiscountHandler( em:em, bill:bill, facts:facts ) )		
+		actionList.addCommand( 'calcSefAdvanceDisc', new CalcSefDiscountHandler( em:em, bill:bill, facts:facts ) )		
 	}
     
     /*-------------------------------------------------------------------------------
@@ -852,8 +866,10 @@ class CalcBasicDiscountHandler implements RuleActionHandler
         if( detail) {
             def expr          = util.getFunctionExpressions() + ruleledger.expr 
 			detail.basicdisc  = util.round( util.evaluate( expr, ruleledger.varlist ) )
+			detail.revtype         = ruleledger.revtype 
             def fact          = util.findRPTLedgerFact( facts, ruleledger.ledgerid )
             fact.basicdisc    = detail.basicdisc
+			fact.revtype         = detail.revtype 
 		}
 	}
 }
@@ -912,8 +928,10 @@ class CalcSefDiscountHandler implements RuleActionHandler
         if( detail) {
             def expr            = util.getFunctionExpressions() + ruleledger.expr 
 			detail.sefdisc      = util.round( util.evaluate( expr, ruleledger.varlist ) )
+			detail.revtype       = ruleledger.revtype 
             def fact            = util.findRPTLedgerFact( facts, ruleledger.ledgerid )
             fact.sefdisc        = detail.sefdisc 
+			fact.revtype         = detail.revtype 
 		}
 	}
 }

@@ -569,6 +569,7 @@ SELECT
 	rl.municityname, 
 	rl.barangay, 
 	rl.classcode AS classification, 
+	rl.municityname,
 	IFNULL((SELECT SUM( basic ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ), 0.0) AS currentyear, 
 	IFNULL((SELECT SUM( basic ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('previous','prior') ), 0.0) AS previousyear, 
 	IFNULL((SELECT SUM( basicdisc ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid ), 0.0) AS discount, 
@@ -595,6 +596,7 @@ SELECT
 	rl.municityname, 
 	rl.barangay, 
 	rl.classcode AS classification, 
+	rl.municityname,
 	IFNULL((SELECT SUM( sef ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ),0.0) AS currentyear, 
 	IFNULL((SELECT SUM( sef ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('previous', 'prior') ),0.0) AS previousyear, 
 	IFNULL((SELECT SUM( sefdisc ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid ),0.0) AS discount, 
@@ -621,9 +623,10 @@ SELECT
 	rp.municityname,
 	rp.barangay,
 	rp.classcode AS classification, 
-	rp.basic AS currentyear, 
+	rp.municityname,
+	rp.basic + rp.basicadv AS currentyear, 
 	rp.basicprev + rp.basicprior AS previousyear, 
-	rp.basicdisc AS discount, 
+	rp.basicdisc + rp.basicadvdisc AS discount, 
 	rp.basicint AS penaltycurrent, 
 	rp.basicprevint + rp.basicpriorint AS penaltyprevious 
 FROM remittance rem 
@@ -648,9 +651,10 @@ SELECT
 	rp.municityname,
 	rp.barangay,
 	rp.classcode AS classification, 
-	rp.sef AS currentyear, 
+	rp.municityname,
+	rp.sef + rp.sefadv AS currentyear, 
 	rp.sefprev + rp.sefprior AS previousyear, 
-	rp.sefdisc AS discount, 
+	rp.sefdisc + rp.sefadvdisc  AS discount, 
 	rp.sefint AS penaltycurrent, 
 	rp.sefprevint + rp.sefpriorint AS penaltyprevious 
 FROM remittance rem 
