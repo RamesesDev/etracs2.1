@@ -395,7 +395,8 @@
 						y="0"
 						width="61"
 						height="14"
-						key="textField"/>
+						key="textField"
+						stretchType="RelativeToTallestObject"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -412,7 +413,8 @@
 						y="0"
 						width="35"
 						height="14"
-						key="textField-25"/>
+						key="textField-25"
+						stretchType="RelativeToTallestObject"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -429,8 +431,9 @@
 						y="0"
 						width="111"
 						height="14"
-						key="textField-26"/>
-					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+						key="textField-26"
+						stretchType="RelativeToTallestObject"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -446,8 +449,9 @@
 						y="0"
 						width="102"
 						height="14"
-						key="textField-27"/>
-					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+						key="textField-27"
+						stretchType="RelativeToTallestObject"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -463,8 +467,9 @@
 						y="0"
 						width="115"
 						height="14"
-						key="textField-28"/>
-					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+						key="textField-28"
+						stretchType="RelativeToTallestObject"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -480,8 +485,9 @@
 						y="0"
 						width="102"
 						height="14"
-						key="textField-29"/>
-					<box leftPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
+						key="textField-29"
+						stretchType="RelativeToTallestObject"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
 					<rightPen lineWidth="0.5" lineStyle="Solid"/>
@@ -497,7 +503,8 @@
 						y="0"
 						width="59"
 						height="14"
-						key="textField-30"/>
+						key="textField-30"
+						stretchType="RelativeToTallestObject"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -514,7 +521,8 @@
 						y="0"
 						width="48"
 						height="14"
-						key="textField-31"/>
+						key="textField-31"
+						stretchType="RelativeToTallestObject"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -531,7 +539,8 @@
 						y="0"
 						width="48"
 						height="14"
-						key="textField-32"/>
+						key="textField-32"
+						stretchType="RelativeToTallestObject"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
@@ -548,7 +557,8 @@
 						y="0"
 						width="57"
 						height="14"
-						key="textField-33"/>
+						key="textField-33"
+						stretchType="RelativeToTallestObject"/>
 					<box rightPadding="2">					<topPen lineWidth="0.5" lineStyle="Solid"/>
 					<leftPen lineWidth="0.5" lineStyle="Solid"/>
 					<bottomPen lineWidth="0.5" lineStyle="Solid"/>

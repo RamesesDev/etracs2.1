@@ -153,6 +153,7 @@ class DelinquencyTask extends com.rameses.rcp.common.Task {
     def createBilling( taxpayer, barangay ) {
         return [
             info  : [ 
+                applicationid : taxpayer.objid, 
                 taxpayerid : taxpayer.taxpayerid,
                 taxpayername : taxpayer.taxpayername,
                 taxpayeraddress : taxpayer.taxpayeraddress,
