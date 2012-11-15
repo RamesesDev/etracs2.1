@@ -710,7 +710,7 @@ WHERE docstate = 'CURRENT'
  AND QUARTER(issuedate) = $P{quarter}      
  AND lguid LIKE $P{lguid}  
  AND barangayid LIKE $P{barangayid} 
- ${monthfilter}   
+ AND MONTH(issuedate) LIKE $P{month} 
  
 [getLGUList]
 SELECT 

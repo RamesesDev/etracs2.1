@@ -618,17 +618,13 @@ class RPTReportService
 	
 	@ProxyMethod 
 	public List getApproveFaasList( def params ){
-		params.monthfilter = ''  
-
 		if( !params.lguid || params.lguid == null )
 			params.lguid = '%'
 		if( !params.barangayid || params.barangayid == null )
 			params.barangayid = '%' 
-		if( params.month ) params.monthfilter = " AND MONTH(issuedate) = $params.month.month "
-		
+		params.month = !params.month ? '%' : params.month.month
 		
 		def list = em.sqlContext.createNamedQuery( 'rptreport:getApproveFaasList' )
-					.setVars( [monthfilter:params.monthfilter] )
 					.setParameters( params )
 					.resultList
 		
@@ -637,10 +633,10 @@ class RPTReportService
 	}
 	
 	@ProxyMethod
-	public def buildPeriod( def params ) {
+	public def buildPeriod( def params ) { 
 		if( params.month && params.day ) return 'For the day of ' + getMonthName( params.month.month ) + ' ' + params.day + ', ' + params.year 
 		if( params.month ) return 'For the Month of ' + getMonthName( params.month.month ) + ', ' + params.year 
-		if( params.qtr ) return 'For the ' + getQuarterName( params.qtr ) + ' of ' + params.year 
+		if( params.quarter ) return 'For the ' + getQuarterName( params.quarter ) + ' of ' + params.year 
 		return 'For the Year ' + params.year 
 	}	
 	
