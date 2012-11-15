@@ -20,6 +20,19 @@
 		<field name="delinquentyrqtr" required="true" />
 		<complex name="extended" merge="true" serializer="default" required="false"/>
 	</element>
+	
+	<element name="noticeofdelinquencysetting" tablename="noticeofdelinquencysetting">
+		<field name="objid" primary="true"/>
+		<field name="noticeofdelinquency" />
+		<field name="secondtracer" />
+		<field name="finaldemand" />
+		<field name="warrantoflevy" />
+		<field name="noticeofpublication" />
+		<field name="certofsaleofproperty" />
+		<field name="noticeofredemption" />
+		<field name="advancecomputation" />
+	</element>
+	
 </schema>
 
 

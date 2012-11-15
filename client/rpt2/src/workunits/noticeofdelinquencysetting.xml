@@ -1,0 +1,41 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/rpt/landtax" action="init" caption="Notice of Delinquency Setting" target="window" index="20" permission="noticeofdelinquencyretting.create" />
+        
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" icon="images/cancel.png" />
+        <invoker type="formActions" action="save" caption="Save" shortcut="ctrl S" mnemonic="s" icon="images/doc-save.png" />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class NoticeOfDelinquencySettingController
+{
+    
+    @Service("NoticeOfDelinquencyService")
+    def svc;
+
+    def entity=[:]; 
+    
+    public void init() {
+        entity = svc.loadSetting();
+    }
+    
+    public void save() {
+        entity = svc.saveSettings( entity);
+        MsgBox.alert("Notice of delinquency settings successfully saved.   ");
+    }
+    
+}
+
+]]>        
+        
+    </code>
+    <pages>
+        <page template="etracs2.rpt.report.noticeofdelinquency.SettingsPage" />
+    </pages>
+</workunit>
