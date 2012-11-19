@@ -1,9 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="tc.master" action="init" caption="Bank" role="MASTER_ENCODER" permission="bank.view" target="window" icon="images/folder.png" index="10"/>
-        <invoker folderid="/menu/tc/master" action="init" caption="Bank" role="MASTER_ENCODER" permission="bank.view" target="window" index="4"/>
-        <invoker folderid="/txn/tc/master" action="init" caption="Bank" role="MASTER_ENCODER" permission="bank.view" target="window" index="30"/>
-        
+        <invoker folderid="/explorer/master/treasury" action="init" caption="Bank" role="MASTER_ENCODER" permission="bank.view" target="window" index="55"/>
         <invoker type="quick_launcher" code="BANK" action="init" caption="Bank" role="MASTER_ENCODER" permission="bank.view" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" role="MASTER_ENCODER" permission="bank.create" />

@@ -1,9 +1,6 @@
 <workunit>
     <invokers>
-        <invoker type="tc.master" action="init" caption="Accountable Form" role="MASTER_ENCODER" permission="af.viewlist" target="window" icon="images/folder.png" index="12"/>
-        <invoker folderid="/menu/tc/master" action="init" caption="Accountable Form" role="MASTER_ENCODER" permission="af.viewlist" target="window"/>
-        <invoker folderid="/txn/tc/master" action="init" caption="Accountable Form" role="MASTER_ENCODER" permission="af.viewlist" target="window" index="1"/>
-        
+        <invoker folderid="/explorer/master/treasury" action="init" caption="Accountable Form" role="MASTER_ENCODER" permission="af.viewlist" target="window" index="50" />
         <invoker type="quick_launcher" code="AF" action="init" caption="Accountable Form" role="MASTER_ENCODER" permission="af.viewlist" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" role="MASTER_ENCODER" permission="af.create" />

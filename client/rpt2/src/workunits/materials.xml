@@ -2,10 +2,8 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/rpt/master" action="init" caption="Materials" index="7" role="MASTER_ENCODER" permission="materials.view" />
-        <invoker folderid="/txn/rpt/master" action="init" caption="Materials" index="7" role="MASTER_ENCODER" permission="materials.view" />
-        <invoker type="quick_launcher" code="MAT01" action="init" caption="Materials" index="7" role="MASTER_ENCODER" permission="materials.view" />
-        <invoker type="rpt.master" action="init" caption="Materials" index="5" role="MASTER_ENCODER" permission="materials.view" />
+        <invoker folderid="/explorer/master/rpt" action="init" caption="Material" index="7" role="MASTER_ENCODER" permission="materials.view" />
+        <invoker type="quick_launcher" code="MAT01" action="init" caption="Material" index="7" role="MASTER_ENCODER" permission="materials.view" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" role="MASTER_ENCODER" permission="materials.create" />
         <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null }" immediate="true" caption="Edit" mnemonic="e" icon="images/doc-edit.png" role="MASTER_ENCODER" permission="materials.edit" />

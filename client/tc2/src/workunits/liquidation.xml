@@ -5,9 +5,7 @@
         <invoker type="liquidation.single" action="open" caption="Liquidate: Open" index="121" icon="images/cash.png" target="window"/>
         <invoker type="home.action" action="create" caption="Liquidate" role="LIQUIDATING_OFFICER" permission="liquidation.create" index="121" icon="images/folder.png" target="window"/>
         
-        <invoker folderid="/menu/tc/coll" action="create" caption="Liquidate" role="LIQUIDATING_OFFICER" permission="liquidation.create" index="25"/>
-        <invoker folderid="/txn/tc/coll" action="create" caption="Liquidate" role="LIQUIDATING_OFFICER" permission="liquidation.create" index="25"/>
-        
+        <invoker folderid="/explorer/txn/treasury/collection" action="create" caption="Liquidate" role="LIQUIDATING_OFFICER" permission="liquidation.create" index="25"/>
         <invoker type="quick_launcher" code="LIQ01" action="create" caption="Liquidate" role="LIQUIDATING_OFFICER" permission="liquidation.create" index="121"/>
         
         <invoker type="formActions" action="close" visibleWhen="#{mode != 'view' and mode != 'reports' and mode != 'rcd'}"  immediate="true" caption="Close" mnemonic="c" icon="images/doc-cancel.png"/>

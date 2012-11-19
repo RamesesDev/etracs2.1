@@ -1,10 +1,7 @@
 <workunit>
     <invokers>
-        <invoker type="tc.master" action="init" caption="Income Account Groups" role="MASTER_ENCODER" permission="incomeacctgroup.viewlist" icon="images/folder.png" target="window" index="3"/>
-        <invoker folderid="/menu/tc/master" action="init" caption="Income Account Groups" role="MASTER_ENCODER" permission="incomeacctgroup.viewlist" target="window"/>
-        <invoker folderid="/txn/tc/master" action="init" caption="Income Account Groups" role="MASTER_ENCODER" permission="incomeacctgroup.viewlist" target="window" index="20"/>
-        
-        <invoker type="quick_launcher" code="ACCTGRP" action="init" caption="Income Account Groups" role="MASTER_ENCODER" permission="incomeacctgroup.viewlist" />
+        <invoker folderid="/explorer/master/treasury" action="init" caption="Income Account Group" role="MASTER_ENCODER" permission="incomeacctgroup.viewlist" target="window" index="5" />
+        <invoker type="quick_launcher" code="ACCTGRP" action="init" caption="Income Account Group" role="MASTER_ENCODER" permission="incomeacctgroup.viewlist" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"  role="MASTER_ENCODER" permission="incomeacctgroup.create"/>
         <invoker type="formActions" action="save" shortcut="ctrl S" visibleWhen="#{mode != 'view'}" caption="Save" mnemonic="s" icon="images/save.png"/>

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" action="init" caption="Land with Improvements" target="window" index="7" role="APPRAISER" permission="withimproveland.open" />
-        <invoker type="withimproveland.view"  caption="Land with Improvements" index="7" action="doPreview" role="APPRAISER" permission="withimproveland.view" />
+        <invoker type="rptcertifications" action="init" caption="Land with Improvements" target="window" index="7" role="CERTIFICATION_ISSUANCE" permission="withimproveland.open" />
+        <invoker type="withimproveland.view"  caption="Land with Improvements" index="7" action="doPreview" role="CERTIFICATION_ISSUANCE" permission="withimproveland.view" />
         
-        <invoker folderid="/menu/rpt/cert" action="init" caption="Land with Improvements" target="window" index="2" role="APPRAISER" permission="withimproveland.create" />
-        <invoker folderid="/txn/rpt/cert"  action="init" caption="Land with Improvements" target="window" index="2" role="APPRAISER" permission="withimproveland.create" />
-        <invoker type="quick_launcher" code="RCWI2"  action="init" caption="Land with Improvements" target="window" index="2" role="APPRAISER" permission="withimproveland.create" />
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Land with Improvements" target="window" index="2" role="CERTIFICATION_ISSUANCE" permission="withimproveland.create" />
+        <invoker type="quick_launcher" code="RCWI2"  action="init" caption="Land with Improvements" target="window" index="2" role="CERTIFICATION_ISSUANCE" permission="withimproveland.create" />
         
         <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />

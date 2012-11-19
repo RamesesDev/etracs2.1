@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/assessor"         action="init" caption="Accomplishment of Real Property Assessment" role="ASSESSOR_REPORTS" permission="rptreport.accomplishmentrpa" index="6" />
+        <invoker folderid="/explorer/report/rpt"         action="init" caption="Accomplishment of Real Property Assessment" role="ASSESSOR_REPORTS" permission="rptreport.accomplishmentrpa" index="6" />
         <invoker type="rptreport"         action="init" opener="accomplishmentrpa" caption="Accomplishment of Real Property Assessment" target="window" role="ASSESSOR_REPORTS" permission="rptreport.accomplishmentrpa" index="6" />
         <invoker type="rptreport.accomplishmentrpa"    action="init"               caption="Accomplishment of Real Property Assessment" />
         

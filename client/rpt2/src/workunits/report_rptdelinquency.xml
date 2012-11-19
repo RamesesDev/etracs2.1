@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/landtax" action="init" caption="Realty Tax Delinquency Listing" target="window" index="10" role="LANDTAX" permission="landtax.rptdelinquency" />
+        <invoker folderid="/explorer/report/landtax" action="init" caption="Realty Tax Delinquency Listing" target="window" index="10" role="LANDTAX" permission="landtax.rptdelinquency" />
         
         <invoker type="formActions"     action="_close" caption="Back" mnemonic="b" shortcut="ctrl + B" icon="images/back.png"/>
         <!-- 

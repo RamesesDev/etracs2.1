@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/txn/rpt/rpupdate" action="create" caption="Update Real Property" index="0" role="APPRAISER" permission="realpropertyupdate.create"/>
+        <invoker folderid="/explorer/txn/rpt/faas" action="create" caption="Update Real Property" role="APPRAISER" permission="realpropertyupdate.create" index="601"/>
         <invoker type="realproperty:formActions" action="create" caption="New" index="0" target="window" icon="images/doc-new.png" role="APPRAISER" permission="realpropertyupdate.create"/>
         <invoker type="realproperty:formActions" action="open" caption="Open" index="0" target="window" icon="images/open.png" role="APPRAISER" permission="realpropertyupdate.open"/>
         

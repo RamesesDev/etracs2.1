@@ -1,5 +1,5 @@
 <folders>
-    <folder id="menu">
-        <folder id="mgmt" caption="Management"/>
+    <folder id="explorer">
+        <folder id="rulemgmt" caption="Rule Management"/>
     </folder>
 </folders>

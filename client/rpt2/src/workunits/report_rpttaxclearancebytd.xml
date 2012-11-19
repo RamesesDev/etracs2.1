@@ -1,8 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/landtax" action="init" caption="Realty Tax Clearance (By TD)" target="window" index="2" role="LANDTAX" permission="landtax.rptclearance"/>
-        <invoker folderid="/txn/landtax" action="init" caption="Realty Tax Clearance (By TD)" target="window" index="2" role="LANDTAX" permission="landtax.rptclearance"/>
-        <invoker folderid="/menu/rpt/landtax" action="init" caption="Realty Tax Clearance (By TD)" target="window" index="2" role="LANDTAX" permission="landtax.rptclearance"/>
+        <invoker folderid="/explorer/txn/landtax" action="init" caption="Realty Tax Clearance (By TD)" target="window" index="2" role="LANDTAX" permission="landtax.rptclearance"/>
         
         <invoker type="formActions"     action="_close" caption="Close" mnemonic="c" shortcut="alt + C" icon="images/cancel.png" immediate="true" />
         <invoker type="formActions"     action="init" caption="New" mnemonic="n" shortcut="ctrl + N" icon="images/doc-new.png" visibleWhen="#{mode != 'create'}" />

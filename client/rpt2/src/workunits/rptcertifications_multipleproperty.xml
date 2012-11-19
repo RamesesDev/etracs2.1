@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" action="init" caption="Multiple Property" target="window" index="2" role="APPRAISER" permission="multipleproperty.open" />
-        <invoker type="multipleproperty.view"  caption="Multiple Property" index="2" action="doPreview" role="APPRAISER"  permission="multipleproperty.view" />
+        <invoker type="rptcertifications" action="init" caption="Multiple Property" target="window" index="2" role="CERTIFICATION_ISSUANCE" permission="multipleproperty.open" />
+        <invoker type="multipleproperty.view"  caption="Multiple Property" index="2" action="doPreview" role="CERTIFICATION_ISSUANCE"  permission="multipleproperty.view" />
         
-        <invoker folderid="/menu/rpt/cert" action="init" caption="Multiple Property" target="window" index="10" role="APPRAISER" permission="multipleproperty.create" />
-        <invoker folderid="/txn/rpt/cert" action="init" caption="Multiple Property" target="window" index="10" role="APPRAISER" permission="multipleproperty.create" />
-        <invoker type="quick_launcher" action="init" code="RCMP" caption="Multiple Property" target="window" index="10" role="APPRAISER" permission="multipleproperty.create" />
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Multiple Property" target="window" index="10" role="CERTIFICATION_ISSUANCE" permission="multipleproperty.create" />
+        <invoker type="quick_launcher" action="init" code="RCMP" caption="Multiple Property" target="window" index="10" role="CERTIFICATION_ISSUANCE" permission="multipleproperty.create" />
         
         
        <!-- default -->

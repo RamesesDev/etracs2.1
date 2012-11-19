@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/assessor" action="init" caption="Ownership Record Form" role="ASSESSOR_REPORTS" permission="rptreport.orf" index="4" />
+        <invoker folderid="/explorer/report/rpt" action="init" caption="Ownership Record Form" role="ASSESSOR_REPORTS" permission="rptreport.orf" index="4" />
         <invoker type="rptreport"         action="init" opener="orf" caption="Ownership Record Form" target="window" role="ASSESSOR_REPORTS" permission="rptreport.orf" index="4" />
         <invoker type="rptreport.orf"    action="init" caption="Ownership Record Form" role="ASSESSOR_REPORTS" permission="rptreport.orf"/>
         

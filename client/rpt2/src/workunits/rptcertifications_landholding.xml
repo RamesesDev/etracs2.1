@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" action="init" caption="Land Holding" target="window" index="1" role="APPRAISER" permission="landholding.view"/>
-        <invoker type="landholding.view"  caption="Land Holding" index="1" action="doPreview" role="APPRAISER" permission="landholding.view" />
+        <invoker type="rptcertifications" action="init" caption="Land Holding" target="window" index="1" role="CERTIFICATION_ISSUANCE" permission="landholding.view"/>
+        <invoker type="landholding.view"  caption="Land Holding" index="1" action="doPreview" role="CERTIFICATION_ISSUANCE" permission="landholding.view" />
         
-        <invoker folderid="/menu/rpt/cert" action="init" caption="Land Holding" target="window" index="1" role="APPRAISER" permission="landholding.create"/>
-        <invoker folderid="/txn/rpt/cert" action="init" caption="Land Holding" target="window" index="1" role="APPRAISER" permission="landholding.create"/>
-        <invoker type="quick_launcher" action="init" code="RCLH" caption="Land Holding" target="window" index="1" role="APPRAISER" permission="landholding.create"/>
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Land Holding" target="window" index="1" role="CERTIFICATION_ISSUANCE" permission="landholding.create"/>
+        <invoker type="quick_launcher" action="init" code="RCLH" caption="Land Holding" target="window" index="1" role="CERTIFICATION_ISSUANCE" permission="landholding.create"/>
         
         <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />

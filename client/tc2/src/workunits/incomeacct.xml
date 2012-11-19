@@ -1,10 +1,7 @@
 <workunit>
     <invokers>
-        <invoker type="tc.master" action="init" caption="Income Accounts" role="MASTER_ENCODER" permission="incomeacct.viewlist" icon="images/folder.png" target="window" index="3"/>
-        <invoker folderid="/menu/tc/master" action="init" caption="Income Accounts" role="MASTER_ENCODER" permission="incomeacct.viewlist" target="window"/>
-        <invoker folderid="/txn/tc/master" action="init" caption="Income Accounts" role="MASTER_ENCODER" permission="incomeacct.viewlist" target="window" index="15"/>
-        
-        <invoker type="quick_launcher" code="ACCT" action="init" caption="Income Accounts" role="MASTER_ENCODER" permission="incomeacct.viewlist"/>
+        <invoker folderid="/explorer/master/treasury" action="init" caption="Income Account" role="MASTER_ENCODER" permission="incomeacct.viewlist" target="window" index="10" />
+        <invoker type="quick_launcher" code="ACCT" action="init" caption="Income Account" role="MASTER_ENCODER" permission="incomeacct.viewlist"/>
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"  role="MASTER_ENCODER" permission="incomeacct.create"/>
         <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null}" immediate="true" caption="Edit" mnemonic="e" icon="images/edit.png" role="MASTER_ENCODER" permission="incomeacct.edit"/>

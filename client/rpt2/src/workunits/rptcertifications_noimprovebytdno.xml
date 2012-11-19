@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" action="init" caption="Land with No Improvement by TD" target="window" index="4" role="APPRAISER" permission="noimprovementbytdno.open" />
-        <invoker type="noimprovementbytdno.view"  caption="Land with No Improvement by TD" index="4" action="doPreview" role="APPRAISER" permission="noimprovementbytdno.view"/>
+        <invoker type="rptcertifications" action="init" caption="Land with No Improvement by TD" target="window" index="4" role="CERTIFICATION_ISSUANCE" permission="noimprovementbytdno.open" />
+        <invoker type="noimprovementbytdno.view"  caption="Land with No Improvement by TD" index="4" action="doPreview" role="CERTIFICATION_ISSUANCE" permission="noimprovementbytdno.view"/>
         
-        <invoker folderid="/menu/rpt/cert" action="init" caption="Land with No Improvement by TD" target="window" index="5" role="APPRAISER" permission="noimprovementbytdno.create" />
-        <invoker folderid="/txn/rpt/cert" action="init"  caption="Land with No Improvement by TD" target="window" index="5" role="APPRAISER" permission="noimprovementbytdno.create" />
-        <invoker type="quick_launcher" action="init" code="RCNI01" caption="Land with No Improvement by TD" target="window" index="5" role="APPRAISER" permission="noimprovementbytdno.create" />
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Land with No Improvement by TD" target="window" index="5" role="CERTIFICATION_ISSUANCE" permission="noimprovementbytdno.create" />
+        <invoker type="quick_launcher" action="init" code="RCNI01" caption="Land with No Improvement by TD" target="window" index="5" role="CERTIFICATION_ISSUANCE" permission="noimprovementbytdno.create" />
         
         <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />

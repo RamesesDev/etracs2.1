@@ -9,7 +9,7 @@
 
 package etracs2.rpt.main;
 
-import com.rameses.osiris2.client.OsirisTestPlatform;
+import com.rameses.osiris2.test.OsirisTestPlatform;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.UIManager;
@@ -30,7 +30,7 @@ public class Main {
         map.put("ASSESOROFFICENAME", "OFFICE OF THE PROVINCIAL ASSESSOR");
         map.put("app.context", "bohol");
         
-        OsirisTestPlatform.runTest(map);
+        OsirisTestPlatform.runTest(map, null);
         
     }
     

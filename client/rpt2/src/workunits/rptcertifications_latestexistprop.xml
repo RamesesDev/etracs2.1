@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" action="init" caption="Latest And Existing Property" target="window" index="6" role="APPRAISER" permission="latestexistproperty.open" />
-        <invoker type="latestexistproperty.view"  caption="Latest And Existing Property" index="6" action="doPreview" role="APPRAISER" permission="latestexistproperty.view" />
+        <invoker type="rptcertifications" action="init" caption="Latest And Existing Property" target="window" index="6" role="CERTIFICATION_ISSUANCE" permission="latestexistproperty.open" />
+        <invoker type="latestexistproperty.view"  caption="Latest And Existing Property" index="6" action="doPreview" role="CERTIFICATION_ISSUANCE" permission="latestexistproperty.view" />
         
-        <invoker folderid="/menu/rpt/cert" action="init" caption="Latest And Existing Propery" target="window" index="50" role="APPRAISER" permission="latestexistproperty.create" />
-        <invoker folderid="/txn/rpt/cert" action="init" caption="Latest And Existing Propery" target="window" index="50" role="APPRAISER" permission="latestexistproperty.create" />
-        <invoker type="quick_launcher" action="init" code="RCLE" caption="Latest And Existing Propery" target="window" index="50" role="APPRAISER" permission="latestexistproperty.create" />
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Latest And Existing Propery" target="window" index="50" role="CERTIFICATION_ISSUANCE" permission="latestexistproperty.create" />
+        <invoker type="quick_launcher" action="init" code="RCLE" caption="Latest And Existing Propery" target="window" index="50" role="CERTIFICATION_ISSUANCE" permission="latestexistproperty.create" />
         
        <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />

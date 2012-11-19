@@ -1,13 +1,9 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc/txn" action="init" caption="RIV (Purchase)" role="AFO" permission="riv_lgu.create" index="5"/>
-        <invoker folderid="/menu/tc/txn" action="initCollector" caption="RIV (Collector)" role="COLLECTOR" permission="riv.collector" index="6"/>
-        <invoker folderid="/menu/tc/txn" action="initRIVSale" caption="RIV (Sale)" role="COLLECTOR" permission="riv.salecreate" index="7"/>
-        
-        <invoker folderid="/txn/tc/txn" action="init" caption="RIV (Purchase)" role="AFO" permission="riv_lgu.create" index="5"/>
-        <invoker folderid="/txn/tc/txn" action="initCollector" caption="RIV (Collector)" role="COLLECTOR" permission="riv.create" index="6"/>
-        <invoker folderid="/txn/tc/txn" action="initRIVSale" caption="RIV (Sale)" role="COLLECTOR" permission="riv.salecreate" index="7"/>
-        
+        <invoker folderid="/explorer/txn/treasury/af" action="init" caption="RIV (Purchase)" role="AFO" permission="riv_lgu.create" index="5"/>
+        <invoker folderid="/explorer/txn/treasury/af" action="initCollector" caption="RIV (Collector)" role="COLLECTOR" permission="riv.collector" index="6"/>
+        <invoker folderid="/explorer/txn/treasury/af" action="initRIVSale" caption="RIV (Sale)" role="COLLECTOR" permission="riv.salecreate" index="7"/>
+
         <invoker type="quick_launcher" code="RIV01" action="init" caption="RIV (Purchase)" role="AFO" permission="riv_lgu.create" />
         <invoker type="quick_launcher" code="RIV02" action="initCollector" caption="RIV (Collector)" role="COLLECTOR" permission="riv.create"/>
         <invoker type="quick_launcher" code="RIV03" action="initRIVSale" caption="RIV (Sale)" role="COLLECTOR" permission="riv.salecreate" icon="images/folder.png" index="50" target="window"/>

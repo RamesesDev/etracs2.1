@@ -6,8 +6,7 @@
 -->
 <workunit>
     <invokers>
-        <invoker folderid="/menu/rpt/faas" action="initSubdivision" caption="Subdivision" target="window" role="APPRAISER" permission="subdivision.view" index="20"/>
-        <invoker folderid="/txn/rpt/txn" action="initSubdivision" caption="Subdivision" target="window" role="APPRAISER" permission="subdivision.view" index="20"/>
+        <invoker folderid="/explorer/txn/rpt/faas" action="initSubdivision" caption="Subdivision" target="window" role="APPRAISER" permission="subdivision.view" index="20"/>
         <invoker type="rpttransaction" action="initSubdivision" caption="Subdivision" target="window" role="APPRAISER" permission="subdivision.view" index="20"/>
         <invoker type="rpttransaction.initSubdivision" action="initSubdivision" caption="Subdivision" target="window" />
         <invoker type="quick_launcher" code="SD01" action="initSubdivision" caption="Subdivision:New" mnemonic="n" shortcut="ctrl N" target="window" icon="images/doc-new.png" role="APPRAISER" permission="subdivision.create" />

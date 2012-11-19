@@ -68,40 +68,75 @@ CREATE TABLE lguname_system.`sys_role_permission` (
 ) ENGINE=INNODB DEFAULT CHARSET=latin1;
 
 
--- drop table lguname_system.sys_roleclass_module;
 
--- drop table lguname_system.sys_module;
--- drop table lguname_system.sys_roleclass;
+delete from lguname_etracs.jobposition_role;
+delete from lguname_etracs.role;
+delete from lguname_system.sys_role;
+
+insert  into lguname_system.sys_role(name,domain) values ('AFO','TREASURY');
+insert  into lguname_system.sys_role(name,domain) values ('APPRAISER','RPT');
+insert  into lguname_system.sys_role(name,domain) values ('APPROVER','RPT');
+insert  into lguname_system.sys_role(name,domain) values ('ASSESSOR_REPORTS','RPT');
+insert  into lguname_system.sys_role(name,domain) values ('BP_REPORTS','BP');
+insert  into lguname_system.sys_role(name,domain) values ('CASHIER','TREASURY');
+insert  into lguname_system.sys_role(name,domain) values ('CERTIFICATION_ISSUANCE','RPT');
+insert  into lguname_system.sys_role(name,domain) values ('CITY_ASSESSOR','RPT');
+insert  into lguname_system.sys_role(name,domain) values ('COLLECTOR','BP');
+insert  into lguname_system.sys_role(name,domain) values ('COLLECTOR','TREASURY');
+insert  into lguname_system.sys_role(name,domain) values ('ENTITY_ENCODER','ENTITY');
+insert  into lguname_system.sys_role(name,domain) values ('LANDTAX','RPT');
+insert  into lguname_system.sys_role(name,domain) values ('LICENSING','BP');
+insert  into lguname_system.sys_role(name,domain) values ('LIQUIDATING_OFFICER','TREASURY');
+insert  into lguname_system.sys_role(name,domain) values ('MASTER_ENCODER','BP');
+insert  into lguname_system.sys_role(name,domain) values ('MASTER_ENCODER','RPT');
+insert  into lguname_system.sys_role(name,domain) values ('MASTER_ENCODER','TREASURY');
+insert  into lguname_system.sys_role(name,domain) values ('MUNICIPAL_ASSESSOR','RPT');
+insert  into lguname_system.sys_role(name,domain) values ('PROVINCIAL_ASSESSOR','RPT');
+insert  into lguname_system.sys_role(name,domain) values ('RELEASING','BP');
+insert  into lguname_system.sys_role(name,domain) values ('RULE_AUTHOR','BP');
+insert  into lguname_system.sys_role(name,domain) values ('RULE_AUTHOR','CTC');
+insert  into lguname_system.sys_role(name,domain) values ('RULE_AUTHOR','RPT');
+insert  into lguname_system.sys_role(name,domain) values ('RULE_MANAGEMENT','RULEMGMT');
+insert  into lguname_system.sys_role(name,domain) values ('SHARED','BP');
+insert  into lguname_system.sys_role(name,domain) values ('SHARED','RPT');
+insert  into lguname_system.sys_role(name,domain) values ('SUBCOLLECTOR','TREASURY');
+insert  into lguname_system.sys_role(name,domain) values ('TREASURY_ADMIN','TREASURY');
+insert  into lguname_system.sys_role(name,domain) values ('TREASURY_REPORTS','TREASURY');
 
 
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('AFO','TREASURY',NULL,'AFO',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('APPRAISER','RPT',NULL,'APPRAISER',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('APPROVER','RPT',NULL,'APPROVER',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('ASSESSOR_REPORTS','RPT',NULL,'ASSESSOR_REPORTS',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('BP_REPORTS','BP',NULL,'BP_REPORTS',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('CASHIER','TREASURY',NULL,'CASHIER',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('CERTIFICATION_ISSUANCE','RPT',NULL,'CERTIFICATION_ISSUANCE',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('CITY_ASSESSOR','RPT',NULL,'CITY_ASSESSOR',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('COLLECTOR','BP',NULL,'COLLECTOR',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('COLLECTOR','TREASURY',NULL,'COLLECTOR',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('ENTITY_ENCODER','ENTITY',NULL,'ENTITY_ENCODER',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('LANDTAX','RPT',NULL,'LANDTAX',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('LICENSING','BP',NULL,'LICENSING',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('LIQUIDATING_OFFICER','TREASURY',NULL,'LIQUIDATING_OFFICER',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('MASTER_ENCODER','BP',NULL,'MASTER_ENCODER',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('MASTER_ENCODER','RPT',NULL,'MASTER_ENCODER',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('MASTER_ENCODER','TREASURY',NULL,'MASTER_ENCODER',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('MUNICIPAL_ASSESSOR','RPT',NULL,'MUNICIPAL_ASSESSOR',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('PROVINCIAL_ASSESSOR','RPT',NULL,'PROVINCIAL_ASSESSOR',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('RELEASING','BP',NULL,'RELEASING',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('RULE_AUTHOR','BP',NULL,'RULE_AUTHOR',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('RULE_AUTHOR','CTC',NULL,'RULE_AUTHOR',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('RULE_AUTHOR','RPT',NULL,'RULE_AUTHOR',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('RULE_MANAGEMENT','RULEMGMT',NULL,'RULE_MANAGEMENT',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('SHARED','BP',NULL,'SHARED',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('SHARED','RPT',NULL,'SHARED',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('SUBCOLLECTOR','TREASURY',NULL,'SUBCOLLECTOR',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('TREASURY_ADMIN','TREASURY',NULL,'TREASURY_ADMIN',NULL,1);
+insert  into lguname_etracs.role(role,domain,description,sysrole,excluded,system) values ('TREASURY_REPORTS','TREASURY',NULL,'TREASURY_REPORTS',NULL,1);
 
-
-INSERT INTO lguname_system.sys_role (`name`)
-SELECT DISTINCT tagid FROM lguname_etracs.`jobposition_tag`;
-
-
-DELETE FROM lguname_etracs.role;
-
-INSERT INTO lguname_etracs.role (role, sysrole, domain, system)
-SELECT `name`, `name`, domain, 1 FROM lguname_system.`sys_role`;
 
 
 INSERT INTO lguname_etracs.`jobposition_role`(jobpositionid, role, domain, sysrole) 
 SELECT t.jobid, t.tagid, s.domain, t.tagid FROM lguname_etracs.`jobposition_tag` t, lguname_system.`sys_role` s
 WHERE t.tagid = s.name ;
-
-
-
-INSERT INTO lguname_system.`sys_role_permission` (sysrole, domain, `key`, title, module)
-VALUES('COLLECTOR', 'TREASURY', 'remittance.create', 'Perform Remittance', 'TC2');
-
-INSERT INTO lguname_system.`sys_role_permission` (sysrole, domain, `key`, title, module)
-VALUES('COLLECTOR', 'TREASURY', 'collection.create_online', 'Online Collection', 'TC2');
-
-
-
-
-
-
-
 

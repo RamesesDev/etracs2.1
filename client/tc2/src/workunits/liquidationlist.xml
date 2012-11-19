@@ -2,7 +2,7 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/mgmt" caption="Liquidation Management" role="LIQUIDATING_OFFICER" permission="liquidation.viewlist" index="122" target="window"/>
+        <invoker folderid="/explorer/txnmgmt/treasuryt" caption="Liquidations" role="LIQUIDATING_OFFICER" permission="liquidation.viewlist" index="122" target="window"/>
         <invoker folderid="/txn/tc" caption="Liquidations" role="LIQUIDATING_OFFICER" permission="liquidation.viewlist" index="15" target="window"/>
         <invoker type="quick_launcher" code="LIQ00"  caption="Liquidations" role="LIQUIDATING_OFFICER" permission="liquidation.viewlist" index="122" icon="images/folder.png" />
         <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" />

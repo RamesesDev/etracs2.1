@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" action="init" caption="Land with Improvement by TD" target="window" index="8" role="APPRAISER" permission="wimprovebytdno.open" />
-        <invoker type="wimprovebytdno.view"  caption="Land with Improvement by TD" index="8" action="doPreview" role="APPRAISER" permission="wimprovebytdno.view" />
+        <invoker type="rptcertifications" action="init" caption="Land with Improvement by TD" target="window" index="8" role="CERTIFICATION_ISSUANCE" permission="wimprovebytdno.open" />
+        <invoker type="wimprovebytdno.view"  caption="Land with Improvement by TD" index="8" action="doPreview" role="CERTIFICATION_ISSUANCE" permission="wimprovebytdno.view" />
         
-        <invoker folderid="/menu/rpt/cert" action="init" caption="Land with Improvement by TD" target="window" index="3" role="APPRAISER" permission="wimprovebytdno.create" />
-        <invoker folderid="/txn/rpt/cert" action="init"  caption="Land with Improvement by TD" target="window" index="3" role="APPRAISER" permission="wimprovebytdno.create" />
-        <invoker type="quick_launcher" code="RCWI" action="init"  caption="Land with Improvement by TD" target="window" index="3" role="APPRAISER" permission="wimprovebytdno.create" />
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="Land with Improvement by TD" target="window" index="3" role="CERTIFICATION_ISSUANCE" permission="wimprovebytdno.create" />
+        <invoker type="quick_launcher" code="RCWI" action="init"  caption="Land with Improvement by TD" target="window" index="3" role="CERTIFICATION_ISSUANCE" permission="wimprovebytdno.create" />
         
         <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />

@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/landtax" action="init" caption="Realty Tax Compromised Payments" target="window" index="11" role="LANDTAX" permission="landtax.rptcompromisepayment" />
+        <invoker folderid="/explorer/report/landtax" action="init" caption="Realty Tax Compromised Payments" target="window" index="11" role="LANDTAX" permission="landtax.rptcompromisepayment" />
         
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" shortcut="ctrl + C" icon="images/cancel.png" />
         <invoker type="formActions" action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png" />

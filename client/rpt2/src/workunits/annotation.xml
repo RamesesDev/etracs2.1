@@ -2,8 +2,7 @@
 <workunit>
     <invokers>
         <invoker type="rpttransaction" action="initAnnotation" caption="Annotation" target="window" index="353" role="APPRAISER" permission="annotation.create" />
-        <invoker folderid="/menu/rpt/faas" action="initAnnotation" caption="Annotation" target="window" index="40" role="APPRAISER" permission="annotation.create" />
-        <invoker folderid="/txn/rpt/txn" action="initAnnotation" caption="Annotation" target="window" index="353" role="APPRAISER" permission="annotation.create" />
+        <invoker folderid="/explorer/txn/rpt/faas" action="initAnnotation" caption="Annotation" target="window" index="40" role="APPRAISER" permission="annotation.create" />
         <invoker type="quick_laucher" code="FA01" action="initAnnotation" caption="Annotations" target="window" index="353" role="APPRAISER" permission="annotation.create" />
         
         <invoker type="rpttransaction.initAnnotation" action="initAnnotation" caption="Annotation" target="window" />

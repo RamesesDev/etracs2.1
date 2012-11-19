@@ -1,22 +1,16 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/bp/apps" action="initApplication" caption="Approved Applications" role="SHARED" permission="bppermit.approvedapplications" id="approvedapplications" target="window"/>
-        <invoker folderid="/menu/bp/apps" action="initReleasePermit" caption="For Release Permits" role="RELEASING" permission="bppermit.forreleasepermits" id="forreleasepermits" target="window"/>
-        <invoker folderid="/menu/bp/apps" action="initForRenewalPermit" caption="For Renewal Application" role="LICENSING" permission="bppermit.forrenewapplications" id="bppermit.forrewalapplications" target="window"/>
-        <invoker folderid="/menu/bp/apps" action="initActivePermit" caption="Active Permits" role="SHARED" permission="bppermit.activepermits" id="activepermits" target="window"/>
-        <invoker folderid="/menu/bp/apps" caption="Retired Application" role="SHARED" permission="bppermit.retire" id="retiredapplications" target="window"/>
-        
-        <invoker folderid="/txn/bp/apps" action="initApplication" caption="Approved Applications" role="SHARED" permission="bppermit.approvedapplications" id="approvedapplications" target="window"/>
-        <invoker folderid="/txn/bp/apps" action="initReleasePermit" caption="For Release Permits" role="RELEASING" permission="bppermit.forreleasepermits" id="forreleasepermits" target="window"/>
-        <invoker folderid="/txn/bp/apps" action="initForRenewalPermit" caption="For Renewal Application" role="LICENSING" permission="bppermit.forrenewapplications" id="bppermit.forrewalapplications" target="window"/>
-        <invoker folderid="/txn/bp/apps" action="initActivePermit" caption="Active Permits" role="SHARED" permission="bppermit.activepermits" id="activepermits" target="window"/>
-        <invoker folderid="/txn/bp/apps" caption="Retired Application" role="SHARED" permission="bppermit.retire" id="retiredapplications" target="window"/>
+        <invoker folderid="/explorer/txnmgmt/bplo" action="initApplication" caption="Approved Applications" role="SHARED" permission="bppermit.approvedapplications" id="approvedapplications" target="window"/>
+        <invoker folderid="/explorer/txnmgmt/bplo" action="initReleasePermit" caption="For Release Permits" role="RELEASING" permission="bppermit.forreleasepermits" id="forreleasepermits" target="window"/>
+        <invoker folderid="/explorer/txnmgmt/bplo" action="initForRenewalPermit" caption="For Renewal Applications" role="LICENSING" permission="bppermit.forrenewapplications" id="bppermit.forrewalapplications" target="window"/>
+        <invoker folderid="/explorer/txnmgmt/bplo" action="initActivePermit" caption="Active Permits" role="SHARED" permission="bppermit.activepermits" id="activepermits" target="window"/>
+        <invoker folderid="/explorer/txnmgmt/bplo" caption="Retired Applications" role="SHARED" permission="bppermit.retire" id="retiredapplications" target="window"/>
         
         <invoker type="home.action" category="Business" action="initApplication" caption="Approved Applications" role="SHARED" permission="bppermit.approvedapplications" id="approvedapplications" target="window" icon="images/folder.png"/>
         <invoker type="home.action" category="Business" action="initReleasePermit" caption="For Release Permits" role="RELEASING" permission="bppermit.forreleasepermits" id="forreleasepermits" target="window" icon="images/folder.png"/>
-        <invoker type="home.action" category="Business" action="initForRenewalPermit" caption="For Renewal Application" role="LICENSING" permission="bppermit.forrenewapplications" id="bppermit.forrewalapplications" target="window" icon="images/folder.png"/>
+        <invoker type="home.action" category="Business" action="initForRenewalPermit" caption="For Renewal Applications" role="LICENSING" permission="bppermit.forrenewapplications" id="bppermit.forrewalapplications" target="window" icon="images/folder.png"/>
         <invoker type="home.action" category="Business" action="initActivePermit" caption="Active Permits" role="SHARED" permission="bppermit.activepermits" id="activepermits" target="window" icon="images/folder.png"/>
-        <invoker type="home.action" category="Business" caption="Retired Application" role="SHARED" permission="bppermit.retire" id="retiredapplications" target="window" icon="images/folder.png"/>
+        <invoker type="home.action" category="Business" caption="Retired Applications" role="SHARED" permission="bppermit.retire" id="retiredapplications" target="window" icon="images/folder.png"/>
         
         <invoker type="formActions" action="previewApplication" mnemonic="p" shortcut="ctrl P" caption="View Application" visibleWhen="#{selectedItem != null}" icon="images/doc-view.png"/>
         <invoker type="formActions" action="previewAssessment"  mnemonic="v" shortcut="ctrl V" caption="View Assessment" visibleWhen="#{selectedItem != null}" icon="images/doc-view.png"/>

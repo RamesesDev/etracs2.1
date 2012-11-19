@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="entity.multiple"     action="open"   caption="Entity (Multiple)" />        
         <invoker type="entity.type"         action="init"   caption="Multiple"              target="popup" role="ENTITY_ENCODER" permission="multiple.create" />        
-        <invoker folderid="/txn/entity" caption="Multiple"  action="init" target="window" role="ENTITY_ENCODER" permission="multiple.create" index="3"/>        
+        <invoker folderid="/explorer/txn/entity" caption="Multiple"  action="init" target="window" role="ENTITY_ENCODER" permission="multiple.create" index="3"/>        
         <invoker type="quick_launcher" code="TP03" action="init" caption="Multiple Ownership" target="popup" role="ENTITY_ENCODER" permission="multiple.create" />
 
         <invoker type="formActions" action="_close" caption="Close"  shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png" visibleWhen="${mode=='view' and showClose}"/>

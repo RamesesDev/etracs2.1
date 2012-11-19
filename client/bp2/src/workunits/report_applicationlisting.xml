@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/bp"         action="init" caption="Application Listing" target="window" index="3" role="BP_REPORTS" permission="bpreport.apploblisting"/>
+        <invoker folderid="/explorer/report/bplo"         action="init" caption="Application Listing" target="window" index="3" role="BP_REPORTS" permission="bpreport.apploblisting"/>
         <invoker type="bpreport"         action="init" opener="applicationloblisting" caption="Application with LOB Listing" target="window" index="3" role="BP_REPORTS" permission="bpreport.apploblisting"/>
         <invoker type="bpreport.applicationloblisting"    action="init" caption="Application with LOB Listing" target="window" />
         

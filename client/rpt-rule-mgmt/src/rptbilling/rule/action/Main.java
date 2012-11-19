@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-package etracs2.rpt.main;
+package rptbilling.rule.action;
 
 import com.rameses.osiris2.test.OsirisTestPlatform;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class Main {
         roles.put("RPT.LANDTAX", null );
         roles.put("RPT.ASSESSOR_REPORTS", null);
         roles.put("RPT.SHARED", null);
-        roles.put("CERTIFICATION_ISSUANCE", null);
+        roles.put("RPT.RULE_AUTHOR", null);
         
         Map env = new HashMap();
         env.put("app.title", "Tester");

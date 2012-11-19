@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/assessor" action="init" caption="Master List" target="window" index="0" role="ASSESSOR_REPORTS" permission="rptreport.masterlist"/>
+        <invoker folderid="/explorer/report/rpt" action="init" caption="Master List" target="window" index="0" role="ASSESSOR_REPORTS" permission="rptreport.masterlist"/>
         
         <invoker type="formActions"     action="_close" caption="Close" mnemonic="c" shortcut="ctrl + W" icon="images/cancel.png"/>
         <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png"/>

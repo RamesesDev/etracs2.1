@@ -1,8 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/bp/master" caption="LOB Attributes" role="MASTER_ENCODER" permission="bpadmin.lobattributes"/>
-        <invoker folderid="/txn/bp/master" caption="LOB Attributes" role="MASTER_ENCODER" permission="bpadmin.lobattributes"/>
-        <invoker type="bp.master" caption="LOB Attributes" role="MASTER_ENCODER" permission="bpadmin.lobattributes" index="51" target="window" icon="images/folder.png"/>
+        <invoker folderid="/explorer/master/bplo" caption="Attribute" role="MASTER_ENCODER" permission="bpadmin.lobattributes" index="5" />
         
         <invoker type="formActions" action="cancel" shortcut="ctrl c" caption="Cancel" mnemonic="c" immediate="true" icon="images/cancel.png" visibleWhen="#{mode != 'view'}"/>
         <invoker type="formActions" action="create" shortcut="ctrl N" caption="New" mnemonic="n" immediate="true" icon="images/doc-new.png" visibleWhen="#{mode == 'view'}"/>

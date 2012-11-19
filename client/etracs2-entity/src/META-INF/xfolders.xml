@@ -1,9 +1,13 @@
 <folders>
-    <folder id="menu">
-        <folder id="mgmt" caption="Management"/>
-    </folder>    
-    <folder id="txn">
-        <folder id="entity" caption="Entity" />
-    </folder>    
+    <folder id="explorer">
+        <folder id="txn" caption="Transactions" index="0">
+            <folder id="entity" caption="Entity"/>
+        </folder>
+        <folder id="txnmgmt" caption="Transaction Management" index="2">
+            <folder id="entity" caption="Entities"/>
+        </folder>
+        <folder id="report" caption="Reports" index="4" />
+        <folder id="rulemgmt" caption="Rule Management" index="3"/>        
+    </folder>
 
 </folders>

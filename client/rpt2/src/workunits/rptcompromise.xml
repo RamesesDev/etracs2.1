@@ -4,8 +4,7 @@
         <invoker type="rptcompromise.create" action="create" caption="Compromise Agreement (New)" role="LANDTAX" permission="rptcompromise.create" />
         <invoker type="rptcompromise.open" action="open" caption="Compromise Agreement" role="LANDTAX" permission="rptcompromise.open" />
         
-        <invoker folderid="menu/rpt/landtax" action="create" caption="Compromise Agreement" mnemonic="c" role="LANDTAX" permission="rptcompromise.create" index="500"/>
-        <invoker folderid="/txn/rpt/landtax" action="create" caption="Compromise Agreement" mnemonic="c" role="LANDTAX" permission="rptcompromise.create" index="500"/>
+        <invoker folderid="/explorer/txn/landtax" action="create" caption="Compromise Agreement" mnemonic="c" role="LANDTAX" permission="rptcompromise.create" index="500"/>
         <invoker type="quick_launcher" action="create" code="RCA01" caption="Compromise Agreement" role="LANDTAX" permission="rptcompromise.create" />
         
         <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>

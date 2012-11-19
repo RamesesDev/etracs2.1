@@ -2,10 +2,8 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/rpt/master" action="init" caption="Kind of Buildings" index="6" role="MASTER_ENCODER" permission="kindofbldg.view" />
-        <invoker folderid="/txn/rpt/master" action="init" caption="Kind of Buildings" index="6" role="MASTER_ENCODER" permission="kindofbldg.view" />
-        <invoker type="quick_launcher" code="BK01" action="init" caption="Kind of Buildings" index="6" role="MASTER_ENCODER" permission="kindofbldg.view" />
-        <invoker type="rpt.master" action="init" caption="Kind of Buildings" index="4" role="MASTER_ENCODER" permission="kindofbldg.view" />
+        <invoker folderid="/explorer/master/rpt" action="init" caption="Kind of Building" index="6" role="MASTER_ENCODER" permission="kindofbldg.view" />
+        <invoker type="quick_launcher" code="BK01" action="init" caption="Kind of Building" index="6" role="MASTER_ENCODER" permission="kindofbldg.view" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" role="MASTER_ENCODER" permission="kindofbldg.create" />
         <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null }" immediate="true" caption="Edit" mnemonic="e" icon="images/doc-edit.png" role="MASTER_ENCODER" permission="kindofbldg.edit"/>

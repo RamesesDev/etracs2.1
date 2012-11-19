@@ -12,7 +12,9 @@
         <folder id="report" caption="Reports" index="4">
             <folder id="bplo" caption="Permit/Licensing"/>
         </folder>
-        <folder id="rulemgmt" caption="Rule Management" index="3"/>        
+        <folder id="rulemgmt" caption="Rule Management" index="3">
+            <folder id="bplo" caption="Permit/Licensing"/>
+        </folder>
         <folder id="setting" caption="Settings Management" index="5">
             <folder id="bplo" caption="Permit/Licensing"/>
         </folder>

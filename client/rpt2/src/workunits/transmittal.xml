@@ -4,7 +4,7 @@
         <invoker type="rpt_transmittal.create" action="init" caption="Transmittal (New)" role="APPRAISER" permission="rpt_transmittal.create"/>
         <invoker type="rpt_transmittal.open" action="open" caption="Transmittal" role="APPRAISER" permission="rpt_transmittal.open"/>
         
-        <invoker folderid="/menu/rpt/faas" action="init"  caption="Transmittal" mnemonic="t" role="APPRAISER" permission="rpt_transmittal.create" index="300"/>
+        <invoker folderid="/explorer/txn/rpt/faas" action="init"  caption="Transmittal" mnemonic="t" role="APPRAISER" permission="rpt_transmittal.create" index="300"/>
         <invoker type="quick_launcher" action="init" code="FATR" caption="Transmittal" mnemonic="t" role="APPRAISER" permission="rpt_transmittal.create" />
         
         <invoker type="formActions" action="_close"  caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>

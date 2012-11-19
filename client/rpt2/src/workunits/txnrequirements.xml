@@ -2,7 +2,7 @@
 <workunit>
     
      <!--
-    <invoker folderid="/menu/rpt/master" action="init" caption="Transaction Requirements" index="16" permission="txnrequirements.view" />
+    <invoker folderid="/explorer/master/rpt" action="init" caption="Transaction Requirements" index="16" permission="txnrequirements.view" />
     <invoker type="rpt.master" action="init" caption="Transaction Requirements" index="15" permission="txnrequirements.view" />
     -->    
     

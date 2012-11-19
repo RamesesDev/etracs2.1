@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="entity.juridical" caption="Entity (Juridical)" />        
         <invoker type="entity.type" caption="Juridical"  action="init" target="popup" role="ENTITY_ENCODER" permission="juridical.create" /> 
-        <invoker folderid="/txn/entity" caption="Juridical"  action="init" target="window" role="ENTITY_ENCODER" permission="juridical.create" index="2"/>        
+        <invoker folderid="/explorer/txn/entity" caption="Juridical"  action="init" target="window" role="ENTITY_ENCODER" permission="juridical.create" index="2"/>        
         <invoker type="quick_launcher" code="TP02" caption="Juridical"  action="init" mnemonic="j" target="popup" role="ENTITY_ENCODER" permission="juridical.create" /> 
         
         <invoker type="formActions" action="_close" caption="Close"  shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png" visibleWhen="${mode=='view' and showClose}"/>

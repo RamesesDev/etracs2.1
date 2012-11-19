@@ -6,8 +6,7 @@
 -->
 <workunit>
     <invokers>
-        <invoker folderid="/menu/rpt/landtax" action="init"  caption="RPT Billing"  role="LANDTAX" permission="rptbilling.generate"/>
-        <invoker folderid="/txn/landtax" action="init"  caption="RPT Billing"  role="LANDTAX" permission="rptbilling.generate"/>
+        <invoker folderid="/explorer/txn/landtax" action="init"  caption="RPT Billing"  role="LANDTAX" permission="rptbilling.generate"/>
         
         <invoker type="quick_launcher" code="RPTBILL" action="init"  caption="RPT Billing"  role="LANDTAX" permission="rptbilling.generate"/>
         <invoker type="home.action"      action="init"  caption="RPT Billing"  target="window" index="551" icon="images/bill.png" role="LANDTAX" permission="rptbilling.generate" />

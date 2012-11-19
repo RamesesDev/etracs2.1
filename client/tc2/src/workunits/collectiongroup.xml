@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc/master" caption="Collection Groups" role="MASTER_ENCODER" permission="collectiongroup.view"/>
-        <invoker folderid="/txn/tc/master" caption="Collection Groups" role="MASTER_ENCODER" permission="collectiongroup.view" index="25"/>
-        <invoker type="quick_launcher" code="colgrps" caption="Collection Groups" role="MASTER_ENCODER" permission="collectiongroup.view"/>
+        <invoker folderid="/explorer/master/treasury" caption="Collection Group" role="MASTER_ENCODER" permission="collectiongroup.view" index="15"/>
+        <invoker type="quick_launcher" code="colgrps" caption="Collection Group" role="MASTER_ENCODER" permission="collectiongroup.view"/>
         
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png"  role="MASTER_ENCODER" permission="collectiongroup.create"/>

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" action="init" caption="No Property" target="window" index="0" role="APPRAISER" permission="noproperty.open" />
-        <invoker type="noproperty.view"  caption="No Property" index="0" action="doPreview" role="APPRAISER" permission="noproperty.view" />
+        <invoker type="rptcertifications" action="init" caption="No Property" target="window" index="0" role="CERTIFICATION_ISSUANCE" permission="noproperty.open" />
+        <invoker type="noproperty.view"  caption="No Property" index="0" action="doPreview" role="CERTIFICATION_ISSUANCE" permission="noproperty.view" />
         
-        <invoker folderid="/menu/rpt/cert" action="init" caption="No Property" target="window" index="90" role="APPRAISER" permission="noproperty.create" />
-        <invoker folderid="/txn/rpt/cert" action="init" caption="No Property" target="window" index="90" role="APPRAISER" permission="noproperty.create" />
-        <invoker type="quick_launcher" action="init" code="RCNP" caption="No Property" target="window" index="90" role="APPRAISER" permission="noproperty.create" />
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="No Property" target="window" index="90" role="CERTIFICATION_ISSUANCE" permission="noproperty.create" />
+        <invoker type="quick_launcher" action="init" code="RCNP" caption="No Property" target="window" index="90" role="CERTIFICATION_ISSUANCE" permission="noproperty.create" />
         
        <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />

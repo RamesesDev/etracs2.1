@@ -1,6 +1,7 @@
 <workunit>
     <invokers>
-        <invoker type="ruleset" caption="RPT Billing Rules" role="RPT_RULE_AUTHOR" permission="rptbillingrule.view" index="50"/>
+        <invoker type="ruleset" caption="RPT Billing Rules" role="RULE_AUTHOR" permission="rptbillingrule.view" index="50"/>
+        <invoker caption="RPT Billing Rules" role="RULE_AUTHOR" permission="rptbillingrule.view" index="50"/>
     </invokers>
     
     <code>

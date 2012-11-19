@@ -1,21 +1,24 @@
 <folders>
-    <folder id="menu">
-        <folder id="tc" caption="Tax Collection" mnemonic="t">
-            <folder id="master" caption="Master" mnemonic="m"/>
-            <folder id="coll" caption="Collection" mnemonic="c"/>
-            <folder id="txn" caption="Transaction" mnemonic="t"/>
+    <folder id="explorer">
+        <folder id="txn" caption="Transactions" index="0">
+            <folder id="treasury" caption="Treasury">
+                <folder id="af" caption="Accountable Form"/>
+                <folder id="collection" caption="Collection"/>
+            </folder>
+        </folder>
+        <folder id="master" caption="Master Management" index="1">
+            <folder id="treasury" caption="Treasury"/>
+        </folder>
+        <folder id="txnmgmt" caption="Transaction Management" index="2">
+            <folder id="treasury" caption="Treasury"/>
+        </folder>
+        <folder id="report" caption="Reports" index="4">
+            <folder id="treasury" caption="Treasury"/>
+        </folder>
+        <folder id="rulemgmt" caption="Rule Management" index="3"/>        
+        <folder id="setting" caption="Settings Management" index="5">
+            <folder id="treasury" caption="Treasury" /> 
         </folder>
     </folder>
-    
-    <folder id="report" caption="Reports">
-        <folder id="tc" caption="Tax Collection"/>
-    </folder>
-    
-    <folder id="txn">
-        <folder id="tc" caption="Treasury">
-            <folder id="master" caption="Master Files"/>
-            <folder id="coll" caption="Collection"/>
-            <folder id="txn" caption="Transactions"/>
-        </folder>
-    </folder>
+
 </folders>

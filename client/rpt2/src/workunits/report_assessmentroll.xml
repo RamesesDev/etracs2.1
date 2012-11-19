@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/assessor" action="init" caption="Assessment Roll" role="ASSESSOR_REPORTS" permission="rptreport.assessmentroll" index="2" />
+        <invoker folderid="/explorer/report/rpt" action="init" caption="Assessment Roll" role="ASSESSOR_REPORTS" permission="rptreport.assessmentroll" index="2" />
         <invoker type="rptreport"                   action="init" opener="assessmentroll" caption="Assessment Roll" target="window" role="ASSESSOR_REPORTS" permission="rptreport.assessmentroll" index="2" />
         <invoker type="rptreport.assessmentroll"    action="init" caption="Assessment Roll" role="ASSESSOR_REPORTS" permission="rptreport.assessmentroll"/>
         

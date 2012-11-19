@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/assessor" action="init" caption="Tax Mapping Control Roll" role="ASSESSOR_REPORTS" permission="rptreport.tmcr" index="3" />
+        <invoker folderid="/explorer/report/rpt" action="init" caption="Tax Mapping Control Roll" role="ASSESSOR_REPORTS" permission="rptreport.tmcr" index="3" />
         <invoker type="rptreport"         action="init" opener="tmcr" caption="Tax Mapping Control Roll" target="window" role="ASSESSOR_REPORTS" permission="rptreport.tmcr" index="3" />
         <invoker type="rptreport.tmcr"    action="init" caption="Tax Mapping Control Roll" role="ASSESSOR_REPORTS" permission="rptreport.tmcr"/>
         

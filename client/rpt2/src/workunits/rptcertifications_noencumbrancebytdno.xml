@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker type="rptcertifications" action="init" caption="No Encumbrance by TD" target="window" index="5" role="APPRAISER" permission="noencumbrance.open" />
-        <invoker type="noencumbrance.view"  caption="No Encumbrance by TD" index="5" action="doPreview" role="APPRAISER" permission="noencumbrance.view"/>
+        <invoker type="rptcertifications" action="init" caption="No Encumbrance by TD" target="window" index="5" role="CERTIFICATION_ISSUANCE" permission="noencumbrance.open" />
+        <invoker type="noencumbrance.view"  caption="No Encumbrance by TD" index="5" action="doPreview" role="CERTIFICATION_ISSUANCE" permission="noencumbrance.view"/>
         
-        <invoker folderid="/menu/rpt/cert" action="init" caption="No Encumbrance by TD" target="window" index="60" role="APPRAISER" permission="noencumbrance.create" />
-        <invoker folderid="/txn/rpt/cert" action="init" caption="No Encumbrance by TD" target="window" index="60" role="APPRAISER" permission="noencumbrance.create" />
-        <invoker type="quick_launcher" code="RCNE" action="init" caption="No Encumbrance by TD" target="window" index="60" role="APPRAISER" permission="noencumbrance.create" />
+        <invoker folderid="/explorer/txn/rpt/cert" action="init" caption="No Encumbrance by TD" target="window" index="60" role="CERTIFICATION_ISSUANCE" permission="noencumbrance.create" />
+        <invoker type="quick_launcher" code="RCNE" action="init" caption="No Encumbrance by TD" target="window" index="60" role="CERTIFICATION_ISSUANCE" permission="noencumbrance.create" />
         
        <!-- default -->
         <invoker type="formActions" action="_close"     caption="Cancel"    shourtcut="c" mnemonic="c"  index="0"  visibleWhen="#{mode == '_default'}" immediate="true" icon="images/cancel.png" />

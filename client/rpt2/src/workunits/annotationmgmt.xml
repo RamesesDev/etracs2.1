@@ -5,10 +5,9 @@
 -->
 <workunit>
     <invokers>
-        <invoker type="home.action" caption="Annotation Management" mnemonic="f" role="SHARED" permission="annotationmgmt.view" icon="images/folder.png" index="5" target="window" />
-        <invoker folderid="/menu/mgmt" caption="Annotation Management" mnemonic="f" role="SHARED" permission="annotationmgmt.view" index="130" target="window" />
-        <invoker folderid="/txn/rpt" caption="Annotation Management" mnemonic="f" role="SHARED" permission="annotationmgmt.view" index="130" target="window" />
-        <invoker type="quick_launcher" code="FA00" caption="Annotation Management" mnemonic="f" role="SHARED" permission="annotationmgmt.view" icon="images/folder.png" index="5" target="window" />
+        <invoker type="home.action" caption="Annotations" mnemonic="f" role="SHARED" permission="annotationmgmt.view" icon="images/folder.png" index="5" target="window" />
+        <invoker folderid="/explorer/txnmgmt/rpt" caption="Annotations" mnemonic="f" role="SHARED" permission="annotationmgmt.view" index="130" target="window" />
+        <invoker type="quick_launcher" code="FA00" caption="Annotations" mnemonic="f" role="SHARED" permission="annotationmgmt.view" icon="images/folder.png" index="5" target="window" />
         
         <invoker type="formActions" action="createAnnotation" immediate="true" caption="New Annotation" mnemonic="b" icon="images/doc-new.png" role="APPRAISER" permission="annotation.create" />
         <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" role="APPRAISER" permission="annotation.view"/>

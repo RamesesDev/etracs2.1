@@ -2,7 +2,7 @@
     <invokers>
         <invoker type="entity.individual" caption="Entity (Individual)" />        
         <invoker type="entity.type" caption="Individual"  action="init" target="popup" role="ENTITY_ENCODER" permission="individual.create"/>        
-        <invoker folderid="/txn/entity" caption="Individual"  action="init" target="window" role="ENTITY_ENCODER" permission="individual.create" index="1"/>        
+        <invoker folderid="/explorer/txn/entity" caption="Individual"  action="init" target="window" role="ENTITY_ENCODER" permission="individual.create" index="1"/>        
         <invoker type="quick_launcher" code="TP01" caption="Individual"  action="init" mnemonic="i" target="popup" role="ENTITY_ENCODER" permission="individual.create"/>        
         
         <invoker type="formActions" action="_close" caption="Close"  shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png" visibleWhen="${mode=='view' and showClose}"/>

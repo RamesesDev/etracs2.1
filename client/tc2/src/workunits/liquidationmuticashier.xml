@@ -5,9 +5,7 @@
         <invoker type="liquidation.multi" action="open" caption="Liquidate (Multi-Cashier): Open" index="121" icon="images/cash.png" target="window"/>
         <invoker type="home.action" action="create" caption="Liquidate (Multi-Cashier)" role="LIQUIDATING_OFFICER" permission="liquidationmulti.create" index="121" icon="images/folder.png" target="window"/>
         
-        <invoker folderid="/menu/tc/coll" action="create" caption="Liquidate (Multi-Cashier)" role="LIQUIDATING_OFFICER" permission="liquidationmulti.create" index="26"/>
-        <invoker folderid="/txn/tc/coll" action="create" caption="Liquidate (Multi-Cashier)" role="LIQUIDATING_OFFICER" permission="liquidationmulti.create" index="26"/>
-        
+        <invoker folderid="/explorer/txn/treasury/collection" action="create" caption="Liquidate (Multi-Cashier)" role="LIQUIDATING_OFFICER" permission="liquidationmulti.create" index="26"/>
         <invoker type="quick_launcher" code="LIQ02" action="create" caption="Liquidate (Multi-Cashier)" role="LIQUIDATING_OFFICER" permission="liquidationmulti.create" index="122"/>
         
         <invoker type="formActions" action="close" visibleWhen="#{mode != 'view' and mode != 'reports' and mode != 'rcd'}"  immediate="true" caption="Close" mnemonic="c" icon="images/doc-cancel.png"/>

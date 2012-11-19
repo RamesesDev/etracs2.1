@@ -1,8 +1,7 @@
 <workunit>
     <invokers>
-        <invoker folderid="menu/mgmt" action="init" caption="Rule Management" role="RULE_AUTHOR" permission="rulemgmt.view"/>
-        <invoker folderid="/txn" action="init" caption="Rule Management" role="RULE_AUTHOR" permission="rulemgmt.view" icon="images/gear.gif"/>
-        <invoker type="quick_launcher" code="rules" action="init" caption="Rule Management" role="RULE_AUTHOR" permission="rulemgmt.view"/>
+        <invoker folderid="/explorer/rulemgmt" action="init" caption="Rules" role="RULE_MANAGEMENT" permission="rulemgmt.view"/>
+        <invoker type="quick_launcher" code="rules" action="init" caption="Rule Management" role="RULE_MANAGEMENT" permission="rulemgmt.view"/>
         
         <invoker type="formActions" action="create" caption="New" mnemonic="n" shortcut="ctrl N" icon="images/doc-new.png"/>
         <invoker type="formActions" action="copy" caption="Copy" mnemonic="c" shortcut="ctrl C" visibleWhen="#{selectedItem != null}" icon="images/doc-copy.png"/>

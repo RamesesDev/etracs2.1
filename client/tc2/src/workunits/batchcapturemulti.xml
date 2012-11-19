@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc/coll" action="init" caption="Batch Capture (Multi-Account)" role="COLLECTOR" permission="batchcapture.create" index="6"/>
-        <invoker folderid="/txn/tc/coll" action="init" caption="Batch Capture (Multi-Account)" role="COLLECTOR" permission="batchcapture.create" index="6"/>
+        <invoker folderid="/explorer/txn/treasury/collection" action="init" caption="Batch Capture (Multi-Account)" role="COLLECTOR" permission="batchcapture.create" index="6"/>
         
         <invoker type="batchcapturemulti.create" action="init" caption="Batch Capture (New)" target="window" role="COLLECTOR" permission="batchcapture.create"/>
         <invoker type="batchcapturemulti.view"  action="open" caption="Batch Capture" target="window" role="COLLECTOR" permission="batchcapture.view"/>

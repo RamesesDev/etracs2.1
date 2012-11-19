@@ -2,10 +2,9 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/bp/txn" action="createTradename" caption="Change Tradename" role="LICENSING" permission="bpadmin.changetradename" index="254"  target="window" />
-        <invoker folderid="/txn/bp/txn" action="createTradename" caption="Change Tradename" role="LICENSING" permission="bpadmin.changetradename" index="254"  target="window" />
-        <invoker type="bptransaction" action="createTradename" caption="Change Tradename" role="LICENSING" permission="bpadmin.changetradename" index="254"  target="window" />
-        <invoker type="bptransaction.createTradename" action="createTradename" caption="Change Tradename" target="window" />
+        <invoker folderid="/explorer/txn/bplo" action="createTradename" caption="Change Tradenames" role="LICENSING" permission="bpadmin.changetradename" index="254"  target="window" />
+        <invoker type="bptransaction" action="createTradename" caption="Change Tradenames" role="LICENSING" permission="bpadmin.changetradename" index="254"  target="window" />
+        <invoker type="bptransaction.createTradename" action="createTradename" caption="Change Tradenames" target="window" />
         
         <invoker type="formActions" action="close" immediate="true" caption="Close" icon="images/cancel.png"/>
         <invoker type="formActions" action="createTradename" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n"  icon="images/doc-new.png"/>

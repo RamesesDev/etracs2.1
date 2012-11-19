@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="menu/rpt/master" caption="Revision Year Setting Management" mnemonic="y" role="MASTER_ENCODER" permission="rysetting.view" />
         <!-- 
+        <invoker folderid="/explorer/master/rpt" caption="Revision Year Setting Management" mnemonic="y" role="MASTER_ENCODER" permission="rysetting.view" />
         <invoker type="home.action" caption="Revision Year Setting Management" icon="images/debug.png" target="window" index="101"  permission="rysetting.view"/>
         -->
     </invokers>

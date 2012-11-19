@@ -18,7 +18,7 @@ from (
 where jp.assigneeid is null 
 
 [roles]
-select jpr.*, ur.excluded from jobposition_role jpr inner join role ur on jpr.role = ur.role where jpr.jobpositionid = $P{jobpositionid}
+select jpr.*, ur.excluded from jobposition_role jpr inner join role ur on jpr.role = ur.role  and jpr.domain = ur.domain where jpr.jobpositionid = $P{jobpositionid}
 
 [remove-roles]
 delete from jobposition_role where jobpositionid = $P{jobpositionid}

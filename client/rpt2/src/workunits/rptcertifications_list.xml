@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/menu/rpt/cert" caption="Issued Certifications" mnemonic="C" role="APPRAISER" permission="rptcertification_list.view" index="100" />
-        <invoker folderid="/txn/rpt/cert" caption="Issued Certifications" mnemonic="C" role="APPRAISER" permission="rptcertification_list.view" index="100" />
-        
-        <invoker type="quick_launcher" code="RPTC00" caption="Issued Certifications" mnemonic="C" role="APPRAISER" permission="rptcertification_list.view" index="100" />
+        <invoker folderid="/explorer/txnmgmt/rpt" caption="Issued Certifications" mnemonic="C" role="CERTIFICATION_ISSUANCE" permission="rptcertification_list.view" index="800" />
+        <invoker type="quick_launcher" code="RPTC00" caption="Issued Certifications" mnemonic="C" role="CERTIFICATION_ISSUANCE" permission="rptcertification_list.view" />
         
     </invokers>
     <code lang="groovy">

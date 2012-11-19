@@ -1,7 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="menu/tc/coll" action="init" caption="Post Captured Receipt" role="COLLECTOR" permission="postcapturereceipt.create" index="15"/>
-        <invoker folderid="txn/tc/coll" action="init" caption="Post Captured Receipt" role="COLLECTOR" permission="postcapturereceipt.create" index="15"/>
+        <invoker folderid="/explorer/txn/treasury/collection" action="init" caption="Post Captured Receipt" role="COLLECTOR" permission="postcapturereceipt.create" index="15"/>
         <invoker type="quick_launcher" code="POSTCAPTURE01" action="init" caption="Post Captured Receipt" role="COLLECTOR" permission="postcapturereceipt.create" />
         <invoker type="home.action" action="init" caption="Post Captured Receipt" role="COLLECTOR" permission="postcapturereceipt.create" index="112" icon="images/folder.png" target="window" />
         

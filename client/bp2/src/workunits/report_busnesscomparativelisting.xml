@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/bp" action="init" caption="Business Comparative Listing" target="window" index="4" role="BP_REPORTS" permission="bpreport.comparativelisting" />
+        <invoker folderid="/explorer/report/bplo" action="init" caption="Business Comparative Listing" target="window" index="4" role="BP_REPORTS" permission="bpreport.comparativelisting" />
         <invoker type="bpreport"         action="init" opener="businesscompartivelisting" caption="Business Comparative Listing" target="window" index="4" role="BP_REPORTS" permission="bpreport.comparativelisting" />
         <invoker type="bpreport.businesscompartivelisting"    action="init" caption="Business Comparative Listing" target="window" />
         

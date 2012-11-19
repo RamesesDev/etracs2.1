@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc/coll" action="init" caption="Booklet Collection" target="window" index="10" role="COLLECTOR" permission="bookletcollection.create" />
-        <invoker folderid="/txn/tc/coll" action="init" caption="Booklet Collection" target="window" index="10" role="COLLECTOR" permission="bookletcollection.create" />
+        <invoker folderid="/explorer/txn/treasury/collection" action="init" caption="Booklet Collection" target="window" index="10" role="COLLECTOR" permission="bookletcollection.create" />
         
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/cancel.png" immediate="true" />
         <invoker type="formActions" action="next" caption="Next" mnemonic="n" icon="images/next.png" />

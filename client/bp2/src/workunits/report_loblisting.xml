@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/bp" action="generateReport" caption="Line of Business Listing" target="window" index="0" role="BP_REPORTS" permission="bpreport.loblisting" />
+        <invoker folderid="/explorer/report/bplo" action="generateReport" caption="Line of Business Listing" target="window" index="0" role="BP_REPORTS" permission="bpreport.loblisting" />
         <invoker type="previewActions"  action="_close" caption="Close" icon="images/close.png" immediate="true" />
     </invokers>
     <code>

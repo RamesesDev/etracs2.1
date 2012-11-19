@@ -2,10 +2,8 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/rpt/master" action="init" caption="Exemption Types" index="4" role="MASTER_ENCODER" permission="exemptiontypes.view" />
-        <invoker folderid="/txn/rpt/master" action="init" caption="Exemption Types" index="4" role="MASTER_ENCODER" permission="exemptiontypes.view" />
-        <invoker type="quick_launcher" code="ET01" action="init" caption="Exemption Types" index="4" role="MASTER_ENCODER" permission="exemptiontypes.view" />
-        <invoker type="rpt.master" action="init" caption="Exemption Types" index="3" role="MASTER_ENCODER" permission="exemptiontypes.view" />
+        <invoker folderid="/explorer/master/rpt" action="init" caption="Exemption Type" role="MASTER_ENCODER" permission="exemptiontypes.view" index="4" />
+        <invoker type="quick_launcher" code="ET01" action="init" caption="Exemption Type" index="4" role="MASTER_ENCODER" permission="exemptiontypes.view" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" role="MASTER_ENCODER" permission="exemptiontypes.create" />
         <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null }" immediate="true" caption="Edit" mnemonic="e" icon="images/doc-edit.png" role="MASTER_ENCODER" permission="exemptiontypes.edit" />

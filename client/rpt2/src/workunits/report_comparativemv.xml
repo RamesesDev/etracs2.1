@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/assessor" action="init" caption="Comparative Data on Market Value" role="ASSESSOR_REPORTS" permission="rptreport.comparativemv" index="9" />
+        <invoker folderid="/explorer/report/rpt" action="init" caption="Comparative Data on Market Value" role="ASSESSOR_REPORTS" permission="rptreport.comparativemv" index="9" />
         <invoker type="rptreport"               action="init" opener="comparativemv" caption="Comparative Data on Market Value" target="window" role="ASSESSOR_REPORTS" permission="rptreport.comparativemv" index="6" />
         <invoker type="rptreport.comparativemv" action="init"               caption="Comparative Data on Market Value" />
         

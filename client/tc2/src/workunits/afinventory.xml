@@ -1,6 +1,6 @@
 <workunit>
     <invokers>
-        <invoker folderid="/menu/tc/txn" action="init" caption="Accountable Form Inventory" role="AFO" permission="afinventory.view" target="window" index="15" />
+        <invoker folderid="/explorer/txnmgmt/treasury" action="init" caption="Accountable Form Inventories" role="AFO" permission="afinventory.view" target="window" index="15" />
         <invoker folderid="/txn/tc/txn" action="init" caption="Accountable Form Inventory" role="AFO" permission="afinventory.view" target="window" index="15" />
         <invoker type="quick_launcher" code="AFINV01" action="init" caption="Accountable Form Inventory" role="AFO" permission="afinventory.view" target="window"/>
     </invokers>

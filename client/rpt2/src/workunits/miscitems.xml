@@ -2,10 +2,8 @@
 <workunit>
     
     <invokers>
-        <invoker folderid="/menu/rpt/master" action="init" caption="Miscellaneous Items" index="12" role="MASTER_ENCODER" permission="miscitems.view" />
-        <invoker folderid="/txn/rpt/master" action="init" caption="Miscellaneous Items" index="12" role="MASTER_ENCODER" permission="miscitems.view" />
-        <invoker type="quick_launcher" code="MISC01" action="init" caption="Miscellaneous Items" index="12" role="MASTER_ENCODER" permission="miscitems.view" />
-        <invoker type="rpt.master" action="init" caption="Miscellaneous Items" index="10" role="MASTER_ENCODER" permission="miscitems.view" />
+        <invoker folderid="/explorer/master/rpt" action="init" caption="Miscellaneous Item" index="12" role="MASTER_ENCODER" permission="miscitems.view" />
+        <invoker type="quick_launcher" code="MISC01" action="init" caption="Miscellaneous Item" index="12" role="MASTER_ENCODER" permission="miscitems.view" />
         
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" role="MASTER_ENCODER" permission="miscitems.create" />
         <invoker type="formActions" action="edit" shortcut="ctrl E" visibleWhen="#{mode == 'view' and entity.objid != null }" immediate="true" caption="Edit" mnemonic="e" icon="images/doc-edit.png" role="MASTER_ENCODER" permission="miscitems.edit" />

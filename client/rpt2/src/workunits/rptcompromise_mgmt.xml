@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="menu/mgmt" caption="Compromise Agreements" mnemonic="c" role="LANDTAX" permission="rptcompromise.view" index="500"/>
-        <invoker folderid="/txn/rpt" caption="Compromise Agreements" mnemonic="c" role="LANDTAX" permission="rptcompromise.view" index="500"/>
+        <invoker folderid="/explorer/txnmgmt/landtax" caption="Compromise Agreements" mnemonic="c" role="LANDTAX" permission="rptcompromise.view" index="500"/>
         <invoker type="quick_launcher" code="RCA00" caption="Compromise Agreements" mnemonic="c" role="LANDTAX" permission="rptcompromise.view" />
         
         <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>

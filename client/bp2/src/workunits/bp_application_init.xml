@@ -2,24 +2,16 @@
     <invokers>
         <invoker type="bp.new" action="init" caption="Business Application" target="window"/>
         
-        <invoker folderid="/menu/bp/txn" action="initNew" caption="New Business Application" role="LICENSING" permission="bplicensing.newtransaction" index="101"  target="window" />
-        <invoker folderid="/menu/bp/txn" action="initRenew" caption="Renew Business Application" role="LICENSING" permission="bplicensing.renewtransaction" index="102"  target="window" />
-        <invoker folderid="/menu/bp/txn" action="initAddline" caption="Add Line Of Business" role="LICENSING" permission="bplicensing.addlobtransaction" index="103"  target="window" />
-        <invoker folderid="/menu/bp/txn" action="initRetire" caption="Retire Business" role="LICENSING" permission="bplicensing.retiretransaction" index="104"  target="window" />
-        <invoker folderid="/menu/bp/txn" action="initRetireLine" caption="Retire Line Of Business" role="LICENSING" permission="bplicensing.retiretransaction" index="105"  target="window" />
-        <invoker folderid="/menu/bp/txn" action="initCaptureNew"   caption="New Business (Capture)" role="LICENSING" permission="bplicensing.capturenewtransaction" index="106"  target="window" />
-        <invoker folderid="/menu/bp/txn" action="initCaptureRenew" caption="Renew Business (Capture)" role="LICENSING" permission="bplicensing.capturerenewtransaction" index="107"  target="window" />
+        <invoker folderid="/explorer/txn/bplo" action="initNew" caption="New Business Application" role="LICENSING" permission="bplicensing.newtransaction" index="101"  target="window" />
+        <invoker folderid="/explorer/txn/bplo" action="initRenew" caption="Renew Business Application" role="LICENSING" permission="bplicensing.renewtransaction" index="102"  target="window" />
+        <invoker folderid="/explorer/txn/bplo" action="initAddline" caption="Add Line Of Business" role="LICENSING" permission="bplicensing.addlobtransaction" index="103"  target="window" />
+        <invoker folderid="/explorer/txn/bplo" action="initRetire" caption="Retire Business" role="LICENSING" permission="bplicensing.retiretransaction" index="104"  target="window" />
+        <invoker folderid="/explorer/txn/bplo" action="initRetireLine" caption="Retire Line Of Business" role="LICENSING" permission="bplicensing.retiretransaction" index="105"  target="window" />
+        <invoker folderid="/explorer/txn/bplo" action="initCaptureNew"   caption="New Business (Capture)" role="LICENSING" permission="bplicensing.capturenewtransaction" index="106"  target="window" />
+        <invoker folderid="/explorer/txn/bplo" action="initCaptureRenew" caption="Renew Business (Capture)" role="LICENSING" permission="bplicensing.capturerenewtransaction" index="107"  target="window" />
         
-        <invoker folderid="/txn/bp/txn" action="initNew" caption="New Business Application" role="LICENSING" permission="bplicensing.newtransaction" index="101"  target="window" />
-        <invoker folderid="/txn/bp/txn" action="initRenew" caption="Renew Business Application" role="LICENSING" permission="bplicensing.renewtransaction" index="102"  target="window" />
-        <invoker folderid="/txn/bp/txn" action="initAddline" caption="Add Line Of Business" role="LICENSING" permission="bplicensing.addlobtransaction" index="103"  target="window" />
-        <invoker folderid="/txn/bp/txn" action="initRetire" caption="Retire Business" role="LICENSING" permission="bplicensing.retiretransaction" index="104"  target="window" />
-        <invoker folderid="/txn/bp/txn" action="initRetireLine" caption="Retire Line Of Business" role="LICENSING" permission="bplicensing.retiretransaction" index="105"  target="window" />
-        <invoker folderid="/txn/bp/txn" action="initCaptureNew"   caption="New Business (Capture)" role="LICENSING" permission="bplicensing.capturenewtransaction" index="106"  target="window" />
-        <invoker folderid="/txn/bp/txn" action="initCaptureRenew" caption="Renew Business (Capture)" role="LICENSING" permission="bplicensing.capturerenewtransaction" index="107"  target="window" />
-        
-        <invoker type="quick_launcher" code="BP01" folderid="/menu/bp/txn" action="initNew" caption="New Business Application" role="LICENSING" permission="bplicensing.newtransaction" index="101"  target="window" />
-        <invoker type="quick_launcher" code="BP02" folderid="/menu/bp/txn" action="initRenew" caption="Renew Business Application" role="LICENSING" permission="bplicensing.renewtransaction" index="102"  target="window" />
+        <invoker type="quick_launcher" code="BP01" action="initNew" caption="New Business Application" role="LICENSING" permission="bplicensing.newtransaction" index="101"  target="window" />
+        <invoker type="quick_launcher" code="BP02" action="initRenew" caption="Renew Business Application" role="LICENSING" permission="bplicensing.renewtransaction" index="102"  target="window" />
         
         <invoker type="bptransaction.initNew"           action="initNew"            caption="New Business Application"      target="window" />
         <invoker type="bptransaction.initRenew"         action="initRenew"          caption="Renew Business Application"    target="window" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workunit>
     <invokers>
-        <invoker folderid="/txn/rpt/titleupdate" action="create" caption="Title Update" index="0" role="APPRAISER" permission="titleupdate.create"/>
+        <invoker folderid="/explorer/txn/rpt/faas" action="create" caption="Title Update" role="APPRAISER" permission="titleupdate.create" index="600"/>
         <invoker type="faastitleupdate:formActions" action="create" caption="New" index="0" target="window" icon="images/doc-new.png" role="APPRAISER" permission="titleupdate.create"/>
         <invoker type="faastitleupdate:formActions" action="open" caption="Open" index="0" target="window" icon="images/open.png" role="APPRAISER" permission="titleupdate.open"/>
         

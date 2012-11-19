@@ -5,8 +5,8 @@
 -->
 <workunit>
     <invokers>
-        <invoker folderid="/menu/mgmt" caption="Cancel FAAS Management" role="SHARED" permission="cancelfaasmgt.view" index="150"/>
-        <invoker type="quick_launcher" code="CF00" caption="Cancel FAAS Management" role="SHARED" permission="cancelfaasmgt.view"/>
+        <invoker folderid="/explorer/txnmgmt/rpt" caption="Cancelled FAAS" role="SHARED" permission="cancelfaasmgt.view" index="150"/>
+        <invoker type="quick_launcher" code="CF00" caption="Cancelled FAAS" role="SHARED" permission="cancelfaasmgt.view"/>
         
         <invoker type="formActions" action="create" shortcut="ctrl N" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" role="APPRAISER" permission="cancelfaasmgt.create" />
         <invoker type="formActions" action="open" shortcut="ctrl O" visibleWhen="#{selectedItem != null and selectedItem.objid != null}" immediate="true" caption="Open" mnemonic="o" icon="images/open.png" role="APPRAISER" permission='cancelfaasmgt.open'/>
