@@ -11,8 +11,8 @@
         <invoker type="formActions" action="close" visibleWhen="#{mode != 'view' and mode != 'reports' and mode != 'rcd'}"  immediate="true" caption="Close" mnemonic="c" icon="images/doc-cancel.png"/>
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" />
         <invoker type="formActions" action="next" shortcut="ctrl N" visibleWhen="#{mode == 'init'}" caption="Next" mnemonic="n" icon="images/next.png"/>
-        <invoker type="formActions" action="back" shortcut="ctrl B" visibleWhen="#{mode == 'main'}" caption="Back" mnemonic="b" icon="images/back.png"/>
-        <invoker type="formActions" action="submit" shortcut="ctrl S" visibleWhen="#{mode == 'main'}" caption="Submit" mnemonic="s" icon="images/save.png"/>
+        <invoker type="formActions" action="back" shortcut="ctrl B" visibleWhen="#{mode == 'create'}" caption="Back" mnemonic="b" icon="images/back.png"/>
+        <invoker type="formActions" action="submit" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" caption="Submit" mnemonic="s" icon="images/save.png"/>
         <invoker type="formActions" action="viewRCD" visibleWhen="#{mode == 'view' and entity.objid != null}"  immediate="true" caption="A. RCD (Summary)" mnemonic="a" icon="images/doc-view.png" />
         <invoker type="formActions" action="viewRCDByFund" visibleWhen="#{entity.opener != 'single' and mode == 'view' and entity.objid != null}"  immediate="true" caption="B. RCD (By Fund)" mnemonic="a" icon="images/doc-view.png" />
         <invoker type="formActions" action="reports" visibleWhen="#{mode == 'view' and entity.objid != null}"  immediate="true" caption="Reports" mnemonic="r" icon="images/otherReports.png"/>
@@ -27,6 +27,7 @@
         import com.rameses.osiris2.client.*;
         import com.rameses.osiris2.reports.*
         import java.text.DecimalFormat;
+        import java.rmi.server.UID
         
         public class LiquidationController {
 
@@ -58,35 +59,37 @@
             def create() {
                 liquidatingofficer = getLiquidatingOfficer()
                 mode = 'init';
-                entity = [
-                    info : buildInfo(),
-                    remittances : [],
-                    otherpayments : []
-                ];
-                
+                entity = createEntity()
                 return 'init';
+            }
+            
+            def createEntity() {
+                return [
+                    objid                   : 'LQ' + new UID(),
+                    txndate                 : dtsvc.getServerDate(),
+                    liquidatingofficerid    : liquidatingofficer.objid,
+                    liquidatingofficername  : liquidatingofficer.formalname,
+                    liquidatingofficertitle : liquidatingofficer.jobtitle,
+                    amount                  : 0.00,
+                    totalcash               : 0.00,
+                    totalotherpayment       : 0.00,
+                ];
             }
             
             def open() {
                 if (entity)
                     entity = svc.open( entity.objid );
                 mode = 'view';
-                denominationOpener = InvokerUtil.lookupOpener( 'cashreceipt:breakdown', [totalAmount:entity.info.totalcash, list:entity.info.denominations, mode:'view'] );
+                denominationOpener = InvokerUtil.lookupOpener( 'cashreceipt:breakdown', [totalAmount:entity.totalcash, list:entity.denominations, mode:'view'] );
                 
                 return 'main';
             }
             
-            def getHtml() {
-                return svc.getHtml( entity );
-            }
-            
             def next() {
-                entity.remittances = []
-                entity.otherpayments = []
                 addCashierInfo()
                 entity = svc.createLiquidation( entity );
-                mode = 'main';
-                denominationOpener = InvokerUtil.lookupOpener('cashreceipt:breakdown', [totalAmount:entity.info.totalcash, list:entity.info.denominations]);
+                denominationOpener = InvokerUtil.lookupOpener('cashreceipt:breakdown', [totalAmount:entity.totalcash, list:entity.denominations]);
+                mode = 'create';
                 return 'main';
             }
             
@@ -98,7 +101,7 @@
             def submit() {
                 if (! MsgBox.confirm( "Do you want to submit this document?" ) )
                     return null;
-                entity.info.denominations = denominationOpener.handle.list;
+                entity.denominations = denominationOpener.handle.list;
                 entity = svc.create( entity );
                 if (caller)
                     caller.binding.refresh();
@@ -113,32 +116,23 @@
             }
             
             def viewOtherPayments() {
-                entity.otherpayments = svc.fetchOtherPayments( entity )
+                if( entity.otherpayments == null ){
+                    if( mode == 'create' ) 
+                        entity.otherpayments = svc.getOpenNonCashPayments( entity )
+                    else 
+                        entity.otherpayments = svc.getLiquidatedNonCashPayments( entity.objid )
+                }
                 return new PopupOpener( outcome:'otherpayments' );
             }
 
             def viewRemittances() {
+                if( entity.remittances == null ){
+                    if( mode == 'create' ) 
+                        entity.remittances = svc.getOpenRemittances( entity )
+                    else 
+                        entity.remittances = svc.getLiquidatedRemittances( entity.objid )
+                }
                 return new PopupOpener( outcome:'remittances' );
-            }
-            
-            def buildInfo() {
-                return [
-                    txndate : dtsvc.getServerDate(),
-                    liquidatingofficerid : liquidatingofficer.objid,
-                    liquidatingofficername : liquidatingofficer.formalname,
-                    liquidatingofficertitle : liquidatingofficer.jobtitle,
-                    amount : 0.00,
-                    totalcash : 0.00,
-                    totalotherpayment : 0.00,
-                    d1000qty : 0,
-                    d500qty : 0,
-                    d200qty : 0,
-                    d100qty : 0,
-                    d50qty : 0,
-                    d20qty : 0,
-                    d10qty : 0,
-                    coins : 0.00
-                ];
             }
             
             def otherPaymentHandler = [
@@ -160,7 +154,7 @@
             ] as PageListModel;
             
             def getTotalOtherPayment() {
-                return numformat.format( entity.info.totalotherpayment );
+                return numformat.format( entity.totalotherpayment );
             }
             
             def remittanceHandler = [
@@ -183,7 +177,7 @@
             ] as PageListModel;
             
             def getTotalAmount() {
-                return numformat.format( entity.info.amount );
+                return numformat.format( entity.amount );
             }
             
             def getLiquidatingOfficer() {

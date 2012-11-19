@@ -1,26 +1,26 @@
 [getList]
-SELECT * FROM remittancelist 
+SELECT * FROM remittance 
 ORDER BY txndate DESC, txnno DESC
 
 [getRemittanceByTxnNo]
 SELECT * 
-FROM remittancelist 
+FROM remittance 
 WHERE txnno = $P{txnno} 
 ORDER BY txndate DESC, txnno DESC 
 
 [getRemittanceByCollector]
-SELECT * FROM remittancelist 
-WHERE collectorname LIKE CONCAT($P{collectorname}, '%') 
+SELECT * FROM remittance 
+WHERE collectorname LIKE $P{collectorname} 
 ORDER BY txndate DESC, txnno DESC
 
 [getListByCollectorid]
-SELECT * FROM remittancelist 
+SELECT * FROM remittance 
 WHERE collectorid = $P{collectorid} 
 ORDER BY txndate DESC, txnno DESC
 
 [getRemittanceByTxnNoByCollectorid]
 SELECT * 
-FROM remittancelist 
+FROM remittance 
 WHERE txnno = $P{txnno} 
 AND collectorid = $P{collectorid} 
 ORDER BY txndate DESC, txnno DESC
@@ -51,7 +51,7 @@ SELECT
 FROM receiptitem ri   
 INNER JOIN incomeaccount ia ON ri.acctid = ia.objid  
 INNER JOIN receiptlist rl ON rl.objid = ri.receiptid    
-INNER JOIN remittancelist rml ON rml.objid = rl.remittanceid     
+INNER JOIN remittance rml ON rml.objid = rl.remittanceid     
 INNER JOIN af af ON rl.afid = af.objid 
 WHERE rml.objid = $P{remittanceid} 
   AND rl.voided = 0   
@@ -62,7 +62,7 @@ ORDER BY rl.afid, ri.fundname, ia.groupid
 [getReceiptsByRemittance]
 SELECT * FROM receiptlist 
 WHERE remittanceid = $P{remittanceid} 
-ORDER BY afid, serialno DESC, txndate DESC 
+ORDER BY afid, serialno
 
 [getReceiptIdsByRemittance]
 SELECT objid, afid FROM receiptlist   
@@ -73,7 +73,7 @@ SELECT pi.* FROM paymentitem pi, receiptlist rl
 WHERE rl.objid = pi.receiptid 
 AND rl.voided = 0 
 AND NOT pi.paytype = 'CASH' 
-AND rl.objid = $P{remittanceid} 
+AND rl.remittanceid = $P{remittanceid} 
 
 [getRemittedFormsByRemittance]
 SELECT * FROM remittedform 
@@ -122,8 +122,14 @@ SELECT * FROM receiptlist
 WHERE remittanceid IS NULL 
 AND docstate = 'OPEN' 
 AND collectorid = $P{collectorid} 
-ORDER BY serialno DESC, txndate DESC
+ORDER BY afid, serialno 
 
+[getUnremittedReceiptSummaryInfo]
+SELECT COUNT(*) AS count, SUM(amount) AS totalamount 
+FROM receiptlist 
+WHERE remittanceid IS NULL 
+AND docstate = 'OPEN' 
+AND collectorid = $P{collectorid} 
 
 [getUnpostedBatchCaptureCollections]
 SELECT objid 
@@ -135,14 +141,6 @@ SELECT * FROM receiptlist
 WHERE remittanceid IS NULL 
 AND docstate = 'CAPTURED' 
 AND collectorid = $P{collectorid} 
-
-[getOtherPayments]
-SELECT pi.* FROM paymentitem pi, receiptlist rl 
-WHERE rl.objid = pi.receiptid 
-AND NOT pi.paytype = 'CASH' 
-AND rl.collectorid = $P{collectorid} 
-AND rl.voided = 0 
-AND rl.docstate = 'OPEN'
 
 [getRemittanceInfo]
 SELECT 
@@ -389,10 +387,17 @@ WHERE docstate = 'OPEN'
 GROUP BY afid, afcontrolid, stubno  
 ORDER BY afid, fromserialno, stubno  
 
-[fetchOtherPayments]
+[getOpenNonCashPayments]
+SELECT pi.* FROM paymentitem pi, receiptlist rl 
+WHERE rl.objid = pi.receiptid 
+AND NOT pi.paytype = 'CASH' 
+AND rl.collectorid = $P{collectorid} 
+AND rl.voided = 0 
+AND rl.docstate = 'OPEN' 
+ 
+[getRemittedNonCashPayments]
 SELECT  
- rl.objid, rl.remittanceid, 
- i.receiptid, i.paytype, i.particulars, i.amount 
+ i.*
 FROM receiptlist rl 
 INNER JOIN paymentitem i ON i.receiptid = rl.objid 
 WHERE rl.remittanceid = $P{objid} 
@@ -564,12 +569,13 @@ SELECT
 	rl.municityname, 
 	rl.barangay, 
 	rl.classcode AS classification, 
+	rl.municityname,
 	IFNULL((SELECT SUM( basic ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ), 0.0) AS currentyear, 
 	IFNULL((SELECT SUM( basic ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('previous','prior') ), 0.0) AS previousyear, 
 	IFNULL((SELECT SUM( basicdisc ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid ), 0.0) AS discount, 
 	IFNULL((SELECT SUM( basicint ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ), 0.0) AS penaltycurrent, 
 	IFNULL((SELECT SUM( basicint ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('previous','prior') ), 0.0) AS penaltyprevious 
-FROM remittancelist rem 
+FROM remittance rem 
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid  
 	INNER JOIN rptpayment rp ON rp.receiptid = r.objid  
 	INNER JOIN rptledger rl ON rp.rptledgerid = rl.objid  
@@ -590,12 +596,13 @@ SELECT
 	rl.municityname, 
 	rl.barangay, 
 	rl.classcode AS classification, 
+	rl.municityname,
 	IFNULL((SELECT SUM( sef ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ),0.0) AS currentyear, 
 	IFNULL((SELECT SUM( sef ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('previous', 'prior') ),0.0) AS previousyear, 
 	IFNULL((SELECT SUM( sefdisc ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid ),0.0) AS discount, 
 	IFNULL((SELECT SUM( sefint ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ),0.0) AS penaltycurrent, 
 	IFNULL((SELECT SUM( sefint ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('previous','prior' ) ),0.0) AS penaltyprevious 
-FROM remittancelist rem 
+FROM remittance rem 
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid  
 	INNER JOIN rptpayment rp ON rp.receiptid = r.objid  
 	INNER JOIN rptledger rl ON rp.rptledgerid = rl.objid  
@@ -616,12 +623,13 @@ SELECT
 	rp.municityname,
 	rp.barangay,
 	rp.classcode AS classification, 
-	rp.basic AS currentyear, 
+	rp.municityname,
+	rp.basic + rp.basicadv AS currentyear, 
 	rp.basicprev + rp.basicprior AS previousyear, 
-	rp.basicdisc AS discount, 
+	rp.basicdisc + rp.basicadvdisc AS discount, 
 	rp.basicint AS penaltycurrent, 
 	rp.basicprevint + rp.basicpriorint AS penaltyprevious 
-FROM remittancelist rem 
+FROM remittance rem 
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid 
 	INNER JOIN rptpaymentmanual rp ON rp.receiptid = r.objid 
 WHERE rem.objid = $P{objid} 
@@ -643,12 +651,13 @@ SELECT
 	rp.municityname,
 	rp.barangay,
 	rp.classcode AS classification, 
-	rp.sef AS currentyear, 
+	rp.municityname,
+	rp.sef + rp.sefadv AS currentyear, 
 	rp.sefprev + rp.sefprior AS previousyear, 
-	rp.sefdisc AS discount, 
+	rp.sefdisc + rp.sefadvdisc  AS discount, 
 	rp.sefint AS penaltycurrent, 
 	rp.sefprevint + rp.sefpriorint AS penaltyprevious 
-FROM remittancelist rem 
+FROM remittance rem 
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid 
 	INNER JOIN rptpaymentmanual rp ON rp.receiptid = r.objid 
 WHERE rem.objid = $P{objid} 
@@ -659,13 +668,10 @@ ORDER BY rp.municityname, r.serialno
 [getFundName]
 SELECT objid, fundname FROM fund ORDER BY fundname 
 
+ 
 
-
-[exportRemittance]
+[exportremittance]
 select * from remittance where objid = $P{objid}
-
-[exportRemittanceList]
-select * from remittancelist where objid = $P{objid}
 
 [exportRemittedForm]
 select * from remittedform where remittanceid = $P{objid}
@@ -714,5 +720,5 @@ WHERE afid = $P{afid}
 [getCraafCreditByInvCreditId]
 SELECT * FROM craaf WHERE afinventorycreditid = $P{afinventorycreditid} 
 
-[getRemittanceListById]
-SELECT * FROM remittancelist WHERE objid = $P{objid} 
+[getRemittanceById]
+SELECT * FROM remittance WHERE objid = $P{objid} 

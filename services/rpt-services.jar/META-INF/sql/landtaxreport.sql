@@ -55,8 +55,8 @@ SELECT
 	IFNULL((SELECT SUM( basicdisc ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid ), 0.0) AS discount, 
 	IFNULL((SELECT SUM( basicint ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ), 0.0) AS penaltycurrent, 
 	IFNULL((SELECT SUM( basicint ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('previous','prior') ), 0.0) AS penaltyprevious 
-FROM liquidationlist lq 
-	INNER JOIN remittancelist rem ON lq.objid = rem.liquidationid  
+FROM liquidation lq 
+	INNER JOIN remittance rem ON lq.objid = rem.liquidationid  
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid  
 	INNER JOIN rptpayment rp ON rp.receiptid = r.objid  
 	INNER JOIN rptledger rl ON rp.rptledgerid = rl.objid  
@@ -64,8 +64,33 @@ WHERE lq.txntimestamp LIKE $P{txntimestamp}
   AND r.doctype = 'RPT'  
   AND r.voided = 0  
   AND r.collectorid LIKE $P{collectorid} 
-ORDER BY r.serialno, rl.tdno    
 
+UNION ALL 
+
+SELECT 
+	rp.period AS payperiod,
+	'BASIC' AS type,
+	r.txndate AS ordate,
+	rp.taxpayername,
+	rp.tdno,
+	r.serialno AS orno,
+	rp.barangay,
+	rp.classcode AS classification, 
+	rp.basic + rp.basicadv AS currentyear, 
+	rp.basicprev + rp.basicprior AS previousyear, 
+	rp.basicdisc + rp.basicadvdisc AS discount, 
+	rp.basicint AS penaltycurrent, 
+	rp.basicprevint + rp.basicpriorint AS penaltyprevious 
+FROM liquidation lq
+	INNER JOIN remittance rem ON lq.objid = rem.liquidationid 
+	INNER JOIN receiptlist r ON rem.objid = r.remittanceid 
+	INNER JOIN rptpaymentmanual rp ON rp.receiptid = r.objid 
+WHERE lq.txntimestamp LIKE $P{txntimestamp}  
+  AND r.doctype = 'RPT' 
+  AND r.voided = 0 
+  AND r.collectorid LIKE $P{collectorid}
+
+  
 [getAbstractCollectionSEF]
 SELECT 
 	rp.period AS payperiod, 
@@ -81,8 +106,8 @@ SELECT
 	IFNULL((SELECT SUM( sefdisc ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid ),0.0) AS discount, 
 	IFNULL((SELECT SUM( sefint ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('current','advance') ),0.0) AS penaltycurrent, 
 	IFNULL((SELECT SUM( sefint ) FROM rptpaymentdetail WHERE receiptid = r.objid AND rptledgerid = rl.objid AND revtype IN ('previous','prior' ) ),0.0) AS penaltyprevious 
-FROM liquidationlist lq 
-	INNER JOIN remittancelist rem ON lq.objid = rem.liquidationid  
+FROM liquidation lq 
+	INNER JOIN remittance rem ON lq.objid = rem.liquidationid  
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid  
 	INNER JOIN rptpayment rp ON rp.receiptid = r.objid  
 	INNER JOIN rptledger rl ON rp.rptledgerid = rl.objid  
@@ -92,34 +117,8 @@ WHERE lq.txntimestamp LIKE $P{txntimestamp}
   AND r.collectorid LIKE $P{collectorid} 
 ORDER BY r.serialno, rl.tdno 
 
+UNION ALL 
 
-[getAbstractCollectionManualBASIC]
-SELECT 
-	rp.period AS payperiod,
-	'BASIC' AS type,
-	r.txndate AS ordate,
-	rp.taxpayername,
-	rp.tdno,
-	r.serialno AS orno,
-	rp.barangay,
-	rp.classcode AS classification, 
-	rp.basic AS currentyear, 
-	rp.basicprev + rp.basicprior AS previousyear, 
-	rp.basicdisc AS discount, 
-	rp.basicint AS penaltycurrent, 
-	rp.basicprevint + rp.basicpriorint AS penaltyprevious 
-FROM liquidationlist lq
-	INNER JOIN remittancelist rem ON lq.objid = rem.liquidationid 
-	INNER JOIN receiptlist r ON rem.objid = r.remittanceid 
-	INNER JOIN rptpaymentmanual rp ON rp.receiptid = r.objid 
-WHERE lq.txntimestamp LIKE $P{txntimestamp}  
-  AND r.doctype = 'RPT' 
-  AND r.voided = 0 
-  AND r.collectorid LIKE $P{collectorid}
-
-
-
-[getAbstractCollectionManualSEF]
 SELECT 
 	rp.period AS payperiod,
 	'SEF' AS type,
@@ -129,13 +128,13 @@ SELECT
 	r.serialno AS orno,
 	rp.barangay,
 	rp.classcode AS classification, 
-	rp.sef AS currentyear, 
+	rp.sef + rp.sefadv AS currentyear, 
 	rp.sefprev + rp.sefprior AS previousyear, 
-	rp.sefdisc AS discount, 
+	rp.sefdisc + rp.sefadvdisc AS discount, 
 	rp.sefint AS penaltycurrent, 
 	rp.sefprevint + rp.sefpriorint AS penaltyprevious 
-FROM liquidationlist lq
-	INNER JOIN remittancelist rem ON lq.objid = rem.liquidationid 
+FROM liquidation lq
+	INNER JOIN remittance rem ON lq.objid = rem.liquidationid 
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid 
 	INNER JOIN rptpaymentmanual rp ON rp.receiptid = r.objid 
 WHERE lq.txntimestamp LIKE $P{txntimestamp}  
@@ -153,7 +152,7 @@ SELECT
 	0.0 AS basiccurrentshare, 
 	0.0 AS basicpreviousshare, 
 	0.0 AS totalshare 
-FROM liquidationlist l  
+FROM liquidation l  
 	INNER JOIN remittance rem ON l.objid = rem.liquidationid  
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid  
 	INNER JOIN rptpayment rp ON r.objid = rp.receiptid 
@@ -168,13 +167,13 @@ ORDER BY rl.barangay
 [getManualBasicSummaryByMonth]
 SELECT 
 	rp.barangay, 
-	SUM(rp.basic + rp.basicint - rp.basicdisc) AS basiccurrent, 
+	SUM(rp.basic + rp.basicadv + rp.basicint - rp.basicdisc - rp.basicadvdisc ) AS basiccurrent, 
 	SUM(rp.basicprev + rp.basicprevint + rp.basicprior + rp.basicpriorint) AS basicprevious, 
-	SUM(rp.basic + rp.basicint - rp.basicdisc + rp.basicprev + rp.basicprevint + rp.basicprior + rp.basicpriorint) AS basictotal, 
+	SUM(rp.basic + rp.basicadv + rp.basicint - rp.basicdisc - rp.basicadvdisc + rp.basicprev + rp.basicprevint + rp.basicprior + rp.basicpriorint) AS basictotal, 
 	0.0 AS basiccurrentshare,  
 	0.0 AS basicpreviousshare,  
 	0.0 AS totalshare  
-FROM liquidationlist l   
+FROM liquidation l   
 	INNER JOIN remittance rem ON l.objid = rem.liquidationid   
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid   
 	INNER JOIN rptpaymentmanual rp ON r.objid = rp.receiptid   
@@ -208,8 +207,8 @@ SELECT
 	
 	SUM( rd.basic + rd.basicint + rd.sef + rd.sefint) AS grandtotal,
 	SUM( rd.basic + rd.basicint - rd.basicdisc + rd.sef + rd.sefint - rd.sefdisc) AS netgrandtotal 	
-FROM liquidationlist lq  
-	INNER JOIN remittancelist rem ON lq.objid = rem.liquidationid  
+FROM liquidation lq  
+	INNER JOIN remittance rem ON lq.objid = rem.liquidationid  
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid  
 	INNER JOIN rptpaymentdetail rd ON rd.receiptid = r.objid  
 	INNER JOIN rptledger rl ON rd.rptledgerid = rl.objid  
@@ -222,30 +221,30 @@ GROUP BY rl.classcode
 [getManualRPTC]
 SELECT 
 	pc.propertycode AS classcode, 
-	SUM(rp.basic) AS basiccurrent, 
-	SUM(rp.basicdisc) AS basicdisc, 
+	SUM(rp.basic + rp.basicadv ) AS basiccurrent, 
+	SUM(rp.basicdisc + rp.basicadvdisc ) AS basicdisc, 
 	SUM(rp.basicprev + rp.basicprior) AS basicprev, 
 	SUM(rp.basicint) AS basiccurrentint, 
 	SUM(rp.basicprevint + rp.basicpriorint) AS basicprevint,
-	SUM(rp.basic + rp.basicprev + rp.basicprior + rp.basicint + rp.basicprevint + rp.basicpriorint) AS basicgross,
-	SUM(rp.basic + rp.basicprev + rp.basicprior + rp.basicint + rp.basicprevint + rp.basicpriorint - rp.basicdisc) AS basicnet,
+	SUM(rp.basic + rp.basicadv + rp.basicprev + rp.basicprior + rp.basicint + rp.basicprevint + rp.basicpriorint) AS basicgross,
+	SUM(rp.basic + rp.basicadv + rp.basicprev + rp.basicprior + rp.basicint + rp.basicprevint + rp.basicpriorint - rp.basicdisc - rp.basicadvdisc ) AS basicnet,
 
-	SUM(rp.sef) AS sefcurrent, 
-	SUM(rp.sefdisc) AS sefdisc, 
+	SUM(rp.sef + rp.sefadv ) AS sefcurrent, 
+	SUM(rp.sefdisc + rp.sefadvdisc ) AS sefdisc, 
 	SUM(rp.sefprev + rp.sefprior) AS sefprev, 
 	SUM(rp.sefint) AS sefcurrentint,  
 	SUM(rp.sefprevint + rp.sefpriorint) AS sefprevint, 
-	SUM(rp.sef + rp.sefprev + rp.sefprior + rp.sefint + rp.sefprevint + rp.sefpriorint) AS sefgross, 
-	SUM(rp.sef + rp.sefprev + rp.sefprior + rp.sefint + rp.sefprevint + rp.sefpriorint - rp.sefdisc) AS sefnet ,
+	SUM(rp.sef + rp.sefadv + rp.sefprev + rp.sefprior + rp.sefint + rp.sefprevint + rp.sefpriorint) AS sefgross, 
+	SUM(rp.sef + rp.sefadv + rp.sefprev + rp.sefprior + rp.sefint + rp.sefprevint + rp.sefpriorint - rp.sefdisc - rp.sefadvdisc ) AS sefnet ,
 	
-	SUM(rp.basic + rp.basicprev + rp.basicprior + rp.basicint + rp.basicprevint + rp.basicpriorint +
-	    rp.sef + rp.sefprev + rp.sefprior + rp.sefint + rp.sefprevint + rp.sefpriorint ) AS grandtotal,
+	SUM(rp.basic + rp.basicadv + rp.basicprev + rp.basicprior + rp.basicint + rp.basicprevint + rp.basicpriorint +
+	    rp.sef + rp.sefadv + rp.sefprev + rp.sefprior + rp.sefint + rp.sefprevint + rp.sefpriorint ) AS grandtotal,
 		
-	SUM(rp.basic + rp.basicprev + rp.basicprior + rp.basicint + rp.basicprevint + rp.basicpriorint - rp.basicdisc +  
-		rp.sef + rp.sefprev + rp.sefprior + rp.sefint + rp.sefprevint + rp.sefpriorint - rp.sefdisc ) AS netgrandtotal  
+	SUM(rp.basic rp.basicadv + rp.basicprev + rp.basicprior + rp.basicint + rp.basicprevint + rp.basicpriorint - rp.basicdisc - rp.basicadvdisc +  
+		rp.sef + rp.sefadv + rp.sefprev + rp.sefprior + rp.sefint + rp.sefprevint + rp.sefpriorint - rp.sefdisc - rp.sefadvdisc ) AS netgrandtotal  
 	
-FROM liquidationlist lq 
-	INNER JOIN remittancelist rem ON lq.objid = rem.liquidationid 
+FROM liquidation lq 
+	INNER JOIN remittance rem ON lq.objid = rem.liquidationid 
 	INNER JOIN receiptlist r ON rem.objid = r.remittanceid 
 	INNER JOIN rptpaymentmanual rp ON rp.receiptid = r.objid 
 	LEFT JOIN propertyclassification pc ON rp.classcode = pc.propertycode   
@@ -258,8 +257,8 @@ GROUP BY pc.propertycode
 [getCompromisedPayments]
 SELECT 
 	l.taxpayername, l.tdno, l.barangay, c.orno, c.ordate, c.amount 
-FROM liquidationlist q 
-INNER JOIN remittancelist m ON m.liquidationid=q.objid 
+FROM liquidation q 
+INNER JOIN remittance m ON m.liquidationid=q.objid 
 INNER JOIN receiptlist r on r.remittanceid=m.objid 
 INNER JOIN rptcompromise_credit c ON c.receiptid=r.objid 
 INNER JOIN rptledger l on l.objid=c.ledgerid 

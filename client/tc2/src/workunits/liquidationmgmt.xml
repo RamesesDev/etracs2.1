@@ -36,8 +36,9 @@
 
                 getColumns : {
                     return [
-                        new Column( name:"txnno", caption:"Liq. No.", minWidth:60 ),
+                        new Column( name:"txnno", caption:"Liq. No.", width:60 ),
                         new Column( name:"liquidatingofficername", caption:"Liquidating Officer", width:350 ),
+                        new Column( name:"depositedbyname", caption:"Cashier", width:350 ),
                         new Column( name:"txndate", caption:"Date", format: "yyyy-MM-dd", width:100 ),
                         new Column( name:"amount", caption:"Amount", format: "#,##0.00", width:140 )
                     ];
@@ -65,10 +66,6 @@
                 return InvokerUtil.lookupOpener( opener , [entity:selectedItem] )
             }
             
-            def getHtml() {
-                return svc.getHtml( svc.open(selectedItem?.objid) );
-            }
-
         }
         
         

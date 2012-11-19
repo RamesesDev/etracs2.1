@@ -18,7 +18,10 @@ SELECT objid FROM [rule] WHERE objid <> $P{objid} AND rulename = $P{rulename}
 SELECT * FROM rulegroup where ruleset=$P{ruleset} ORDER BY sortorder 
 
 [get-byname]
-select objid from [rule] where rulename=?
+select objid from [rule] where rulename=? 
+
+[getObjidByBame]
+select objid from [rule] where rulename=? 
 
 
 

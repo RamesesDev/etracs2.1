@@ -598,7 +598,7 @@ class RPTReportService
 			title 		: title,
 			reportdata  : taxables + exempts ,
 		]
-	}
+	} 
 	
 	def buildComparativeMVInfo( info, taxability ) {
 		return [ classid	: info.objid, 
@@ -614,6 +614,25 @@ class RPTReportService
 			]
 	}	
 	
+	
+	@ProxyMethod
+	public Map generateRdapRpta100( year, qtr, month ) {
+		if (! month || month <= 0 ) throw new Exception('Month is required.')
+		def title = 'ASSESSMENT AND COLLECTION MONTHLY STATISTICAL SUMMARY'
+		def period = 'FOR THE MONTH OF ' + getMonthName( month ) + ', ' + year 
+		def periodtype = 'MONTH'  
+		
+		def txntimestamp = calculateEndingTimeStamp( year, qtr, month )
+		def reportdata   = em.sqlContext.createNamedQuery('rptreport:getRDAP-RPTA-100')
+								.setParameter('txntimestamp', txntimestamp)
+								.resultList 
+		return [
+			period 		: period,
+			periodtype 	: periodtype,
+			title 		: title,
+			reportdata  : reportdata,
+		]
+	}
 	
 	
 	
@@ -645,7 +664,7 @@ class RPTReportService
 			[name:'JUNE', 	month:6, qtr:2 ],
 			
 			[name:'JULY', 		month:7, qtr:3 ],
-			[name:'AUG', 		month:8, qtr:3 ],
+			[name:'AUGUST',		month:8, qtr:3 ],
 			[name:'SEPTEMBER', 	month:9, qtr:3 ],
 			
 			[name:'OCTOBER', 	month:10, qtr:4 ],

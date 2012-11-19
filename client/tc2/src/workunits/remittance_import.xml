@@ -39,7 +39,7 @@ public class ImportRemittanceController
     def next() {
         importRemittance()
         svc.checkDuplicateImportPosting( entity.objid )
-        denominationOpener = InvokerUtil.lookupOpener('cashreceipt:breakdown', [totalAmount:entity.info.totalcash, list:entity.info.denominations, mode:'view']);
+        denominationOpener = InvokerUtil.lookupOpener('cashreceipt:breakdown', [totalAmount:entity.totalcash, list:entity.denominations, mode:'view']);
         return 'default'
     }
     

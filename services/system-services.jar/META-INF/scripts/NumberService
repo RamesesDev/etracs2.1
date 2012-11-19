@@ -174,9 +174,12 @@ class NumberService {
     
     @ProxyMethod
     public String convertString(String snum) {
+		println '='*50
+		println 'snum -> ' + snum 
         String str 	= snum;
         String strDec	= "";
         String[] vals = snum.split("\\.");
+		println 'vals -> ' + vals
         String wn = convertLong(Long.parseLong( vals[0]) );
         if ( vals.length == 2 ) {
             if ( Long.parseLong(vals[1]) > 0)

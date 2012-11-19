@@ -38,6 +38,7 @@
         <invoker type="quick_launcher" code="CE01"    action="correction"       caption="Correction of Entry"   target="window" />
         <invoker type="quick_launcher" code="CC01"  action="changeClassification"     caption="Change Classification"         target="window" />
         <invoker type="quick_launcher" code="CT01"  action="changeTaxability"     caption="Change Taxability"         target="window" />
+        <invoker type="quick_launcher" code="CD01"  action="changeDepreciation"     caption="Change Depreciation"         target="window" />
         <invoker type="quick_launcher" code="RE01"  action="reassessment"     caption="Re-Assessment"         target="window" />
         <invoker type="quick_launcher" code="ND01"  action="newdiscovery"     caption="New Discovery"         target="window" />
         <invoker type="quick_launcher" code="MC01" action="multipleclaim"    caption="Multiple Claim"        target="window" />
@@ -467,6 +468,7 @@ public class FAASController
     def reassessment()  { initTxn( 'RE', 'Re-Assessment Transaction' ) }
     def changeClassification() { initTxn( 'CC', 'Change Classification Transaction' ) }
     def changeTaxability() { initTxn( 'CT', 'Change Taxability Transaction' ) }
+    def changeDepreciation() { initTxn( 'CD', 'Change Depreciation Transaction' ) }
     def correction()    { initTxn( 'CE', 'Correction of Entry Transaction' ) }
     def multipleclaim() { initTxn( 'MC', 'Multiple Claim Transaction' ) }
     

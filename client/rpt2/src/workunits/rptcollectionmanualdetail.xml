@@ -35,9 +35,13 @@ public class RPTManualCollectionDetailPage {
     def receipt
     def item
     
+    def items
+    
     
     def basic           = 0.0
+    def basicadv        = 0.0
     def basicdisc       = 0.0
+    def basicadvdisc    = 0.0 
     def basicint        = 0.0
     def basicprev       = 0.0
     def basicprevint    = 0.0   
@@ -60,8 +64,10 @@ public class RPTManualCollectionDetailPage {
             taxpayeraddress    : receipt.info.payoraddress,
             fromqtr : 1, toqtr : 4,
             basic   : 0.0,      basicdisc : 0.0,        basicint : 0.0,
+            basicadv : 0.0,     basicadvdisc : 0.0, 
             basicprev : 0.0,    basicprevint : 0.0,     basicprior :0.0,        basicpriorint :0.0,
             sef : 0.0,          sefdisc : 0.0,          sefint : 0.0,
+            sefadv : 0.0,       sefadvdisc : 0.0,
             sefprev : 0.0,      sefprevint : 0.0,       sefprior :0.0,          sefpriorint :0.0,
         ]
     }
@@ -136,6 +142,8 @@ public class RPTManualCollectionDetailPage {
     void resetValues(){
         basic      = 0.0
         basicdisc  = 0.0
+        basicadv   = 0.0
+        basicadvdisc = 0.0 
         basicint   = 0.0
         basicprev  = 0.0
         basicprevint = 0.0
@@ -144,6 +152,9 @@ public class RPTManualCollectionDetailPage {
         
         item.basic      = 0.0
         item.basicdisc  = 0.0
+        item.basicadv   = 0.0 
+        item.basicadvdisc = 0.0 
+        
         item.basicint   = 0.0
         item.basicprev  = 0.0
         item.basicprevint = 0.0
@@ -155,6 +166,8 @@ public class RPTManualCollectionDetailPage {
         
         item.sef      = 0.0
         item.sefdisc  = 0.0
+        item.sefadv   = 0.0 
+        item.sefadvdisc = 0.0
         item.sefint   = 0.0
         item.sefprev  = 0.0
         item.sefprevint = 0.0
@@ -169,12 +182,12 @@ public class RPTManualCollectionDetailPage {
     
     
     void calculateTotals() {
-        item.basicgross   = item.basic + item.basicprev + item.basicprior 
-        item.basicdp      = item.basicint + item.basicprevint + item.basicpriorint - item.basicdisc 
+        item.basicgross   = item.basic + item.basicadv + item.basicprev + item.basicprior 
+        item.basicdp      = item.basicint + item.basicprevint + item.basicpriorint - item.basicdisc - item.basicadvdisc
         item.basicnet     = item.basicgross 
         
-        item.sefgross   = item.sef + item.sefprev + item.sefprior 
-        item.sefdp      = item.sefint + item.sefprevint + item.sefpriorint - item.sefdisc 
+        item.sefgross   = item.sef + item.sefadv + item.sefprev + item.sefprior 
+        item.sefdp      = item.sefint + item.sefprevint + item.sefpriorint - item.sefdisc - item.sefadvdisc 
         item.sefnet     = item.sefgross 
         
         item.amount     = item.basicnet + item.basicdp + item.sefnet  + item.sefdp 
@@ -227,6 +240,8 @@ public class RPTManualCollectionDetailPage {
         basic       = item.basic
         basicint    = item.basicint
         basicdisc   = item.basicdisc
+        basicadv    = item.basicadv
+        basicadvdisc = item.basicadvdisc 
         basicprev       = item.basicprev
         basicprevint    = item.basicprevint
         basicprior       = item.basicprior
@@ -252,6 +267,20 @@ public class RPTManualCollectionDetailPage {
         this.basicint = ( basicint == null ? 0.0 : basicint )
         item.basicint = this.basicint
         item.sefint = this.basicint
+        calculateTotals()
+    }
+    
+    void setBasicadv( basicadv ) {
+        this.basicadv = (basicadv == null ? 0.0 : basicadv)
+        item.basicadv = this.basicadv
+        item.sefadv = this.basicadv
+        calculateTotals()
+    }
+    
+    void setBasicadvdisc( basicadvdisc ) {
+        this.basicadvdisc = ( basicadvdisc == null ? 0.0 : basicadvdisc )
+        item.basicadvdisc = this.basicadvdisc
+        item.sefadvdisc = this.basicadvdisc
         calculateTotals()
     }
     
@@ -302,9 +331,21 @@ public class RPTManualCollectionDetailPage {
     
     
     boolean getAllowEditCurrent() {
-        if( item.toyear < parsedate.year ) 
-            return false
-        return true;
+        if( item.toyear == parsedate.year ) 
+            return true
+        return false 
+    }
+    
+    boolean getAllowEditAdvance() {
+        if( item.fromyear > parsedate.year )
+            return true
+        return false
+    }
+    
+    boolean getAllowEditPrevious() {
+        if( item.fromyear < parsedate.year )
+            return true
+        return false
     }
     
     void required( caption, val ) {
@@ -313,6 +354,23 @@ public class RPTManualCollectionDetailPage {
     
     List getMunicipalityCityList() {
         return svc.getMunicipalityCityList()
+    }
+    
+    void copyLastInfo() {
+        if( ! items ) return 
+        def info = items[0]
+        item.taxpayername       = info.taxpayername
+        item.taxpayeraddress    = info.taxpayeraddress
+        item.tdno               = info.tdno 
+        item.cadastrallotno     = info.cadastrallotno
+        item.classcode          = info.classcode
+        item.municity           = info.municity
+        item.municityid         = info.municityid
+        item.municityname       = info.municityname
+        item.fullpin            = info.fullpin
+        item.rputype            = info.rputype
+        item.barangay           = info.barangay
+        binding.focus('fromyear')
     }
 }
 

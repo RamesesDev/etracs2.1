@@ -22,34 +22,33 @@ public class LiquidationReportServices{
 	public def buildRCDReportData( def liquidationid ){
 		def liquidation = em.read( "liquidation:liquidation", [objid: liquidationid] );
 		if( !liquidation ) throw new Exception("Liquidation with objid $liquidationid not found.");
-		def reportData = liquidation.info;
-		reportData.amountinwords = numsvc.convertString( reportData.amount + "" );
-		reportData.amountformatted = decformat.format( reportData.amount );
 		
-		reportData.txndate = dtSvc.parse('yyyy-MM-dd', liquidation.info.txndate);
+		liquidation.amountinwords = numsvc.convertString( liquidation.amount + "" );
+		liquidation.amountformatted = decformat.format( liquidation.amount );
+		
+		liquidation.txndate = dtSvc.parse('yyyy-MM-dd', liquidation.txndate);
 		liquidation.liquidationid = liquidation.objid
 
-		reportData.otherpayments = em.sqlContext.createNamedQuery("liquidationreport:getOtherPaymentsByLiquidation")
+		liquidation.otherpayments = em.sqlContext.createNamedQuery("liquidationreport:getOtherPaymentsByLiquidation")
 									 .setParameters( liquidation )
 									 .resultList;
-
-		reportData.remittances = em.sqlContext.createNamedQuery("liquidationreport:getRemittancesByLiquidation")
+		liquidation.remittances = em.sqlContext.createNamedQuery("liquidationreport:getRemittancesByLiquidation")
 								   .setParameters( [liquidationid: liquidationid] )
 								   .resultList;
-		reportData.collectionsummaries = em.sqlContext.createNamedQuery('liquidationreport:getCollectionSummaryByAF')
+		liquidation.collectionsummaries = em.sqlContext.createNamedQuery('liquidationreport:getCollectionSummaryByAF')
 									.setParameters( [liquidationid: liquidationid] )
 								    .resultList;
-		reportData.remittedforms = em.sqlContext.createNamedQuery('liquidationreport:getRemittedForms')
+		liquidation.remittedforms = em.sqlContext.createNamedQuery('liquidationreport:getRemittedForms')
 									.setParameters( [liquidationid: liquidationid] )
 								    .resultList;
-		reportData.nonserialremittances = em.sqlContext.createNamedQuery('liquidationreport:getNonSerialRemittedForms')
+		liquidation.nonserialremittances = em.sqlContext.createNamedQuery('liquidationreport:getNonSerialRemittedForms')
 									.setParameters( [liquidationid: liquidationid] )
 								    .resultList;
-		reportData.nonserialsummary = em.sqlContext.createNamedQuery('liquidationreport:getNonSerialRemittedFormsSummary')
+		liquidation.nonserialsummary = em.sqlContext.createNamedQuery('liquidationreport:getNonSerialRemittedFormsSummary')
 									.setParameters( [liquidationid: liquidationid] )
 								    .resultList;
 
-		return reportData;
+		return liquidation;
 	}
 	
 	@ProxyMethod
@@ -61,43 +60,43 @@ public class LiquidationReportServices{
 		if( liquidation.opener == 'single' ) throw new Exception('This report is applicable to Multi-Cashier transaction only.')
 		
 		//get the rcd for the specified fundTotal
-		def rcd = liquidation.rcds.find{ it.fundid == fundid }
+		def rcd = getLiquidationRcdByFund( liquidationid, fundid )
 		if (!rcd ) throw new Exception('No records found for Fund ' + fundname + '.' )
 		
-		def reportData = liquidation.info;
-		
-		reportData.fundname 			= fundname 
-		reportData.totalcash 			= rcd.cash 
-		reportData.totalotherpayment	= rcd.noncash 
-		reportData.amount				= rcd.amount 
-		reportData.amountinwords 		= numsvc.convertString( rcd.amount + "" );
-		reportData.amountformatted 		= decformat.format( rcd.amount );
-		reportData.cashiername			= rcd.cashiername 
-		reportData.cashiertitle			= rcd.cashiertitle 
-		reportData.depositedbyname		= rcd.cashiername 
-		reportData.depositedbytitle		= rcd.cashiertitle 
-		reportData.txndate 				= liquidation.dtposted;
+		liquidation.fundname 			= fundname 
+		liquidation.totalcash 			= rcd.cash 
+		liquidation.totalotherpayment	= rcd.noncash 
+		liquidation.amount				= rcd.amount 
+		liquidation.amountinwords 		= numsvc.convertString( rcd.amount.toString() );
+		liquidation.amountformatted 		= decformat.format( rcd.amount );
+		liquidation.cashiername			= rcd.cashiername 
+		liquidation.cashiertitle			= rcd.cashiertitle 
+		liquidation.depositedbyname		= rcd.cashiername 
+		liquidation.depositedbytitle		= rcd.cashiertitle 
+		liquidation.txndate 				= liquidation.dtposted;
 		
 		liquidation.liquidationid = liquidation.objid
 
-		reportData.otherpayments = rcd.noncashpayments
+		liquidation.otherpayments = rcd.noncashpayments
 
-		reportData.remittances = em.sqlContext.createNamedQuery("liquidation:getRemittancesByLiquidationByFund")
+		liquidation.remittances = em.sqlContext.createNamedQuery("liquidation:getRemittancesByLiquidationByFund")
 								   .setParameters( [liquidationid: liquidationid, fundid: fundid ] )
 								   .resultList;
 								   
-		reportData.collectionsummaries = em.sqlContext.createNamedQuery('liquidation:getCollectionSummaryByAFByFund')
+		liquidation.collectionsummaries = em.sqlContext.createNamedQuery('liquidation:getCollectionSummaryByAFByFund')
 									.setParameters( [liquidationid: liquidationid, fundid: fundid ] )
 								    .resultList;
 									
-		reportData.remittedforms = []
+		liquidation.remittedforms = []
 		
-		reportData.nonserialremittances = []
+		liquidation.nonserialremittances = []
 		
-		reportData.nonserialsummary = []
-
-		return reportData;
+		liquidation.nonserialsummary = []
+		println '='*50
+		println liquidation 
+		return liquidation; 
 	}
+	
 	
 	@ProxyMethod
 	public def buildReportBData( def liquidationid, def fundid ){
@@ -323,16 +322,23 @@ public class LiquidationReportServices{
 	
 	def buildLiquidationData( liquidation ) {
 		return [
-			txndate: dtSvc.parse('yyyy-MM-dd', liquidation.info.txndate),
-			txnno: liquidation.info.txnno,
-			liquidatingofficername: liquidation.info.liquidatingofficername,
-			liquidatingofficertitle: liquidation.info.liquidatingofficertitle,
-			treasurername: liquidation.info.treasurername,
-			treasurertitle: liquidation.info.treasurertitle,
-			depositedbyname: liquidation.info.depositedbyname,
-			depositedbytitle: liquidation.info.depositedbytitle,
-			amountinwords: numsvc.convertString( liquidation.info.amount + "" ),
-			amountformatted: decformat.format( liquidation.info.amount )
+			txndate: dtSvc.parse('yyyy-MM-dd', liquidation.txndate),
+			txnno: liquidation.txnno,
+			liquidatingofficername: liquidation.liquidatingofficername,
+			liquidatingofficertitle: liquidation.liquidatingofficertitle,
+			treasurername: liquidation.treasurername,
+			treasurertitle: liquidation.treasurertitle,
+			depositedbyname: liquidation.depositedbyname,
+			depositedbytitle: liquidation.depositedbytitle,
+			amountinwords: numsvc.convertString( liquidation.amount + "" ),
+			amountformatted: decformat.format( liquidation.amount )
 		];
+	}
+	
+	def getLiquidationRcdByFund( liquidationid, fundid) {
+		return em.sqlContext.createNamedQuery('liquidation:getLiquidationRcdByFund')
+					.setParameter('liquidationid', liquidationid)
+					.setParameter('fundid', fundid )
+					.singleResult 
 	}
 }

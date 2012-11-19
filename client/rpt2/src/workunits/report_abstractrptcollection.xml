@@ -64,7 +64,7 @@ class AbstractRPTCollectionController
     
     def report = [
         getReportName : { return 'abstractrptcollection' },
-        getReportData : { return reportdata.items },
+        getReportData : { return reportdata },
         getParameters : { 
             def params = svcParams.getStandardParameter( OsirisContext.env.USERNAME )
             params.TITLE  = reportdata.title

@@ -74,7 +74,7 @@ public class LiquidationPage2 extends javax.swing.JPanel {
         xTextField2.setCaptionFont(new java.awt.Font("Arial", 0, 14));
         xTextField2.setCaptionWidth(130);
         xTextField2.setFont(new java.awt.Font("Arial", 1, 14));
-        xTextField2.setName("entity.info.txnno");
+        xTextField2.setName("entity.txnno");
         xTextField2.setPreferredSize(new java.awt.Dimension(160, 21));
         xTextField2.setReadonly(true);
         formPanel3.add(xTextField2);
@@ -83,7 +83,7 @@ public class LiquidationPage2 extends javax.swing.JPanel {
         xTextField1.setCaptionFont(new java.awt.Font("Arial", 0, 14));
         xTextField1.setCaptionWidth(130);
         xTextField1.setFont(new java.awt.Font("Arial", 1, 14));
-        xTextField1.setName("entity.info.liquidatingofficername");
+        xTextField1.setName("entity.liquidatingofficername");
         xTextField1.setPreferredSize(new java.awt.Dimension(450, 21));
         xTextField1.setReadonly(true);
         formPanel3.add(xTextField1);
@@ -93,7 +93,7 @@ public class LiquidationPage2 extends javax.swing.JPanel {
         xDateField1.setCaptionWidth(130);
         xDateField1.setFont(new java.awt.Font("Arial", 1, 14));
         xDateField1.setInputFormat("MM-dd-yyyy");
-        xDateField1.setName("entity.info.txndate");
+        xDateField1.setName("entity.txndate");
         xDateField1.setOutputFormat("MM-dd-yyyy");
         xDateField1.setPreferredSize(new java.awt.Dimension(100, 21));
         xDateField1.setReadonly(true);
@@ -108,7 +108,7 @@ public class LiquidationPage2 extends javax.swing.JPanel {
         xNumberField1.setEnabled(false);
         xNumberField1.setFieldType(BigDecimal.class);
         xNumberField1.setFont(new java.awt.Font("Arial", 1, 14));
-        xNumberField1.setName("entity.info.amount");
+        xNumberField1.setName("entity.amount");
         xNumberField1.setPattern("#,##0.00");
         xNumberField1.setPreferredSize(new java.awt.Dimension(0, 22));
         formPanel1.add(xNumberField1);
@@ -119,7 +119,7 @@ public class LiquidationPage2 extends javax.swing.JPanel {
         xNumberField2.setEnabled(false);
         xNumberField2.setFieldType(BigDecimal.class);
         xNumberField2.setFont(new java.awt.Font("Arial", 1, 14));
-        xNumberField2.setName("entity.info.totalcash");
+        xNumberField2.setName("entity.totalcash");
         xNumberField2.setPattern("#,##0.00");
         xNumberField2.setPreferredSize(new java.awt.Dimension(0, 22));
         formPanel1.add(xNumberField2);
@@ -130,7 +130,7 @@ public class LiquidationPage2 extends javax.swing.JPanel {
         xNumberField3.setEnabled(false);
         xNumberField3.setFieldType(BigDecimal.class);
         xNumberField3.setFont(new java.awt.Font("Arial", 1, 14));
-        xNumberField3.setName("entity.info.totalotherpayment");
+        xNumberField3.setName("entity.totalotherpayment");
         xNumberField3.setPattern("#,##0.00");
         xNumberField3.setPreferredSize(new java.awt.Dimension(0, 22));
         formPanel1.add(xNumberField3);

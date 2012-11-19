@@ -152,6 +152,7 @@
         def addItem() {
             return InvokerUtil.lookupOpener('rptmanualcollectiondetail.add', [
                 receipt : entity,
+                items   : rptitems,
                 onadd   : { item ->
                     rptitems.add( item )
                     calculateReceiptAmount()

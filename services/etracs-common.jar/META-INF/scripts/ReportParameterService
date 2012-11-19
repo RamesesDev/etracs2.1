@@ -73,8 +73,8 @@ class ReportParameterService{
 			MAYORTITLE  : var.get('mayor_title'),
 			SECRETARYNAME	: var.secretary_name,
 			SECRETARYTITLE	: var.secretary_title,
-			CHIEFBPLO	: var.get('chief_bplo'),
-			CHIEFBPLOTITLE: var.get('chief_bplo_title'),
+			CHIEFBPLO	: var.get('chief_bplo')? var.get('chief_bplo'): var.get('mayor_name'),
+			CHIEFBPLOTITLE: var.get('chief_bplo_title')?var.get('chief_bplo_title'):var.get('mayor_title') ,
 			
 			GIVENAT 	: var.lgu_address,
 			USERNAME	 : env.USERFORMALNAME,

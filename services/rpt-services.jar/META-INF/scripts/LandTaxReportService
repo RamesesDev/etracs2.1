@@ -108,34 +108,24 @@ class LandTaxReportService
 		]
 		
 		def items = []
+		def advitems = [] 
 		
 		//type -> BASIC, SEF 
 		if( type == null || type == 'BASIC'  ) {
-			items.addAll(
-				em.sqlContext.createNamedQuery('landtaxreport:getAbstractCollectionBASIC')
-						.setParameters( params ).resultList 
-			)
-			items.addAll(
-				em.sqlContext.createNamedQuery('landtaxreport:getAbstractCollectionManualBASIC')
-						.setParameters( params ).resultList 
-			)
+			items +=  em.sqlContext.createNamedQuery('landtaxreport:getAbstractCollectionBASIC').setParameters( params ).resultList 
+			advitems +=  em.sqlContext.createNamedQuery('landtaxreport:getAbstractCollectionAdvanceBASIC').setParameters( params ).resultList 
 		}
 		if( type == null || type == 'SEF'  ) {
-			items.addAll(
-				em.sqlContext.createNamedQuery('landtaxreport:getAbstractCollectionSEF')
-						.setParameters( params ).resultList 
-			)
-			items.addAll(
-				em.sqlContext.createNamedQuery('landtaxreport:getAbstractCollectionManualSEF')
-						.setParameters( params ).resultList 
-			)
+			items += em.sqlContext.createNamedQuery('landtaxreport:getAbstractCollectionSEF').setParameters( params ).resultList 
+			advitems += em.sqlContext.createNamedQuery('landtaxreport:getAbstractCollectionAdvanceSEF').setParameters( params ).resultList 
 		}
 		if( ! items ) throw new Exception('No records found.')
 		
 		return [
 			title 	: buildTitle( year, qtr, month, day, type, collector  ),
 			period 	: buildPeriod( year, qtr, month, day ),
-			items  	: items 
+			items  	: items.sort{a,b -> a.type + '-' + a.orno <=> b.type + '-' + b.orno }, 
+			advitems : advitems.sort{a,b -> a.type + '-' + a.orno <=> b.type + '-' + b.orno }, 
 		]
 	}
 	

@@ -37,10 +37,12 @@
 
                 getColumns : {
                     return [
-                        new Column( name:"txnno", caption:"Rem. No.", minWidth:60 ),
-                        new Column( name:"collectorname", caption:"Collector", width:350 ),
+                        new Column( name:"txnno", caption:"Rem. No.", width:110 ),
                         new Column( name:"txndate", caption:"Date", format: "yyyy-MM-dd", width:100 ),
-                        new Column( name:"amount", caption:"Amount", format: "#,##0.00", width:140 )
+                        new Column( name:"collectorname", caption:"Collector", width:350 ),
+                        new Column( name:"liquidatingofficername", caption:"Liquidating Officer", width:350 ),
+                        new Column( name:"liquidationno", caption:"Liquidation No.", width:110 ),
+                        new Column( name:"amount", caption:"Amount", format: "#,##0.00", width:120 ),
                     ];
                 },
 

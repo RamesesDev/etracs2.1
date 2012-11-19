@@ -11,8 +11,8 @@
         <invoker type="formActions" action="close" visibleWhen="#{mode != 'view' and mode != 'reports' and mode != 'rcd'}"  immediate="true" caption="Close" mnemonic="c" icon="images/doc-cancel.png"/>
         <invoker type="formActions" action="create" shortcut="ctrl N" visibleWhen="#{mode == 'view'}" immediate="true" caption="New" mnemonic="n" icon="images/doc-new.png" />
         <invoker type="formActions" action="next" shortcut="ctrl N" visibleWhen="#{mode == 'init'}" caption="Next" mnemonic="n" icon="images/next.png"/>
-        <invoker type="formActions" action="back" shortcut="ctrl B" visibleWhen="#{mode == 'main'}" caption="Back" mnemonic="b" icon="images/back.png"/>
-        <invoker type="formActions" action="submit" shortcut="ctrl S" visibleWhen="#{mode == 'main'}" caption="Submit" mnemonic="s" icon="images/save.png"/>
+        <invoker type="formActions" action="back" shortcut="ctrl B" visibleWhen="#{mode == 'create'}" caption="Back" mnemonic="b" icon="images/back.png"/>
+        <invoker type="formActions" action="submit" shortcut="ctrl S" visibleWhen="#{mode == 'create'}" caption="Submit" mnemonic="s" icon="images/save.png"/>
         <invoker type="formActions" action="viewRCD" visibleWhen="#{mode == 'view' and entity.objid != null}"  immediate="true" caption="A. RCD Summary" mnemonic="a" icon="images/doc-view.png" />
         <invoker type="formActions" action="viewRCDByFund" visibleWhen="#{mode == 'view' and entity.objid != null}"  immediate="true" caption="B. RCD By Fund" mnemonic="a" icon="images/doc-view.png" />
         <invoker type="formActions" action="reports" visibleWhen="#{mode == 'view' and entity.objid != null}"  immediate="true" caption="Reports" mnemonic="r" icon="images/otherReports.png"/>
@@ -31,6 +31,7 @@ import com.rameses.rcp.annotations.*;
 import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.reports.*
 import java.text.DecimalFormat;
+import java.rmi.server.UID
 
 public class LiquidationMultiCashierController {
 
@@ -63,14 +64,24 @@ public class LiquidationMultiCashierController {
     def create() {
         liquidatingofficer = getLiquidatingOfficer()
         openNonCashPayments = []
-        entity = [
-            info            : buildInfo(),
-            remittances     : [],
-            otherpayments   : [],
-            rcds            : [],
-        ];
+        createEntity()
         mode = 'init';
         return 'init';
+    }
+    
+    void createEntity() {
+        entity = [
+            objid                   : 'LQM' + new UID(),
+            txndate                 : dtsvc.getServerDate(),
+            liquidatingofficerid    : liquidatingofficer.objid,
+            liquidatingofficername  : liquidatingofficer.formalname,
+            liquidatingofficertitle : liquidatingofficer.jobtitle,
+            amount                  : 0.00,
+            totalcash               : 0.00,
+            totalotherpayment       : 0.00,
+            denominations           : [],
+            rcds                    : [],
+        ]
     }
 
     def open() {
@@ -91,7 +102,7 @@ public class LiquidationMultiCashierController {
         entity.rcds          = []
         entity = svc.createLiquidationMultiCashier( entity );
         openNonCashPayments.addAll( entity.otherpayments )
-        mode = 'main';
+        mode = 'create';
         return 'main';
     }
 
@@ -114,7 +125,7 @@ public class LiquidationMultiCashierController {
         if (caller) {
             caller.binding.refresh();
         }
-        denominationOpener.handle.mode = 'view'
+        denominationOpener?.handle?.mode = 'view'
         mode = 'view';
         binding.refresh();
         return 'main';
@@ -145,18 +156,6 @@ public class LiquidationMultiCashierController {
         return new PopupOpener( outcome:'remittances' );
     }
 
-    def buildInfo() {
-        return [
-            txndate : dtsvc.getServerDate(),
-            liquidatingofficerid    : liquidatingofficer.objid,
-            liquidatingofficername  : liquidatingofficer.formalname,
-            liquidatingofficertitle : liquidatingofficer.jobtitle,
-            amount                  : 0.00,
-            totalcash               : 0.00,
-            totalotherpayment       : 0.00,
-        ];
-    }
-    
     def cashierLookup = InvokerUtil.lookupOpener( 'cashier.lookup', [:] )
     
     def rcdListHandler = [
@@ -192,7 +191,6 @@ public class LiquidationMultiCashierController {
     void lookupDenominationOpener() {
         denominationOpener = null
         if( selectedRcd ) {
-            def mode = ( entity.objid ? 'view' : null )
             denominationOpener = InvokerUtil.lookupOpener('cashreceipt:breakdown', [totalAmount:selectedRcd.cash, list:selectedRcd.denominations, mode:mode])
         }
     }
@@ -214,7 +212,7 @@ public class LiquidationMultiCashierController {
 
     
     def getTotalOtherPayment() {
-        return numformat.format( entity.info.totalotherpayment );
+        return numformat.format( entity.totalotherpayment );
     }
 
     def remittanceHandler = [
@@ -237,7 +235,7 @@ public class LiquidationMultiCashierController {
     ] as PageListModel;
 
     def getTotalAmount() {
-        return numformat.format( entity.info.amount );
+        return numformat.format( entity.amount );
     }
 
     def getLiquidatingOfficer() {
@@ -323,13 +321,13 @@ public class LiquidationMultiCashierController {
     }
     
     boolean getShowAddNonCashPayment() {
-        if( entity.objid ) return false;
+        if( mode == 'view') return false;
         if( ! selectedRcd ) return false;
         return true;
     }
     
     boolean getShowRemoveNonCashPayment() {
-        if( entity.objid ) return false;
+        if( mode == 'view') return false;
         if( ! selectedRcd ) return false;
         return true;
     }
