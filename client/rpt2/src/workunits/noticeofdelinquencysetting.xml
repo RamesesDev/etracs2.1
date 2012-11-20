@@ -2,7 +2,7 @@
     <invokers>
         <invoker folderid="/menu/rpt/landtax" action="init" caption="Notice of Delinquency Setting" target="window" index="20" permission="noticeofdelinquencyretting.create" />
         
-        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" icon="images/cancel.png" />
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" immediate="true" icon="images/cancel.png" />
         <invoker type="formActions" action="save" caption="Save" shortcut="ctrl S" mnemonic="s" icon="images/doc-save.png" />
     </invokers>
     <code>

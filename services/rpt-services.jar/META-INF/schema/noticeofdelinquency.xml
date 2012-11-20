@@ -24,12 +24,19 @@
 	<element name="noticeofdelinquencysetting" tablename="noticeofdelinquencysetting">
 		<field name="objid" primary="true"/>
 		<field name="noticeofdelinquency" />
+		<field name="noofdaysexpirednod" />
 		<field name="secondtracer" />
+		<field name="noofdaysexpiredst" />
 		<field name="finaldemand" />
+		<field name="noofdaysexpiredfd" />
 		<field name="warrantoflevy" />
+		<field name="noofdaysexpiredwol" />
 		<field name="noticeofpublication" />
+		<field name="noofdaysexpirednopas" />
 		<field name="certofsaleofproperty" />
+		<field name="noofdaysexpiredcsdrp" />
 		<field name="noticeofredemption" />
+		<field name="noofdaysexpirednor" />
 		<field name="advancecomputation" />
 	</element>
 	
