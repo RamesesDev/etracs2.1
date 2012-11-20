@@ -7,90 +7,168 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,0,-46,0,0,1,-49"/>
   </AuxValues>
 
-  <Layout>
-    <DimensionLayout dim="0">
-      <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="xButton2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="xButton1" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="formPanel1" alignment="1" min="-2" pref="471" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace pref="21" max="32767" attributes="0"/>
-          </Group>
-      </Group>
-    </DimensionLayout>
-    <DimensionLayout dim="1">
-      <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="formPanel1" min="-2" pref="199" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="xButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="xButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace pref="61" max="32767" attributes="0"/>
-          </Group>
-      </Group>
-    </DimensionLayout>
-  </Layout>
+  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
   <SubComponents>
-    <Container class="com.rameses.rcp.util.FormPanel" name="formPanel1">
+    <Component class="com.rameses.rcp.control.XActionBar" name="xActionBar1">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
-            <Property name="title" type="java.lang.String" value="Notice of Assessment Initial Information"/>
-          </PropertyBean>
+            <PropertyBean type="com.rameses.rcp.control.border.XUnderlineBorder"/>
         </Property>
+        <Property name="name" type="java.lang.String" value="formActions"/>
       </Properties>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+          <BorderConstraints direction="North"/>
+        </Constraint>
+      </Constraints>
+    </Component>
+    <Container class="javax.swing.JPanel" name="jPanel1">
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+          <BorderConstraints direction="Center"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="formPanel1" min="-2" pref="413" max="-2" attributes="1"/>
+                  <EmptySpace pref="40" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="formPanel1" min="-2" pref="145" max="-2" attributes="0"/>
+                  <EmptySpace pref="32" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
       <SubComponents>
-        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField1">
+        <Container class="com.rameses.rcp.util.FormPanel" name="formPanel1">
           <Properties>
-            <Property name="caption" type="java.lang.String" value="Taxpayer"/>
-            <Property name="expression" type="java.lang.String" value="#{entityname}"/>
-            <Property name="handler" type="java.lang.String" value="lookupTaxpayer"/>
-            <Property name="name" type="java.lang.String" value="taxpayer"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[0, 19]"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <PropertyBean type="com.rameses.rcp.control.border.XTitledBorder">
+                <Property name="title" type="java.lang.String" value="Notice of Assessment Initial Information"/>
+              </PropertyBean>
             </Property>
-            <Property name="required" type="boolean" value="true"/>
           </Properties>
-        </Component>
-        <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField2">
-          <Properties>
-            <Property name="caption" type="java.lang.String" value="TD No."/>
-            <Property name="dynamic" type="boolean" value="true"/>
-            <Property name="expression" type="java.lang.String" value="#{tdno}"/>
-            <Property name="handler" type="java.lang.String" value="lookupFAAS"/>
-            <Property name="name" type="java.lang.String" value="faas"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[200, 19]"/>
-            </Property>
-            <Property name="required" type="boolean" value="true"/>
-          </Properties>
-        </Component>
+          <SubComponents>
+            <Container class="com.rameses.rcp.util.FormPanel" name="formPanel4">
+              <Properties>
+                <Property name="cellpadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 0, 0, 20]"/>
+                </Property>
+                <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+              <SubComponents>
+                <Component class="com.rameses.rcp.control.XRadio" name="xRadio3">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                        <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                      </Border>
+                    </Property>
+                    <Property name="selected" type="boolean" value="true"/>
+                    <Property name="text" type="java.lang.String" value="By Taxpayer :"/>
+                    <Property name="caption" type="java.lang.String" value="By Taxpayer"/>
+                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                      <Insets value="[0, 0, 0, 0]"/>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="searchcriteria"/>
+                    <Property name="opaque" type="boolean" value="false"/>
+                    <Property name="optionValue" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="&quot;bytaxpayer&quot;" type="code"/>
+                    </Property>
+                    <Property name="showCaption" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField4">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="Taxpayer"/>
+                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                      <StringArray count="1">
+                        <StringItem index="0" value="searchcriteria"/>
+                      </StringArray>
+                    </Property>
+                    <Property name="expression" type="java.lang.String" value="#{entityname}"/>
+                    <Property name="handler" type="java.lang.String" value="lookupTaxpayer"/>
+                    <Property name="name" type="java.lang.String" value="taxpayer"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[250, 19]"/>
+                    </Property>
+                    <Property name="showCaption" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="com.rameses.rcp.util.FormPanel" name="formPanel5">
+              <Properties>
+                <Property name="cellpadding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 0, 0, 20]"/>
+                </Property>
+                <Property name="orientation" type="java.lang.String" value="HORIZONTAL"/>
+                <Property name="padding" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                  <Insets value="[0, 5, 5, 5]"/>
+                </Property>
+                <Property name="showCaption" type="boolean" value="false"/>
+              </Properties>
+              <SubComponents>
+                <Component class="com.rameses.rcp.control.XRadio" name="xRadio4">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                        <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                      </Border>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="By TD No. :"/>
+                    <Property name="caption" type="java.lang.String" value="By Taxpayer"/>
+                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                      <Insets value="[0, 0, 0, 0]"/>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="searchcriteria"/>
+                    <Property name="opaque" type="boolean" value="false"/>
+                    <Property name="optionValue" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="&quot;bytdno&quot;" type="code"/>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[85, 15]"/>
+                    </Property>
+                    <Property name="showCaption" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
+                <Component class="com.rameses.rcp.control.XLookupField" name="xLookupField2">
+                  <Properties>
+                    <Property name="caption" type="java.lang.String" value="TD No."/>
+                    <Property name="depends" type="[Ljava.lang.String;" editor="org.netbeans.beaninfo.editors.StringArrayEditor">
+                      <StringArray count="1">
+                        <StringItem index="0" value="searchcriteria"/>
+                      </StringArray>
+                    </Property>
+                    <Property name="dynamic" type="boolean" value="true"/>
+                    <Property name="expression" type="java.lang.String" value="#{tdno}"/>
+                    <Property name="handler" type="java.lang.String" value="lookupFAAS"/>
+                    <Property name="name" type="java.lang.String" value="faas"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[250, 19]"/>
+                    </Property>
+                    <Property name="showCaption" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
       </SubComponents>
     </Container>
-    <Component class="com.rameses.rcp.control.XButton" name="xButton1">
-      <Properties>
-        <Property name="mnemonic" type="int" value="118"/>
-        <Property name="text" type="java.lang.String" value="Preview"/>
-        <Property name="name" type="java.lang.String" value="preview"/>
-      </Properties>
-    </Component>
-    <Component class="com.rameses.rcp.control.XButton" name="xButton2">
-      <Properties>
-        <Property name="mnemonic" type="int" value="112"/>
-        <Property name="text" type="java.lang.String" value="Print"/>
-        <Property name="name" type="java.lang.String" value="print"/>
-      </Properties>
-    </Component>
   </SubComponents>
 </Form>

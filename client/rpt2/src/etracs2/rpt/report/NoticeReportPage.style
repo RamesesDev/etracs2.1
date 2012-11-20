@@ -1,0 +1,15 @@
+"taxpayer" [ true == true ] {
+    enabled:false;
+}
+
+"taxpayer" [ searchcriteria == 'bytaxpayer' ] {
+    enabled:true;
+}
+
+"faas" [ true == true ] {
+    enabled:false;
+}
+
+"faas" [ searchcriteria == 'bytdno' ] {
+    enabled:true;
+}

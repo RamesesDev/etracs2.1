@@ -75,48 +75,90 @@ class RPTReportService
 		return list 
 	}
     
+	@ProxyMethod
+	public List getNoticeList( searchText, docstate, params ) {
+		docstate = (docstate ? docstate : '%')
+		if( ! searchText ) return getListByQuery('rptreport:getNoticeList', [docstate:docstate], params)
+		
+		def result = null
+		searchText = (searchText ? searchText : '')
+		def criteria = [
+			docstate	 : docstate,
+			noticeno	 : searchText,
+			taxpayername : searchText + '%'
+		]
+		
+		if( (result = getListByQuery('rptreport:getNoticeListByNo', criteria, params)) ) return result
+		if( (result = getListByQuery('rptreport:getNoticeListByTaxpayer', criteria, params)) ) return result
+		return result
+	}
+	
     @ProxyMethod
 	public def generateNotice( notice ) {
-		notice.items = []
-		def rptsetting 	= em.sqlContext.createNamedQuery('rptreport:getRPTSetting').singleResult
-		if(  notice.faasid ) {
-			notice.items = em.sqlContext.createNamedQuery('rptreport:getNoticeItemsByFaasid').setParameter('objid', notice.faasid).resultList
-		}
-		else {
-			notice.items 	= em.sqlContext.createNamedQuery( 'rptreport:getNoticeItemsByTaxpayerId' ).setParameter('taxpayerid', notice.taxpayerid).resultList
-		}
-		if( ! notice.items ) throw new Exception('Records not found.\nPleas verify that FAAS records are current.')
+		def items = getNoticeItems( notice )
+		if( ! items ) throw new Exception('Records not found.\nPleas verify that FAAS records are current.')
 		
-		notice.ry 		        = notice.items[0].effectivityyear 
-		notice.effectivityyear	= notice.items[0].effectivityyear 
-		
-		
-		notice.docno 			= seqSvc.getNextFormattedSeries( 'NOTICEOFASSESSMENT' )
-		notice.objid			= notice.docno 
+		def noticeid = 'N' + new UID()
+		notice.objid			= noticeid
 		notice.docstate			= 'OPEN'
-		
+		notice.docno 			= seqSvc.getNextFormattedSeries( 'NOTICEOFASSESSMENT' )
 		notice.issuedate 		= dateSvc.serverDate
 		notice.preparedby 		= env.USERFORMALNAME
 		notice.preparedbytitle	= (env.JOBTITLE ? env.JOBTITLE : '-' )
 		notice.approvedby		= var.assessor_name
 		notice.approvedbytitle  = var.assessor_title
-		notice.lgutype			= var.lgu_type
-		notice.parentlguname	= var.parent_lgu_formal_name
-		notice.lguname			= var.lgu_formal_name
 		
 		em.validate( 'rptreport:noticeofassessment', notice )
 		em.create( 'rptreport:noticeofassessment', notice )
 		
+		notice.items = items
+		postNoticeItems( notice )
+		
 		if( notice.items.size() == 1 ) {
 			notice.putAll( notice.items[0] )
-			notice.objid = notice.docno
+			notice.objid = noticeid
 		}
 		return notice 
+	}
+	
+	def getNoticeItems( notice ) {
+		def items = []
+		if(  notice.faasid ) {
+			items = em.sqlContext.createNamedQuery('rptreport:getNoticeItemsByFaasid')
+								 .setParameter('objid', notice.faasid)
+								 .resultList
+			if( items ) {
+				notice.taxpayerid = items[0].taxpayerid
+				notice.taxpayerno = items[0].taxpayerno
+				notice.taxpayername = items[0].taxpayername
+				notice.taxpayeraddress = items[0].taxpayeraddress
+			}
+		}
+		else
+			items = em.sqlContext.createNamedQuery( 'rptreport:getNoticeItemsByTaxpayerId' )
+								   .setParameter('taxpayerid', notice.taxpayerid)
+								   .resultList
+			
+		return items
+	}
+	
+	void postNoticeItems( notice ) {
+		def param = [:]
+		notice.items.each { itm ->
+			param.objid    = "NI" + new UID()
+			param.faasid   = itm.objid
+			param.noticeid = notice.objid
+			em.validate( 'rptreport:noticeofassessmentitem', param )
+			em.create( 'rptreport:noticeofassessmentitem', param )
+		}
 	}
 	
 	@ProxyMethod 
 	public def openNotice( noticeid ) {
 		def notice = em.read('rptreport:noticeofassessment', [objid:noticeid] )
+		
+		if( ! notice.items )
+			notice.items = em.sqlContext.createNamedQuery('rptreport:getNoticeItems').setParameter('noticeid', notice.objid).resultList
 		
 		// for the old records which do not have taxpayer no.
 		if( !notice.taxpayerno ) {
@@ -128,15 +170,19 @@ class RPTReportService
 		
 		if( notice.items.size() == 1 )
 			notice.putAll( notice.items[0] )
-			
+		
 		return notice 
 	}
 	
 	@ProxyMethod
-	public List getNoticeList( searchText ) {
-		return em.sqlContext.createNamedQuery('rptreport:getNoticeList').setMaxResults(50).resultList 
+	public void updateNotice( param ) {
+		def datedelivered = dateSvc.parse('yyyy-MM-dd', param.dtdelivered)
+		if( datedelivered > dateSvc.serverDate )
+			throw new Exception('Date Received must not be greater than current date.')
+		
+		param.docstate = 'CLOSED'
+		em.sqlContext.createNamedExecutor('rptreport:updateNotice').setParameters( param ).execute()
 	}
-	
 	
 	@ProxyMethod
 	public def generateAssessmentRollTaxable( params )  {
@@ -742,6 +788,16 @@ class RPTReportService
 		def iyear 	= ( qtr + 1 > 4 ? year + 1 : year )
 		
 		return resolveTimeStamp( iyear, iqtr, null, null)
+	}
+	
+	def getListByQuery( namedQuery, criteria, params ) {
+		if( ! params ) params = [_start:0, _limit:25]
+		
+		return em.sqlContext.createNamedQuery( namedQuery )
+					.setParameters( criteria )
+					.setFirstResult( params._start )
+					.setMaxResults( params._limit )
+					.resultList
 	}
 	
 }
