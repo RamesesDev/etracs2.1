@@ -1,0 +1,7 @@
+"lgu|barangay|section" [ mode == 'init' ] {
+    enabled:true;
+}
+
+"lgu|barangay|section" [ mode != 'init' ] {
+    enabled:false;
+}

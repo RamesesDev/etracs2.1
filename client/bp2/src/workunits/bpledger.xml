@@ -229,6 +229,7 @@
                 generateReport()
             }
             
+
             def generateReport() {
                 entity.info = [
                     applicationid : application.objid,

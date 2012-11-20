@@ -16,7 +16,7 @@ SELECT
 	e.entityaddress AS taxpayeraddress,
 	SUM(CASE WHEN ia.systype = 'BUSINESS_TAX' THEN bpp.amount + bpp.surcharge + bpp.interest - bpp.discount ELSE 0.0 END )AS businesstax, 
 	SUM(CASE WHEN ia.systype = 'REG_FEE' THEN bpp.amount + bpp.surcharge + bpp.interest - bpp.discount ELSE 0.0 END) AS regfee, 
-	SUM(CASE WHEN ia.systype IS NULL OR ia.systype NOT IN( 'BUSINESS_TAX', 'REG_FEE') THEN bpp.amount + bpp.surcharge + bpp.interest - bpp.discount ELSE 0.0 END) AS otherfee, 
+	SUM(CASE WHEN ia.systype IS NULL OR ia.systype NOT IN( 'SURCHARGE', 'INTEREST', 'BUSINESS_TAX', 'REG_FEE') THEN bpp.amount + bpp.surcharge + bpp.interest - bpp.discount ELSE 0.0 END) AS otherfee, 
 	sum( bpp.total ) as total 
 FROM bppayment bpp 
 INNER JOIN bpapplicationlisting b ON b.objid = bpp.applicationid 

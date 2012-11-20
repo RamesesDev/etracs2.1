@@ -1,0 +1,120 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/report/assessor" action="init" caption="Approve Faas Listing" target="window" index="0" permissionx="rptreport.masterlist"/>
+        <invoker type="formActions"     action="_close" caption="Back" mnemonic="b" shortcut="ctrl + B" icon="images/back.png"/>
+        <invoker type="formActions"     action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png"/>
+        <invoker type="formActions"     action="preview" caption="Preview" mnemonic="v"             icon="images/doc-view.png"/>
+        
+        <invoker type="previewActions"  action="back" caption="Back" icon="images/back.png" immediate="true" />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class ApproveFaasListing
+{
+    @Binding
+    def binding
+    
+    @Service("ReportParameterService")
+    def svcParams;
+    
+    @Service('RPTReportService') 
+    def svc 
+    
+    @Service('DateService')
+    def dtSvc
+    
+    def lgu
+    def barangay
+    def year 
+    def quarter
+    def month
+    def reportdata
+    
+    void init() {
+        def parsedate = dtSvc.parseCurrentDate()
+        year = parsedate.year 
+        quarter  = parsedate.qtr 
+        month = svc.getMonthList( null ).find{ it.month == parsedate.month }
+    }
+    
+    def preview() {
+        generateReport()
+        return 'preview' 
+    }
+    
+    void generateReport() {
+        def entity = [ year:year, quarter:quarter, month:month, lguid:lgu?.objid, barangayid:barangay?.objid ]
+        reportdata = svc.getApproveFaasList( entity )
+        report.viewReport()
+    }
+    
+    void print(){
+        generateReport()
+        ReportUtil.print( report.report, true )
+    }
+    
+    def report = [
+        getReportName : { return 'approvefaaslisting' }, 
+        getReportData : { return reportdata },
+        getParameters : { 
+            def params = svcParams.getStandardParameter( OsirisContext.env.USERNAME ) 
+            def entity = [ year:year, quarter:quarter, month:month ] 
+            params.PERIOD = svc.buildPeriod( entity )
+            params.BARANGAY =  barangay?.barangay 
+            params.MUNICIPALITY = lgu?.lguname
+            
+            return params 
+        }
+    ] as ServerReportModel;
+    
+    def back() {
+        return 'default' 
+    }
+    
+    void setQuarter( quarter ){
+        this.quarter = quarter
+        setMonth( null )
+    }
+    
+    List getQuarterlist() {
+        return [1,2,3,4]
+    }
+    
+    void setMonth( month ){
+        this.month = month
+    }
+    
+    List getMonthlist() {
+        return svc.getMonthList( quarter )
+    }
+    
+    List getLgulist(){
+        return svc.getLGUList()
+    }
+    
+    def parentid 
+    void setLgu( lgu ){
+        this.lgu = lgu
+        parentid = lgu.objid
+        binding?.refresh( 'barangay' )
+    }
+    
+    List getBarangaylist(){
+        return svc.getBarangayListByParentId( parentid )
+    }
+    
+}
+]]>        
+        
+    </code>
+    <pages>
+        <page template="etracs2.rpt.report.ApproveFaasListingPage" />
+        <page name="preview" template="etracs2.common.PreviewPage" />
+    </pages>
+</workunit>

@@ -85,7 +85,7 @@ class TDReportService
 			def result = em.sqlContext.createQuery('select claimno from faaslist where objid=?').setParameter(1, faas.objid).singleResult
 			faas.claimno = result.claimno
 		}
-		if( faas.claimno != null && faas.claimno != '-' ) {
+		if( faas.info.txntype == 'MC' && faas.claimno != null && faas.claimno != '-'  ) {
 			td.fullpin += ' M' + (faas.claimno == '0' ? '1' : faas.claimno)
 		}
     	
@@ -241,21 +241,21 @@ class TDReportService
     	def landdetails = rpu.info.landdetails;
 		landdetails.each {
 			def item = [
+				propertytype    : 'LAND',
 				classification	: rpu.classname,
-				actualuse 		: it.actualusename,
-				actualuseid		: it.actualuseid,
+				actualuse 		: it.specificclassname,
 				specificclass 	: it.specificclassname,
 				subclass		: it.subclassname, 
-				area			: it.area,
+				area			: ( it.areatype == 'SQM' ? it.areasqm : it.areaha ),
 				areasqm			: it.areasqm,
 				areaha			: it.areaha,
-				areatype		: it.areatype,
+				areatype		: it.areatype.toLowerCase(),
 				assesslevel		: it.assesslevel,
-				marketvalue		: ( it.taxable ? it.marketvalue : 0.0 ),
-				adjmarketvalue  : ( it.taxable ? it.marketvalue : it.marketvalue * (-1)),
-				basemarketvalue	: ( it.taxable ? it.basemarketvalue : 0.0 ),
-				assessedvalue	: ( it.taxable ? it.assessedvalue : 0.0 ) ,
-				adjassessedvalue: ( it.taxable ? it.assessedvalue : it.assessedvalue * (-1)),
+				marketvalue		: ( it.taxable == null || it.taxable  ? it.marketvalue : 0.0 ),
+				adjmarketvalue  : ( it.taxable == null || it.taxable  ? it.marketvalue : it.marketvalue * (-1)),
+				basemarketvalue	: ( it.taxable == null || it.taxable  ? it.basemarketvalue : 0.0 ),
+				assessedvalue	: ( it.taxable == null || it.taxable  ? it.assessedvalue : 0.0 ) ,
+				adjassessedvalue: ( it.taxable == null || it.taxable  ? it.assessedvalue : it.assessedvalue * (-1)),
 				unitvalue		: it.unitvalue,
 				basevalue		: it.basevalue,
 				adjustment		: it.adjustment,
@@ -272,6 +272,7 @@ class TDReportService
     	def landdetails = rpu.info.landdetails;
 		def actualusegroup = landdetails.groupBy{ it.actualusename + it.assesslevelname }
 		actualusegroup.keySet().each{ key ->
+			println 'key -> ' + key
 			def itemlist = actualusegroup[key]
 			data.add([
 				classification 	: rpu.classname,
@@ -280,8 +281,10 @@ class TDReportService
 				area     	   	: (itemlist[0].subclass.areatype == 'SQM' ? itemlist.areasqm.sum() : itemlist.areaha.sum()),
 				areatype		: itemlist[0].subclass.areatype.toLowerCase(),
 				marketvalue		: itemlist.marketvalue.sum(),
+				adjmarketvalue		: itemlist.marketvalue.sum(),
 				assesslevel		: itemlist[0].assesslevel,
 				assessedvalue	: itemlist.assessedvalue.sum(),
+				adjassessedvalue	: itemlist.assessedvalue.sum(),
 				areasqm			: itemlist.areasqm.sum(),
 				areaha			: itemlist.areaha.sum(),
 				mixedarea		: 0,
@@ -295,12 +298,22 @@ class TDReportService
 			planttreedetails = rpu.info.planttreedetails;
 		
 		//add planttree values 
-		planttreedetails.each{ pt ->
-			def agriland = data.find{ it.actualusecode == pt.assesslevelcode}
-			if( agriland ) {
-				agriland.marketvalue += pt.marketvalue
-				agriland.assessedvalue += pt.assessedvalue
-			}
+		if( planttreedetails ) {
+			data.add([
+				classification 	: 'PLANT/TREE',
+				actualusecode  	: rpu.classcode,
+				actualuse	   	: rpu.classname,
+				area     	   	: 0.0,
+				areatype		: null, 
+				marketvalue		: planttreedetails.marketvalue.sum(),
+				adjmarketvalue	: planttreedetails.marketvalue.sum(),
+				assesslevel		: planttreedetails[0].assesslevel,
+				assessedvalue	: planttreedetails.assessedvalue.sum(),
+				adjassessedvalue: planttreedetails.assessedvalue.sum(),
+				areasqm			: 0.0,
+				areaha			: 0.0,
+				mixedarea		: 0,
+			])
 		}
 		return data 
 	}
@@ -312,6 +325,7 @@ class TDReportService
 			
 		if( rpu.info.useswornamount || rpu.info.predominant ) {
 			def item = [
+				propertytype    : 'BLDG',
 				classification	: rpu.classname,
 				actualuse 		: rpu.classname,
 				assesslevel		: rpu.info.assesslevel,
@@ -324,6 +338,7 @@ class TDReportService
 		} else {
 			bldguses.each {
 				def item = [
+					propertytype    : 'BLDG',
 					classification	: rpu.classname,
 					actualuse		: it.actualuse.actualusename,
 					actualuseid		: it.actualuse.actualuseid,
@@ -346,13 +361,16 @@ class TDReportService
     	
     	def machuses = rpu.info.machuses;
 			
+		def showMachineDetails = IS_TRUE( var.td_show_machine_details)
+		println 'showMachineDetails -> ' + showMachineDetails
 		machuses.each { mu ->
-			if( var.td_show_machine_details == null || IS_TRUE(var.td_show_machine_details) ) {
+			if(  showMachineDetails ) {
 				mu.machdetails.each {
 					def item = [
+						propertytype    : 'MACH',
 						classification		: rpu.classname,
 						machine				: it.machinename,
-						actualuse			: mu.actualuse.actualusename,
+						actualuse			: it.machinename,
 						actualuseid			: mu.actualuse.actualuseid,
 						depreciation		: it.depreciation,
 						marketvalue			: it.marketvalue,
@@ -370,6 +388,7 @@ class TDReportService
 			}
 			else {
 				data << [
+					propertytype    : 'MACH',
 					classification		: rpu.classname,
 					machine				: mu.machinename,
 					actualuse			: mu.actualuse.actualusename,
@@ -386,7 +405,7 @@ class TDReportService
 				];
 			}
 		}
-    	
+    	 
     	return data;
     }
     
@@ -398,26 +417,12 @@ class TDReportService
 		else 
 			planttreedetails = rpu.info.planttreedetails;
 			
-		/*
-		planttreedetails.each {
-			def item = [
-				classification 		: rpu.classname,
-				actualuse			: it.assesslevelname,
-				planttreename		: it.planttreename,
-				marketvalue			: it.marketvalue,
-				assesslevel			: it.assesslevel,
-				assessedvalue		: it.assessedvalue
-			];
-			
-			data.add( item );
-		}
-		*/
-		
 		if( planttreedetails ) {
 			def planttreedetail = planttreedetails[0]
 			if( planttreedetail ) {
 				data.add([
-					classification 		: rpu.classname,
+					propertytype    : 'PLANT/TREE',
+					classification 		: 'PLANT/TREE',
 					actualuse			: planttreedetail.assesslevelname,
 					planttreename		: planttreedetail.assesslevelname,
 					marketvalue			: calculateListFieldSum( planttreedetails, 'marketvalue', 0.0),
@@ -445,6 +450,7 @@ class TDReportService
 			
 		miscrpuitems.each {
 			def item = [
+				propertytype    : 'MISC',
 				classification		: rpu.classname,
 				miscitem			: it.miscitemname,
 				actualuse			: rpu.info.actualusename,

@@ -1,0 +1,167 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/report/assessor" caption="FAAS Batch Report" action="init" permission="faasreport.batch" index="13" />
+        
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c" icon="images/cancel.png" immediate="true" />
+        <invoker type="formActions" action="print" caption="Print" mnemonic="p" shortcut="ctrl + P" icon="images/doc-view.png" visibleWhen="#{mode == 'init'}"/>
+        <!--
+        <invoker type="formActions" action="cancelPrinting" caption="Cancel Printing" mnemonic="a" shortcut="ctrl + a" />
+        -->
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+import com.rameses.rcp.framework.TaskManager;
+
+class FAASBatchReportController
+{
+    @Binding
+    def binding
+
+    @Service("ReportParameterService")
+    def svcParams
+    
+    @Service("FAASReportService")
+    def svc
+    
+    @Service('FAASService')
+    def faasSvc
+    
+    @Service('Var')
+    def var 
+   
+    def lgu;
+    def barangays;
+    def barangay;
+    def section;
+    
+    def msg 
+    def taskmgr
+    def mode 
+    
+    public void init() {
+        taskmgr = new TaskManager()
+        mode='init';
+    }
+    
+    def lguList
+    def getLgus() {
+        if( !lguList) {
+            def lgutype = var.lgu_type.toLowerCase();            
+            if( lgutype.matches('city|municipality')) 
+                lguList = faasSvc.getCityMunicipalityList();
+            else if( lgutype.matches('province'))
+                lguList = faasSvc.getMunicipalities();
+            else 
+                lguList = [];
+        }
+        return lguList;
+    }
+    
+    public void setLgu( def lgu ) {
+        this.lgu = lgu;
+        barangays = faasSvc.getBarangayListByParentId(lgu.objid);
+        binding.refresh();
+    }
+    
+    def updateMessage = { msg ->
+        this.msg = msg
+        binding.refresh('msg')
+    }
+    
+    def onFinish = {
+        this.mode = 'init';
+        binding.refresh();
+    }
+    
+    def onError = { err ->
+        this.mode = 'init';
+        binding.refresh();
+        MsgBox.err( err );
+    }
+    
+ 
+    public void print() {
+        mode = 'printing';
+        def params = [barangayid: barangay.objid];
+        if( section )  {
+            def formattedSection = "${section}".toString();
+            def len = formattedSection.length();
+            if( len < 2 ) 
+                formattedSection = "0".multiply( 2-len ) + formattedSection;
+            params.section = formattedSection;
+        }
+        
+        taskmgr.addTask( new FaasBatchTask( params:params, svc:svc, faasSvc:faasSvc, updateMessage:updateMessage, svcParams:svcParams, onError: onError, onFinish:onFinish ) );
+        taskmgr.start()
+    }
+       
+}
+
+class FaasBatchTask extends com.rameses.rcp.common.Task {
+    
+    def reportdata;
+    def ended = false;
+    
+    def svcParams
+    def svc;
+    def faasSvc;
+    def params;
+    def updateMessage;
+    def onError;
+    def onFinish;
+    
+     public boolean accept() {
+       return !ended
+    }
+    
+    public boolean isEnded() {
+        return ended
+    }
+
+    public void execute() {
+        try {
+            def faasList = faasSvc.getFaasIds(params);            
+            for( o in faasList) {
+                reportdata = svc.getReportData( o.objid )
+                report.viewReport()
+                ReportUtil.print( report.report, false) ;
+                updateMessage("Processing TD No. ${o.tdno} " );
+            }
+            ended = true;
+            updateMessage( "Finished..... " );   
+            onFinish();
+        } catch(e) {
+            ended = true;
+            onError( e );
+        }
+    }
+
+    def report =[
+        getReportName : { 
+            if( reportdata.rputype == 'mach' )
+                return 'faas/mach'
+            else if( reportdata.rputype == 'bldg' )
+                return 'faas/bldg'
+            else if( reportdata.rputype == 'misc' )
+                return 'faas/misc'
+            else
+                return 'faas/land'
+        },
+        getReportData : { return reportdata },
+        getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ); }
+    ] as ServerReportModel
+    
+}
+
+]]>        
+        
+    </code>
+    <pages>
+        <page  template="etracs2.rpt.report.FAASBatchReportPage" />
+    </pages>
+</workunit>

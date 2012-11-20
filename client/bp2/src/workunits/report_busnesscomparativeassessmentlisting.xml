@@ -87,10 +87,10 @@ class BusinessComparativeAssessmentListingController
     
     def getQtrlist(){
         return [
-            [value:1, caption:'I'],
-            [value:2, caption:'II'],
-            [value:3, caption:'III'],
-            [value:4, caption:'IV']
+            [value:1, caption:'1'],
+            [value:2, caption:'2'],
+            [value:3, caption:'3'],
+            [value:4, caption:'4']
         ]
     }
     

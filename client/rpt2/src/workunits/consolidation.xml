@@ -61,9 +61,11 @@ public class ConsolidationController
     def errorMsg
     
     def barangay 
+    def barangays
     def section = 0
     def parcel  = 0
     def mode 
+    def lgu
     
     
     def initConsolidation() {
@@ -82,7 +84,7 @@ public class ConsolidationController
         consolidatedlands   = svc.getConsolidatedLands( consolidation.objid )
         affectedrpus        = svc.getAffectedRpus( consolidation.objid )
         taxpayername        = consolidation.newtaxpayername 
-        barangay            = getBarangays().find{ it.indexno == rp.barangayindex }
+        barangay            = barangays.find{ it.indexno == rp.barangayindex }
         section             = parseInt( rp.section )
         parcel              = parseInt( rp.parcel )
         mode = 'open' 
@@ -377,13 +379,24 @@ public class ConsolidationController
         return [1,2,3,4]
     }
     
-    def brgyList
-    
-    List getBarangays(){ 
-        if( ! brgyList ) {
-            brgyList = faasSvc.getBarangays() 
+    def lguList
+    def getLgus() {
+        if( !lguList) {
+            def lgutype = var.lgu_type.toLowerCase();            
+            if( lgutype.matches('city|municipality')) 
+                lguList = faasSvc.getCityMunicipalityList();
+            else if( lgutype.matches('province'))
+                lguList = faasSvc.getMunicipalities();
+            else 
+                lguList = [];
         }
-        return brgyList 
+        return lguList;
+    }
+    
+    public void setLgu( def lgu ) {
+        this.lgu = lgu;
+        barangays = faasSvc.getBarangayListByParentId(lgu.objid);
+        binding.refresh();
     }
     
     
@@ -399,8 +412,8 @@ public class ConsolidationController
     }
     
     boolean getShowDisapproveAction() {
-        if( consolidation.lgutype?.toLowerCase() != 'city'  ) return false
         if( consolidation.docstate != 'FORAPPROVAL' ) return false
+        if( consolidation.rp.lgutype?.toLowerCase() != 'city'  ) return false
         return true
     }
     
@@ -423,7 +436,7 @@ public class ConsolidationController
         if( lgutype == 'city'  ) return false
         if( lgutype == 'municipality' && consolidation.docstate != 'FORPROVAPPROVAL' ) return false
         if( lgutype != 'municipality' && consolidation.docstate != 'FORAPPROVAL' ) return false
-        return true
+        return true 
     }
     
     boolean getShowViewTDAction() {

@@ -1,0 +1,41 @@
+import com.rameses.annotations.*
+import java.rmi.server.UID
+import com.rameses.eserver.*;
+import com.rameses.common.*;
+
+public class NoticeOfDelinquencyService
+{
+	@PersistenceContext('main')
+	def em 
+	
+	@Service('LogService')
+    def logSvc
+	
+	def SETTING_SCHEMA = 'noticeofdelinquency:noticeofdelinquencysetting';
+	def SETTING_OBJID='NOTICEOFDELINQUENCYSETTING'
+	
+	@ProxyMethod
+	public def saveSettings(def entity) {
+		def data = em.read(SETTING_SCHEMA,  [objid:SETTING_OBJID] );
+		if(data) {
+			data.putAll( entity);
+			em.update( SETTING_SCHEMA, data );
+		} else {
+			entity.objid=SETTING_OBJID;
+			em.validate( SETTING_SCHEMA, entity );
+			em.create( SETTING_SCHEMA, entity )
+			logSvc.log('CREATE', 'NoticeOfDelinquencySetting', entity.objid )
+		}
+		return entity;
+	}	
+	
+	@ProxyMethod
+	public def loadSetting( ) {
+		def data = em.read(SETTING_SCHEMA, [objid:SETTING_OBJID] );
+		println "data is " + data;
+		if(! data) return [:];
+		println data;
+		return data;
+	} 
+	
+}

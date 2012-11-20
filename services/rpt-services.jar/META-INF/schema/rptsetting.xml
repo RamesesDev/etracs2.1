@@ -18,6 +18,7 @@
 		<field name="allowconsolidationwithbalance" required="true"/>
 		<field name="allowreclasswithbalance" required="true"/>
 		<field name="allowreassessmentwithbalance" required="true" />
+		<field name="allowchangedepreciationwithbalance" required="true" />
 		<field name="approvedmvbelow" required="true"/>
 		<field name="agriculturalid" />
 		<field name="agriculturaltitle" />

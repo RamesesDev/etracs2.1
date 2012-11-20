@@ -78,9 +78,9 @@ public class CaptureBPPaymentPage extends javax.swing.JPanel {
 
         xLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("TextField.shadow")));
         xLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        xLabel5.setText("#{entity.amtpaid}");
         xLabel5.setCaption("Amount");
         xLabel5.setCaptionWidth(100);
-        xLabel5.setExpression("#{entity.formattedamtpaid}");
         xLabel5.setPreferredSize(new java.awt.Dimension(150, 16));
         formPanel1.add(xLabel5);
 

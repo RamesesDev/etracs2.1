@@ -61,7 +61,7 @@
                         new Column( name:"iqtr", caption:"Qtr"), 
                         new Column( name:"lobname", caption:"Line of Business" ),
                         new Column( name:"accttitle", caption:"Account" ),
-                        new Column( name:"taxamount", caption:"Principal" ),
+                        new Column( name:"taxamount", caption:"Principal" , editable:true, type:"decimal" ),
                         new Column( name:"surcharge", caption:"Surcharge", editable:true, type:"decimal"), 
                         new Column( name:"interest", caption:"Interest", editable:true, type:"decimal"),
                         new Column( name:"discount", caption:"Discount", editable:true, type:"decimal"),
@@ -87,7 +87,7 @@
             void recalcAmount( item, colname ){
                 def eval = { val -> return ( val ? val : 0.0 )}
                 if( colname != 'amtpaid'){
-                    item.amount = eval(item.taxamount) + eval(item.surcharge) + eval(item.interest) - eval(item.discount)
+                    item.amount = eval(item.principal) + eval(item.taxamount) + eval(item.surcharge) + eval(item.interest) - eval(item.discount)
                     item.amtpaid = item.amount
                 }
             }

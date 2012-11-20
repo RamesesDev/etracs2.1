@@ -2,13 +2,13 @@
 # GETTERS
 #----------------------------------------------------------------
 [getInfoById]
-SELECT objid, docstate, schemaname, tdno, fullpin, claimno, ledgerid, issuedate FROM faaslist WHERE objid = $P{objid} 
+SELECT objid, docstate, schemaname, tdno, fullpin, claimno, ledgerid, issuedate, rputype FROM faaslist WHERE objid = $P{objid} 
 
 [getInfoByTdno]
-SELECT objid, docstate, schemaname, tdno, fullpin, claimno, ledgerid, issuedate FROM faaslist WHERE tdno = $P{tdno} 
+SELECT objid, docstate, schemaname, tdno, fullpin, claimno, ledgerid, issuedate, rputype FROM faaslist WHERE tdno = $P{tdno} 
 
 [getInfoByPin]
-SELECT objid, docstate, schemaname, tdno, fullpin, claimno, ledgerid, issuedate FROM faaslist WHERE pin = $P{pin} 
+SELECT objid, docstate, schemaname, tdno, fullpin, claimno, ledgerid, issuedate, rputype FROM faaslist WHERE pin = $P{pin} 
 
 [getLandReferenceByPin]
 SELECT objid, schemaname, taxpayerid FROM faaslist WHERE fullpin = $P{pin} AND docstate <> 'CANCELLED' 
@@ -138,7 +138,7 @@ SELECT * FROM lgu WHERE lgutype = 'BARANGAY' ORDER BY objid
 SELECT * FROM lgu 
 WHERE parentid = $P{parentid} 
   AND lgutype = 'BARANGAY' 
-ORDER BY objid 
+ORDER BY lguname
 
 [getActiveAnnotationId] 
 SELECT objid FROM faasannotation WHERE faasid = $P{faasid} AND docstate = 'APPROVED' ORDER BY docno DESC 
@@ -349,6 +349,9 @@ WHERE ${whereclause}
 
 [getFaasFilters]
 SELECT * FROM filter WHERE refname = 'faas' ORDER BY name  
+
+[getFaasIds]
+select objid, tdno from faaslist where ${filter}
 
 [getClassificationList]
 SELECT objid, propertycode AS classcode, propertydesc AS classname FROM propertyclassification ORDER BY orderno  

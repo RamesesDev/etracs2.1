@@ -60,6 +60,7 @@
 	<field name="refno" class="java.lang.String"/>
 	<field name="barcodeurl" class="java.lang.String"/>
 	<field name="barcode" class="java.lang.String"/>
+	<field name="taxpayerno" class="java.lang.String"/>
 
 
 		<group  name="generalinfo" >
@@ -604,7 +605,7 @@
 					<textElement>
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{taxpayername}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{taxpayername} + " - " + $F{taxpayerno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

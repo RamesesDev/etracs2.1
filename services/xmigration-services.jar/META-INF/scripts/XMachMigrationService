@@ -1,0 +1,40 @@
+import com.rameses.common.*
+import com.rameses.annotations.*
+
+class XMachMigrationService{
+	
+	@PersistenceContext('main')
+	def em 
+	
+	@Service('FAASService')
+	def faasSvc
+	
+	@Service('NumberService')
+	def numSvc
+	
+	@ProxyMethod
+	public def getMachList() {
+		return em.sqlContext.createQuery("SELECT objid FROM faaslist WHERE rputype = 'mach'").resultList 
+	}
+	
+	@ProxyMethod
+	public void fixMachDetail( objid ) {
+		println 'Processing machine ->  ' + objid 
+		def rpu = em.sqlContext.createQuery('SELECT rpu FROM faas WHERE objid = $P{objid}')
+						.setParameter('objid', objid ).singleResult
+		rpu = em.serializer.read( rpu.rpu )
+		
+		rpu.info.machuses.each{ mu ->
+			mu.machdetails.each{ md -> 
+				md.assesslevel = mu.assesslevel
+				md.assessedvalue = numSvc.roundToTen( md.marketvalue * mu.assesslevel / 100.0 )
+			}
+		}
+		
+		em.sqlContext.createExecutor('UPDATE faas SET rpu = $P{rpu} WHERE objid = $P{objid}')
+						.setParameter('objid', objid )
+						.setParameter('rpu', em.serializer.write( rpu ) )
+						.execute() 
+						
+	}
+}

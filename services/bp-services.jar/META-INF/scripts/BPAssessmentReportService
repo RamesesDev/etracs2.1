@@ -33,6 +33,7 @@ public class BPApplicationService
 	def buildInfo( def bpa ){
 		
 		def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+		def entity = em.sqlContext.createNamedQuery( 'entity:getEntityInfo').setParameter( 'objid', bpa.taxpayerid ).singleResult
 		
 		def info = [
 			barcode: bpa.barcode,
@@ -42,6 +43,7 @@ public class BPApplicationService
 			txndate: sdf.format( bpa.txndate ),
 			tradename: bpa.tradename,
 			businessaddress: bpa.businessaddress, 
+			taxpayerno: entity.entityno, 
 			taxpayername: bpa.info.taxpayername,
 			taxpayeraddress: bpa.info.taxpayeraddress,
 			signatories: bpa.info.assessmentsignatories,
