@@ -1,0 +1,20 @@
+import com.rameses.annotations.*;
+
+class MessageListenerService {
+
+	@ProxyMethod
+    public void onOpen(Object msg) {
+		
+	}
+     
+	@ProxyMethod
+	public void onMessage(Object msg) {
+		print "received message " + msg;
+	}
+	
+	@ProxyMethod
+    public void onClose(Object msg) {
+	
+    }
+	
+}

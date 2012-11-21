@@ -9,7 +9,7 @@
 
 package etracs2faasreport;
 
-import com.rameses.osiris2.client.OsirisTestPlatform;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +30,7 @@ public class Main {
         Map params = new HashMap();
         params.put("default.host","10.0.0.108:8080");
         params.put("app.context","bohol");
-        OsirisTestPlatform.runTest(params);
+        //OsirisTestPlatform.runTest(params);
     }
     
 }

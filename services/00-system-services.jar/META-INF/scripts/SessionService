@@ -1,0 +1,96 @@
+import com.rameses.annotations.*;
+
+
+class SessionService {
+
+	@Resource("CacheService")	
+	def cacheSvc;
+
+	@PersistenceContext("java:system")
+	def em;
+	
+	@Env
+	def env;
+	
+	@ProxyMethod 
+	public String register(def o ) {
+		def m = [:];
+		m.sessionid = "SESS:" + new java.rmi.server.UID();
+		m.username = o.username;
+		m.dtaccessed = new java.util.Date();
+		m.info = em.serializer.write( o.info );
+        m.dtexpiry = null;
+		em.sqlContext.createNamedExecutor( "session:add-session" ).setParameters(m).execute();	
+		cacheSvc.put( m.sessionid, m );
+		return m.sessionid;
+	}
+
+	@ProxyMethod 
+	public def unregister(def sessionid ) {
+		def m = getInfo( sessionid );
+		cacheSvc.remove( sessionid );
+		if( m ) {
+			em.sqlContext.createNamedExecutor("session:remove-session").setParameters(m).execute();	
+		}
+		return m;
+	}
+
+	@ProxyMethod 
+	public def getInfo(def sessionid ) {
+		def o = cacheSvc.get( sessionid );
+		if( o == null ) {
+			print "rebuilding cache for " + sessionid;
+			o = em.sqlContext.createQuery("select * from sys_session where sessionid=?").setParameter(1, sessionid).singleResult;	
+			if(o.info) o.info = em.serializer.read( o.info );
+			cacheSvc.put( sessionid, o );
+		}
+		return o;
+	}
+	
+	@ProxyMethod 
+	public void notifyUser(username, msg ) {
+		def list = em.sqlContext.createQuery('select sessionid from sys_session where username=?').setParameter(1, username ).resultList*.sessionid;
+		list.each { o->
+			print "notify user " + o;
+			//sessionService.push( o, null, msg );
+		}
+	}
+
+	@ProxyMethod 
+	public void send(def sessionid, def msg ) {
+		def list = em.sqlContext.createQuery('select username from sys_session where sessionid=?').setParameter(1, sessionid ).resultList;
+		list.each {
+			def subList = em.sqlContext.createQuery('select sessionid from sys_session where username=?').setParameter(1,it.username).resultList*.sessionid;
+			subList.each { o->
+				print "notify " + o;
+				//sessionService.push( o, null, msg );
+			}	
+		}
+	}
+	
+	@ProxyMethod 
+	public void notifyAll( msg ) {
+		def list = em.sqlContext.createQuery('select sessionid from sys_session').resultList*.sessionid;
+		list.each { o->
+			print "notify " + o;
+			//sessionService.push( o, null, msg );
+		}
+	}
+	
+	@ProxyMethod 
+	public void notifyAllExceptSender( msg, senderid ) {
+		def list = em.sqlContext.createQuery('select sessionid from sys_session where not(username=?)').setParameter(1,senderid).resultList*.sessionid;
+		list.each { o->
+			print "notify " + o;
+			//sessionService.push( o, null, msg );
+		}
+	}
+	
+	/*
+	@ProxyMethod 
+	public def getUserId(String sessionid) {
+		return em.sqlContext.createQuery('select username from sys_session where sessionid=?').setParameter(1, sessionid).singleResult.username;
+	}
+	*/
+	
+}

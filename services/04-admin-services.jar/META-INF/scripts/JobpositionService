@@ -1,0 +1,122 @@
+import com.rameses.annotations.*;
+
+class JobpositionService {
+
+	@PersistenceContext("main")
+	def em;
+	
+	@Service("RoleService")
+	def roleSvc;
+
+	@ProxyMethod
+	public def getList(def params) {
+		def sq = "jobposition:list";
+		if( params.unassigned ) sq = "jobposition:unassigned-list";
+		def qry = em.sqlContext.createNamedQuery( sq );
+		qry.setPagingKeys("jp.objid");
+		if(params) {
+			if(params._start) qry.setFirstResult( params._start );
+			if(params._limit) qry.setMaxResults( params._limit );
+
+			def sb = new StringBuffer();
+			def condition = '';
+			if( params.orgunitid ) {
+				sb.append( ''' orgunitid=$P{orgunitid} ''' );	
+			}	
+			if( params.searchText ) {
+				params.searchText = "%" + params.searchText + "%";
+				if( sb.length() > 0 ) sb.append( ' and ' );
+				sb.append( ''' code like $P{searchText} or title like $P{searchText} ''' );	
+			}	
+			
+			if( sb.length() > 0 ) {
+				condition = ' where ' + sb.toString();
+			}	
+			qry.setVars( [ condition: condition ] );	
+			qry.setParameters( params );
+		}
+		
+		return qry.resultList;
+	}
+	
+	@ProxyMethod
+	public def create(@Param(schema="jobposition") o) {
+		if(!o.objid) throw new Exception("Please provide an objid");
+		return em.create( "jobposition", o );
+	}
+	
+	@ProxyMethod
+	public def read(def o) {
+		return em.read( "jobposition", o );
+	}
+
+	@ProxyMethod
+	public def update(@Param(schema="jobposition") o) {
+		return em.update( "jobposition", o );
+	}
+	
+	@ProxyMethod
+	public def remove(def o) {
+		em.sqlContext.createNamedExecutor("jobposition:remove-roles").setParameters([jobpositionid:o.objid]).execute();
+		em.delete( "jobposition", o );
+	}
+	
+	@ProxyMethod
+	public def assign(def o) {
+		def x = em.read( "jobposition", o );
+		x.assigneeid = o.assigneeid;
+		em.update( "jobposition", x );
+		return x;
+	}
+	
+	@ProxyMethod
+	public def unassign(def o) {
+		def x = em.read( "jobposition", o );
+		x.assigneeid = null;
+		em.update( "jobposition", x );
+		return x;
+	}
+	
+	@ProxyMethod
+	public def getRoles(o) {
+		return em.sqlContext.createNamedQuery('jobposition:roles').setParameters([jobpositionid:o.objid]).resultList;
+	}
+	
+	@ProxyMethod
+	public def getRolePermissions(def o) {
+		def role = roleSvc.read( o );
+		def perms = roleSvc.getLimitedPermissions( role );
+		perms.each {
+			if( o.disallowed && it.action.matches( o.disallowed )) it.allowed = false;
+		}
+		return perms;
+	}
+	
+	@ProxyMethod
+	public def updatePermissions(def o) {
+		em.sqlContext.createNamedExecutor("jobposition:remove-roles").setParameters([jobpositionid:o.objid]).execute();
+		o.roles.each {
+			def disallowed = [];
+			if(it.permissions) {
+				it.permissions.each { x->
+					if(!x.allowed) disallowed.add( x.action );	
+				}
+			}
+			it.jobpositionid = o.objid;
+			
+			//In case permissions of the role was not fetched, use existing disallowed of the role
+			if( it.permissions ) it.disallowed = disallowed.join("|");
+			
+			em.save( "jobposition:role", it );
+		};
+	}
+	
+	/***
+	This is referenced during login.
+	***/
+	@ProxyMethod
+	public def getUserPermissions(def o) {
+		return em.sqlContext.createNamedQuery("jobposition:role-permissions-byuser").setParameters(o).resultList;			
+	}
+	
+}

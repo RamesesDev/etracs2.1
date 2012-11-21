@@ -1,0 +1,92 @@
+import com.rameses.annotations.*;
+
+class RoleService {
+
+	@PersistenceContext("main")
+	def em;
+
+	@Service("SysRoleService")
+	def sysRoleSvc;
+	
+	@ProxyMethod
+	public def getList(def params) {
+		def sql = "role:list";
+		if( params?.sysrole ) sql = "role:list-by-sysrole";
+		else if( params?.domain ) sql = "role:list-by-domain";
+		
+		def qry = em.sqlContext.createNamedQuery( sql );
+		qry.setPagingKeys("role");
+		
+		if(params) {
+			if(params._start) qry.setFirstResult( params._start );
+			if(params._limit) qry.setMaxResults( params._limit );
+			qry.setParameters( params );
+		}
+		return qry.resultList;
+	}
+	
+	
+	@ProxyMethod
+	public def read(def o) {
+		return em.read( "role", o );
+	}
+
+	@ProxyMethod
+	public def create(def o) {
+		if(!o.permissions) o.permissions = [];
+		def disallowed = o.permissions.findAll{ !it.allowed }*.action;
+		o.system = 0;
+		if(disallowed) o.excluded = disallowed.join("|");
+		return em.create( "role", o );
+	}
+
+	@ProxyMethod
+	public def update(def o) {
+		if(!o.permissions) o.permissions = [];
+		def disallowed = o.permissions.findAll{ !it.allowed }*.action;
+		o.excluded = disallowed.join("|");
+		o.remove( "permissions" );
+		return em.update( "role", o );
+	}
+	
+	@ProxyMethod
+	public def remove(def o) {
+		em.delete( "role", o );
+	}
+	
+	@ProxyMethod
+	public def getDomainList() {
+		return sysRoleSvc.getDomainList([:])*.domain;
+	}
+
+	@ProxyMethod
+	public def getSysRoles(def o) {
+		return sysRoleSvc.getList(o)*.name;
+	}
+	
+	@ProxyMethod
+	public def getPermissions(def o) {
+		def permissions =  sysRoleSvc.getPermissions(o);
+		permissions.each { 
+			if( o.excluded && it.action.matches(o.excluded) ) 
+				it.allowed = false;
+			else
+				it.allowed = true; 
+		};
+		return permissions;
+	}
+
+	@ProxyMethod
+	public def getLimitedPermissions(def role) {
+		def permissions = sysRoleSvc.getPermissions(role);
+		def list = [];
+		permissions.each {
+			if( !role.excluded || !it.action.matches(role.excluded) ) {		
+				it.allowed = true; 
+				list.add( it );
+			}
+		};
+		return list;
+	}
+	
+}

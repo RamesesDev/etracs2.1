@@ -1,0 +1,13 @@
+import com.rameses.annotations.*;
+
+class NotificationService {
+
+	@Resource("NotificationService")
+	def notifier;
+
+	@ProxyMethod
+    public void send(Object msg) {
+		notifier.sendMessage( msg );
+	}
+     
+}
