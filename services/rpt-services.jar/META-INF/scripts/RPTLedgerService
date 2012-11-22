@@ -55,8 +55,10 @@ class RPTLedgerService
 		notice.objid = 'ND' + new UID() 
 		notice.txnno = curryear + '-' + sequenceSvc.getNextFormattedSeries( key )
 		notice.txndate = dateSvc.serverDate 
+		notice.docstate = 'OPEN'
+		notice.doctype = 'NOD'
 		em.create(NOTICE_OF_DELINQUENCY_SCHEMA, notice )
-		return notice
+		return notice 
 	}
 	
 	@ProxyMethod

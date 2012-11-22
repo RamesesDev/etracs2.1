@@ -1,6 +1,8 @@
 <schema>
 	<element name="noticeofdelinquency" tablename="noticeofdelinquency">
 		<field name="objid" primary="true"/>
+		<field name="docstate" required="true" />
+		<field name="doctype" required="true" />
 		<field name="ledgerid" required="true"/>
 		<field name="txnno" required="true"/>
 		<field name="txndate" required="true"/>
@@ -18,6 +20,8 @@
 		<field name="total" type="decimal" required="true" />
 		<field name="currentyear" type="integer" required="true" />
 		<field name="delinquentyrqtr" required="true" />
+		<field name="receivedby"  />
+		<field name="receiveddate"  />
 		<complex name="extended" merge="true" serializer="default" required="false"/>
 	</element>
 	

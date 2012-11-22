@@ -1,0 +1,57 @@
+<workunit>
+    <invokers>
+        <invoker type="demandletters.addinfo" action="init" caption="New Demand Letters Additional Info" target="popup" />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*;
+
+class NewDemandLettersController
+{
+    @Binding
+    def binding
+    
+    def entity = [:]
+    def doctype
+    
+    def entity
+    def onselect
+    def doctype
+    def civilstatus
+   
+    void init(){
+        return doctype
+    }
+    
+    List getCivilstatuslist(){
+        return [
+            "Single", "Married",
+            "Widowed", "Divorced"
+        ]
+    }
+
+    def ok(){
+        entity.civilstatus = doctype.toLowerCase()
+        onselect( entity )
+        return '_close'
+    }
+
+    
+  
+    
+
+    
+}
+
+
+]]>
+    </code>
+    <pages>
+        <page name="nopas" template="etracs2.rpt.report.noticeofdelinquency.NOPASPage"/>
+        <page name="csdrp" template="etracs2.rpt.report.noticeofdelinquency.CSDRPPage"/>
+    </pages>
+</workunit>

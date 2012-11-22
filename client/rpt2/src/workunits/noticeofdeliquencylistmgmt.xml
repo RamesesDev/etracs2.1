@@ -1,0 +1,69 @@
+<workunit>
+    <invokers>
+        <invoker folderid="/menu/rpt/landtax" action="init" caption="Notice of Delinquency List Management" target="window" index="20" xpermission="noticeofdelinquencyretting.create" />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.common.*;
+import com.rameses.rcp.annotations.*;
+import com.rameses.osiris2.client.*;
+import com.rameses.osiris2.reports.*;
+
+class NoticeOfDelinquencyListMgmtController
+{
+    
+    @Service("NoticeOfDelinquencyService")
+    def svc;
+
+    def entity=[:]; 
+    def doctype
+    def selectedItem
+    def list 
+    def doctypelist
+    
+    public void init() {
+        doctypelist = svc.getDoctypes()
+    }
+    
+    def listHandler =[
+        getRows    : { return 25 },
+        getColumns : { return [
+            new Column( name:'fdoctype', caption:'Doc Type', maxWidth:350),
+            new Column( name:'tdno', caption:'tdno' ),
+            new Column( name:'taxpayername', caption:'Taxpayer'),
+            new Column( name:'taxpayeraddress', caption:'Taxpayer Address'),
+            new Column( name:'receivedby', caption:'Received By'),
+            new Column( name:'receiveddate', caption:'Received Date'),
+            new Column( name:'assessedvalue', caption:'Assessed Value', type:'decimal' ),
+            new Column( name:'delinquentamount', caption:'Delinquent Amount', type:'decimal' ),
+            new Column( name:'currentamount', caption:'Current Amount', type:'decimal' ),
+            new Column( name:'total', caption:'Total', type:'decimal'),
+        ]},
+        fetchList  : {
+            return list = svc.getList( doctype )
+        }
+    ] as PageListModel
+    
+    List getDoctypelist(){
+        return doctypelist
+    }
+    
+    void setDoctype( doctype ){
+        this.doctype = doctype
+        listHandler.load()
+    }
+    
+    def create(){
+        return InvokerUtil.lookupOpener('demandletters.create', [:])
+    }
+    
+}
+
+]]>        
+        
+    </code>
+    <pages>
+        <page template="etracs2.rpt.report.noticeofdelinquency.ListMgmtPage" />
+    </pages>
+</workunit>

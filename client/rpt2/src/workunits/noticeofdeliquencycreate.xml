@@ -1,0 +1,139 @@
+<workunit>
+    <invokers>
+        <invoker type="demandletters.create" action="init" caption="New Demand Letters" target="popup" />
+    </invokers>
+    <code>
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*;
+import com.rameses.rcp.framework.TaskManager;
+
+class NewDemandLettersController
+{
+    @Binding
+    def binding
+    
+    def entity = [:]
+    def setting = [:]
+    def doctype
+    def filter
+    
+    @Service('NoticeOfDelinquencyService')
+    def svc 
+    
+    void init(){
+        setting = svc.loadSetting()
+    }
+    
+    List getDoctypelist(){
+        return svc.getDoctypes()
+    }
+    
+    void setDoctype( doctype ){
+        this.doctype = doctype
+    }
+    
+    List getFilterlist(){
+        return [
+            [ code: 'NOY', caption:'No. of Years'],
+            [ code: 'AR', caption:'By Amount'],
+        ]
+    }
+    
+    def params 
+    def next(){
+        this.params = [ filter:filter?.code, doctype: doctype ]
+        this.params.putAll( entity )
+        list = svc.getDemandLettersList( params )
+        return 'demandletterslistpage'
+    }
+
+    
+    
+    
+    
+    /***********************************
+    * * 
+    ***********************************/
+    def list 
+    def mode = 'edit'
+    def reportdata 
+    
+    void selectAll(){
+        list.each{ it.selected = true }
+        listHandler.load()
+    }
+    
+    void deselectAll() {
+        list.each{ it.selected = false }
+        listHandler.load()
+    }
+    
+    def report = [
+        getReportName : { return 'approvefaaslisting' }, 
+        getReportData : { return reportdata },
+        getParameters : { 
+            def params = svcParams.getStandardParameter( OsirisContext.env.USERNAME ) 
+            
+            return params 
+        }
+    ] as ServerReportModel;
+    
+    def generateprint(){
+        if( mode == 'edit' )  {
+            mode = 'read'
+            params.list = list.findAll{ it.selected == true }
+            if( !params.list )  
+                throw new Exception( 'Select atleast one item.' )
+            
+            list = svc.saveUpdate( params )
+            listHandler.load() 
+        }
+        else{
+            //generateReport()
+            MsgBox.alert( 'Printing. . .Not yet ' )
+            return 'preview'
+        }
+    }
+    
+    def getColoumns(){
+        
+        return [
+            new Column( name:'selected', caption:'', type:'boolean', editable:'true', maxWidth:30 ),
+            new Column( name:'fdoctype', caption:'Doc Type', maxWidth:350),
+            new Column( name:'tdno', caption:'tdno' ),
+            new Column( name:'taxpayername', caption:'Taxpayer'),
+            new Column( name:'taxpayeraddress', caption:'Taxpayer Address'),
+            new Column( name:'assessedvalue', caption:'Assessed Value', type:'decimal' ),
+            new Column( name:'delinquentamount', caption:'Delinquent Amount', type:'decimal' ),
+            new Column( name:'currentamount', caption:'Current Amount', type:'decimal' ),
+            new Column( name:'total', caption:'Total', type:'decimal'), 
+        ]
+    }
+    
+    def listHandler = [
+        getRows    : { return 25 },
+        getColumns : { getColoumns() },
+        fetchList  : {
+            def slist = list.findAll{ it.selected == true } 
+            return ( mode == 'read' ? slist : list )
+        }
+    ] as PageListModel
+    
+    void generateReport() {
+        //def entity = [ year:year, quarter:quarter, month:month, lguid:lgu?.objid, barangayid:barangay?.objid ]
+    }
+    
+}
+
+]]>
+    </code>
+    <pages>
+        <page template="etracs2.rpt.report.noticeofdelinquency.NewDemandLettersPage"/>
+        <page name = "demandletterslistpage" template="etracs2.rpt.report.noticeofdelinquency.DemandLettersListPage" />
+        <page name="preview" template="etracs2.common.PreviewPage" />
+    </pages>
+</workunit>

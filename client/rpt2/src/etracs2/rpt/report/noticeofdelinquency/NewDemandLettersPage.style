@@ -1,0 +1,41 @@
+"entity.billdate" [ setting.advancecomputation == 1 ] {
+    enabled:true;
+    required:true;
+}
+
+"entity.billdate" [ setting.advancecomputation == 0 ] {
+    enabled:false;
+    required:false;
+}
+
+"selectAll|deselectAll|selectedItem" [ mode == 'read' ] {
+    enabled:false;
+}
+
+"selectAll|deselectAll" [ mode == 'edit' ] {
+    enabled:true;
+}
+
+"generateprint" [ mode == 'read' ] {
+    text:'Print';
+}
+
+"filter|entity.value" [ doctype.code == 'NOD' ] {
+    enabled: true;
+    required: true;
+}
+
+"filter|entity.value" [ doctype.code != 'NOD'] {
+    enabled: false;
+    value:null;
+    required:false;
+}
+
+"entity.spousename|entity.spouseaddress" [ civilstatus == 'Married' ] {
+    enabled: true;
+}
+
+"entity.spousename|entity.spouseaddress" [ civilstatus != 'Married' ] {
+    enabled: false;
+    value:null;
+}
