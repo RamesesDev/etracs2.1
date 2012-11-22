@@ -1,0 +1,62 @@
+"entity.noofdaysexpirednod" [ entity.noticeofdelinquency == 1 ] {
+    enabled:true;
+    required:true;
+}
+
+"entity.noofdaysexpirednod" [ entity.noticeofdelinquency == 0 ] {
+    enabled:false;
+}
+
+"entity.noofdaysexpiredst" [ entity.secondtracer == 1 ] {
+    enabled:true;
+    required:true;
+}
+
+"entity.noofdaysexpiredst" [ entity.secondtracer == 0 ] {
+    enabled:false;
+}
+
+"entity.noofdaysexpiredfd" [ entity.finaldemand == 1 ] {
+    enabled:true;
+    required:true;
+}
+
+"entity.noofdaysexpiredfd" [ entity.finaldemand == 0 ] {
+    enabled:false;
+}
+
+"entity.noofdaysexpiredwol" [ entity.warrantoflevy == 1 ] {
+    enabled:true;
+    required:true;
+}
+
+"entity.noofdaysexpiredwol" [ entity.warrantoflevy == 0 ] {
+    enabled:false;
+}
+
+"entity.noofdaysexpirednopas" [ entity.noticeofpublication == 1 ] {
+    enabled:true;
+    required:true;
+}
+
+"entity.noofdaysexpirednopas" [ entity.noticeofpublication == 0 ] {
+    enabled:false;
+}
+
+"entity.noofdaysexpiredcsdrp" [ entity.certofsaleofproperty == 1 ] {
+    enabled:true;
+    required:true;
+}
+
+"entity.noofdaysexpiredcsdrp" [ entity.certofsaleofproperty == 0 ] {
+    enabled:false;
+}
+
+"entity.noofdaysexpirednor" [ entity.noticeofredemption == 1 ] {
+    enabled:true;
+    required:true;
+}
+
+"entity.noofdaysexpirednor" [ entity.noticeofredemption == 0 ] {
+    enabled:false;
+}

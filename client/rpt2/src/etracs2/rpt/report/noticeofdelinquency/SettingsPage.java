@@ -1,15 +1,9 @@
-/*
- * ListPage.java
- *
- * Created on August 18, 2011, 8:34 PM
- */
 
 package etracs2.rpt.report.noticeofdelinquency;
 
-/**
- *
- * @author  jzamora
- */
+import com.rameses.rcp.ui.annotations.StyleSheet;
+
+@StyleSheet("etracs2/rpt/report/noticeofdelinquency/SettingsPage.style")
 public class SettingsPage extends javax.swing.JPanel {
     
     /** Creates new form ListPage */
@@ -37,6 +31,14 @@ public class SettingsPage extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         xCheckBox8 = new com.rameses.rcp.control.XCheckBox();
+        jLabel3 = new javax.swing.JLabel();
+        xNumberField1 = new com.rameses.rcp.control.XNumberField();
+        xNumberField2 = new com.rameses.rcp.control.XNumberField();
+        xNumberField3 = new com.rameses.rcp.control.XNumberField();
+        xNumberField4 = new com.rameses.rcp.control.XNumberField();
+        xNumberField5 = new com.rameses.rcp.control.XNumberField();
+        xNumberField6 = new com.rameses.rcp.control.XNumberField();
+        xNumberField7 = new com.rameses.rcp.control.XNumberField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -60,7 +62,7 @@ public class SettingsPage extends javax.swing.JPanel {
         xCheckBox1.setName("entity.noticeofdelinquency");
         xCheckBox1.setUncheckValue(0);
         jPanel2.add(xCheckBox1);
-        xCheckBox1.setBounds(40, 50, 260, 15);
+        xCheckBox1.setBounds(40, 70, 260, 15);
 
         xCheckBox2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox2.setText("Second Tracer");
@@ -69,7 +71,7 @@ public class SettingsPage extends javax.swing.JPanel {
         xCheckBox2.setName("entity.secondtracer");
         xCheckBox2.setUncheckValue(0);
         jPanel2.add(xCheckBox2);
-        xCheckBox2.setBounds(40, 70, 260, 15);
+        xCheckBox2.setBounds(40, 90, 260, 15);
 
         xCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox3.setText("Final Demand");
@@ -78,7 +80,7 @@ public class SettingsPage extends javax.swing.JPanel {
         xCheckBox3.setName("entity.finaldemand");
         xCheckBox3.setUncheckValue(0);
         jPanel2.add(xCheckBox3);
-        xCheckBox3.setBounds(40, 90, 260, 15);
+        xCheckBox3.setBounds(40, 110, 260, 15);
 
         xCheckBox4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox4.setText("Warrant of Levy");
@@ -87,7 +89,7 @@ public class SettingsPage extends javax.swing.JPanel {
         xCheckBox4.setName("entity.warrantoflevy");
         xCheckBox4.setUncheckValue(0);
         jPanel2.add(xCheckBox4);
-        xCheckBox4.setBounds(40, 110, 260, 15);
+        xCheckBox4.setBounds(40, 130, 260, 15);
 
         xCheckBox5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox5.setText("Notice of Publication and Auction Sale");
@@ -96,7 +98,7 @@ public class SettingsPage extends javax.swing.JPanel {
         xCheckBox5.setName("entity.noticeofpublication");
         xCheckBox5.setUncheckValue(0);
         jPanel2.add(xCheckBox5);
-        xCheckBox5.setBounds(40, 130, 260, 15);
+        xCheckBox5.setBounds(40, 150, 260, 15);
 
         xCheckBox6.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox6.setText("Certificate of Sale of Delinquent Real Property");
@@ -105,7 +107,7 @@ public class SettingsPage extends javax.swing.JPanel {
         xCheckBox6.setName("entity.certofsaleofproperty");
         xCheckBox6.setUncheckValue(0);
         jPanel2.add(xCheckBox6);
-        xCheckBox6.setBounds(40, 150, 260, 15);
+        xCheckBox6.setBounds(40, 170, 260, 15);
 
         xCheckBox7.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox7.setText("Notice of Redemption");
@@ -114,7 +116,7 @@ public class SettingsPage extends javax.swing.JPanel {
         xCheckBox7.setName("entity.noticeofredemption");
         xCheckBox7.setUncheckValue(0);
         jPanel2.add(xCheckBox7);
-        xCheckBox7.setBounds(40, 170, 260, 15);
+        xCheckBox7.setBounds(40, 190, 260, 15);
 
         jLabel1.setBackground(new java.awt.Color(0, 0, 102));
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11));
@@ -122,7 +124,7 @@ public class SettingsPage extends javax.swing.JPanel {
         jLabel1.setText(" Check Available Demand Letters");
         jLabel1.setOpaque(true);
         jPanel2.add(jLabel1);
-        jLabel1.setBounds(20, 30, 330, 14);
+        jLabel1.setBounds(20, 30, 440, 14);
 
         jLabel2.setBackground(new java.awt.Color(0, 0, 102));
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11));
@@ -130,7 +132,7 @@ public class SettingsPage extends javax.swing.JPanel {
         jLabel2.setText(" Other Settings");
         jLabel2.setOpaque(true);
         jPanel2.add(jLabel2);
-        jLabel2.setBounds(20, 200, 330, 14);
+        jLabel2.setBounds(20, 230, 440, 14);
 
         xCheckBox8.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         xCheckBox8.setText("Compute Advance Bill?");
@@ -139,10 +141,64 @@ public class SettingsPage extends javax.swing.JPanel {
         xCheckBox8.setName("entity.advancecomputation");
         xCheckBox8.setUncheckValue(0);
         jPanel2.add(xCheckBox8);
-        xCheckBox8.setBounds(40, 220, 260, 15);
+        xCheckBox8.setBounds(40, 250, 260, 15);
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel3.setText("No of days expired");
+        jPanel2.add(jLabel3);
+        jLabel3.setBounds(320, 50, 110, 14);
+
+        xNumberField1.setCaption("No of Days Expired For Notice of Delinquency");
+        xNumberField1.setDepends(new String[] {"entity.noticeofdelinquency"});
+        xNumberField1.setFieldType(Integer.class);
+        xNumberField1.setName("entity.noofdaysexpirednod");
+        jPanel2.add(xNumberField1);
+        xNumberField1.setBounds(320, 70, 80, 19);
+
+        xNumberField2.setCaption("No of Days Expired for Secode Tracer");
+        xNumberField2.setDepends(new String[] {"entity.secondtracer"});
+        xNumberField2.setFieldType(Integer.class);
+        xNumberField2.setName("entity.noofdaysexpiredst");
+        jPanel2.add(xNumberField2);
+        xNumberField2.setBounds(320, 90, 80, 19);
+
+        xNumberField3.setCaption("No of Days Expired For Final Demand");
+        xNumberField3.setDepends(new String[] {"entity.finaldemand"});
+        xNumberField3.setFieldType(Integer.class);
+        xNumberField3.setName("entity.noofdaysexpiredfd");
+        jPanel2.add(xNumberField3);
+        xNumberField3.setBounds(320, 110, 80, 19);
+
+        xNumberField4.setCaption("No of Days Expired ForWarrant of Levy");
+        xNumberField4.setDepends(new String[] {"entity.warrantoflevy"});
+        xNumberField4.setFieldType(Integer.class);
+        xNumberField4.setName("entity.noofdaysexpiredwol");
+        jPanel2.add(xNumberField4);
+        xNumberField4.setBounds(320, 130, 80, 19);
+
+        xNumberField5.setCaption("No of Days Expired For Notice of Publication and Auction Sale");
+        xNumberField5.setDepends(new String[] {"entity.noticeofpublication"});
+        xNumberField5.setFieldType(Integer.class);
+        xNumberField5.setName("entity.noofdaysexpirednopas");
+        jPanel2.add(xNumberField5);
+        xNumberField5.setBounds(320, 150, 80, 19);
+
+        xNumberField6.setCaption("No of Days Expired For Certificate of Sale of Delinquent Real Property");
+        xNumberField6.setDepends(new String[] {"entity.certofsaleofproperty"});
+        xNumberField6.setFieldType(Integer.class);
+        xNumberField6.setName("entity.noofdaysexpiredcsdrp");
+        jPanel2.add(xNumberField6);
+        xNumberField6.setBounds(320, 170, 80, 19);
+
+        xNumberField7.setCaption("No of Days Expired For Final Demand For Notice of Redemption");
+        xNumberField7.setDepends(new String[] {"entity.noticeofredemption"});
+        xNumberField7.setFieldType(Integer.class);
+        xNumberField7.setName("entity.noofdaysexpirednor");
+        jPanel2.add(xNumberField7);
+        xNumberField7.setBounds(320, 190, 80, 19);
 
         jPanel1.add(jPanel2);
-        jPanel2.setBounds(10, 10, 540, 310);
+        jPanel2.setBounds(10, 10, 540, 330);
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -152,6 +208,7 @@ public class SettingsPage extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private com.rameses.rcp.control.XActionBar xActionBar1;
@@ -163,6 +220,13 @@ public class SettingsPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XCheckBox xCheckBox6;
     private com.rameses.rcp.control.XCheckBox xCheckBox7;
     private com.rameses.rcp.control.XCheckBox xCheckBox8;
+    private com.rameses.rcp.control.XNumberField xNumberField1;
+    private com.rameses.rcp.control.XNumberField xNumberField2;
+    private com.rameses.rcp.control.XNumberField xNumberField3;
+    private com.rameses.rcp.control.XNumberField xNumberField4;
+    private com.rameses.rcp.control.XNumberField xNumberField5;
+    private com.rameses.rcp.control.XNumberField xNumberField6;
+    private com.rameses.rcp.control.XNumberField xNumberField7;
     // End of variables declaration//GEN-END:variables
     
 }
