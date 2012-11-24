@@ -17,6 +17,9 @@ public class NoticeOfDelinquencyService
 	@Service( 'DateService' )
 	def dtSvc
 	
+	@Service( 'NumberService' )
+	def numSvc 
+	
 	def SETTING_SCHEMA = 'noticeofdelinquency:noticeofdelinquencysetting';
 	def SETTING_OBJID = 'NOTICEOFDELINQUENCYSETTING'
 	
@@ -28,7 +31,7 @@ public class NoticeOfDelinquencyService
 		noticeofpublication: [index:5, code: 'NOPAS', description:'Notice of Publication and Auction Sale'], 
 		certofsaleofproperty: [index:6, code: 'CSDRP', description:'Certificate of Sale of Delinquent Real Property'], 
 		noticeofredemption: [index:7, code: 'NOR', description:'Notice of Redemption']
-	]; 
+	]
 	
 	@ProxyMethod
 	public def saveSettings(def entity) {
@@ -150,7 +153,57 @@ public class NoticeOfDelinquencyService
 		return params.list
 	}
 	
-
+	private def fQtr = { n ->
+		n = n.toString()
+		if( n.matches('01|1|21|31') )
+			return n + 'st';
+		else if( n.matches('02|2|22') )
+			return n + 'nd';
+		else if(n.matches('03|3|23')) 
+			return n + 'rd';
+		else return n + 'th';
+	}
+	
+	@ProxyMethod
+	public Map populateReportData( reportdata ){
+		def extended = em.serializer.read( reportdata.extended )
+		def faas = em.sqlContext.createNamedQuery( 'noticeofdelinquency:getFaasListByLedgerid' ).setParameter( 'ledgerid', reportdata.ledgerid ).singleResult
+		//def rpu = em.read( 'faas', [objid:faas.objid] ).rpu
+		def pclassification = em.read( 'propertyclassification', [objid:faas.classid])
+		 
+		reportdata.pin = faas.fullpin
+		reportdata.rputype = "$faas.rputype Property".toString().toUpperCase()
+		reportdata.titleno = faas.titleno
+		
+		def NULL_TO_EMPTY = { o -> return o == null ? '' : o }
+		if( faas.cadastrallotno ) reportdata.lotblocksurveyno = NULL_TO_EMPTY(faas.cadastrallotno)
+		if( faas.blockno ) reportdata.lotblocksurveyno += "/$NULL_TO_EMPTY(faas.blockno)".toString() 
+		if( faas.surveyno ) reportdata.lotblocksurveyno += "/$NULL_TO_EMPTY(faas.surveyno)".toString()
+		
+		reportdata.dytocy = "$reportdata.delinquentyr - $dtSvc.serverYear"
+		reportdata.fdelinquentqtr = fNum(reportdata.delinquentqtr)
+		reportdata.fcurrentqtr = fNum(reportdata.currentqtr)
+		reportdata.classification = pclassification.propertydesc
+		reportdata.area = faas.totalareasqm
+		reportdata.marketvalue = faas.totalmv
+		reportdata.assessedvalue = faas.totalav
+		
+		//reportdata.assessmentlevel
+		reportdata.basicnet = reportdata.basic + reportdata.basicint
+		reportdata.sefnet = reportdata.sef + reportdata.sefint
+		reportdata.totaltaxdue = reportdata.basic + reportdata.sef
+		reportdata.totalintdue = reportdata.basicint + reportdata.sefint
+		reportdata.totalnet = reportdata.basicnet + reportdata.sefnet
+		
+		reportdata.administratorname = faas.administratorname
+		reportdata.administratoraddress = faas.administratoraddress
+		reportdata.amountinwords = numSvc.doubleToWords( reportdata.delinquentamount )
+		reportdata.billno = extended.billno    
+		
+		return reportdata
+	}
+	
+	
 	/****************************
 	* update and save support
 	*****************************/

@@ -58,10 +58,27 @@
 	<field name="administratoraddress" class="java.lang.String"/>
 	<field name="amountinwords" class="java.lang.String"/>
 	<field name="billno" class="java.lang.String"/>
-	<field name="declaredowner" class="java.lang.String"/>
-	<field name="delinquentqtr" class="java.lang.String"/>
-	<field name="currentqtr" class="java.lang.String"/>
+	<field name="fdelinquentqtr" class="java.lang.String"/>
+	<field name="fcurrentqtr" class="java.lang.String"/>
 	<field name="formattedcurdate" class="java.lang.String"/>
+	<field name="pin" class="java.lang.String"/>
+	<field name="titleno" class="java.lang.String"/>
+	<field name="lotblocksurveyno" class="java.lang.String"/>
+	<field name="basic" class="java.math.BigDecimal"/>
+	<field name="sef" class="java.math.BigDecimal"/>
+	<field name="marketvalue" class="java.math.BigDecimal"/>
+	<field name="assessmentlevel" class="java.lang.String"/>
+	<field name="area" class="java.math.BigDecimal"/>
+	<field name="basicint" class="java.math.BigDecimal"/>
+	<field name="sefint" class="java.math.BigDecimal"/>
+	<field name="totaltaxdue" class="java.math.BigDecimal"/>
+	<field name="totalintdue" class="java.math.BigDecimal"/>
+	<field name="basicnet" class="java.math.BigDecimal"/>
+	<field name="sefnet" class="java.math.BigDecimal"/>
+	<field name="totalnet" class="java.math.BigDecimal"/>
+	<field name="classification" class="java.lang.String"/>
+	<field name="delinquentyr" class="java.lang.Integer"/>
+	<field name="datecomputed" class="java.util.Date"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -406,7 +423,7 @@
 					</textElement>
 				<text><![CDATA[Declared Owner]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="111"
 						y="232"
@@ -417,7 +434,7 @@
 					<textElement>
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{taxpayername}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -445,7 +462,7 @@
 					</textElement>
 				<text><![CDATA[TD No./ARP No]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="111"
 						y="243"
@@ -484,7 +501,7 @@
 					</textElement>
 				<text><![CDATA[Property Index No. (PIN)]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="111"
 						y="254"
@@ -495,7 +512,7 @@
 					<textElement>
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tdno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{pin}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -523,7 +540,7 @@
 					</textElement>
 				<text><![CDATA[Kind of Property]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="111"
 						y="265"
@@ -534,7 +551,7 @@
 					<textElement>
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tdno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rputype}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -562,7 +579,7 @@
 					</textElement>
 				<text><![CDATA[Location]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="111"
 						y="276"
@@ -573,7 +590,7 @@
 					<textElement>
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tdno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{barangay}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -601,7 +618,7 @@
 					</textElement>
 				<text><![CDATA[OCT/TCT No.]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="111"
 						y="287"
@@ -612,7 +629,7 @@
 					<textElement>
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tdno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{titleno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -640,7 +657,7 @@
 					</textElement>
 				<text><![CDATA[Lot/Block/Survey No.]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="111"
 						y="298"
@@ -651,7 +668,7 @@
 					<textElement>
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tdno}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{lotblocksurveyno}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -670,12 +687,12 @@
 					<reportElement
 						x="9"
 						y="331"
-						width="89"
+						width="102"
 						height="11"
 						key="staticText-85"/>
 					<box></box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="SansSerif" size="8"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<text><![CDATA[Classification]]></text>
 				</staticText>
@@ -688,7 +705,7 @@
 						key="staticText-86"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="8"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<text><![CDATA[Area]]></text>
 				</staticText>
@@ -701,7 +718,7 @@
 						key="staticText-87"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="8"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<text><![CDATA[Market]]></text>
 				</staticText>
@@ -714,7 +731,7 @@
 						key="staticText-88"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="8"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<text><![CDATA[Assesement]]></text>
 				</staticText>
@@ -727,7 +744,7 @@
 						key="staticText-89"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="8"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<text><![CDATA[Assessed]]></text>
 				</staticText>
@@ -740,7 +757,7 @@
 						key="staticText-90"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="8"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<text><![CDATA[(sq.m./ha)]]></text>
 				</staticText>
@@ -753,7 +770,7 @@
 						key="staticText-91"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="8"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<text><![CDATA[Value]]></text>
 				</staticText>
@@ -766,7 +783,7 @@
 						key="staticText-92"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="8"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<text><![CDATA[Level]]></text>
 				</staticText>
@@ -779,7 +796,7 @@
 						key="staticText-93"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="SansSerif" size="8"/>
+						<font fontName="SansSerif" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
 					</textElement>
 				<text><![CDATA[Value]]></text>
 				</staticText>
@@ -794,7 +811,7 @@
 					<pen lineWidth="1.0" lineStyle="Dashed"/>
 </graphicElement>
 				</line>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="9"
 						y="345"
@@ -802,12 +819,12 @@
 						height="11"
 						key="textField-55"/>
 					<box></box>
-					<textElement>
+					<textElement textAlignment="Center">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{classification}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="124"
 						y="345"
@@ -818,7 +835,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{area}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -833,7 +850,7 @@
 					</textElement>
 				<text><![CDATA[P]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="218"
 						y="345"
@@ -844,9 +861,9 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{marketvalue}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="306"
 						y="345"
@@ -857,7 +874,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{assessmentlevel}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -872,7 +889,7 @@
 					</textElement>
 				<text><![CDATA[P]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="407"
 						y="345"
@@ -883,7 +900,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{assessedvalue}]]></textFieldExpression>
 				</textField>
 				<line direction="TopDown">
 					<reportElement
@@ -909,7 +926,7 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["T O T A L S"]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="407"
 						y="364"
@@ -920,7 +937,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{assessedvalue}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -935,7 +952,7 @@
 					</textElement>
 				<text><![CDATA[P]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="306"
 						y="364"
@@ -946,9 +963,9 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{assessmentlevel}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="218"
 						y="364"
@@ -959,7 +976,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{marketvalue}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -974,7 +991,7 @@
 					</textElement>
 				<text><![CDATA[P]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="124"
 						y="364"
@@ -985,7 +1002,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{area}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -1065,7 +1082,7 @@
 					</textElement>
 				<text><![CDATA[P]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="124"
 						y="401"
@@ -1076,9 +1093,9 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{basic}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="124"
 						y="412"
@@ -1089,7 +1106,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{sef}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -1104,7 +1121,7 @@
 					</textElement>
 				<text><![CDATA[P]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="252"
 						y="401"
@@ -1115,9 +1132,9 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{basicint}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="252"
 						y="412"
@@ -1128,7 +1145,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{sefint}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -1143,7 +1160,7 @@
 					</textElement>
 				<text><![CDATA[P]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="407"
 						y="401"
@@ -1154,9 +1171,9 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{basicnet}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="407"
 						y="412"
@@ -1167,7 +1184,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{sefnet}]]></textFieldExpression>
 				</textField>
 				<line direction="TopDown">
 					<reportElement
@@ -1232,7 +1249,7 @@
 					</textElement>
 				<text><![CDATA[P]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="124"
 						y="427"
@@ -1243,9 +1260,9 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totaltaxdue}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="252"
 						y="427"
@@ -1256,9 +1273,9 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totalintdue}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="407"
 						y="427"
@@ -1269,7 +1286,7 @@
 					<textElement textAlignment="Right">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totalnet}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1282,7 +1299,7 @@
 					<textElement textAlignment="Justified" isStyledText="true">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["        THEREFORE, this Warrant of Levy is hereby issued on the property/properties precribed above pursuant to Section 258 of the Local Government Code of 1991 (R.A. 7160) for the total number of the tax delinquency of P " + new DecimalFormat("#,##0.00").format($F{total}) + " covering the tax year period from " + $F{delinquentqtr} + " of " + $F{delinquentyrqtr} + " to " + $F{currentqtr} + " of " + $F{currentyear} + " for all intents and purposes therein provided."]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["        THEREFORE, this Warrant of Levy is hereby issued on the property/properties precribed above pursuant to Section 258 of the Local Government Code of 1991 (R.A. 7160) for the total number of the tax delinquency of P " + new DecimalFormat("#,##0.00").format($F{total}) + " covering the tax year period from " + $F{fdelinquentqtr} + " of " + $F{delinquentyr} + " to " + $F{fcurrentqtr} + " of " + $F{currentyear} + " for all intents and purposes therein provided."]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1321,7 +1338,7 @@
 					<textElement>
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{declaredowner}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{datecomputed}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

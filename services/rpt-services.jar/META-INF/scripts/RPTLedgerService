@@ -52,11 +52,14 @@ class RPTLedgerService
 		def curryear = dateSvc.serverYear
 		def key = 'RPT_NOTICE_DELINQUENCY-' + curryear
 		
+		//faas, basic, sef, interest,
+		
 		notice.objid = 'ND' + new UID() 
 		notice.txnno = curryear + '-' + sequenceSvc.getNextFormattedSeries( key )
 		notice.txndate = dateSvc.serverDate 
 		notice.docstate = 'OPEN'
 		notice.doctype = 'NOD'
+		
 		em.create(NOTICE_OF_DELINQUENCY_SCHEMA, notice )
 		return notice 
 	}
@@ -64,7 +67,7 @@ class RPTLedgerService
 	@ProxyMethod
 	public def generateNoticeOfDelinquency( bill ) {
 		bill = billingSvc.generateBill( bill )
-		
+		def currqtr = dateSvc.serverQtr 
 		def curryear = dateSvc.serverYear 
 		def item = bill.items[0]
 		def previtems = item.details.findAll{ it.year < curryear }
@@ -78,17 +81,21 @@ class RPTLedgerService
 		if( delinquentamount <= 0.0 ) throw new Exception('Real Property is not delinquent.')
 		
 		def delinquentyrqtr = '' + (item.lastyearpaid + 1) 
+		def delinquentyr = '' + (item.lastyearpaid + 1) 
+		def delinquentqtr = '' + item.lastqtrpaid 
+		
 		if( item.lastqtrpaid != 4 ) {
 			delinquentyrqtr = item.lastyearpaid + '-' + (item.lastqtrpaid + 1) + 'Q'
 		}
 		
-		return [
+		return [ 
 			ledgerid		   	 : item.objid, 
 			taxpayerno			 : bill.taxpayerno,
 			taxpayername       	 : bill.taxpayername,
 			taxpayeraddress    	 : bill.taxpayeraddress,
 			administratorname  	 : bill.administratorname,
 			administratoraddress : bill.administratoraddress,
+			pin					 : item.pin,
 			tdno               	 : item.tdno,
 			barangay           	 : item.barangay,
 			assessedvalue      	 : item.assessedvalue,
@@ -96,11 +103,20 @@ class RPTLedgerService
 			classcode          	 : item.classcode, 
 			classtitle         	 : item.classtitle, 
 			cadastrallotno     	 : item.cadastrallotno,
+			basic				 : bill.totalbasic,
+			basicdisc			 : bill.totalbasicdisc,
+			basicint			 : bill.totalbasicint,
+			sef					 : bill.totalsef,
+			sefdisc				 : bill.totalsefdisc,
+			sefint				 : bill.totalsefint,
 			delinquentamount   	 : delinquentamount,
 			currentamount      	 : currentamount,
 			total              	 : item.total,
+			currentqtr			 : currqtr,
 			currentyear		   	 : curryear, 
-			delinquentyrqtr    	 : delinquentyrqtr,
+			delinquentyrqtr    	 : delinquentyrqtr, 
+			delinquentqtr		 : delinquentqtr,
+			delinquentyr		 : delinquentyr,
 		]
 	}
     

@@ -26,3 +26,5 @@ UPDATE noticeofdelinquency
 SET doctype = $P{doctype}  
 WHERE objid = $P{objid}  
  
+[getFaasListByLedgerid]
+SELECT * FROM faaslist WHERE ledgerid = $P{ledgerid}

@@ -1,6 +1,10 @@
 <workunit>
     <invokers>
         <invoker folderid="/menu/rpt/landtax" action="init" caption="Notice of Delinquency List Management" target="window" index="20" xpermission="noticeofdelinquencyretting.create" />
+        <invoker type="formActions" action="preview" caption="Preview" visibleWhen="#{showPreview==true}" mnemonic="v" icon="images/doc-view.png"  />        
+        <invoker type="formActions" action="print" caption="Print" visibleWhen="#{showPreview==true}" mnemonic="p" icon="images/doc-view.png"  />        
+        
+        <invoker type="previewActions"  action="_default" caption="Back" icon="images/back.png" immediate="true" />
     </invokers>
     <code>
 <![CDATA[
@@ -14,7 +18,10 @@ class NoticeOfDelinquencyListMgmtController
 {
     
     @Service("NoticeOfDelinquencyService")
-    def svc;
+    def svc
+    
+    @Service( 'ReportParameterService')
+    def paramSvc
 
     def entity=[:]; 
     def doctype
@@ -54,16 +61,59 @@ class NoticeOfDelinquencyListMgmtController
         listHandler.load()
     }
     
+    void setSelectedItem( selectedItem ){
+        this.selectedItem = selectedItem
+        reportdata = this.selectedItem
+    }
+    
+    def generateReport(){
+        def suffixname = selectedItem.fdoctype.replaceAll(' ', '').toLowerCase()
+        reportname = 'demandletters/' + suffixname
+        reportdata = svc.populateReportData( reportdata )
+        demandlettersreport = demandlettersreport as ServerReportModel
+    }
+    
+    def preview(){
+        generateReport()
+        report.viewReport()
+        return 'preview'
+    }
+    
+    def print(){
+        generateReport()
+        ReportUtil.print( report.report, true )
+    }
+    
+    def reportdata 
+    def reportname
+    def demandlettersreport = [
+        getReportName : { return reportname }, 
+        getReportData : { return reportdata },
+        getParameters : { getParameters()   }
+    ] 
+    
+    def getReport(){
+        return demandlettersreport 
+    }
+    
+    def getParameters(){
+        return paramSvc.getStandardParameter( OsirisContext.env.USERNAME )
+    }
+    
     def create(){
         return InvokerUtil.lookupOpener('demandletters.create', [:])
     }
     
+    boolean getShowPreview() {
+        if( selectedItem ) return true
+        return false
+    }
 }
-
 ]]>        
         
     </code>
     <pages>
         <page template="etracs2.rpt.report.noticeofdelinquency.ListMgmtPage" />
+        <page name="preview" template="etracs2.common.PreviewPage" />
     </pages>
 </workunit>

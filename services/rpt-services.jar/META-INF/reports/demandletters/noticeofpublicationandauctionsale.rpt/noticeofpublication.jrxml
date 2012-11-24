@@ -47,7 +47,26 @@
 	<field name="publisheddates" class="java.lang.String"/>
 	<field name="auctiondate" class="java.lang.String"/>
 	<field name="expirydate" class="java.lang.String"/>
+	<field name="txndate" class="java.util.Date"/>
+	<field name="cadastrallotno" class="java.lang.String"/>
+	<field name="pin" class="java.lang.String"/>
+	<field name="barangay" class="java.lang.String"/>
+	<field name="tdno" class="java.lang.String"/>
+	<field name="area" class="java.math.BigDecimal"/>
+	<field name="rputype" class="java.lang.String"/>
+	<field name="assessedvalue" class="java.math.BigDecimal"/>
+	<field name="year" class="java.lang.Integer"/>
+	<field name="delinquentamount" class="java.math.BigDecimal"/>
+	<field name="penalties" class="java.math.BigDecimal"/>
+	<field name="totaltaxdue" class="java.math.BigDecimal"/>
+	<field name="costofsale" class="java.math.BigDecimal"/>
+	<field name="basicint" class="java.math.BigDecimal"/>
+	<field name="sefint" class="java.math.BigDecimal"/>
+	<field name="totalintdue" class="java.math.BigDecimal"/>
 
+	<variable name="grandtotal" class="java.math.BigDecimal" resetType="Report" calculation="Nothing">
+		<variableExpression><![CDATA[$F{costofsale}]]></variableExpression>
+	</variable>
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
@@ -317,7 +336,7 @@
 					<textElement textAlignment="Justified" isStyledText="true">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["        Recods in this office show that in spite of out letter to you dated " + $F{warrantoflevydate} + ", the delinquent realty taxes due on your property described hereunder have remained unpaid:" ]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["        Recods in this office show that in spite of out letter to you dated " + $F{warrantoflevydate} + ", the delinquent realty taxes due on your property described hereunder have remained unpaid:"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -330,9 +349,9 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<text><![CDATA[Dated:]]></text>
+				<text><![CDATA[Dated : ]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="703"
@@ -349,25 +368,12 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
 						<font fontName="SansSerif" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{taxpayername}]]></textFieldExpression>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{txndate}]]></textFieldExpression>
 				</textField>
-				<subreport  isUsingCache="true">
-					<reportElement
-						mode="Opaque"
-						x="0"
-						y="196"
-						width="684"
-						height="20"
-						forecolor="#000000"
-						backcolor="#FFFFFF"
-						key="subreport-1"/>
-					<dataSourceExpression><![CDATA[$F{items}]]></dataSourceExpression>
-					<subreportExpression  class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{NOPASItem}]]></subreportExpression>
-				</subreport>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="334"
+						y="318"
 						width="828"
 						height="32"
 						key="textField-85"/>
@@ -375,12 +381,12 @@
 					<textElement textAlignment="Justified" isStyledText="true">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["        Because of said tax delinquency, your property is now included in the list of delinquent real property which will be published in the " + $F{newspapername} + ", a newspaper of general circulation in the " + $P{PARENTLGUNAME} + "/" + $P{LGUNAME} + " pursuant to Sec. 260 of R.A. 7169 (Local Government Code of 1991), " + $F{publisheddates} + ", after which the property will be sold at public auction on  " + $F{auctiondate} + " : otherwise, we will proceed with the publication preparatory to auction sale. Thereafter, you will be required to pay the costs of sale stated above." ]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["        Because of said tax delinquency, your property is now included in the list of delinquent real property which will be published in the " + $F{newspapername} + ", a newspaper of general circulation in the " + $P{PARENTLGUNAME} + "/" + $P{LGUNAME} + " pursuant to Sec. 260 of R.A. 7169 (Local Government Code of 1991), " + $F{publisheddates} + ", after which the property will be sold at public auction on  " + $F{auctiondate} + " : otherwise, we will proceed with the publication preparatory to auction sale. Thereafter, you will be required to pay the costs of sale stated above."]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="380"
+						y="364"
 						width="828"
 						height="21"
 						key="textField-86"/>
@@ -388,12 +394,12 @@
 					<textElement textAlignment="Justified" isStyledText="true">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["        It is therefore, urge that you pay teh delinquent taxes and penalties as soon as possible but not later than " + $F{expirydate} + " to avoid the inclusion of your name in the publication and the additional charged for the costs, the eventual sale of your property at public auction." ]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["        It is therefore, urge that you pay teh delinquent taxes and penalties as soon as possible but not later than " + $F{expirydate} + " to avoid the inclusion of your name in the publication and the additional charged for the costs, the eventual sale of your property at public auction."]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="418"
+						y="402"
 						width="828"
 						height="21"
 						key="textField-87"/>
@@ -401,13 +407,13 @@
 					<textElement textAlignment="Justified" isStyledText="true">
 						<font fontName="SansSerif" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["        In case payment/s for any of the above stated taxes has/have been made already, please furnish us with the number of the official receipt and the date of payment or photocopy. Therefore, in order that the same could be reflected in our record, if omitted or neglected; otherwise we shall consider you to have confirmed our statement of your tax liability." ]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["        In case payment/s for any of the above stated taxes has/have been made already, please furnish us with the number of the official receipt and the date of payment or photocopy. Therefore, in order that the same could be reflected in our record, if omitted or neglected; otherwise we shall consider you to have confirmed our statement of your tax liability."]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Transparent"
 						x="581"
-						y="477"
+						y="472"
 						width="218"
 						height="14"
 						forecolor="#000000"
@@ -426,7 +432,7 @@
 					<reportElement
 						mode="Transparent"
 						x="581"
-						y="490"
+						y="485"
 						width="218"
 						height="14"
 						forecolor="#000000"
@@ -442,6 +448,481 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{TREASURERTITLE}]]></textFieldExpression>
 				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="236"
+						width="828"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dashed"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="0"
+						y="209"
+						width="146"
+						height="11"
+						key="staticText-108"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Declared Owner]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="220"
+						width="146"
+						height="11"
+						key="staticText-109"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Lot No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="146"
+						y="209"
+						width="124"
+						height="11"
+						key="staticText-110"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[PIN (142 )]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="146"
+						y="220"
+						width="124"
+						height="11"
+						key="staticText-111"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Location]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="270"
+						y="209"
+						width="65"
+						height="11"
+						key="staticText-112"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Tax]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="270"
+						y="220"
+						width="65"
+						height="11"
+						key="staticText-113"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Declaration]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="336"
+						y="209"
+						width="28"
+						height="11"
+						key="staticText-114"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Area]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="416"
+						y="209"
+						width="63"
+						height="11"
+						key="staticText-115"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Assessed]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="416"
+						y="220"
+						width="63"
+						height="11"
+						key="staticText-116"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Value]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="479"
+						y="209"
+						width="60"
+						height="11"
+						key="staticText-117"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Year]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="538"
+						y="209"
+						width="61"
+						height="11"
+						key="staticText-118"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Unpaid]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="538"
+						y="220"
+						width="61"
+						height="11"
+						key="staticText-119"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Taxes]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="599"
+						y="209"
+						width="62"
+						height="11"
+						key="staticText-120"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Penalties]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="661"
+						y="220"
+						width="58"
+						height="11"
+						key="staticText-121"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Tax due]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="661"
+						y="209"
+						width="58"
+						height="11"
+						key="staticText-122"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="719"
+						y="209"
+						width="50"
+						height="11"
+						key="staticText-123"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Cost of]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="719"
+						y="220"
+						width="50"
+						height="11"
+						key="staticText-124"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Sale]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="769"
+						y="209"
+						width="58"
+						height="11"
+						key="staticText-125"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Grand]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="769"
+						y="220"
+						width="58"
+						height="11"
+						key="staticText-126"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="364"
+						y="209"
+						width="51"
+						height="11"
+						key="staticText-127"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<text><![CDATA[Kind]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="242"
+						width="146"
+						height="11"
+						key="textField-90"/>
+					<box></box>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{taxpayername}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="253"
+						width="146"
+						height="11"
+						key="textField-91"/>
+					<box></box>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{cadastrallotno}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="146"
+						y="242"
+						width="124"
+						height="11"
+						key="textField-92"/>
+					<box></box>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{pin}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="146"
+						y="253"
+						width="270"
+						height="11"
+						key="textField-93"/>
+					<box></box>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{barangay}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="270"
+						y="242"
+						width="65"
+						height="11"
+						key="textField-94"/>
+					<box></box>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tdno}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="336"
+						y="242"
+						width="28"
+						height="11"
+						key="textField-95"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{area}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="364"
+						y="242"
+						width="51"
+						height="11"
+						key="textField-96"/>
+					<box></box>
+					<textElement>
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{rputype}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="416"
+						y="242"
+						width="63"
+						height="11"
+						key="textField-97"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{assessedvalue}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="478"
+						y="242"
+						width="60"
+						height="11"
+						key="textField-98"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$F{year}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="538"
+						y="242"
+						width="61"
+						height="11"
+						key="textField-99"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{delinquentamount}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="599"
+						y="242"
+						width="62"
+						height="11"
+						key="textField-100"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totalintdue}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="661"
+						y="242"
+						width="58"
+						height="11"
+						key="textField-101"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totaltaxdue}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="719"
+						y="242"
+						width="50"
+						height="11"
+						key="textField-102"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{costofsale}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="769"
+						y="242"
+						width="58"
+						height="11"
+						key="textField-103"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font fontName="SansSerif" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totaltaxdue}.add( $F{costofsale} )]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="288"
+						width="828"
+						height="0"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dashed"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="202"
+						width="828"
+						height="0"
+						key="line-3"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dashed"/>
+</graphicElement>
+				</line>
 			</band>
 		</title>
 		<pageHeader>
