@@ -46,7 +46,7 @@ class RPTLedgerLookupController extends LookupModel
             new Column(name:"fullpin", caption:"PIN", maxWidth:150),
             new Column(name:"cadastrallotno", caption:"Cadastral", maxWidth:150),
             new Column(name:"taxpayername", caption:"Taxpayer"),
-            new Column(name:"lastyearpaid", caption:"Last Year Paid"),
+            new Column(name:"lastyearpaid", caption:"Last Year Paid", type:'integer', format:'####'),
             new Column(name:"lastqtrpaid", caption:"Last Qtr Paid"),
         ]
     }
