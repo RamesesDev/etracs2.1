@@ -65,9 +65,9 @@
 	<field name="landtdno" class="java.lang.String"/>
 	<field name="landarea" class="java.math.BigDecimal"/>
 	<field name="info.firstfloorbasevalue" class="java.math.BigDecimal"/>
-	<field name="totalbmv" class="java.math.BigDecimal"/>
+	<field name="subtotal" class="java.math.BigDecimal"/>
 	<field name="depreciation" class="java.lang.String"/>
-	<field name="info.depreciationvalue" class="java.math.BigDecimal"/>
+	<field name="depreciationvalue" class="java.math.BigDecimal"/>
 	<field name="info.percentcompleted" class="java.math.BigDecimal"/>
 	<field name="multistoryadj" class="java.math.BigDecimal"/>
 	<field name="totalmv" class="java.math.BigDecimal"/>
@@ -1943,7 +1943,7 @@ Clerk Initial]]></text>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{totalbmv}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{subtotal}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -2011,7 +2011,7 @@ Clerk Initial]]></text>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{info.depreciationvalue}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{depreciationvalue}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement

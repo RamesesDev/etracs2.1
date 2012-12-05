@@ -1,0 +1,50 @@
+<workunit>
+    <invokers>
+        <invoker type="receivenotice" action="init" caption="Receive Notice" target="popup" permission="rptreport.notice" />
+        <invoker type="formActions" action="save" caption="Save" mnemonic="s" shorcut="Ctrl S" icon="images/save.png" />
+        <invoker type="formActions" action="_close" caption="Cancel" mnemonic="c" shortcut="Ctrl C" immediate="true" icon="images/cancel.png" />
+    </invokers>
+    
+    <code>
+    <![CDATA[
+        import com.rameses.rcp.annotations.*
+        import com.rameses.rcp.common.*
+        import com.rameses.osiris2.client.*
+        
+        class ReceiveNoticeController {
+            @Service('RPTReportService')
+            def svc
+            
+            @Service('DateService')
+            def dtSvc
+        
+            def notice
+            def onrefreshList
+            def dtdelivered
+            def receivedby
+            def remarks
+            
+            void init() {
+                dtdelivered = dtSvc.serverDate
+            }
+            
+            def save() {
+                def param = [
+                    objid       : notice.objid,
+                    dtdelivered : dtdelivered,
+                    receivedby  : receivedby,
+                    remarks     : remarks
+                ]
+                
+                svc.updateNotice( param )
+                onrefreshList()
+                return '_close'
+            }
+        }
+    ]]>
+    </code>
+    
+    <pages>
+        <page template="etracs2.rpt.report.NoticeReceivePage" />
+    </pages>
+</workunit>

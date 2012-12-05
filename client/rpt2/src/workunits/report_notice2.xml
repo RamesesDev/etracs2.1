@@ -1,8 +1,8 @@
 <workunit>
     <invokers>
-        <invoker folderid="/report/assessor" action="init" caption="Notice of Assessment" permission="rptreport.notice" index="1" />
-        <invoker type="rptreport" action="init" opener="notice" caption="Notice of Assessment" target="window" permission="rptreport.notice" index="1" />
-        <invoker type="rptreport.notice" action="init" caption="Notice of Assessment" permission="rptreport.notice" />
+        <invoker folderid="/report/assessor" action="init" caption="Notice of Assessment 2" permission="rptreport.notice" index="1" />
+        <invoker type="rptreport" action="init" opener="notice" caption="Notice of Assessment 2" target="window" permission="rptreport.notice" index="1" />
+        <invoker type="rptreport.notice" action="init" caption="Notice of Assessment 2" permission="rptreport.notice" />
         
         <invoker type="formActions" action="_close" caption="Close" mnemonic="c" shortcut="ctrl + C" visibleWhen="#{mode != 'init'}" icon="images/cancel.png" immediate="true"/>
         <invoker type="formActions" action="create" caption="New" mnemonic="n" shortcut="ctrl + N" visibleWhen="#{mode == 'viewlist'}" icon="images/doc-new.png"/>
@@ -115,24 +115,11 @@ class NoticeReportController
         listHandler.load()
     }
     
-    def reportNoticeByTd = [
-        getReportName : { return 'noticebytd' },
-        getReportData : { return notice },
-        getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ) }
-    ] as ServerReportModel
-    
-    def reportNotice = [
+    def report = [
         getReportName : { return 'notice' },
         getReportData : { return notice },
         getParameters : { svcParams.getStandardParameter( OsirisContext.env.USERNAME ) }
     ] as ServerReportModel
-    
-    def getReport() {
-        if( notice.items.size() == 1 )
-            return reportNoticeByTd
-        else
-            return reportNotice
-    }
     
     def getLookupTaxpayer() {
         return InvokerUtil.lookupOpener( 'entity.lookup', [:] )

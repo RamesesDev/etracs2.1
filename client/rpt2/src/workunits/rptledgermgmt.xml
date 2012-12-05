@@ -99,7 +99,6 @@ public class LedgerMgmtController
         this.docstate = docstate
         search()
     }
-    
 }
 
 ]]>
