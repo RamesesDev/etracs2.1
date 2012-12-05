@@ -359,7 +359,7 @@ class RPTCompromiseService {
 		validateDownPaymentRate( compromise, downpaymentrequired, rpt_compromise_downpayment_rate )
 		validateTermAndNumOfInstallment( compromise.info.term, compromise.info.numofinstallment)
 		
-		def parsedate = dateSvc.parseCurrentDate()
+		def parsedate = dateSvc.parseCurrentDate();
 		def ledger = openRPTLedger(compromise.ledgerid )
 		if( ledger.docstate != 'APPROVED' ) {
 			throw new Exception('Ledger has not yet been approved.')
@@ -441,6 +441,88 @@ class RPTCompromiseService {
 				validateDownPaymentRate( compromise, downpaymentrequired, rpt_compromise_downpayment_rate )
 			}
 		}
+		compromise.info.amtforinstallment = compromise.info.amount - compromise.info.downpayment
+		compromise.info.amtpaid = compromise.info.downpayment
+		
+		//build installments 
+		compromise._installments = buildInstallments( compromise )
+		return compromise
+	}
+	
+	@ProxyMethod
+	public def initCompromiseCapture( compromise ) {
+		if(! compromise.info.downpayment) compromise.info.downpayment=0.0
+		if( compromise.info.downpayment >= compromise.info.amount ) {
+			throw new Exception('Downpayment must be less than the delinquency amount.')
+		}
+		
+		def rpt_compromise_downpayment_rate = 0.00
+		def cypaymentrequired = utilSvc.toBoolean( var.rpt_compromise_cy_payment_required, false)
+		validateTermAndNumOfInstallment( compromise.info.term, compromise.info.numofinstallment)
+		
+		def ledger = openRPTLedger(compromise.ledgerid )
+		if( ledger.docstate != 'APPROVED' ) {
+			throw new Exception('Ledger has not yet been approved.')
+		}
+		
+		if( compromise.info.term == null ) {
+			compromise.info.term = 12;		//default 12 months 
+		}
+		if( compromise.info.numofinstallment == null ) {
+			compromise.info.numofinstallment = 4;		//default quarterly payment
+		}
+		
+		def downpayment = compromise.info.downpayment 
+		def downpaymentrate = compromise.info.downpaymentrate
+		
+		compromise.objid 		= 'RC' + new UID()
+		compromise.docstate 	=  STATE_DRAFT
+		compromise.faasid		= ledger.faasid
+		compromise.tdno             = ledger.tdno 
+        compromise.taxpayername     = ledger.taxpayername
+        compromise.fullpin          = ledger.fullpin
+        compromise.cadastrallotno   = ledger.cadastrallotno
+        compromise.rputype          = ledger.rputype
+        compromise.assessedvalue    = ledger.assessedvalue 
+        compromise.signatories 	= []
+		compromise._items 		= []
+		compromise.info 		= [
+			firstpartyname		: var.treasurer_name,
+			firstpartytitle		: var.treasurer_title,
+			secondpartyrepresentative : ledger.taxpayername ,
+			secondpartyname     : ledger.taxpayername ,
+			secondpartyaddress  : ledger.taxpayeraddress,
+			notarizedbytitle	: 'NOTARY PUBLIC',
+			lastyearpaid		: ledger.lastyearpaid,
+			lastqtrpaid			: ledger.lastqtrpaid,
+			startyear 			: compromise.info.startyear,
+			startqtr 			: compromise.info.startqtr,
+			endyear				: compromise.info.endyear,
+			endqtr				: compromise.info.endqtr,
+			enddate				: dateSvc.findNextFromDate( compromise.txndate, '1y' ),
+			cypaymentrequired	: cypaymentrequired,
+			downpaymentrequired	: (compromise.info.downpayment == 0) ? false:true,
+			downpaymentrate		: downpaymentrate,
+			downpayment			: downpayment, 
+			term				: compromise.info.term,
+			numofinstallment	: compromise.info.numofinstallment,
+			amtforinstallment	: 0.0,
+			amtpaid				: 0.0,
+			amount 				: compromise.info.amount
+		]
+		
+
+		if( compromise.info.downpayment == 0) {
+			compromise.info.downpayment = numSvc.round( compromise.info.amount * downpaymentrate / 100.00 )
+		}
+		else {
+			compromise.info.downpaymentrate = numSvc.roundA( compromise.info.downpayment / compromise.info.amount * 100 , 0)
+			if( compromise.info.downpaymentrate < rpt_compromise_downpayment_rate  && rpt_compromise_downpayment_rate != 0) {
+				def minimum_downpayment = numSvc.format('#,##0.00',numSvc.roundA( compromise.info.amount * rpt_compromise_downpayment_rate / 100, 0))
+				throw new Exception('A minimum downpayment of ' + minimum_downpayment + ' is required.')
+			}	
+		}
+		
 		compromise.info.amtforinstallment = compromise.info.amount - compromise.info.downpayment
 		compromise.info.amtpaid = compromise.info.downpayment
 		
@@ -871,38 +953,40 @@ class RPTCompromiseService {
 				])
 				.execute()
 		
-		def pmt 			= [:]
-		pmt.objid			= compromise.objid 
-		pmt.schemaname      = 'rptpayment'
-        pmt.schemaversion   = '1.0'
-		pmt.opener			= 'rptcompromise'
-		pmt.rptledgerid     = compromise.ledgerid 
-        pmt.mode            = 'COMPROMISE'
-        pmt.collectorname   = '-'
-        pmt.dtposted        = dateSvc.serverDate
-        pmt.receiptno     	= compromise.txnno 
-		pmt.receiptdate     = compromise.txndate 
-        pmt.capturedby      = ( env.USERNAME ? env.USERNAME : 'SYSTEM' )
-        pmt.fromyear        = compromise.info.startyear 
-        pmt.fromqtr        	= compromise.info.startqtr 
-        pmt.toyear        	= compromise.info.endyear 
-        pmt.toqtr        	= compromise.info.endqtr 
-		pmt.basic	        = compromise._items.basic.sum()
-		pmt.basicint        = compromise._items.basicint.sum()
-		pmt.basicpartial    = 0.0
-		pmt.basicdisc    	= 0.0
-        pmt.basicnet        = pmt.basic + pmt.basicint  
-        pmt.sef          	= compromise._items.sef.sum() 
-        pmt.sefint         	= compromise._items.sefint.sum() 
-        pmt.sefpartial      = 0.0
-        pmt.sefdisc      	= 0.0
-        pmt.sefnet          = pmt.sef + pmt.sefint 
-        pmt.total           = pmt.basicnet + pmt.sefnet 
-        pmt.voided          = false 
-		pmt.period			= compromise.info.startqtr +'Q, ' + compromise.info.startyear + '- ' +
-							  compromise.info.endqtr +'Q, ' + compromise.info.endyear 
-        em.validate( pmt.schemaname, pmt )
-        em.create( pmt.schemaname, pmt )         
+		if( compromise._items ) {
+			def pmt 			= [:]
+			pmt.objid			= compromise.objid 
+			pmt.schemaname      = 'rptpayment'
+			pmt.schemaversion   = '1.0'
+			pmt.opener			= 'rptcompromise'
+			pmt.rptledgerid     = compromise.ledgerid 
+			pmt.mode            = 'COMPROMISE'
+			pmt.collectorname   = '-'
+			pmt.dtposted        = dateSvc.serverDate
+			pmt.receiptno     	= compromise.txnno 
+			pmt.receiptdate     = compromise.txndate 
+			pmt.capturedby      = ( env.USERNAME ? env.USERNAME : 'SYSTEM' )
+			pmt.fromyear        = compromise.info.startyear 
+			pmt.fromqtr        	= compromise.info.startqtr 
+			pmt.toyear        	= compromise.info.endyear 
+			pmt.toqtr        	= compromise.info.endqtr 
+			pmt.basic	        = compromise._items.basic.sum()
+			pmt.basicint        = compromise._items.basicint.sum()
+			pmt.basicpartial    = 0.0
+			pmt.basicdisc    	= 0.0
+			pmt.basicnet        = pmt.basic + pmt.basicint  
+			pmt.sef          	= compromise._items.sef.sum() 
+			pmt.sefint         	= compromise._items.sefint.sum() 
+			pmt.sefpartial      = 0.0
+			pmt.sefdisc      	= 0.0
+			pmt.sefnet          = pmt.sef + pmt.sefint 
+			pmt.total           = pmt.basicnet + pmt.sefnet 
+			pmt.voided          = false 
+			pmt.period			= compromise.info.startqtr +'Q, ' + compromise.info.startyear + '- ' +
+								  compromise.info.endqtr +'Q, ' + compromise.info.endyear 
+			em.validate( pmt.schemaname, pmt )
+			em.create( pmt.schemaname, pmt )         
+		}
 	}
 	
 	void validatePaymentInfo( compromise ) {

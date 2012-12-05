@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workunit>
+    <invokers>
+        <invoker folderid="menu/rpt/landtax" action="create" caption="Compromise Agreement (Capture)" permission="rptcompromise.create_capture" index="505"/>
+        <invoker folderid="/txn/rpt/landtax" action="create" caption="Compromise Agreement (Capture)" permission="rptcompromise.create_capture" index="505"/>
+        
+        
+        <invoker type="formActions" action="_close" caption="Close" shortcut="ctrl W"   mnemonic="c"  immediate="true" icon="images/cancel.png"/>
+        <invoker type="formActions" action="doNext" caption="Next" mnemonic="n" icon="images/next.png" visibleWhen="#{mode=='init'}" />
+        <invoker type="formActions" action="gotoInit" caption="Back" mnemonic="b" icon="images/back.png" visibleWhen="#{mode=='create'}" />
+        <invoker type="formActions" action="save" caption="Save" shortcut="ctrl S" mnemonic="s" icon="images/doc-save.png" visibleWhen="#{mode=='create' or mode=='edit' }"/>
+        <invoker type="formActions" action="edit" caption="Edit" shortcut="ctrl E" mnemonic="e" icon="images/doc-edit.png" permission="rptcompromise.edit" visibleWhen="#{mode=='view' and entity.docstate=='DRAFT'}" />
+        <invoker type="formActions" action="submit" caption="Submit" shortcut="ctrl S" mnemonic="s" icon="images/doc-submit.png" permission="rptcompromise.submit" visibleWhen="#{mode=='view' and entity.docstate=='DRAFT'}" />
+        <invoker type="formActions" action="submitForApproval" caption="Submit For Approval" shortcut="ctrl S" mnemonic="s" icon="images/doc-submit.png" permission="rptcompromise.submitforapproval" visibleWhen="#{mode=='view' and entity.docstate=='FORPAYMENT'}" />
+        <invoker type="formActions" action="approve" caption="Approve" shortcut="ctrl A" mnemonic="a" icon="images/doc-approve.png" permission="rptcompromise.approve" visibleWhen="#{mode=='view' and entity.docstate=='FORAPPROVAL'}" />/>
+        <invoker type="formActions" action="delete" caption="Delete"  mnemonic="d" icon="images/doc-delete.png" permission="rptcompromise.delete" visibleWhen="#{mode=='view' and entity.docstate=='DRAFT'}" />/>
+        <invoker type="formActions" action="preview" caption="Preview"  mnemonic="v" icon="images/doc-view.png" permission="rptcompromise.preview" visibleWhen="#{mode=='view' and entity.docstate=='APPROVED'}" />/>
+        <invoker type="formActions" action="print" caption="Print"  mnemonic="p" icon="images/doc-view.png" permission="rptcompromise.print" visibleWhen="#{mode=='view' and entity.docstate=='APPROVED'}" />/>
+    </invokers>
+    <code lang="groovy">
+<![CDATA[
+
+import com.rameses.rcp.annotations.*
+import com.rameses.rcp.common.*
+import com.rameses.osiris2.client.*
+import com.rameses.osiris2.reports.*
+
+public class RPTCompromiseCaptureController 
+{
+    @Binding 
+    def binding
+    
+    @Service('RPTCompromiseService')
+    def svc 
+    
+    @Service("ReportParameterService")
+    def svcParams
+    
+    @Service('DateService')
+    def dateSvc 
+    
+    @Service('ETRACSUtilService')
+    def utilSvc
+    
+    @Service('Var')
+    def var 
+    
+    def mode 
+    def entity 
+    def ledger 
+    def nationalityList
+    def civilStatusList
+    def genderList
+    
+    
+
+    /*------------------------------------------------------------------------
+    * Init Page Support
+    ------------------------------------------------------------------------ */
+    def doNext() {
+        entity = svc.initCompromiseCapture( entity )
+        mode = 'create'    
+        return 'default' 
+    }
+	
+    def onselectLedger = { xledger ->
+        if( xledger.undercompromised == null ) xledger.undercompromised = 0
+        if( xledger.undercompromised == 1 || xledger.undercompromised == true ) {
+            throw new Exception('Ledger has an active compromised agreement.')
+        }
+        def parseddate = dateSvc.parseCurrentDate()
+        if( xledger.lastyearpaid + 1 == parseddate.year ) {
+            throw new Exception('Ledger has no arrears.')
+        }
+        ledger                  = xledger 
+        entity.ledgerid         = ledger.objid 
+        entity.faasid           = ledger.faasid 
+    }
+
+    def getLookupLedger() {
+        return InvokerUtil.lookupOpener('rptledger.lookup', [docstate:'APPROVED', onselect:onselectLedger])
+    }
+	
+    def gotoInit() {
+        mode = 'init'
+        if( downpaymentRequired ) {
+            entity.info.downpayment = 0.0
+            entity.info.downpaymentrate = getDownpaymentRate()
+        }
+        else {
+            entity.info.downpayment = 0.0
+            entity.info.downpaymentrate = 0
+        }
+        return 'init'
+    }
+    
+    /*------------------------------------------------------------------------
+    * FormActions  Support
+    ------------------------------------------------------------------------ */
+    def create() {
+        loadComboItemSources()
+        entity = [
+            txndate : dateSvc.serverDate,
+            info    :[  term:12, 
+                        numofinstallment:4, 
+                        downpayment:0.0, 
+                        downpaymentrate:getDownpaymentRate(),
+                        startqtr:1,
+                        endqtr: 4
+                     ], 
+            signatories :[]
+        ]
+        mode = 'init' 
+        return 'init' 
+    }
+    
+    def open() {
+        loadComboItemSources()
+        entity = svc.open( entity.objid )
+        mode = 'view' 
+        return 'default' 
+    }
+	
+    void save() {
+        if( mode == 'create' ) {
+                entity = svc.create( entity )
+        }
+        else {
+                entity = svc.update( entity )
+        }
+        mode = 'view' 
+    }
+    
+    void edit() {
+        mode = 'edit'
+    }
+    
+    def delete() {
+        if( MsgBox.confirm('Delete compromise agreement?') ) {
+                svc.delete( entity.objid, entity.ledgerid )
+                return '_close'
+        }
+        return null 
+    }
+    
+    void submit() {
+        def msg = 'Submit compromise agreement for approval?'
+        if( entity.info.cypaymentrequired || entity.info.downpaymentrequired ) {
+                msg = 'Submit compromise agreement for payment?'
+        }
+        if( MsgBox.confirm( msg ) ) {
+                entity = svc.submit( entity )
+        }
+    }
+    
+    void submitForApproval() {
+        if( MsgBox.confirm( 'Submit compromise agreement for approval?' ) ) {
+                entity = svc.submitForApproval( entity )
+        }
+    }
+    
+    void approve() {
+        if( MsgBox.confirm( 'Approve compromise agreement for approval?' ) ) {
+                entity = svc.approve( entity )
+        }
+    }
+    
+    def report = [
+        getReportName : { return 'rptcompromise' },
+        getReportData : { return entity },
+        getParameters : { return svcParams.getStandardParameter( OsirisContext.env.USERNAME ) }
+    ] as ServerReportModel;
+    
+    def preview() {
+        report.viewReport()
+        return 'preview' 
+    }
+    
+    void print() {
+        report.viewReport()
+        ReportUtil.print( report.report, true )
+    }
+    
+    def getDownpaymentRate(){
+        if( getDownpaymentRequired() ) {
+            try{
+                return Integer.parseInt( var.rpt_compromise_downpayment_rate )
+            }
+            catch( e) {
+                return 0.0
+            }
+        }
+        return 0.0
+    }
+    
+    def getDownpaymentRequired() {
+        if( var.rpt_compromise_downpayment_required == null ) 
+            return false
+        return '1/y/yes/t/true'.indexOf( var.rpt_compromise_downpayment_required.toString().trim().toLowerCase()) >= 0
+    }
+    
+    /*------------------------------------------------------------------------
+    * Installment Tab Support
+    ------------------------------------------------------------------------ */
+    def installmentListHandler = [
+        fetchList  : { return entity._installments},
+        getRows    : { return 50 },
+        getColumns : { return [
+            new Column(name:'installmentno', caption:'Installment No.'),
+            new Column(name:'duedate', caption:'Due Date', editable:true, type:'date', format:'yyyy-MM-dd'),
+            new Column(name:'amount', caption:'Amount', editable:true, type:'decimal', format:'#,##0.00'),
+            new Column(name:'amtpaid', caption:'Amount Paid'),
+        ]},
+        onColumnUpdate : {item, colName -> 
+            if( colName == 'amount') {
+                entity.info.amtforinstallment = 0.0;
+                updateAmount(item);
+            } 
+            if( colName == 'duedate') {
+                item.duedate = java.sql.Date.valueOf( item.duedate) ;
+            }
+        }
+    ] as SubListModel
+    
+    void updateAmount( item ) {
+       entity.info.amtforinstallment = entity._installments.amount.sum() 
+       binding.refresh('entity.info.amtforinstallment')
+    }
+    
+    /*------------------------------------------------------------------------
+    * Credit Tab Support
+    ------------------------------------------------------------------------ */
+    def creditListHandler = [
+        fetchList  : { return entity._credits },
+        getRows    : { return 50 },
+        getColumns : { return [
+            new Column(name:'installmentno', caption:'Installment No.'),
+            new Column(name:'paidby', caption:'Paid By'),
+            new Column(name:'collectorname', caption:'Collected By'),
+            new Column(name:'orno', caption:'O.R. No.'),
+            new Column(name:'ordate', caption:'O.R. Date'),
+            new Column(name:'amount', caption:'Amount'),
+        ]},
+    ] as SubListModel
+    
+    def onaddCreditHandler = { 
+        entity._credits.addAll( it )
+        it.each{ pmt -> 
+            def installment = entity._installments.find{ it.objid == pmt.installmentid }
+            if( installment ){
+                installment.amtpaid = pmt.amount 
+                installment.fullypaid = 1 
+            }
+        }
+        creditListHandler.load()
+        installmentListHandler.load()
+    }
+    
+    def capturePayment() {
+        return InvokerUtil.lookupOpener('rptcompromise.capturepayment', [entity:entity, onadd:onaddCreditHandler])
+    }
+    
+    def onaddDownpaymentHandler = { pmt -> 
+        entity.info.downpaymentorno = pmt.orno
+        entity.info.downpaymentordate = pmt.ordate
+        entity.docstate = svc.postCapturedRequiredPayment( entity ).docstate 
+        binding.refresh('.*')
+    }
+    
+    def captureDownpayment() {
+        return InvokerUtil.lookupOpener('rptcompromise.capturedownpayment', [amount:entity.info.downpayment, onadd:onaddDownpaymentHandler])
+    }
+    
+    def onaddCYPaymentHandler = { pmt -> 
+        entity.info.cypaymentorno = pmt.orno
+        entity.info.cypaymentordate = pmt.ordate 
+        entity.info.cypaymentoramount = pmt.amount 
+        entity.docstate = svc.postCapturedRequiredPayment( entity ).docstate 
+        binding.refresh('.*')
+    }
+    
+    def captureCYPayment() {
+        return InvokerUtil.lookupOpener('rptcompromise.capturecypayment', [onadd:onaddCYPaymentHandler])
+    }
+    
+    /*------------------------------------------------------------------------
+    * Agreement Information Tab Support
+    ------------------------------------------------------------------------ */
+    void loadComboItemSources() {
+        nationalityList = utilSvc.nationalityList
+        civilStatusList = utilSvc.civilStatusList
+        genderList = utilSvc.genderList
+    }
+    
+    /*------------------------------------------------------------------------
+    * Witness Tab Support
+    ------------------------------------------------------------------------ */
+    def selectedWitness 
+    
+    def witnessListHandler = [
+        fetchList     : { return entity.signatories },
+        createItem  : {return [:] },
+        getColumns    : { return [
+            new Column(name:'name', caption:'Name *', editable:true),
+            new Column(name:'address', caption:'Address', editable:true),
+        ]},
+        onAddItem     : { item -> 
+            if( ! entity.signatories.contains( item ) ) {
+                entity.signatories.add( item )
+            }
+        },
+        onRemoveItem  : { item ->
+            if( MsgBox.confirm('Remove selected witness?') ) {
+                entity.signatories.remove( item )
+                return true;
+            }
+            return false 
+        },
+        validate  : { li -> 
+            required( 'Name', li.item.name )
+        },
+    ] as SubListModel
+    
+    boolean existsWitness( witness ) {
+        return entity.signatories.find{ it.name == witness.name } != null 
+    }
+    
+    void required( field, value ) {
+        if( ! value )  throw new Exception( field + ' is required.')
+    }
+    
+    /*------------------------------------------------------------------------
+    * Delinquent Tab Support
+    ------------------------------------------------------------------------ */
+    def delinquentListHandler = [
+        fetchList     : { return entity._items },
+        getColumns    : { return [
+            new Column(name:'tdno', caption:'TD No'),
+            new Column(name:'iyear', caption:'Year', type:'integer', format:'####' ),
+            new Column(name:'classcode', caption:'Class'),
+            new Column(name:'basic', caption:'Basic', type:'decimal'),
+            new Column(name:'basicint', caption:'Penalty', type:'decimal'),
+            new Column(name:'sef', caption:'SEF', type:'decimal'),
+            new Column(name:'sefint', caption:'Penalty', type:'decimal'),
+            new Column(name:'total', caption:'total', type:'decimal'),
+        ]},
+    ] as SubListModel
+}
+
+
+]]>
+    </code>
+    
+    <pages>
+        <page name="init" template="etracs2.rpt.compromise.RPTCompromiseCaptureInitPage"/>
+        <page template="etracs2.rpt.compromise.RPTCompromisePage"/>
+        <page name="preview" template="etracs2.common.PreviewPage" />
+    </pages>
+</workunit>
